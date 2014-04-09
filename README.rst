@@ -22,7 +22,7 @@ statistics and manipulation.
 Install
 ------------------------------------------------------------------------------
 
-To install simply run `pip install mt_940`.
+To install simply run `pip install mt-940`.
 
 Example usage
 ------------------------------------------------------------------------------
