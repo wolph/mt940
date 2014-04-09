@@ -16,13 +16,13 @@ Introduction
    :target: https://requires.io/github/WoLpH/mt940/requirements/?branch=master
    :alt: Requirements Status
 
-A library to parse MT940 files and return smart Python collections for
+A library to parse MT940 files and returns smart Python collections for
 statistics and manipulation.
 
 Install
 ------------------------------------------------------------------------------
 
-To install simply run `pip install mt940`.
+To install simply run `pip install mt_940`.
 
 Example usage
 ------------------------------------------------------------------------------
