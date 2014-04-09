@@ -1,4 +1,4 @@
-__package_name__ = 'mt940'
+__package_name__ = 'mt_940'
 __version__ = '1.0'
 __author__ = 'Rick van Hattem'
 __author_email__ = 'Wolph@Wol.ph'
