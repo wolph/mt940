@@ -78,8 +78,6 @@ class Transaction(object):
             elif field_number is cls.TRANSACTION_DETAILS:
                 transactions_detail.append(match_data)
 
-        assert len(transactions) == len(transactions_detail)
-
         for data, details in zip(transactions, transactions_detail):
             yield Transaction(transaction, data, details)
 
@@ -176,7 +174,7 @@ class Transaction(object):
             )
         else:
             raise TypeError('Unknown transaction type, cannot parse %r' %
-                            details)
+                            details)  # pragma: no cover
 
         self.items = items
 
@@ -199,7 +197,7 @@ class Transaction(object):
         self.set_opening_balance = opening_balance
 
     def handle_available_balance(self, available_balance):
-        self.set_available_balance = available_balance
+        self.set_available_balance = available_balance  # pragma: no cover
 
     def handle_closing_balance(self, closing_balance):
         self.set_closing_balance = closing_balance
