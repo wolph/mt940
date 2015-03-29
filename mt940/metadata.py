@@ -1,5 +1,5 @@
 __package_name__ = 'mt-940'
-__version__ = '1.0'
+__version__ = '1.0.1'
 __author__ = 'Rick van Hattem'
 __author_email__ = 'Wolph@Wol.ph'
 __description__ = '''
