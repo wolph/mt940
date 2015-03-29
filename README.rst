@@ -12,10 +12,6 @@ Introduction
    :target: https://landscape.io/github/WoLpH/django-statsd/master
    :alt: Code Health
 
-.. image:: https://requires.io/github/WoLpH/mt940/requirements.png?branch=master
-   :target: https://requires.io/github/WoLpH/mt940/requirements/?branch=master
-   :alt: Requirements Status
-
 A library to parse MT940 files and returns smart Python collections for
 statistics and manipulation.
 
