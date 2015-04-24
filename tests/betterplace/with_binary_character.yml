@@ -1,0 +1,5 @@
+---
+- - !ruby/object:MT940::Job
+    modifier: 
+    content: STAR1ÜTßUMS
+    reference: STAR1ÜTßUMS

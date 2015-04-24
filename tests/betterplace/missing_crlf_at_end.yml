@@ -1,0 +1,9 @@
+---
+- - !ruby/object:MT940::ClosingBalance
+    modifier: F
+    content: C100323EUR42570,04
+    balance_type: :start
+    sign: :credit
+    currency: EUR
+    amount: 4257004
+    date: 2010-03-23

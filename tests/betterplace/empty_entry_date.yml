@@ -1,0 +1,10 @@
+---
+- - !ruby/object:MT940::StatementLine
+    modifier: 
+    content: 110701CN50,00NZ10NONREF
+    funds_code: :credit
+    amount: 5000
+    swift_code: NZ10
+    reference: NONREF
+    transaction_description: ''
+    date: 2011-07-01

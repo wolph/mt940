@@ -3,6 +3,52 @@ import re
 import decimal
 import datetime
 
+# Format string legend:
+# [] = optional
+# ! = fixed length
+# a = Text
+# x = Alphanumeric, seems more like text actually. Can include special
+#     characters (slashes) and whitespace as well as letters and numbers
+# d = Numeric separated by decimal (usually comma)
+# c = Code list value
+# n = Numeric
+
+# ABN-AMRO/Rabo format
+# Sources:
+# - https://www.rabobank.nl/images/
+#   formaatbeschrijving_swift_bt940s_1_0_nl_rib_29539296.pdf
+# - http://www.sepaforcorporates.com/swift-for-corporates/
+#   account-statement-mt940-file-format-overview/
+#
+# format: 6!n[4!n]2a[1!a]15d1!a3!c16x[//16x]
+TRANSACTION_DATA_RE = re.compile(
+    r'''^
+    (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
+    (?P<month>\d{2})
+    (?P<day>\d{2})
+    (?P<booking_date>\d{4})?  # [4!n] Entry Date (MMDD)
+    (?P<direction>[A-Z]?[DC])  # 2a Debit/Credit Mark
+    (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd character of the currency
+                           # code, if needed)
+    (?P<amount>[\d,]{1,15})  # 15d Amount
+    (?P<id>[A-Z][A-Z0-9]{3})?  # 1!a3!c Transaction Type Identification Code
+    (?P<customer_reference>.{0,16})  # 16x Customer Reference
+    (//(?P<bank_reference>.{0,16}))?  # [//16x] Bank Reference
+    (?P<extra_details>.{0,34})  # [34x] Supplementary Details (this will be on
+                                # a new/separate line)
+    ''', re.VERBOSE | re.IGNORECASE)
+
+
+# Rabo format
+# Source: https://www.rabobank.nl/images/
+#   formaatbeschrijving_swift_bt940s_1_0_nl_rib_29539296.pdf
+# 6*65x
+TRANSACTION_DETAIL_RABO_RE = re.compile(
+    r'''^
+    /ORDP/
+    /NAME/(?P<name>[^/]{0,70})
+    ''', re.VERBOSE)
+
 
 class Transactions(object):
     def __init__(self, fh):
@@ -90,14 +136,12 @@ class Transaction(object):
 
     def handle_transaction_data(self, data):
         self.identifier = data
-        match = re.match(r'''^
-            (?P<year>\d{2})
-            (?P<month>\d{2})
-            (?P<day>\d{2})
-            (?P<booking_date>\d{4})
-            (?P<direction>[DC])
-            (?P<amount>[\d,]+)
-        ''', data, re.VERBOSE).groupdict()
+        match_result = TRANSACTION_DATA_RE.match(data)
+
+        if not match_result:
+            raise RuntimeError('Unknown format', data)
+
+        match = match_result.groupdict()
         self.date = datetime.date(
             2000 + int(match['year'], 10),
             int(match['month'], 10),
@@ -120,61 +164,13 @@ class Transaction(object):
 
             if 'naam' in items:
                 items['name'] = items.pop('naam')
-        elif details.startswith('/TRTP/') or details.startswith('/RTYP/'):
+        elif re.match('^/(TRTP|RTYP|ORDP|EREF|BENM)/', details):
             details = details.replace('\n', ' ')
             items = re.findall(r'/(?P<key>[A-Z]+)/\s*(?P<value>[^/]+)',
                                details)
             items = dict((k.lower(), v) for k, v in items)
-        elif re.match(r'^([BG]EA|CHIP)\s+', details):
-            if 'NR:' in details:
-                details = re.split(r'\s+', details.split('NR:', 1)[1], 2)
-            else:
-                details = re.split(r'\s+', details, 2)
-                details[0] = ''
-            date, amount = details[1].split('/', 1)
-            date = [int(d, 10) for d in date.split('.')]
-            card, name = details[2].split(',')
-            items = dict(
-                id=details[0],
-                amount=amount,
-                date=datetime.date(
-                    2000 + date[2],
-                    date[1],
-                    date[0],
-                ),
-                name=name,
-                card=card,
-            )
-        elif details.startswith('GIRO'):
-            details = re.split(r'\s{2,}', details, 3)
-            description, date = details[3].split('TRANSACTIEDATUM*')
-            items = dict(
-                number=details[1],
-                name=details[2],
-                description=description,
-                date=date,
-            )
-        elif re.match(r'^\d{,3}\.\d{,3}\.\d{,3}\.\d{,3}\s{2,}', details):
-            number, description = re.split(r'\s{2,}', details, 1)
-            name, description = description.split('\n', 1)
-            description, id_ = description.split('BETALINGSKENM.')
-            items = dict(
-                number=number.strip(),
-                id=id_,
-                description=description.strip(),
-                name=name.strip(),
-            )
-        elif re.match(r'^\d{,3}\.\d{,3}\.\d{,3}\.\d{,3}\s', details):
-            number, description = details.split(' ', 1)
-            name, description = re.split(r'\s{2,}', description, 1)
-            items = dict(
-                number=number.strip(),
-                description=description.strip(),
-                name=name.strip(),
-            )
         else:
-            raise TypeError('Unknown transaction type, cannot parse %r' %
-                            details)  # pragma: no cover
+            items = dict(description=details)
 
         self.items = items
 

@@ -1,0 +1,41 @@
+:940:
+:20:940A110615
+:25:1291.99.348EUR
+:28:00000/00
+:60F:C110614EUR000000000473,17
+:61:110527D000000001213,28N0440121470966      W.P. Jansen                      
+:86:Terugboeking                                                    
+:86:NIET AKKOORD MET AFSCHRIJVING                                   
+:86:KOSTEN KINDEROPVANG JUNI                                        
+:86:20095731                                                        
+:62F:C110615EUR000000000395,82
+
+:20:940A110616
+:25:1291.99.348EUR
+:28:00000/00
+:60F:C110615EUR0000000001000,89
+:62F:C110616EUR0000000001000,89
+
+:20:940A110617
+:25:1291.99.348EUR
+:28:00000/00
+:60F:C110616EUR0000000001295,82
+:61:110617D000000000044,95N0600733959555      T-MOBILE NETHERLANDS BV          
+:86:BETALINGSKENM.  123456789                                       
+:86:FACTUURNUMMER 987654321                                         
+:61:110721D000000000236,56N030NONREF          TOMTE TUMMETOT AMERSFOORT        
+:86:Betaalautomaat 14:23 pasnr. 065                                 
+:62F:C110617EUR0000000001250,87
+
+:20:940A120829
+:25:1526.89.184EUR
+:28:00000/00
+:60F:C120828EUR000000004196,12
+:61:120829D000000000088,10N060P000029225      KPN - MOBIEL                     
+:86:BETALINGSKENM.  173787046000009                                 
+:86:FACTUUR * 173787046 000009                                      
+:86:ZIE REKENING OP KPN.COM OF HI.NL                                
+:86:KPN - MOBIEL                                                    
+:61:120829D000000000006,20NMSCP000029225      NS-Utrecht C. 117 UTRECHT        
+:86:Betaalautomaat 08:22 pasnr. 001                                 
+:62F:C120829EUR000000004101,82
