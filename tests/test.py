@@ -15,5 +15,5 @@ def get_sta_files():
 @pytest.mark.parametrize('input', get_sta_files())
 def test_parse(input):
     for line in mt940.parse(open(input)):
-        pass
+        repr(line)
 

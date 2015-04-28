@@ -80,23 +80,18 @@ class Transaction(object):
     method_re = re.compile(
         r':(?P<field_number>[0-9]{2})(?P<field_name>[A-Z])?:')
 
-    def __repr__(self):
-        if self.amount >= 0:
-            from_ = self.other
-            to = self.account_number
-            amount = self.amount
-        else:
-            to = self.other
-            from_ = self.account_number
-            amount = -self.amount
+    def __init__(self, transaction=None, data=None, details=None):
+        self.amount = 0
+        self.items = dict()
 
-        return '<%s[%s] %s -> %s: %s>' % (
-            self.__class__.__name__,
-            self.date,
-            from_,
-            to,
-            amount,
-        )
+        if transaction and data and details:
+            # Update the dictionary with values from the given transaction
+            vars(self).update(vars(transaction))
+            self.handle_transaction_data(data)
+            self.handle_transaction_details(details)
+
+    def get(self, key, default=None):
+        return getattr(self, key, default)
 
     @classmethod
     def parse(cls, data):
@@ -126,13 +121,6 @@ class Transaction(object):
 
         for data, details in zip(transactions, transactions_detail):
             yield Transaction(transaction, data, details)
-
-    def __init__(self, transaction=None, data=None, details=None):
-        if transaction and data and details:
-            # Update the dictionary with values from the given transaction
-            vars(self).update(vars(transaction))
-            self.handle_transaction_data(data)
-            self.handle_transaction_details(details)
 
     def handle_transaction_data(self, data):
         self.identifier = data
@@ -164,6 +152,7 @@ class Transaction(object):
 
             if 'naam' in items:
                 items['name'] = items.pop('naam')
+
         elif re.match('^/(TRTP|RTYP|ORDP|EREF|BENM)/', details):
             details = details.replace('\n', ' ')
             items = re.findall(r'/(?P<key>[A-Z]+)/\s*(?P<value>[^/]+)',
@@ -173,15 +162,6 @@ class Transaction(object):
             items = dict(description=details)
 
         self.items = items
-
-    @property
-    def other(self):
-        out = []
-        if self.items.get('number'):
-            out.append('[%s]' % self.items['number'])
-        out.append(self.items['name'])
-
-        return ''.join(out)
 
     def handle_account_number(self, account_number):
         self.account_number = account_number
@@ -205,6 +185,24 @@ class Transaction(object):
         AVAILABLE_BALANCE: handle_available_balance,
         CLOSING_BALANCE: handle_closing_balance,
     }
+
+    def __repr__(self):
+        if self.get('amount') >= 0:
+            from_ = self.get('name')
+            to = self.get('account_number')
+            amount = self.get('amount', 0)
+        else:
+            to = self.get('name')
+            from_ = self.get('account_number')
+            amount = -self.get('amount', 0)
+
+        return '<%s[%s] %s -> %s: %s>' % (
+            self.__class__.__name__,
+            self.get('date'),
+            from_,
+            to,
+            amount,
+        )
 
 
 def parse(fh):
