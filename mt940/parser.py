@@ -2,6 +2,7 @@
 import re
 import decimal
 import datetime
+import collections
 
 # Format string legend:
 # [] = optional
@@ -65,13 +66,11 @@ BALANCE_RE = re.compile(
     $''', re.VERBOSE | re.IGNORECASE)
 
 
-class Transactions(object):
-    def __init__(self, fh):
-        self.fh = fh
+class Transactions(collections.Sequence):
+    def __init__(self):
+        self.transactions = []
 
-    def __iter__(self):
-        # Get the data
-        data = self.fh.read()
+    def parse(self, data):
         # We don't like carriage returns in case of Windows files so let's just
         # replace them with nothing
         data = data.replace('\r', '')
@@ -80,7 +79,15 @@ class Transactions(object):
         transaction_collections = data.split('\n-\n')
         for transaction_collection in transaction_collections:
             for transaction in Transaction.parse(transaction_collection):
-                yield transaction
+                self.transactions.append(transaction)
+
+        return self.transactions
+
+    def __getitem__(self, key):
+        return self.transactions[key]
+
+    def __len__(self):
+        return len(self.transactions)
 
 
 class Transaction(object):
@@ -188,10 +195,11 @@ class Transaction(object):
     def parse_balance(cls, balance):
         '''Parse balance statement
 
-        >>> Transaction.parse_balance('C100722EUR0,00')
-        ... # doctest: +NORMALIZE_WHITESPACE
-        {'status': 'C', 'currency': 'EUR', 'amount': '0,00', 'year': '10',
-         'date': datetime.date(2010, 7, 22), 'day': '22', 'month': '07'}
+        >>> Transaction.parse_balance('C100722EUR0,00') == {
+        ...     'status': 'C', 'currency': 'EUR', 'amount': '0,00',
+        ...     'year': '10', 'date': datetime.date(2010, 7, 22), 'day': '22',
+        ...     'month': '07'}
+        True
         '''
         results = dict()
         if balance:
@@ -240,5 +248,11 @@ class Transaction(object):
 
 
 def parse(fh):
-    return Transactions(fh)
+    if not hasattr(fh, 'read'):
+        fh = open(fh)
+    data = fh.read()
+
+    transactions = Transactions()
+    transactions.parse(data)
+    return transactions
 
