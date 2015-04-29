@@ -50,6 +50,21 @@ TRANSACTION_DETAIL_RABO_RE = re.compile(
     ''', re.VERBOSE)
 
 
+# Balance format
+# Source: http://www.sepaforcorporates.com/swift-for-corporates/
+#   account-statement-mt940-file-format-overview/
+# 1!a6!n3!a15d
+BALANCE_RE = re.compile(
+    r'''^
+    (?P<status>[DC])  # 1!a Debit/Credit
+    (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
+    (?P<month>\d{2})
+    (?P<day>\d{2})
+    (?P<currency>.{3})  # 3!a Currency
+    (?P<amount>[0-9,]{0,16})  # 15d Amount (includes decimal sign, so 16)
+    $''', re.VERBOSE | re.IGNORECASE)
+
+
 class Transactions(object):
     def __init__(self, fh):
         self.fh = fh
@@ -169,14 +184,33 @@ class Transaction(object):
     def handle_statement_number(self, statement_number):
         self.statement_number = statement_number
 
+    @classmethod
+    def parse_balance(cls, balance):
+        '''Parse balance statement
+
+        >>> Transaction.parse_balance('C100722EUR0,00')
+        ... # doctest: +NORMALIZE_WHITESPACE
+        {'status': 'C', 'currency': 'EUR', 'amount': '0,00', 'year': '10',
+         'date': datetime.date(2010, 7, 22), 'day': '22', 'month': '07'}
+        '''
+        results = dict()
+        if balance:
+            results.update(BALANCE_RE.match(balance).groupdict())
+            results['date'] = datetime.date(
+                2000 + int(results['year'], 10),
+                int(results['month'], 10),
+                int(results['day'], 10),
+            )
+        return results
+
     def handle_opening_balance(self, opening_balance):
-        self.set_opening_balance = opening_balance
+        self.opening_balance = self.parse_balance(opening_balance)
 
     def handle_available_balance(self, available_balance):
-        self.set_available_balance = available_balance  # pragma: no cover
+        self.available_balance = self.parse_balance(available_balance)
 
     def handle_closing_balance(self, closing_balance):
-        self.set_closing_balance = closing_balance
+        self.closing_balance = self.parse_balance(closing_balance)
 
     methods = {
         ACCOUNT_NUMBER: handle_account_number,
