@@ -67,10 +67,18 @@ BALANCE_RE = re.compile(
 
 
 class Transactions(collections.Sequence):
+    '''
+    Collection of transactions with properties such as begin and end balance
+    '''
+
     def __init__(self):
         self.transactions = []
 
     def parse(self, data):
+        '''Parses mt940 data, expects a string with data
+
+        :param str data: The MT940 data
+        '''
         # We don't like carriage returns in case of Windows files so let's just
         # replace them with nothing
         data = data.replace('\r', '')
@@ -113,6 +121,7 @@ class Transaction(object):
             self.handle_transaction_details(details)
 
     def get(self, key, default=None):
+        '''Get a property from the transaction with optional default value'''
         return getattr(self, key, default)
 
     @classmethod
@@ -248,6 +257,11 @@ class Transaction(object):
 
 
 def parse(fh):
+    '''
+    Parses mt940 data and returns transactions object
+
+    :param file or str fh: file handler or filename to read
+    '''
     if not hasattr(fh, 'read'):
         fh = open(fh)
     data = fh.read()
