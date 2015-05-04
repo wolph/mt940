@@ -1,27 +1,37 @@
 # vim: fileencoding=utf-8:
+'''
+
+Format
+---------------------
+
+Sources:
+
+.. _Swift for corporates: http://www.sepaforcorporates.com/\
+    swift-for-corporates/account-statement-mt940-file-format-overview/
+.. _Rabobank MT940: https://www.rabobank.nl/images/\
+    formaatbeschrijving_swift_bt940s_1_0_nl_rib_29539296.pdf
+
+ - `Swift for corporates`_
+ - `Rabobank MT940`_
+
+::
+
+    [] = optional
+    ! = fixed length
+    a = Text
+    x = Alphanumeric, seems more like text actually. Can include special
+        characters (slashes) and whitespace as well as letters and numbers
+    d = Numeric separated by decimal (usually comma)
+    c = Code list value
+    n = Numeric
+'''
+
 import re
 import decimal
 import datetime
 import collections
 
-# Format string legend:
-# [] = optional
-# ! = fixed length
-# a = Text
-# x = Alphanumeric, seems more like text actually. Can include special
-#     characters (slashes) and whitespace as well as letters and numbers
-# d = Numeric separated by decimal (usually comma)
-# c = Code list value
-# n = Numeric
-
-# ABN-AMRO/Rabo format
-# Sources:
-# - https://www.rabobank.nl/images/
-#   formaatbeschrijving_swift_bt940s_1_0_nl_rib_29539296.pdf
-# - http://www.sepaforcorporates.com/swift-for-corporates/
-#   account-statement-mt940-file-format-overview/
-#
-# format: 6!n[4!n]2a[1!a]15d1!a3!c16x[//16x]
+#: ABN-AMRO/Rabo `format`_: `6!n[4!n]2a[1!a]15d1!a3!c16x[//16x]`
 TRANSACTION_DATA_RE = re.compile(
     r'''^
     (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
@@ -40,10 +50,7 @@ TRANSACTION_DATA_RE = re.compile(
     ''', re.VERBOSE | re.IGNORECASE)
 
 
-# Rabo format
-# Source: https://www.rabobank.nl/images/
-#   formaatbeschrijving_swift_bt940s_1_0_nl_rib_29539296.pdf
-# 6*65x
+#: Rabo `format`_: `6*65x`
 TRANSACTION_DETAIL_RABO_RE = re.compile(
     r'''^
     /ORDP/
@@ -51,10 +58,7 @@ TRANSACTION_DETAIL_RABO_RE = re.compile(
     ''', re.VERBOSE)
 
 
-# Balance format
-# Source: http://www.sepaforcorporates.com/swift-for-corporates/
-#   account-statement-mt940-file-format-overview/
-# 1!a6!n3!a15d
+#: Balance `format`_: `1!a6!n3!a15d`
 BALANCE_RE = re.compile(
     r'''^
     (?P<status>[DC])  # 1!a Debit/Credit
@@ -68,26 +72,38 @@ BALANCE_RE = re.compile(
 
 class Transactions(collections.Sequence):
     '''
-    Collection of transactions with properties such as begin and end balance
+    Collection of :py:class:`Transaction` objects with global properties such as
+    begin and end balance
+
     '''
 
     def __init__(self):
         self.transactions = []
+        self.opening_balance = Balance() #: Opening balance
+        self.available_balance = Balance() #: Available balance
+        self.closing_balance = Balance() #: Closing balance
 
     def parse(self, data):
         '''Parses mt940 data, expects a string with data
 
         :param str data: The MT940 data
+        :rtype: :py:class:`list` of :py:class:`Transaction`
         '''
         # We don't like carriage returns in case of Windows files so let's just
         # replace them with nothing
         data = data.replace('\r', '')
 
         # The transaction collections are separated by a '-'
+        transaction = None
         transaction_collections = data.split('\n-\n')
         for transaction_collection in transaction_collections:
             for transaction in Transaction.parse(transaction_collection):
                 self.transactions.append(transaction)
+
+        if transaction:
+            self.opening_balance = transaction.opening_balance
+            self.available_balance = transaction.available_balance
+            self.closing_balance = transaction.closing_balance
 
         return self.transactions
 
@@ -98,14 +114,21 @@ class Transactions(collections.Sequence):
         return len(self.transactions)
 
 
+class Balance(object):
+    def __init__(self, status, amount, date):
+        self.status = status
+        self.amount = amount
+        self.date = date
+
+
 class Transaction(object):
-    TRANSACTION = 61
-    TRANSACTION_DETAILS = 86
-    ACCOUNT_NUMBER = 25
-    STATEMENT_NUMBER = 28
-    OPENING_BALANCE = 60
-    CLOSING_BALANCE = 62
-    AVAILABLE_BALANCE = 64
+    _TRANSACTION = 61
+    _TRANSACTION_DETAILS = 86
+    _ACCOUNT_NUMBER = 25
+    _STATEMENT_NUMBER = 28
+    _OPENING_BALANCE = 60
+    _CLOSING_BALANCE = 62
+    _AVAILABLE_BALANCE = 64
 
     method_re = re.compile(
         r':(?P<field_number>[0-9]{2})(?P<field_name>[A-Z])?:')
@@ -145,15 +168,15 @@ class Transaction(object):
             method = cls.methods.get(field_number)
             if method:
                 method(transaction, match_data)
-            elif field_number is cls.TRANSACTION:
+            elif field_number is cls._TRANSACTION:
                 transactions.append(match_data)
-            elif field_number is cls.TRANSACTION_DETAILS:
+            elif field_number is cls._TRANSACTION_DETAILS:
                 transactions_detail.append(match_data)
 
         for data, details in zip(transactions, transactions_detail):
             yield Transaction(transaction, data, details)
 
-    def handle_transaction_data(self, data):
+    def _handle_transaction_data(self, data):
         self.identifier = data
         match_result = TRANSACTION_DATA_RE.match(data)
 
@@ -173,7 +196,7 @@ class Transaction(object):
 
         self.amount = amount
 
-    def handle_transaction_details(self, details):
+    def _handle_transaction_details(self, details):
         details = re.sub(r' {2,}', '  ', details)
         if details.startswith('SEPA'):
             details = details.split('\n')
@@ -194,19 +217,31 @@ class Transaction(object):
 
         self.items = items
 
-    def handle_account_number(self, account_number):
+    def _handle_account_number(self, account_number):
         self.account_number = account_number
 
-    def handle_statement_number(self, statement_number):
+    def _handle_statement_number(self, statement_number):
         self.statement_number = statement_number
+
+    @classmethod
+    def _to_date(self, year, month, day, **kwargs):
+        return datetime.date(
+            int(year, 10) + 2000,
+            int(month, 10),
+            int(day, 10),
+        )
 
     @classmethod
     def parse_balance(cls, balance):
         '''Parse balance statement
 
         >>> Transaction.parse_balance('C100722EUR0,00') == {
-        ...     'status': 'C', 'currency': 'EUR', 'amount': '0,00',
-        ...     'year': '10', 'date': datetime.date(2010, 7, 22), 'day': '22',
+        ...     'status': 'C',
+        ...     'currency': 'EUR',
+        ...     'amount': '0,00',
+        ...     'year': '10',
+        ...     'date': datetime.date(2010, 7, 22),
+        ...     'day': '22',
         ...     'month': '07'}
         True
         '''
@@ -220,21 +255,21 @@ class Transaction(object):
             )
         return results
 
-    def handle_opening_balance(self, opening_balance):
+    def _handle_opening_balance(self, opening_balance):
         self.opening_balance = self.parse_balance(opening_balance)
 
-    def handle_available_balance(self, available_balance):
+    def _handle_available_balance(self, available_balance):
         self.available_balance = self.parse_balance(available_balance)
 
-    def handle_closing_balance(self, closing_balance):
+    def _handle_closing_balance(self, closing_balance):
         self.closing_balance = self.parse_balance(closing_balance)
 
     methods = {
-        ACCOUNT_NUMBER: handle_account_number,
-        STATEMENT_NUMBER: handle_statement_number,
-        OPENING_BALANCE: handle_opening_balance,
-        AVAILABLE_BALANCE: handle_available_balance,
-        CLOSING_BALANCE: handle_closing_balance,
+        _ACCOUNT_NUMBER: _handle_account_number,
+        _STATEMENT_NUMBER: _handle_statement_number,
+        _OPENING_BALANCE: _handle_opening_balance,
+        _AVAILABLE_BALANCE: _handle_available_balance,
+        _CLOSING_BALANCE: _handle_closing_balance,
     }
 
     def __repr__(self):
@@ -261,6 +296,8 @@ def parse(fh):
     Parses mt940 data and returns transactions object
 
     :param file or str fh: file handler or filename to read
+    :return: Collection of transactions
+    :rtype: Transactions
     '''
     if not hasattr(fh, 'read'):
         fh = open(fh)

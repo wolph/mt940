@@ -18,7 +18,11 @@ statistics and manipulation.
 Install
 ------------------------------------------------------------------------------
 
-To install simply run `pip install mt-940`.
+To install simply run:
+
+::
+       
+    pip install mt-940
 
 Example usage
 ------------------------------------------------------------------------------
