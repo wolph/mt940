@@ -1,5 +1,9 @@
 language: python
-cache: pip
+cache:
+    pip
+    directories:
+        - .tox
+
 python: 2.7
 env:
     - TOX_ENV=py27
