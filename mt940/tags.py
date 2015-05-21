@@ -170,8 +170,6 @@ class Statement(Tag):
         return data
 
 
-
-
 class ClosingBalance(BalanceBase):
     id = 62
 
