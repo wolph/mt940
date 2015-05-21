@@ -1,6 +1,8 @@
+enum34
 pytest
 pytest-pep8
 pytest-flakes
 pytest-cov
-sphinx
 flake8
+sphinx
+sphinxcontrib-napoleon

@@ -8,8 +8,8 @@ Introduction
     :alt: Test Status
     :target: https://travis-ci.org/WoLpH/mt940
 
-.. image:: https://landscape.io/github/WoLpH/django-statsd/master/landscape.png
-   :target: https://landscape.io/github/WoLpH/django-statsd/master
+.. image:: https://landscape.io/github/WoLpH/mt940/master/landscape.png
+   :target: https://landscape.io/github/WoLpH/mt940/master
    :alt: Code Health
 
 A library to parse MT940 files and returns smart Python collections for
@@ -30,8 +30,16 @@ Example usage
 ::
 
     import mt940
-    with open('your_mt940_file.sta') as fh:
-        transactions = mt940.parse(fh)
-        for transaction in transactions:
-            print 'transaction', transaction
+    import pprint
+
+    transactions = mt940.parse('tests/jejik/abnamro.sta')
+
+    print 'Transactions:'
+    print transactions
+    pprint.pprint(transactions.data)
+
+    print
+    for transaction in transactions:
+        print 'Transaction: ', transaction
+        pprint.pprint(transaction.data)
 

@@ -9,6 +9,8 @@ Contents:
    usage
    mt940
 
+.. include:: ../README.rst
+
 Indices and tables
 ==================
 

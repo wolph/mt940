@@ -1,10 +1,53 @@
 mt940 package
 =============
 
+Submodules
+----------
+
+mt940.metadata module
+---------------------
+
+.. automodule:: mt940.metadata
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+mt940.models module
+-------------------
+
+.. automodule:: mt940.models
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 mt940.parser module
 -------------------
 
 .. automodule:: mt940.parser
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+mt940.processors module
+-----------------------
+
+.. automodule:: mt940.processors
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+mt940.tags module
+-----------------
+
+.. automodule:: mt940.tags
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+mt940.utils module
+------------------
+
+.. automodule:: mt940.utils
     :members:
     :undoc-members:
     :show-inheritance:
