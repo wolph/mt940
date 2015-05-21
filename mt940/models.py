@@ -1,0 +1,232 @@
+import re
+import decimal
+import datetime
+import collections
+
+import mt940
+
+
+class Date(datetime.date):
+    '''Just a regular date object which supports dates given as strings
+
+    Args:
+        year (str): The year (0-100), will automatically add 2000 when needed
+        month (str): The month
+        day (str): The day
+    '''
+    def __new__(cls, year, month, day, **kwargs):
+        year = int(year, 10)
+        if year < 1000:
+            year += 2000
+
+        month = int(month, 10)
+        day = int(day, 10)
+        return datetime.date.__new__(cls, year, month, day)
+
+
+class Amount(object):
+    '''Amount object containing currency and amount
+
+    Args:
+        amount (str): Amount using either a , or a . as decimal separator
+        currency (str): A 3 letter currency (e.g. EUR)
+        status (str): Either C or D for credit or debit respectively
+
+    >>> Amount('123.45', 'EUR', 'C')
+    <123.45 EUR>
+    >>> Amount('123.45', 'EUR', 'D')
+    <-123.45 EUR>
+    '''
+    def __init__(self, amount, status, currency=None, **kwargs):
+        self.amount = decimal.Decimal(amount.replace(',', '.'))
+        self.currency = currency
+
+        # C = credit, D = debit
+        if status == 'D':
+            self.amount = -self.amount
+
+    def __repr__(self):
+        return '<%s %s>' % (
+            self.amount,
+            self.currency,
+        )
+
+
+class Balance(object):
+    '''Parse balance statement
+
+    Args:
+        status (str): Either C or D for credit or debit respectively
+        amount (Amount): Object containing the amount and currency
+        date (date): The balance date
+
+    >>> balance = Balance.parse('C100722EUR0,00')
+    >>> balance.status
+    'C'
+    >>> balance.amount.amount
+    Decimal('0.00')
+    >>> balance.date
+    Date(2010, 7, 22)
+
+    >>> Balance()
+    <None @ None>
+    '''
+    def __init__(self, status=None, amount=None, date=None, **kwargs):
+        self.status = status
+        self.amount = amount
+        self.date = date
+
+    def __repr__(self):
+        return '<%s>' % self
+
+    def __str__(self):
+        return '%s @ %s' % (
+            self.amount,
+            self.date,
+        )
+
+
+class Transactions(collections.Sequence):
+    '''
+    Collection of :py:class:`Transaction` objects with global properties such
+    as begin and end balance
+
+    '''
+
+    #: Using the processors you can pre-process data before creating objects
+    #: and modify them after creating the objects
+    DEFAULT_PROCESSORS = dict(
+        pre_account_identification=[],
+        post_account_identification=[],
+        pre_available_balance=[],
+        post_available_balance=[],
+        pre_closing_balance=[],
+        post_closing_balance=[],
+        pre_forward_available_balance=[],
+        post_forward_available_balance=[],
+        pre_opening_balance=[],
+        post_opening_balance=[],
+        pre_related_reference=[],
+        post_related_reference=[],
+        pre_statement=[],
+        post_statement=[mt940.processors.date_cleanup_post_processor],
+        pre_statement_number=[],
+        post_statement_number=[],
+        pre_transaction_details=[],
+        post_transaction_details=[],
+        pre_transaction_reference_number=[],
+        post_transaction_reference_number=[],
+    )
+
+    def __init__(self, processors=None):
+        self.processors = self.DEFAULT_PROCESSORS.copy()
+        if processors:
+            self.processors.update(processors)
+
+        self.transactions = []
+        self.data = {}
+
+    @property
+    def currency(self):
+        balance = mt940.utils.coalesce(
+            self.data.get('opening_balance'),
+            self.data.get('available_balance'),
+            self.data.get('forward_available_balance'),
+            self.data.get('closing_balance'),
+        )
+        if balance:
+            return balance.amount.currency
+
+    def parse(self, data):
+        '''Parses mt940 data, expects a string with data
+
+        Args:
+            data (str): The MT940 data
+
+        Returns: :py:class:`list` of :py:class:`Transaction`
+        '''
+        # We don't like carriage returns in case of Windows files so let's just
+        # replace them with nothing
+        data = data.replace('\r', '')
+
+        # The pattern is a bit annoying to match by regex, even with a greedy
+        # match it's difficult to get both the beginning and the end so we're
+        # working around it in a safer way to get everything.
+        tag_re = re.compile(r':(?P<tag>[0-9]{2})(?P<sub_tag>[A-Z])?:')
+        matches = list(tag_re.finditer(data))
+
+        transaction = Transaction(self)
+        self.transactions.append(transaction)
+
+        for i, match in enumerate(matches):
+            tag_id = int(match.group('tag'))
+            assert tag_id in mt940.tags.TAG_BY_ID, 'Unknown tag %r' \
+                'in line: %r' % (tag_id, match.group(0))
+
+            tag = mt940.tags.TAG_BY_ID[tag_id]
+
+            # Nice trick to get all the text that is part of this tag, python
+            # regex matches have a `end()` and `start()` to indicate the start
+            # and end index of the match.
+            if matches[i + 1:]:
+                tag_data = data[match.end():matches[i + 1].start()].strip()
+            else:
+                tag_data = data[match.end():].strip()
+
+            tag_dict = tag.parse(self, tag_data)
+
+            # Preprocess data before creating the object
+            for processor in self.processors.get('pre_%s' % tag.slug):
+                tag_dict = processor(self, tag, tag_dict)
+
+            result = tag(self, tag_dict)
+
+            # Postprocess the object
+            for processor in self.processors.get('post_%s' % tag.slug):
+                result = processor(self, tag, tag_dict, result)
+
+            if isinstance(tag, mt940.tags.Statement):
+                if transaction.data.get('id'):
+                    transaction = Transaction(self, result)
+                    self.transactions.append(transaction)
+                else:
+                    transaction.data.update(result)
+            elif tag.scope is Transaction:
+                transaction.update(result)
+            elif tag.scope is Transactions:
+                self.data.update(result)
+
+        return self.transactions
+
+    def __getitem__(self, key):
+        return self.transactions[key]
+
+    def __len__(self):
+        return len(self.transactions)
+
+    def __repr__(self):
+        return '<%s[%s]>' % (
+            self.__class__.__name__,
+            ']['.join('%s: %s' % (k.replace('_balance', ''), v)
+                      for k, v in self.data.iteritems()
+                      if k.endswith('balance'))
+        )
+
+
+class Transaction(object):
+    def __init__(self, transactions, data=None):
+        self.transactions = transactions
+        self.data = {}
+        self.update(data)
+
+    def update(self, data):
+        if data:
+            self.data.update(data)
+
+    def __repr__(self):
+        return '<%s[%s] %s>' % (
+            self.__class__.__name__,
+            self.data.get('date'),
+            self.data.get('amount'),
+        )
+

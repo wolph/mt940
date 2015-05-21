@@ -1,5 +1,18 @@
 from __future__ import absolute_import
 
-from .parser import parse
+from . import processors
+from . import parser
+from . import models
+from . import utils
+from . import tags
 
-__all__ = ['parse']
+parse = parser.parse
+
+__all__ = [
+    'processors',
+    'parser',
+    'models',
+    'utils',
+    'tags',
+    'parse',
+]

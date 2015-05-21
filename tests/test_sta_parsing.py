@@ -14,6 +14,19 @@ def get_sta_files():
 
 @pytest.mark.parametrize('input', get_sta_files())
 def test_parse(input):
-    for line in mt940.parse(open(input)):
-        repr(line)
+    transactions = mt940.parse(input)
+    assert len(transactions) >= 0
+    repr(transactions)
+    str(transactions)
 
+    for k, v in transactions.data.iteritems():
+        str(v)
+        repr(v)
+
+    for transaction in transactions:
+        repr(transaction)
+        str(transaction)
+
+        for k, v in transaction.data.iteritems():
+            str(v)
+            repr(v)
