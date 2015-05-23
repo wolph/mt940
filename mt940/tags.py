@@ -189,7 +189,7 @@ class TransactionDetails(Tag):
     '''
     id = 86
     scope = mt940.models.Transaction
-    pattern = r'(?P<transaction_details>[.\s]{0,330})'
+    pattern = r'(?P<transaction_details>.{0,330})'
 
 
 @enum.unique
