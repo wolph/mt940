@@ -26,8 +26,20 @@ Sources:
     n = Numeric
 '''
 import re
-import enum
 import logging
+
+try:
+    import enum
+except ImportError:
+    import sys
+    print >> sys.stderr, 'MT940 requires the `enum34` package'
+
+    class enum(object):
+        @staticmethod
+        def unique(*args, **kwargs):
+            return []
+
+        Enum = object
 
 import mt940
 
