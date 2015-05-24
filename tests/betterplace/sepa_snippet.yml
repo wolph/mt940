@@ -1,0 +1,320 @@
+&id001 !!python/object:mt940.models.Transactions
+data:
+  account_identification: 50880050/0194791600888
+  available_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-4472049.09']
+      currency: EUR
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    status: D
+  closing_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-4472049.09']
+      currency: EUR
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    status: D
+  opening_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-1970431.87']
+      currency: EUR
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJAw==
+    status: D
+  sequence_number: '00001'
+  statement_number: '00004'
+  transaction_reference: T089414096000001
+processors:
+  post_account_identification: []
+  post_available_balance: []
+  post_closing_balance: []
+  post_forward_available_balance: []
+  post_opening_balance: []
+  post_related_reference: []
+  post_statement: [!!python/name:mt940.processors.date_cleanup_post_processor '']
+  post_statement_number: []
+  post_transaction_details: []
+  post_transaction_reference_number: []
+  pre_account_identification: []
+  pre_available_balance: []
+  pre_closing_balance: []
+  pre_forward_available_balance: []
+  pre_opening_balance: []
+  pre_related_reference: []
+  pre_statement: []
+  pre_statement_number: []
+  pre_transaction_details: []
+  pre_transaction_reference_number: []
+transactions:
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['50990.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247103
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBw==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '33343453'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '166?00GUTSCHRIFT?100399?20EREF+EndToEndId TFNR 22 004?21
+      00001?22
+
+      SVWZ+Verw CTSc-01 BC-PPP TF?23Nr 22 004?30DRESDEFF508?31DE1450880
+
+      0500194785000?32KARL?33        KAUFMANN?70Empfaenger Marta Metzge
+
+      r'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['154551.93']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247103
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBw==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '24647450'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '166?00GUTSCHRIFT?100399?20EREF+TFNR 0300300004?21SVWZ+Strukturier
+
+      ter Verwend?22ungszweck 30030004 DE?30DRESDEFF508?31DE03508800500
+
+      194791600?32Quentin Quast?70Empfaenger bei DRESDE mit 7?710 Zeich
+
+      en Empfaenger bei DR'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['154551.93']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247103
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBw==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '24661090'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '166?00GUTSCHRIFT?100399?20EREF+TFNR 0500500004?21SVWZ+Strukturier
+
+      ter Verwend?22ungszweck 50050004 DE?30DRESDEFF508?31DE14508800500
+
+      194785000?32Karl Kaufmann?70Empfaenger bei DRESDE'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-1500.00']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//536D80EFE
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: C56ACF8
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00SEPA-UEBERW?100399?20KREF+TFNr 01022 MSGID CTSc-?2101
+      EBB?2
+
+      2MTLG:SEPA-Ueberweisungsauft?23rag Datei mit 0000001 Zahlu?24ngen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-0.08']
+      currency: EUR
+    bank_reference: '0724710345316116'
+    currency: EUR
+    customer_reference: TFNr 40001 MSGID
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '159?00RETOURE?100399?20EREF+TFNR 40001 00005?21MTLG:Grund
+      nicht s
+
+      pezifizie?22rt Reject aus SEPA-Ueberwei?23sungsauftrag?34914'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['335.33']
+      currency: EUR
+    bank_reference: '0724710351063401'
+    currency: EUR
+    customer_reference: TFNr 44001 MSGID
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '159?00RETOURE?100399?20EREF+TFNR 44001 00001?21MTLG:Grund
+      nicht s
+
+      pezifizie?22rt Reject aus SEPA-Ueberwei?23sungsauftrag?34914'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['15000']
+      currency: EUR
+    bank_reference: '0724710345316110'
+    currency: EUR
+    customer_reference: TFNr 40001 MSGID
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '159?00RETOURE?100399?20EREF+TFNR 40001 00002?21MTLG:Grund
+      nicht s
+
+      pezifizie?22rt Reject aus SEPA-Ueberwei?23sungsauftrag?34914'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['15000.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247102
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '90659857'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '166?00GUTSCHRIFT?100399?20EREF+EndToEndIdTFNR20001000?2101?22SVWZ
+
+      +TO 13 TFNr 20001 Einga?23ngskanal Mint Unstrukturier?24ter Verwe
+
+      ndungszweck 140 Ze?25ichen Beginn Fuellzeichen x?26xxxxxxxxxxxxxx
+
+      xxxxxxxxxxxxx?27xxxxxxxxxx?30PBNKDEFF100?31DE42100100100043921105
+
+      ?32Richter Renate 70 Zeichen B?33eginn Fuellzeichen xxxxxxxx?70Qu
+
+      '
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['125004.88']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247102
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '90624796'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '166?00GUTSCHRIFT?100399?20SVWZ+TO13 TF20005 MINT?30PBNKDEFF100?31
+
+      DE42100100100043921105?32Richter Renate 70 Zeichen B?33eginn Fuel
+
+      lzeichen xxxxxxxx?70Quentin Quast 70 Zeichen Be?71ginn Fuellzeich
+
+      en xxxxxxxxx'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['915311.55']
+      currency: EUR
+    bank_reference: R724710351063405
+    currency: EUR
+    customer_reference: TFNr 44001 MSGID
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '159?00RETOURE?100399?20EREF+TFNR 44001 00002?21MTLG:IBAN
+      unguelti
+
+      g Rueckue?22berweisung aus SEPA-Ueberwe?23isungsauftrag?34901'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-3572569.03']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NMSC
+    status: D
+    transaction_details: 079?00SAMMLER?109800?200904059001
+  transactions: *id001

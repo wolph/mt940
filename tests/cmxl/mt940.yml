@@ -1,0 +1,351 @@
+&id001 !!python/object:mt940.models.Transactions
+data:
+  account_identification: BPHKPLPK/320000546101
+  closing_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['50040.00']
+      currency: PLN
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9IDGQ==
+    status: C
+  opening_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['40000.00']
+      currency: PLN
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9MKAg==
+    status: C
+  related_reference: '9876543210'
+  sequence_number: '001'
+  statement_number: 00084
+  transaction_reference: TELEWIZORY S.A.
+processors:
+  post_account_identification: []
+  post_available_balance: []
+  post_closing_balance: []
+  post_forward_available_balance: []
+  post_opening_balance: []
+  post_related_reference: []
+  post_statement: [!!python/name:mt940.processors.date_cleanup_post_processor '']
+  post_statement_number: []
+  post_transaction_details: []
+  post_transaction_reference_number: []
+  pre_account_identification: []
+  pre_available_balance: []
+  pre_closing_balance: []
+  pre_forward_available_balance: []
+  pre_opening_balance: []
+  pre_related_reference: []
+  pre_statement: []
+  pre_statement_number: []
+  pre_transaction_details: []
+  pre_transaction_reference_number: []
+transactions:
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-6800']
+      currency: DEM
+    bank_reference: null
+    currency: DEM
+    customer_reference: '16703074'
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B90KEQ==
+    extra_details: ''
+    funds_code: null
+    id: NCHK
+    status: D
+    transaction_details: 999PN5477SCHECK-NR. 0000016703074
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-620.3']
+      currency: DEM
+    bank_reference: null
+    currency: DEM
+    customer_reference: N
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B90KEQ==
+    extra_details: ''
+    funds_code: null
+    id: NSTO
+    status: D
+    transaction_details: 999PN0911DAUERAUFTR.NR. 14
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['18500']
+      currency: DEM
+    bank_reference: null
+    currency: DEM
+    customer_reference: N
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B90KEQ==
+    extra_details: ''
+    funds_code: null
+    id: NCLR
+    status: C
+    transaction_details: 999PN2406SCHECK
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-14220']
+      currency: DEM
+    bank_reference: null
+    currency: DEM
+    customer_reference: N
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B90KDw==
+    extra_details: ''
+    funds_code: null
+    id: NBOE
+    status: D
+    transaction_details: 999PN0920WECHSEL
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-1507']
+      currency: DEM
+    bank_reference: null
+    currency: DEM
+    customer_reference: N
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B90KEQ==
+    extra_details: ''
+    funds_code: null
+    id: NTRF
+    status: D
+    transaction_details: 999PN0920SCHNELLUEB
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['4200']
+      currency: DEM
+    bank_reference: null
+    currency: DEM
+    customer_reference: N
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B90KGA==
+    extra_details: ''
+    funds_code: null
+    id: NMSC
+    status: C
+    transaction_details: 999PN2506AUSSENH. NR. 1
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-19900']
+      currency: DEM
+    bank_reference: null
+    currency: DEM
+    customer_reference: N
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B90KEQ==
+    extra_details: ''
+    funds_code: null
+    id: NTRF
+    status: D
+    transaction_details: 999PN0907UEBERTRAG
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-400']
+      currency: DEM
+    bank_reference: null
+    currency: DEM
+    customer_reference: N
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B90KEQ==
+    extra_details: ''
+    funds_code: null
+    id: NTRF
+    status: D
+    transaction_details: 999PN0891BTX
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['3656.74']
+      currency: DEM
+    bank_reference: null
+    currency: DEM
+    customer_reference: N
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B90KEg==
+    extra_details: ''
+    funds_code: null
+    id: NMSC
+    status: C
+    transaction_details: 999PN0850EINZAHLG.N
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['23040']
+      currency: DEM
+    bank_reference: null
+    currency: DEM
+    customer_reference: N
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B90KEw==
+    extra_details: ''
+    funds_code: null
+    id: NMSC
+    status: C
+    transaction_details: 999PN0812LT.ANLAGE
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-5862.14']
+      currency: DEM
+    bank_reference: null
+    currency: DEM
+    customer_reference: N
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B90KGw==
+    extra_details: ''
+    funds_code: null
+    id: NCHK
+    status: D
+    transaction_details: 999PN5329AUSLSCHECK
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-800']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//55555
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9ILAQ==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9ILAg==
+    extra_details: ''
+    funds_code: R
+    id: NSTO
+    status: D
+    transaction_details: 008?00DAUERAUFTRAG?100599?20Miete November?3010020030?31234567?32MUELLER?34339
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['3000']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//55555
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9ILAg==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9ILAg==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '051?00UEBERWEISUNG?100599?20Gehalt Oktob
+
+      er
+
+      ?21Firma
+
+      Mustermann
+
+      GmbH?3050060400?31084756
+
+      4700?32MUELLER?34339'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['20000.00']
+      currency: PLN
+    bank_reference: null
+    currency: PLN
+    customer_reference: NONREF//83270000
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9MKFA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9MKFA==
+    extra_details: '90031789 '
+    funds_code: null
+    id: FMSC
+    status: C
+    transaction_details: "020?00Wyplata-(dysp/przel)?2008106000760000777777777777?2115617?\n\
+      22INFO INFO INFO INFO INFO INFO 1 END?23INFO INFO INFO INFO INFO \nINFO 2 END?24ZAPLATA\
+      \ ZA FABRYKATY DO TUB?25 - 200 S ZTUK, TRANZY \nSTORY-?26300 SZT GR544 I OPORNIKI-5?2700\
+      \ SZT GTX847 FAKTURA 333/ \n2?28003.?3010600076?310000777777777777?32HUTA SZKLA\
+      \ TOPIC UL \nPRZEM"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-10000.00']
+      currency: PLN
+    bank_reference: null
+    currency: PLN
+    customer_reference: REF 25611247//83
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9MKFA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9MKFA==
+    extra_details: '27000090031790 '
+    funds_code: null
+    id: FTRF
+    status: D
+    transaction_details: "020?00Wyplata-(dysp/przel)?2008106000760000777777777777?2115617?\n\
+      22INFO INFO INFO INFO INFO INFO 1 END?23INFO INFO INFO INFO INFO \nINFO 2 END?24ZAPLATA\
+      \ ZA FABRYKATY DO TUB?25 - 200 S ZTUK, TRANZY \nSTORY-?26300 SZT GR544 I OPORNIKI-5?2700\
+      \ SZT GTX847 FAKTURA 333/ \n2?28003.?3010600076?310000777777777777?38PL081060007600007777777\
+      \ \n7"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['40.00']
+      currency: PLN
+    bank_reference: null
+    currency: PLN
+    customer_reference: NONREF//83270000
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9MKFA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9MKFA==
+    extra_details: '90031791 '
+    funds_code: null
+    id: FTRF
+    status: C
+    transaction_details: !!python/str "844?00Uznanie kwot\u0105 odsetek?20Odsetki\
+      \ od lokaty nr 101000?21022086"
+  transactions: *id001

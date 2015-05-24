@@ -1,25 +1,25 @@
 &id001 !!python/object:mt940.models.Transactions
 data:
-  account_identification: 51230800/0000007304
+  account_identification: '123456789'
   closing_balance: !!python/object:mt940.models.Balance
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['131193.19']
+      amount: !!python/object/apply:decimal.Decimal ['798.98']
       currency: EUR
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
-      B9oDEw==
+      B94HHg==
     status: C
   opening_balance: !!python/object:mt940.models.Balance
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['130073.19']
+      amount: !!python/object/apply:decimal.Decimal ['3058.98']
       currency: EUR
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
-      B9oDEg==
+      B94HHQ==
     status: C
-  sequence_number: '00001'
-  statement_number: '00053'
-  transaction_reference: !!python/str "STAR1\xDCTUMS"
+  sequence_number: '1'
+  statement_number: '999'
+  transaction_reference: B4G30MS9D00A003D
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -45,93 +45,67 @@ transactions:
 - !!python/object:mt940.models.Transaction
   data:
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['27.00']
+      amount: !!python/object/apply:decimal.Decimal ['500']
       currency: EUR
-    bank_reference: 32-P1-TCS49518
+    bank_reference: null
     currency: EUR
-    customer_reference: 100323-03-100323
+    customer_reference: NONREF//B4E07XM0
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
-      B9oDEw==
+      B94FBw==
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
-      B9oDEw==
-    extra_details: ''
-    funds_code: R
+      B94FBw==
+    extra_details: 0J000023
+    funds_code: null
     id: NTRF
     status: C
-    transaction_details: '051?00Bank Transfer Credit?10930226?20QQW53T2245ZGY46J ABBUCH
+    transaction_details: 'HIER EEN MOOIE OMSCHRIJVING IN HOOFDLETTERS
 
-      UNG?21VOM PAYPAL-KONTO?22100318P3TX1433EV?3050070010?310175526300
-
-      ?32PAYPAL?34000'
+      WANT DAT IS ZOALS DE NEDERLANDSE BANKEN COMMUNICEREN'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['13068.30']
+      amount: !!python/object/apply:decimal.Decimal ['-7260']
       currency: EUR
     bank_reference: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: NONREF//B4G29PGC
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
-      B9oDEw==
+      B94HHQ==
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
-      B9oDEw==
-    extra_details: ''
-    funds_code: R
-    id: N051
-    status: C
-    transaction_details: '051?00Bank Transfer Credit?10991118?20BETTERPLACE WDB E?2108.
-
-      03.10-14.03.10?3051230800?319990437808?32WIRECARD BANK AG?34000'
-  transactions: *id001
-- !!python/object:mt940.models.Transaction
-  data:
-    amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-193282.05']
-      currency: EUR
-    bank_reference: null
-    currency: EUR
-    customer_reference: NONREF
-    date: !!python/object/apply:mt940.models.Date
-    - !!binary |
-      B9oDEw==
-    entry_date: !!python/object/apply:mt940.models.Date
-    - !!binary |
-      B9oDEw==
-    extra_details: ''
-    funds_code: R
-    id: N035
+      B94HHQ==
+    extra_details: VO7Q06US
+    funds_code: null
+    id: NTRF
     status: D
-    transaction_details: '035?00Zahlung m.Elektr.Unterschr.?10991132?20Belegloser
-      Zahlu
+    transaction_details: 'FACTUUR 201403110, 201403113
 
-      ngsauftrag?21Erstellungsdatum:19.03.2010?22Anzahl Posten :      9
-
-      4?23Anw-Nr.: 69725563000?34540'
+      REK: NL65INGB0123456789/NAAM: PICQER'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['1120.00']
+      amount: !!python/object/apply:decimal.Decimal ['500']
       currency: EUR
-    bank_reference: null
+    bank_reference: B4G29PGDCK1QFV3E
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: 29-07-2014 10:05
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
-      B9oDFg==
+      B94HHQ==
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
-      B9oDEw==
+      B94HHQ==
     extra_details: ''
-    funds_code: R
-    id: N085
+    funds_code: null
+    id: NTRF
     status: C
-    transaction_details: !!python/str "085?00Zahlung m.Elektr.Unterschr.?10991135?20Belegloser\
-      \ Zahlu\nngsauftrag?21\xDCberweisung:19.03.2010?22Anzahl Posten :\n7?23Anw-Nr.:\
-      \ 69725663086?34540"
+    transaction_details: '12160475 0050001631430920 ORDERID: 264267 MEDIA MARKT ONLINE
+      NE
+
+      REK: NL84INGB0234561789/NAAM: MMS ONLINE NEDERLAND B.V.'
   transactions: *id001

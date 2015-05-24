@@ -30,7 +30,7 @@ import logging
 
 try:
     import enum
-except ImportError:
+except ImportError:  # pragma: no cover
     import sys
     print >> sys.stderr, 'MT940 requires the `enum34` package'
 

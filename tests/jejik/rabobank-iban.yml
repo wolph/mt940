@@ -1,25 +1,25 @@
 &id001 !!python/object:mt940.models.Transactions
 data:
-  account_identification: 51230800/0000007304
+  account_identification: NL71RABO0123456789
   closing_balance: !!python/object:mt940.models.Balance
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['131193.19']
+      amount: !!python/object/apply:decimal.Decimal ['930.00']
       currency: EUR
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
-      B9oDEw==
+      B90BDw==
     status: C
   opening_balance: !!python/object:mt940.models.Balance
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['130073.19']
+      amount: !!python/object/apply:decimal.Decimal ['965.00']
       currency: EUR
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
-      B9oDEg==
+      B90BCA==
     status: C
-  sequence_number: '00001'
-  statement_number: '00053'
-  transaction_reference: !!python/str "STAR1\xDCTUMS"
+  sequence_number: null
+  statement_number: '0'
+  transaction_reference: 940S130101
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -45,93 +45,74 @@ transactions:
 - !!python/object:mt940.models.Transaction
   data:
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['27.00']
-      currency: EUR
-    bank_reference: 32-P1-TCS49518
-    currency: EUR
-    customer_reference: 100323-03-100323
-    date: !!python/object/apply:mt940.models.Date
-    - !!binary |
-      B9oDEw==
-    entry_date: !!python/object/apply:mt940.models.Date
-    - !!binary |
-      B9oDEw==
-    extra_details: ''
-    funds_code: R
-    id: NTRF
-    status: C
-    transaction_details: '051?00Bank Transfer Credit?10930226?20QQW53T2245ZGY46J ABBUCH
-
-      UNG?21VOM PAYPAL-KONTO?22100318P3TX1433EV?3050070010?310175526300
-
-      ?32PAYPAL?34000'
-  transactions: *id001
-- !!python/object:mt940.models.Transaction
-  data:
-    amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['13068.30']
+      amount: !!python/object/apply:decimal.Decimal ['-25.00']
       currency: EUR
     bank_reference: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: 'EREF            '
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
-      B9oDEw==
-    entry_date: !!python/object/apply:mt940.models.Date
-    - !!binary |
-      B9oDEw==
+      B90BAQ==
     extra_details: ''
-    funds_code: R
-    id: N051
-    status: C
-    transaction_details: '051?00Bank Transfer Credit?10991118?20BETTERPLACE WDB E?2108.
-
-      03.10-14.03.10?3051230800?319990437808?32WIRECARD BANK AG?34000'
-  transactions: *id001
-- !!python/object:mt940.models.Transaction
-  data:
-    amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-193282.05']
-      currency: EUR
-    bank_reference: null
-    currency: EUR
-    customer_reference: NONREF
-    date: !!python/object/apply:mt940.models.Date
-    - !!binary |
-      B9oDEw==
-    entry_date: !!python/object/apply:mt940.models.Date
-    - !!binary |
-      B9oDEw==
-    extra_details: ''
-    funds_code: R
-    id: N035
+    funds_code: null
+    id: N102
     status: D
-    transaction_details: '035?00Zahlung m.Elektr.Unterschr.?10991132?20Belegloser
-      Zahlu
+    transaction_details: '/EREF/01-01-2013 12:00 0030000987654321/BENM//NAME/CONTRA
+      ACCOUN
 
-      ngsauftrag?21Erstellungsdatum:19.03.2010?22Anzahl Posten :      9
-
-      4?23Anw-Nr.: 69725563000?34540'
+      T HOLDER/REMI//ISDT/2013-07-11'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['1120.00']
+      amount: !!python/object/apply:decimal.Decimal ['-10.00']
       currency: EUR
     bank_reference: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: 'NONREF          '
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
-      B9oDFg==
-    entry_date: !!python/object/apply:mt940.models.Date
-    - !!binary |
-      B9oDEw==
+      B90BAg==
     extra_details: ''
-    funds_code: R
-    id: N085
-    status: C
-    transaction_details: !!python/str "085?00Zahlung m.Elektr.Unterschr.?10991135?20Belegloser\
-      \ Zahlu\nngsauftrag?21\xDCberweisung:19.03.2010?22Anzahl Posten :\n7?23Anw-Nr.:\
-      \ 69725663086?34540"
+    funds_code: null
+    id: N154
+    status: D
+    transaction_details: /BENM//NAME/JOHN DOE/REMI/Reference 201301234/ISDT/2013-01-02
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-25.00']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: 'EREF            '
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B90BCA==
+    extra_details: ''
+    funds_code: null
+    id: N102
+    status: D
+    transaction_details: '/EREF/08-01-2013 12:00 0030000987654321/BENM//NAME/CONTRA
+      ACCOUN
+
+      T HOLDER/REMI//ISDT/2013-07-11'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-10.00']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: 'NONREF          '
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B90BCQ==
+    extra_details: ''
+    funds_code: null
+    id: N154
+    status: D
+    transaction_details: /BENM//NAME/JOHN DOE/REMI/Reference 201301234/ISDT/2013-01-09
   transactions: *id001

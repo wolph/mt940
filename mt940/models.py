@@ -6,7 +6,11 @@ import collections
 import mt940
 
 
-class Date(datetime.date):
+class Model(object):
+    pass
+
+
+class Date(datetime.date, Model):
     '''Just a regular date object which supports dates given as strings
 
     Args:
@@ -14,17 +18,25 @@ class Date(datetime.date):
         month (str): The month
         day (str): The day
     '''
-    def __new__(cls, year, month, day, **kwargs):
-        year = int(year, 10)
-        if year < 1000:
-            year += 2000
+    def __new__(cls, *args, **kwargs):
+        if kwargs:
+            year = kwargs.get('year')
+            month = kwargs.get('month')
+            day = kwargs.get('day')
+            year = int(year, 10)
+            if year < 1000:
+                year += 2000
 
-        month = int(month, 10)
-        day = int(day, 10)
-        return datetime.date.__new__(cls, year, month, day)
+            month = int(month, 10)
+            day = int(day, 10)
+            return datetime.date.__new__(cls, year, month, day)
+        else:
+            # For pickling the date object uses it's own binary format
+            # No need to do anything special there :)
+            return datetime.date.__new__(cls, *args, **kwargs)
 
 
-class Amount(object):
+class Amount(Model):
     '''Amount object containing currency and amount
 
     Args:
@@ -52,7 +64,7 @@ class Amount(object):
         )
 
 
-class Balance(object):
+class Balance(Model):
     '''Parse balance statement
 
     Args:
@@ -213,7 +225,7 @@ class Transactions(collections.Sequence):
         )
 
 
-class Transaction(object):
+class Transaction(Model):
     def __init__(self, transactions, data=None):
         self.transactions = transactions
         self.data = {}
