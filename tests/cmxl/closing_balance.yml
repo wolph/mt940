@@ -1,5 +1,13 @@
 &id001 !!python/object:mt940.models.Transactions
-data: {}
+data:
+  closing_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['137.00']
+      currency: EUR
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B94JAQ==
+    status: C
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -23,7 +31,5 @@ processors:
   pre_transaction_reference_number: []
 transactions:
 - !!python/object:mt940.models.Transaction
-  data: {transaction_details: '091
-
-      -'}
+  data: {}
   transactions: *id001

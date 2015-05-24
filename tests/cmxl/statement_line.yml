@@ -23,7 +23,21 @@ processors:
   pre_transaction_reference_number: []
 transactions:
 - !!python/object:mt940.models.Transaction
-  data: {transaction_details: '091
-
-      -'}
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-1.62']
+      currency: null
+    bank_reference: 025498557/000001
+    currency: null
+    customer_reference: 0000549855700010
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B94JAQ==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B94JAg==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: D
   transactions: *id001

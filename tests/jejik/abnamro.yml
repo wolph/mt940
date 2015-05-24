@@ -1,0 +1,251 @@
+&id001 !!python/object:mt940.models.Transactions
+data:
+  account_identification: '517852257'
+  closing_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['1849.75']
+      currency: EUR
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFGA==
+    status: C
+  opening_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['2876.84']
+      currency: EUR
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFw==
+    status: C
+  sequence_number: '1'
+  statement_number: '19322'
+  transaction_reference: ABN AMRO BANK NV
+processors:
+  post_account_identification: []
+  post_available_balance: []
+  post_closing_balance: []
+  post_forward_available_balance: []
+  post_opening_balance: []
+  post_related_reference: []
+  post_statement: [!!python/name:mt940.processors.date_cleanup_post_processor '']
+  post_statement_number: []
+  post_transaction_details: []
+  post_transaction_reference_number: []
+  pre_account_identification: []
+  pre_available_balance: []
+  pre_closing_balance: []
+  pre_forward_available_balance: []
+  pre_opening_balance: []
+  pre_related_reference: []
+  pre_statement: []
+  pre_statement_number: []
+  pre_transaction_details: []
+  pre_transaction_reference_number: []
+transactions:
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-9']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFGA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFGA==
+    extra_details: ''
+    funds_code: null
+    id: N192
+    status: D
+    transaction_details: 'GIRO   428428 KPN - DIGITENNE    BETALINGSKENM.  000000042188659
+
+      5314606715                       BETREFT FACTUUR D.D. 20-05-2011
+
+      INCL. 1,44 BTW'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-11.59']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFQ==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFw==
+    extra_details: ''
+    funds_code: null
+    id: N426
+    status: D
+    transaction_details: BEA   NR:XXX1234   21.05.11/12.54 DIRCKIII FIL2500 KATWIJK,PAS999
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-11.63']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFw==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFw==
+    extra_details: ''
+    funds_code: null
+    id: N426
+    status: D
+    transaction_details: BEA   NR:XXX1234   23.05.11/09.08 DIGROS FIL1015 KATWIJK
+      Z,PAS999
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-11.8']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFg==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFw==
+    extra_details: ''
+    funds_code: null
+    id: N426
+    status: D
+    transaction_details: BEA   NR:XXX1234   22.05.11/14.25 MC DONALDS A44 LEIDEN,PAS999
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-13.45']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFQ==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFw==
+    extra_details: ''
+    funds_code: null
+    id: N426
+    status: D
+    transaction_details: BEA   NR:XXX1234   21.05.11/12.09 PRINCE FIL. 55 KATWIJK
+      Z,PAS999
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-15.49']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFQ==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFw==
+    extra_details: ''
+    funds_code: null
+    id: N426
+    status: D
+    transaction_details: BEA   NR:XXX1234   21.05.11/12.55 DIRX FIL6017 KATWIJK ZH
+      ,PAS999
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-107']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFQ==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFw==
+    extra_details: ''
+    funds_code: null
+    id: N426
+    status: D
+    transaction_details: BEA   NR:XXX1234   21.05.11/12.04 HANS ANDERS OPT./056 KAT,PAS999
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-141.48']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFg==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFw==
+    extra_details: ''
+    funds_code: null
+    id: N426
+    status: D
+    transaction_details: BEA   NR:XXX1234   22.05.11/13.45 MYCOM DEN HAAG  S-GRAVEN,PAS999
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-9.49']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFGA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFGA==
+    extra_details: ''
+    funds_code: null
+    id: N426
+    status: D
+    transaction_details: BEA   NR:XXX1234   24.05.11/09.18 PETS PLACE KATWIJK KATWI,PAS999
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-15']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFGA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFGA==
+    extra_details: ''
+    funds_code: null
+    id: N426
+    status: D
+    transaction_details: 52.89.39.882                    MYCOM DEN HAAG
+  transactions: *id001

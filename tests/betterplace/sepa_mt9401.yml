@@ -1,3587 +1,2396 @@
----
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089413946000001
-    reference: T089413946000001
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194774600888
-    bank_code: '50880050'
-    account_number: 0194774600888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00001
-    number: 4
-    sheet: 1
-  - !ruby/object:MT940::AccountBalance
-    modifier: F
-    content: D070903EUR1234718,36
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 123471836
-    date: 2007-09-03
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR300,NTRFTFNr 40005 MSGID//0724710345313905
-    funds_code: :credit
-    amount: 300
-    swift_code: NTRF
-    reference: TFNr 40005 MSGID
-    transaction_description: 0724710345313905
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 159?00RETOURE?100399?20EREF+TFNR 40005 00005?21MTLG:Grund nicht spezifizie?22rt
-      Reject aus SEPA-Ueberwei?23sungsauftrag?34914
-    code: 159
-    transaction_description: RETOURE
-    prima_nota: 0399
-    details: |-
-      EREF+TFNR 40005 00005
-      MTLG:Grund nicht spezifizie
-      rt Reject aus SEPA-Ueberwei
-      sungsauftrag
-    account_holder: ''
-    text_key_extension: '914'
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR335,33NTRFTFNr 44003 MSGID//0724710351061491
-    funds_code: :credit
-    amount: 33533
-    swift_code: NTRF
-    reference: TFNr 44003 MSGID
-    transaction_description: 0724710351061491
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 159?00RETOURE?100399?20EREF+TFNR 44003 00001?21MTLG:Grund nicht spezifizie?22rt
-      Reject aus SEPA-Ueberwei?23sungsauftrag?34914
-    code: 159
-    transaction_description: RETOURE
-    prima_nota: 0399
-    details: |-
-      EREF+TFNR 44003 00001
-      MTLG:Grund nicht spezifizie
-      rt Reject aus SEPA-Ueberwei
-      sungsauftrag
-    account_holder: ''
-    text_key_extension: '914'
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR15000,NTRFTFNr 40005 MSGID//0724710345313900
-    funds_code: :credit
-    amount: 15000
-    swift_code: NTRF
-    reference: TFNr 40005 MSGID
-    transaction_description: 0724710345313900
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 159?00RETOURE?100399?20EREF+TFNR 40005 00002?21MTLG:Grund nicht spezifizie?22rt
-      Reject aus SEPA-Ueberwei?23sungsauftrag?34914
-    code: 159
-    transaction_description: RETOURE
-    prima_nota: 0399
-    details: |-
-      EREF+TFNR 40005 00002
-      MTLG:Grund nicht spezifizie
-      rt Reject aus SEPA-Ueberwei
-      sungsauftrag
-    account_holder: ''
-    text_key_extension: '914'
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR66295,08NMSCNONREF
-    funds_code: :credit
-    amount: 6629508
-    swift_code: NMSC
-    reference: NONREF
-    transaction_description: ''
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 079?00SAMMLER?109800?200904059001
-    code: 79
-    transaction_description: SAMMLER
-    prima_nota: '9800'
-    details: 0904059001
-    account_holder: ''
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR915311,55NTRFTFNr 44003 MSGID//R724710351061495
-    funds_code: :credit
-    amount: 91531155
-    swift_code: NTRF
-    reference: TFNr 44003 MSGID
-    transaction_description: R724710351061495
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 159?00RETOURE?100399?20EREF+TFNR 44003 00002?21MTLG:Konto gesperrt Rueckue?22berweisung
-      aus SEPA-Ueberwe?23isungsauftrag?34903
-    code: 159
-    transaction_description: RETOURE
-    prima_nota: 0399
-    details: |-
-      EREF+TFNR 44003 00002
-      MTLG:Konto gesperrt Rueckue
-      berweisung aus SEPA-Ueberwe
-      isungsauftrag
-    account_holder: ''
-    text_key_extension: '903'
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904RCR204,88NRTINONREF
-    funds_code: :return_credit
-    amount: 20488
-    swift_code: NRTI
-    reference: NONREF
-    transaction_description: ''
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 079?00SAMMLER/STORNO?109800?200904059003
-    code: 79
-    transaction_description: SAMMLER/STORNO
-    prima_nota: '9800'
-    details: 0904059003
-    account_holder: ''
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR999946,95NMSCNONREF
-    funds_code: :debit
-    amount: 99994695
-    swift_code: NMSC
-    reference: NONREF
-    transaction_description: ''
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 079?00SAMMLER?109800?200904059002
-    code: 79
-    transaction_description: SAMMLER
-    prima_nota: '9800'
-    details: 0904059002
-    account_holder: ''
-  - !ruby/object:MT940::ClosingBalance
-    modifier: F
-    content: D070904EUR1237628,23
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 123762823
-    date: 2007-09-04
-  - !ruby/object:MT940::ValutaBalance
-    modifier: 
-    content: D070904EUR1237628,23
-    balance_type: 
-    sign: :debit
-    currency: EUR
-    amount: 123762823
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089413956000001
-    reference: T089413956000001
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194777100888
-    bank_code: '50880050'
-    account_number: 0194777100888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00001
-    number: 4
-    sheet: 1
-  - !ruby/object:MT940::AccountBalance
-    modifier: F
-    content: D070903EUR970499,9
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 9704999
-    date: 2007-09-03
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR15000,05NTRFNONREF//0724710290621954
-    funds_code: :credit
-    amount: 1500005
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 0724710290621954
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: '166?00GUTSCHRIFT?100399?20EREF+EndToEndIdTFNR20004000?2101?22SVWZ+TO
-      13 TFNr 20004 Einga?23ngskanal Mint .............?24........ ..................?25...  ......................?26...........................?27..........?28MTLG:SEPA-Ueberweisungseing?29ang
-      Auftraggeber: Richter R?30PBNKDEFF100?31DE42100100100043921105?32Richter Renate
-      70 Zeichen B?33eginn Fuellzeichen xxxxxxxx?60enat?70Christian Callas 70 Zeichen?71
-      xxxxxxxxxxxxxxxxxxxxxxxxxx'
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: PBNKDEFF100
-    account_number: DE42100100100043921105
-    not_implemented_fields:
-    - - '70'
-      - Christian Callas 70 Zeichen
-    - - '71'
-      - " xxxxxxxxxxxxxxxxxxxxxxxxxx"
-    details: |-
-      EREF+EndToEndIdTFNR20004000
-      01
-      SVWZ+TO 13 TFNr 20004 Einga
-      ngskanal Mint .............
-      ........ ..................
-      ...  ......................
-      ...........................
-      ..........
-      MTLG:SEPA-Ueberweisungseing
-      ang Auftraggeber: Richter R
-      enat
-    account_holder: |-
-      Richter Renate 70 Zeichen B
-      eginn Fuellzeichen xxxxxxxx
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR500250,NTRFKREF+//BD7CFA74485E7E69
-    funds_code: :debit
-    amount: 500250
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: BD7CFA74485E7E69
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 191?00SEPA-UEBERW?100399?20KREF+TFNr 01005 PayId CTSc-?2101 EBB?22MTLG:SEPA-Ueberweisungsauft?23rag
-      Datei mit 0000005 Zahlu?24ngen
-    code: 191
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    details: |-
-      KREF+TFNr 01005 PayId CTSc-
-      01 EBB
-      MTLG:SEPA-Ueberweisungsauft
-      rag Datei mit 0000005 Zahlu
-      ngen
-    account_holder: ''
-  - !ruby/object:MT940::ClosingBalance
-    modifier: F
-    content: D070904EUR1455749,85
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 145574985
-    date: 2007-09-04
-  - !ruby/object:MT940::ValutaBalance
-    modifier: 
-    content: D070904EUR1455749,85
-    balance_type: 
-    sign: :debit
-    currency: EUR
-    amount: 145574985
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089413966000001
-    reference: T089413966000001
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194778300888
-    bank_code: '50880050'
-    account_number: 0194778300888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00001
-    number: 4
-    sheet: 1
-  - !ruby/object:MT940::AccountBalance
-    modifier: F
-    content: D070903EUR1709296,34
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 170929634
-    date: 2007-09-03
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR50,05NTRFNONREF//0724710290658244
-    funds_code: :credit
-    amount: 5005
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 0724710290658244
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: '166?00GUTSCHRIFT?100399?20EREF+EndToEndIdTFNR52001000?2101?22SVWZ+Keine
-      Buchung zu: TO13?23 TF52001 MINT?30PBNKDEFF100?31DE42100100100043921105?32Richter
-      Renate 70 Zeichen B?33eginn Fuellzeichen xxxxxxxx?70Dora Damm 70 Zeichen Beginn?71
-      Fuellzeichen xxxxxxxxxxxxx'
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: PBNKDEFF100
-    account_number: DE42100100100043921105
-    not_implemented_fields:
-    - - '70'
-      - Dora Damm 70 Zeichen Beginn
-    - - '71'
-      - " Fuellzeichen xxxxxxxxxxxxx"
-    details: |-
-      EREF+EndToEndIdTFNR52001000
-      01
-      SVWZ+Keine Buchung zu: TO13
-       TF52001 MINT
-    account_holder: |-
-      Richter Renate 70 Zeichen B
-      eginn Fuellzeichen xxxxxxxx
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR125,88NTRFNONREF//0724710290635078
-    funds_code: :credit
-    amount: 12588
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 0724710290635078
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 166?00GUTSCHRIFT?100399?20SVWZ+TO13 TF20018 MINT?30NIKACH22XXX?31CH8500779014054431109?32Cornelia
-      Prochownik 70 Zeic?33hen Beginn Fuellzeichen xxx?70Dora Damm 70 Zeichen Beginn?71
-      Fuellzeichen xxxxxxxxxxxxx
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: NIKACH22XXX
-    account_number: CH8500779014054431109
-    not_implemented_fields:
-    - - '70'
-      - Dora Damm 70 Zeichen Beginn
-    - - '71'
-      - " Fuellzeichen xxxxxxxxxxxxx"
-    details: SVWZ+TO13 TF20018 MINT
-    account_holder: |-
-      Cornelia Prochownik 70 Zeic
-      hen Beginn Fuellzeichen xxx
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR125004,88NTRFNONREF//0724710290626371
-    funds_code: :credit
-    amount: 12500488
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 0724710290626371
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 166?00GUTSCHRIFT?100399?20SVWZ+TO13 TF20008 MINT?21MTLG:Ggf.Meldevorschriften
-      ?22beachten?30UBSWCHZH80A?31CH6500279279C31180700?32Richter Renate 70 Zeichen
-      B?33eginn Fuellzeichen xxxxxxxx?70Dora Damm 70 Zeichen Beginn?71 Fuellzeichen
-      xxxxxxxxxxxxx
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: UBSWCHZH80A
-    account_number: CH6500279279C31180700
-    not_implemented_fields:
-    - - '70'
-      - Dora Damm 70 Zeichen Beginn
-    - - '71'
-      - " Fuellzeichen xxxxxxxxxxxxx"
-    details: "SVWZ+TO13 TF20008 MINT\nMTLG:Ggf.Meldevorschriften \nbeachten"
-    account_holder: |-
-      Richter Renate 70 Zeichen B
-      eginn Fuellzeichen xxxxxxxx
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR326609,66NTRFKREF+//DE85920B84F8E98D
-    funds_code: :debit
-    amount: 32660966
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: DE85920B84F8E98D
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 191?00SEPA-UEBERW?100399?20KREF+TFNr 01007 PayId CTSc-?2101 EBB?22MTLG:SEPA-Ueberweisungsauft?23rag
-      Datei mit 0000006 Zahlu?24ngen
-    code: 191
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    details: |-
-      KREF+TFNr 01007 PayId CTSc-
-      01 EBB
-      MTLG:SEPA-Ueberweisungsauft
-      rag Datei mit 0000006 Zahlu
-      ngen
-    account_holder: ''
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR326609,66NTRFKREF+//D1C08A4EB4664146
-    funds_code: :debit
-    amount: 32660966
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: D1C08A4EB4664146
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 191?00SEPA-UEBERW?100399?20KREF+TFNr 01024 PayId CTSc-?2101 EBB?22MTLG:SEPA-Ueberweisungsauft?23rag
-      Datei mit 0000006 Zahlu?24ngen
-    code: 191
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    details: |-
-      KREF+TFNr 01024 PayId CTSc-
-      01 EBB
-      MTLG:SEPA-Ueberweisungsauft
-      rag Datei mit 0000006 Zahlu
-      ngen
-    account_holder: ''
-  - !ruby/object:MT940::ClosingBalance
-    modifier: F
-    content: D070904EUR2237334,85
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 223733485
-    date: 2007-09-04
-  - !ruby/object:MT940::ValutaBalance
-    modifier: 
-    content: D070904EUR2237334,85
-    balance_type: 
-    sign: :debit
-    currency: EUR
-    amount: 223733485
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089413976000001
-    reference: T089413976000001
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194779500888
-    bank_code: '50880050'
-    account_number: 0194779500888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00001
-    number: 4
-    sheet: 1
-  - !ruby/object:MT940::AccountBalance
-    modifier: F
-    content: C070903EUR3192675,04
-    balance_type: :start
-    sign: :credit
-    currency: EUR
-    amount: 319267504
-    date: 2007-09-03
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR250000,NTRFNONREF//0724710290628244
-    funds_code: :credit
-    amount: 250000
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 0724710290628244
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 166?00GUTSCHRIFT?100399?20SVWZ+TO13 TF20010 MINT 2001?210 2007-08.30?30PBNKDEFF250?31DE40250100300325207300?32Daniel
-      Severidt 70 Zeichen?33Beginn Fuellzeichen xxxxxxx?70Eberhard Emil 70 Zeichen
-      Be?71ginn Fuellzeichen xxxxxxxxx
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: PBNKDEFF250
-    account_number: DE40250100300325207300
-    not_implemented_fields:
-    - - '70'
-      - Eberhard Emil 70 Zeichen Be
-    - - '71'
-      - ginn Fuellzeichen xxxxxxxxx
-    details: |-
-      SVWZ+TO13 TF20010 MINT 2001
-      0 2007-08.30
-    account_holder: |-
-      Daniel Severidt 70 Zeichen
-      Beginn Fuellzeichen xxxxxxx
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR300000,NTRFNONREF//0724710290631813
-    funds_code: :credit
-    amount: 300000
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 0724710290631813
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 166?00GUTSCHRIFT?100399?20SVWZ+TO13 TF20014 MINT?30PBNKDEFF100?31DE40100100100000214105?32Cornelia
-      Prochownik 70 Zeic?33hen Beginn Fuellzeichen xxx?70Eberhard Emil 70 Zeichen
-      Be?71ginn Fuellzeichen xxxxxxxxx
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: PBNKDEFF100
-    account_number: DE40100100100000214105
-    not_implemented_fields:
-    - - '70'
-      - Eberhard Emil 70 Zeichen Be
-    - - '71'
-      - ginn Fuellzeichen xxxxxxxxx
-    details: SVWZ+TO13 TF20014 MINT
-    account_holder: |-
-      Cornelia Prochownik 70 Zeic
-      hen Beginn Fuellzeichen xxx
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR500000,NTRFNONREF//0724710290630146
-    funds_code: :credit
-    amount: 500000
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 0724710290630146
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 166?00GUTSCHRIFT?100399?20SVWZ+TO13 TF20011 MINT?30PBNKDEFF250?31DE39250100300172064300?32Dirk
-      Leunig 70 Zeichen Begi?33nn Fuellzeichen xxxxxxxxxxx?70Eberhard Emil 70 Zeichen
-      Be?71ginn Fuellzeichen xxxxxxxxx
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: PBNKDEFF250
-    account_number: DE39250100300172064300
-    not_implemented_fields:
-    - - '70'
-      - Eberhard Emil 70 Zeichen Be
-    - - '71'
-      - ginn Fuellzeichen xxxxxxxxx
-    details: SVWZ+TO13 TF20011 MINT
-    account_holder: |-
-      Dirk Leunig 70 Zeichen Begi
-      nn Fuellzeichen xxxxxxxxxxx
-  - !ruby/object:MT940::ClosingBalance
-    modifier: F
-    content: C070904EUR4242675,04
-    balance_type: :start
-    sign: :credit
-    currency: EUR
-    amount: 424267504
-    date: 2007-09-04
-  - !ruby/object:MT940::ValutaBalance
-    modifier: 
-    content: C070904EUR4242675,04
-    balance_type: 
-    sign: :credit
-    currency: EUR
-    amount: 424267504
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089413986000001
-    reference: T089413986000001
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194780100888
-    bank_code: '50880050'
-    account_number: 0194780100888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00001
-    number: 4
-    sheet: 1
-  - !ruby/object:MT940::AccountBalance
-    modifier: F
-    content: D070903EUR2368827,87
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 236882787
-    date: 2007-09-03
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR204,88NMSCNONREF
-    funds_code: :credit
-    amount: 20488
-    swift_code: NMSC
-    reference: NONREF
-    transaction_description: ''
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 079?00SAMMLER?109800?200904059001
-    code: 79
-    transaction_description: SAMMLER
-    prima_nota: '9800'
-    details: 0904059001
-    account_holder: ''
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904RCR204,88NRTIMSGIDCTSc03MintT//R724710290656678
-    funds_code: :return_credit
-    amount: 20488
-    swift_code: NRTI
-    reference: MSGIDCTSc03MintT
-    transaction_description: R724710290656678
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW/STORNO?100399
-    code: 116
-    transaction_description: SEPA-UEBERW/STORNO
-    prima_nota: 0399
-    details: ''
-    account_holder: ''
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR50990,05NTRFKREF+//0724710352954937
-    funds_code: :debit
-    amount: 5099005
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710352954937
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+TFNR 21005 EndToEndId ?2100001?22KREF+TFNR
-      21005 Instruction?23 Id 00001?24SVWZ+Verwend CTSc-01 eBB TF?25Nr 21005?30DRESDEFF508?31DE76508800500194780101?32Empfaenger
-      Florian Frech UK?33 01
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: DRESDEFF508
-    account_number: DE76508800500194780101
-    details: "EREF+TFNR 21005 EndToEndId \n00001\nKREF+TFNR 21005 Instruction\n Id
-      00001\nSVWZ+Verwend CTSc-01 eBB TF\nNr 21005"
-    account_holder: |-
-      Empfaenger Florian Frech UK
-       01
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR175454,22NTRFKREF+//8AE3169901918BD3
-    funds_code: :debit
-    amount: 17545422
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 8AE3169901918BD3
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 191?00SEPA-UEBERW?100399?20KREF+TFNr 01009 MSGID CTSc-?2101 EBB?22MTLG:SEPA-Ueberweisungsauft?23rag
-      Datei mit 0000005 Zahlu?24ngen
-    code: 191
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    details: |-
-      KREF+TFNr 01009 MSGID CTSc-
-      01 EBB
-      MTLG:SEPA-Ueberweisungsauft
-      rag Datei mit 0000005 Zahlu
-      ngen
-    account_holder: ''
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR500250,NTRFTFNr 01006 PayId//E87048E11B394C1E
-    funds_code: :debit
-    amount: 500250
-    swift_code: NTRF
-    reference: TFNr 01006 PayId
-    transaction_description: E87048E11B394C1E
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 191?00SEPA-UEBERW?100399?20MTLG:SEPA-Ueberweisungsauft?21rag Datei mit
-      0000005 Zahlu?22ngen
-    code: 191
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    details: |-
-      MTLG:SEPA-Ueberweisungsauft
-      rag Datei mit 0000005 Zahlu
-      ngen
-    account_holder: ''
-  - !ruby/object:MT940::ClosingBalance
-    modifier: F
-    content: D070904EUR3095522,14
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 309552214
-    date: 2007-09-04
-  - !ruby/object:MT940::ValutaBalance
-    modifier: 
-    content: D070904EUR3095522,14
-    balance_type: 
-    sign: :debit
-    currency: EUR
-    amount: 309552214
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089413996000001
-    reference: T089413996000001
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194780101888
-    bank_code: '50880050'
-    account_number: 0194780101888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00001
-    number: 4
-    sheet: 1
-  - !ruby/object:MT940::AccountBalance
-    modifier: F
-    content: C070903EUR152970,15
-    balance_type: :start
-    sign: :credit
-    currency: EUR
-    amount: 15297015
-    date: 2007-09-03
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR50990,05NTRFNONREF//0724710352954937
-    funds_code: :credit
-    amount: 5099005
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 0724710352954937
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 166?00GUTSCHRIFT?100399?20EREF+TFNR 21005 EndToEndId ?2100001?22SVWZ+Verwend
-      CTSc-01 eBB TF?23Nr 21005?30DRESDEFF508?31DE06508800500194780100?32Florian Frech?70Empfaenger
-      Florian Frech UK?71 01
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: DRESDEFF508
-    account_number: DE06508800500194780100
-    not_implemented_fields:
-    - - '70'
-      - Empfaenger Florian Frech UK
-    - - '71'
-      - " 01"
-    details: "EREF+TFNR 21005 EndToEndId \n00001\nSVWZ+Verwend CTSc-01 eBB TF\nNr
-      21005"
-    account_holder: Florian Frech
-  - !ruby/object:MT940::ClosingBalance
-    modifier: F
-    content: C070904EUR203960,2
-    balance_type: :start
-    sign: :credit
-    currency: EUR
-    amount: 2039602
-    date: 2007-09-04
-  - !ruby/object:MT940::ValutaBalance
-    modifier: 
-    content: C070904EUR203960,2
-    balance_type: 
-    sign: :credit
-    currency: EUR
-    amount: 2039602
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089414006000001
-    reference: T089414006000001
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194781300888
-    bank_code: '50880050'
-    account_number: 0194781300888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00001
-    number: 4
-    sheet: 1
-  - !ruby/object:MT940::AccountBalance
-    modifier: F
-    content: D070903EUR40432,2
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 404322
-    date: 2007-09-03
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR19990,05NTRFNONREF//0724710333377198
-    funds_code: :credit
-    amount: 1999005
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 0724710333377198
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: '166?00GUTSCHRIFT?100399?20EREF+EndToEndId TFNR 22 001?21 00001?22SVWZ+Verwend
-      CTSc-01 PPP TF?23Nr 22 001?24MTLG:SEPA-Ueberweisungseing?25ang Auftraggeber:
-      JOSEF?30DRESDEFF508?31DE95508800500194784900?32JOSEF?33        JAEGER?70Empfaenger
-      Gustav Gans'
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: DRESDEFF508
-    account_number: DE95508800500194784900
-    not_implemented_fields:
-    - - '70'
-      - Empfaenger Gustav Gans
-    details: |-
-      EREF+EndToEndId TFNR 22 001
-       00001
-      SVWZ+Verwend CTSc-01 PPP TF
-      Nr 22 001
-      MTLG:SEPA-Ueberweisungseing
-      ang Auftraggeber: JOSEF
-    account_holder: |-
-      JOSEF
-              JAEGER
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR57,34NTRFKREF+//0724710352996674
-    funds_code: :debit
-    amount: 5734
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710352996674
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011 Instruction?22
-      Id  00001?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit 140 Stellen?25 fu/r
-      SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und A-CT-N?27UD-/S01 CTSc-01 EBB TFNr
-      01?28011/ 0001?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger 1 mit
-      70 Zeichen?33 Empfaenger 1 mit 70 Zeiche
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: |-
-      EREF+NONREF
-      KREF+TFNR 01011 Instruction
-       Id  00001
-      SVWZ+Unstrukturierter Verwe
-      ndungszweck mit 140 Stellen
-       fu/r SEPA COR Buchungssche
-      ma /A-CT-DTE-S01 und A-CT-N
-      UD-/S01 CTSc-01 EBB TFNr 01
-      011/ 0001
-    account_holder: |-
-      Empfaenger 1 mit 70 Zeichen
-       Empfaenger 1 mit 70 Zeiche
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR5002,17NTRFTFNr 01011 MSGID//0724710353006393
-    funds_code: :debit
-    amount: 500217
-    swift_code: NTRF
-    reference: TFNr 01011 MSGID
-    transaction_description: 0724710353006393
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+NONREF?21SVWZ+Unstrukturierter Verwe?22ndungszweck
-      mit 140 Stellen?23 fu/r SEPA COR Buchungssche?24ma /A-CT-DTE-S01 und A-CT-N?25UD-/S01
-      CTSc-01 EBB TFNr 01?26011/ 0006?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger
-      6 mit 70 Zeichen?33 Empfaenger 6 mit 70 Zeiche
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: |-
-      EREF+NONREF
-      SVWZ+Unstrukturierter Verwe
-      ndungszweck mit 140 Stellen
-       fu/r SEPA COR Buchungssche
-      ma /A-CT-DTE-S01 und A-CT-N
-      UD-/S01 CTSc-01 EBB TFNr 01
-      011/ 0006
-    account_holder: |-
-      Empfaenger 6 mit 70 Zeichen
-       Empfaenger 6 mit 70 Zeiche
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR5002,17NTRFKREF+//0724710352998444
-    funds_code: :debit
-    amount: 500217
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710352998444
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011 Instruction?22
-      Id  00002?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit 140 Stellen?25 fu/r
-      SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und A-CT-N?27UD-/S01 CTSc-01 EBB TFNr
-      01?28011/ 0002?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger 2 mit
-      70 Zeichen?33 Empfaenger 2 mit 70 Zeiche
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: |-
-      EREF+NONREF
-      KREF+TFNR 01011 Instruction
-       Id  00002
-      SVWZ+Unstrukturierter Verwe
-      ndungszweck mit 140 Stellen
-       fu/r SEPA COR Buchungssche
-      ma /A-CT-DTE-S01 und A-CT-N
-      UD-/S01 CTSc-01 EBB TFNr 01
-      011/ 0002
-    account_holder: |-
-      Empfaenger 2 mit 70 Zeichen
-       Empfaenger 2 mit 70 Zeiche
-  - !ruby/object:MT940::ClosingBalance
-    modifier: M
-    content: D070904EUR30503,83
-    balance_type: :intermediate
-    sign: :debit
-    currency: EUR
-    amount: 3050383
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089414006000002
-    reference: T089414006000002
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194781300888
-    bank_code: '50880050'
-    account_number: 0194781300888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00002
-    number: 4
-    sheet: 2
-  - !ruby/object:MT940::AccountBalance
-    modifier: M
-    content: D070904EUR30503,83
-    balance_type: :intermediate
-    sign: :debit
-    currency: EUR
-    amount: 3050383
-    date: 2007-09-04
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR5002,17NTRFKREF+//0724710353002818
-    funds_code: :debit
-    amount: 500217
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710353002818
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011 Instruction?22
-      Id  00004?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit 140 Stellen?25 fu/r
-      SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und A-CT-N?27UD-/S01 CTSc-01 EBB TFNr
-      01?28011/ 0004?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger 4 mit
-      70 Zeichen?33 Empfaenger 4 mit 70 Zeiche
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: |-
-      EREF+NONREF
-      KREF+TFNR 01011 Instruction
-       Id  00004
-      SVWZ+Unstrukturierter Verwe
-      ndungszweck mit 140 Stellen
-       fu/r SEPA COR Buchungssche
-      ma /A-CT-DTE-S01 und A-CT-N
-      UD-/S01 CTSc-01 EBB TFNr 01
-      011/ 0004
-    account_holder: |-
-      Empfaenger 4 mit 70 Zeichen
-       Empfaenger 4 mit 70 Zeiche
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR5002,17NTRFKREF+//0724710353000284
-    funds_code: :debit
-    amount: 500217
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710353000284
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011 Instruction?22
-      Id  00003?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit 140 Stellen?25 fu/r
-      SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und A-CT-N?27UD-/S01 CTSc-01 EBB TFNr
-      01?28011/ 0003?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger 3 mit
-      70 Zeichen?33 Empfaenger 3 mit 70 Zeiche
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: |-
-      EREF+NONREF
-      KREF+TFNR 01011 Instruction
-       Id  00003
-      SVWZ+Unstrukturierter Verwe
-      ndungszweck mit 140 Stellen
-       fu/r SEPA COR Buchungssche
-      ma /A-CT-DTE-S01 und A-CT-N
-      UD-/S01 CTSc-01 EBB TFNr 01
-      011/ 0003
-    account_holder: |-
-      Empfaenger 3 mit 70 Zeichen
-       Empfaenger 3 mit 70 Zeiche
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR5002,17NTRFKREF+//0724710353004695
-    funds_code: :debit
-    amount: 500217
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710353004695
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011 Instruction?22
-      Id  00005?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit 140 Stellen?25 fu/r
-      SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und A-CT-N?27UD-/S01 CTSc-01 EBB TFNr
-      01?28011/ 0005?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger 5 mit
-      70 Zeichen?33 Empfaenger 5 mit 70 Zeiche
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: |-
-      EREF+NONREF
-      KREF+TFNR 01011 Instruction
-       Id  00005
-      SVWZ+Unstrukturierter Verwe
-      ndungszweck mit 140 Stellen
-       fu/r SEPA COR Buchungssche
-      ma /A-CT-DTE-S01 und A-CT-N
-      UD-/S01 CTSc-01 EBB TFNr 01
-      011/ 0005
-    account_holder: |-
-      Empfaenger 5 mit 70 Zeichen
-       Empfaenger 5 mit 70 Zeiche
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR55344,11NTRFKREF+//0724710353008994
-    funds_code: :debit
-    amount: 5534411
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710353008994
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011 Instruction?22
-      Id  00007?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit 140 Stellen?25 fu/r
-      SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und A-CT-N?27UD-/S01 CTSc-01 EBB TFNr
-      01?28011/ 0007?29MTLG:Ggf.Meldevorschriften ?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger
-      7 mit 70 Zeichen?33 Empfaenger 7 mit 70 Zeiche?60beachten
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: "EREF+NONREF\nKREF+TFNR 01011 Instruction\n Id  00007\nSVWZ+Unstrukturierter
-      Verwe\nndungszweck mit 140 Stellen\n fu/r SEPA COR Buchungssche\nma /A-CT-DTE-S01
-      und A-CT-N\nUD-/S01 CTSc-01 EBB TFNr 01\n011/ 0007\nMTLG:Ggf.Meldevorschriften
-      \nbeachten"
-    account_holder: |-
-      Empfaenger 7 mit 70 Zeichen
-       Empfaenger 7 mit 70 Zeiche
-  - !ruby/object:MT940::ClosingBalance
-    modifier: F
-    content: D070904EUR100854,45
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 10085445
-    date: 2007-09-04
-  - !ruby/object:MT940::ValutaBalance
-    modifier: 
-    content: D070904EUR100854,45
-    balance_type: 
-    sign: :debit
-    currency: EUR
-    amount: 10085445
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089414016000001
-    reference: T089414016000001
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194782500888
-    bank_code: '50880050'
-    account_number: 0194782500888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00001
-    number: 4
-    sheet: 1
-  - !ruby/object:MT940::AccountBalance
-    modifier: F
-    content: D070903EUR1552497,38
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 155249738
-    date: 2007-09-03
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR50,NTRFTFNr 40016 MSGID//0724710324649377
-    funds_code: :credit
-    amount: 50
-    swift_code: NTRF
-    reference: TFNr 40016 MSGID
-    transaction_description: 0724710324649377
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 159?00RETOURE?100399?20EREF+TFNR 40016 00001?21MTLG:Grund nicht spezifizie?22rt
-      Reject aus SEPA-Ueberwei?23sungsauftrag?34914
-    code: 159
-    transaction_description: RETOURE
-    prima_nota: 0399
-    details: |-
-      EREF+TFNR 40016 00001
-      MTLG:Grund nicht spezifizie
-      rt Reject aus SEPA-Ueberwei
-      sungsauftrag
-    account_holder: ''
-    text_key_extension: '914'
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR50,05NTRFMCCT070927000002//0724710345347489
-    funds_code: :credit
-    amount: 5005
-    swift_code: NTRF
-    reference: MCCT070927000002
-    transaction_description: 0724710345347489
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 159?00RETOURE?100399?20EREF+TFNR 40017 00001?21MTLG:Grund nicht spezifizie?22rt
-      Reject aus SEPA-Ueberwei?23sungsauftrag?34914
-    code: 159
-    transaction_description: RETOURE
-    prima_nota: 0399
-    details: |-
-      EREF+TFNR 40017 00001
-      MTLG:Grund nicht spezifizie
-      rt Reject aus SEPA-Ueberwei
-      sungsauftrag
-    account_holder: ''
-    text_key_extension: '914'
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR50,05NTRFMCCT070927000004//0724710351065632
-    funds_code: :credit
-    amount: 5005
-    swift_code: NTRF
-    reference: MCCT070927000004
-    transaction_description: '0724710351065632'
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 159?00RETOURE?100399?20EREF+TFNR 40018 00001?21MTLG:Grund nicht spezifizie?22rt
-      Reject aus SEPA-Ueberwei?23sungsauftrag?34914
-    code: 159
-    transaction_description: RETOURE
-    prima_nota: 0399
-    details: |-
-      EREF+TFNR 40018 00001
-      MTLG:Grund nicht spezifizie
-      rt Reject aus SEPA-Ueberwei
-      sungsauftrag
-    account_holder: ''
-    text_key_extension: '914'
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR46500,07NTRFKREF+//0724710333347237
-    funds_code: :credit
-    amount: 4650007
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: '0724710333347237'
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 159?00RETOURE?100399?20EREF+EndToEndId TFNR 06 004?21 00002?22KREF+EndToEndId
-      TFNR 06 004?23 00002?24MTLG:Grund nicht spezifizie?25rt Reject aus SEPA-Ueberwei?26sungsauftrag?34914
-    code: 159
-    transaction_description: RETOURE
-    prima_nota: 0399
-    details: |-
-      EREF+EndToEndId TFNR 06 004
-       00002
-      KREF+EndToEndId TFNR 06 004
-       00002
-      MTLG:Grund nicht spezifizie
-      rt Reject aus SEPA-Ueberwei
-      sungsauftrag
-    account_holder: ''
-    text_key_extension: '914'
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR154551,93NTRFKREF+//0724710333347241
-    funds_code: :credit
-    amount: 15455193
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: '0724710333347241'
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 159?00RETOURE?100399?20EREF+EndToEndId TFNR 06 004?21 00004?22KREF+EndToEndId
-      TFNR 06 004?23 00004?24MTLG:Grund nicht spezifizie?25rt Reject aus SEPA-Ueberwei?26sungsauftrag?34914
-    code: 159
-    transaction_description: RETOURE
-    prima_nota: 0399
-    details: |-
-      EREF+EndToEndId TFNR 06 004
-       00004
-      KREF+EndToEndId TFNR 06 004
-       00004
-      MTLG:Grund nicht spezifizie
-      rt Reject aus SEPA-Ueberwei
-      sungsauftrag
-    account_holder: ''
-    text_key_extension: '914'
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR2550,NTRFKREF+//31408CF87AD5901E
-    funds_code: :debit
-    amount: 2550
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 31408CF87AD5901E
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 191?00SEPA-UEBERW?100399?20KREF+TFNr 40016 PayId CTSc-?2102 PPP?22MTLG:SEPA-Ueberweisungsauft?23rag
-      Datei mit 0000002 Zahlu?24ngen
-    code: 191
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    details: |-
-      KREF+TFNr 40016 PayId CTSc-
-      02 PPP
-      MTLG:SEPA-Ueberweisungsauft
-      rag Datei mit 0000002 Zahlu
-      ngen
-    account_holder: ''
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR2550,12NTRFMCCT07090401//4F112D73FF96F4FB
-    funds_code: :debit
-    amount: 255012
-    swift_code: NTRF
-    reference: MCCT07090401
-    transaction_description: 4F112D73FF96F4FB
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 191?00SEPA-UEBERW?100399?20MTLG:SEPA-Ueberweisungsauft?21rag Datei mit
-      0000002 Zahlu?22ngen
-    code: 191
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    details: |-
-      MTLG:SEPA-Ueberweisungsauft
-      rag Datei mit 0000002 Zahlu
-      ngen
-    account_holder: ''
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR2550,12NTRFMCCT07090402//EC4BA14CEA34BFF3
-    funds_code: :debit
-    amount: 255012
-    swift_code: NTRF
-    reference: MCCT07090402
-    transaction_description: EC4BA14CEA34BFF3
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 191?00SEPA-UEBERW?100399?20MTLG:SEPA-Ueberweisungsauft?21rag Datei mit
-      0000002 Zahlu?22ngen
-    code: 191
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    details: |-
-      MTLG:SEPA-Ueberweisungsauft
-      rag Datei mit 0000002 Zahlu
-      ngen
-    account_holder: ''
-  - !ruby/object:MT940::ClosingBalance
-    modifier: M
-    content: D070904EUR1358945,52
-    balance_type: :intermediate
-    sign: :debit
-    currency: EUR
-    amount: 135894552
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089414016000002
-    reference: T089414016000002
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194782500888
-    bank_code: '50880050'
-    account_number: 0194782500888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00002
-    number: 4
-    sheet: 2
-  - !ruby/object:MT940::AccountBalance
-    modifier: M
-    content: D070904EUR1358945,52
-    balance_type: :intermediate
-    sign: :debit
-    currency: EUR
-    amount: 135894552
-    date: 2007-09-04
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR65500,15NTRFNONREF//92D891C454BC30B5
-    funds_code: :debit
-    amount: 6550015
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 92D891C454BC30B5
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: '191?00ONLINE-UEBW.?100399?20MTLG:SBI-SEPA-SAMMELUEB.Anz?21:4 Referenz:
-      1930467114 Erf?22assung mit 004 Zahlungen'
-    code: 191
-    transaction_description: ONLINE-UEBW.
-    prima_nota: 0399
-    details: |-
-      MTLG:SBI-SEPA-SAMMELUEB.Anz
-      :4 Referenz: 1930467114 Erf
-      assung mit 004 Zahlungen
-    account_holder: ''
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR402104,NTRFNONREF//57B4197CC644DE8F
-    funds_code: :debit
-    amount: 402104
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 57B4197CC644DE8F
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: '191?00ONLINE-UEBW.?100399?20MTLG:SBI-SEPA-SAMMELUEB.Anz?21:4 Referenz:
-      1930467115 Erf?22assung mit 004 Zahlungen'
-    code: 191
-    transaction_description: ONLINE-UEBW.
-    prima_nota: 0399
-    details: |-
-      MTLG:SBI-SEPA-SAMMELUEB.Anz
-      :4 Referenz: 1930467115 Erf
-      assung mit 004 Zahlungen
-    account_holder: ''
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR476921,44NTRFKREF+//06F8672B28B7A92F
-    funds_code: :debit
-    amount: 47692144
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 06F8672B28B7A92F
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 191?00SEPA-UEBERW?100399?20KREF+TFNr 41003 PayId CTSc-?2101 EBB?22MTLG:SEPA-Ueberweisungsauft?23rag
-      Datei mit 0000004 Zahlu?24ngen
-    code: 191
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    details: |-
-      KREF+TFNr 41003 PayId CTSc-
-      01 EBB
-      MTLG:SEPA-Ueberweisungsauft
-      rag Datei mit 0000004 Zahlu
-      ngen
-    account_holder: ''
-  - !ruby/object:MT940::ClosingBalance
-    modifier: F
-    content: D070904EUR2303471,11
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 230347111
-    date: 2007-09-04
-  - !ruby/object:MT940::ValutaBalance
-    modifier: 
-    content: D070904EUR2303471,11
-    balance_type: 
-    sign: :debit
-    currency: EUR
-    amount: 230347111
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089414026000001
-    reference: T089414026000001
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194783700888
-    bank_code: '50880050'
-    account_number: 0194783700888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00001
-    number: 4
-    sheet: 1
-  - !ruby/object:MT940::AccountBalance
-    modifier: F
-    content: D070903EUR3829477,87
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 382947787
-    date: 2007-09-03
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR335,33NTRFTFNr 44005 MSGID//0724710351059240
-    funds_code: :credit
-    amount: 33533
-    swift_code: NTRF
-    reference: TFNr 44005 MSGID
-    transaction_description: 0724710351059240
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 159?00RETOURE?100399?20EREF+TFNR 44005 00001?21MTLG:Grund nicht spezifizie?22rt
-      Reject aus SEPA-Ueberwei?23sungsauftrag?34914
-    code: 159
-    transaction_description: RETOURE
-    prima_nota: 0399
-    details: |-
-      EREF+TFNR 44005 00001
-      MTLG:Grund nicht spezifizie
-      rt Reject aus SEPA-Ueberwei
-      sungsauftrag
-    account_holder: ''
-    text_key_extension: '914'
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR915311,55NTRFTFNr 44005 MSGID//R724710351059243
-    funds_code: :credit
-    amount: 91531155
-    swift_code: NTRF
-    reference: TFNr 44005 MSGID
-    transaction_description: R724710351059243
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 159?00RETOURE?100399?20EREF+TFNR 44005 00002?21MTLG:Konto gesperrt Rueckue?22berweisung
-      aus SEPA-Ueberwe?23isungsauftrag?34903
-    code: 159
-    transaction_description: RETOURE
-    prima_nota: 0399
-    details: |-
-      EREF+TFNR 44005 00002
-      MTLG:Konto gesperrt Rueckue
-      berweisung aus SEPA-Ueberwe
-      isungsauftrag
-    account_holder: ''
-    text_key_extension: '903'
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR157,34NTRFKREF+//0724710360914647
-    funds_code: :debit
-    amount: 15734
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710360914647
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+TFNR 01041 00001?21KREF+TFNR 01041  Instructio?22n
-      Id 00001?23SVWZ+Strukturierter Verwend?24ungszweck EBB 01041 001 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger
-      1 mit 70 Zeichen?33 Empfaenger 1 mit 70 Zeiche
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: |-
-      EREF+TFNR 01041 00001
-      KREF+TFNR 01041  Instructio
-      n Id 00001
-      SVWZ+Strukturierter Verwend
-      ungszweck EBB 01041 001 DE
-    account_holder: |-
-      Empfaenger 1 mit 70 Zeichen
-       Empfaenger 1 mit 70 Zeiche
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR6002,17NTRFKREF+//0724710360912501
-    funds_code: :debit
-    amount: 600217
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710360912501
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+TFNR 01041 00002?21KREF+TFNR 01041  Instructio?22n
-      Id 00002?23SVWZ+Strukturierter Verwend?24ungszweck EBB 01041 002 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger
-      2 mit 70 Zeichen?33 Empfaenger 2 mit 70 Zeiche
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: |-
-      EREF+TFNR 01041 00002
-      KREF+TFNR 01041  Instructio
-      n Id 00002
-      SVWZ+Strukturierter Verwend
-      ungszweck EBB 01041 002 DE
-    account_holder: |-
-      Empfaenger 2 mit 70 Zeichen
-       Empfaenger 2 mit 70 Zeiche
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR6002,17NTRFKREF+//0724710360923556
-    funds_code: :debit
-    amount: 600217
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710360923556
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+TFNR 01041 00005?21KREF+TFNR 01041  Instructio?22n
-      Id 00005?23SVWZ+Strukturierter Verwend?24ungszweck EBB 01041 005 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger
-      5 mit 70 Zeichen?33 Empfaenger 5 mit 70 Zeiche
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: |-
-      EREF+TFNR 01041 00005
-      KREF+TFNR 01041  Instructio
-      n Id 00005
-      SVWZ+Strukturierter Verwend
-      ungszweck EBB 01041 005 DE
-    account_holder: |-
-      Empfaenger 5 mit 70 Zeichen
-       Empfaenger 5 mit 70 Zeiche
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR6002,17NTRFKREF+//0724710360910575
-    funds_code: :debit
-    amount: 600217
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710360910575
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+TFNR 01041 00006?21KREF+TFNR 01041  Instructio?22n
-      Id 00006?23SVWZ+Strukturierter Verwend?24ungszweck EBB 01041 006 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger
-      6 mit 70 Zeichen?33 Empfaenger 6 mit 70 Zeiche
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: |-
-      EREF+TFNR 01041 00006
-      KREF+TFNR 01041  Instructio
-      n Id 00006
-      SVWZ+Strukturierter Verwend
-      ungszweck EBB 01041 006 DE
-    account_holder: |-
-      Empfaenger 6 mit 70 Zeichen
-       Empfaenger 6 mit 70 Zeiche
-  - !ruby/object:MT940::ClosingBalance
-    modifier: M
-    content: D070904EUR2931994,84
-    balance_type: :intermediate
-    sign: :debit
-    currency: EUR
-    amount: 293199484
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089414026000002
-    reference: T089414026000002
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194783700888
-    bank_code: '50880050'
-    account_number: 0194783700888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00002
-    number: 4
-    sheet: 2
-  - !ruby/object:MT940::AccountBalance
-    modifier: M
-    content: D070904EUR2931994,84
-    balance_type: :intermediate
-    sign: :debit
-    currency: EUR
-    amount: 293199484
-    date: 2007-09-04
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR6002,17NTRFKREF+//0724710360918027
-    funds_code: :debit
-    amount: 600217
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710360918027
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+TFNR 01041 00004?21KREF+TFNR 01041  Instructio?22n
-      Id 00004?23SVWZ+Strukturierter Verwend?24ungszweck EBB 01041 004 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger
-      4 mit 70 Zeichen?33 Empfaenger 4 mit 70 Zeiche
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: |-
-      EREF+TFNR 01041 00004
-      KREF+TFNR 01041  Instructio
-      n Id 00004
-      SVWZ+Strukturierter Verwend
-      ungszweck EBB 01041 004 DE
-    account_holder: |-
-      Empfaenger 4 mit 70 Zeichen
-       Empfaenger 4 mit 70 Zeiche
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR6002,17NTRFKREF+//0724710360916341
-    funds_code: :debit
-    amount: 600217
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710360916341
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+TFNR 01041 00003?21KREF+TFNR 01041  Instructio?22n
-      Id 00003?23SVWZ+Strukturierter Verwend?24ungszweck EBB 01041 003 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger
-      3 mit 70 Zeichen?33 Empfaenger 3 mit 70 Zeiche
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: |-
-      EREF+TFNR 01041 00003
-      KREF+TFNR 01041  Instructio
-      n Id 00003
-      SVWZ+Strukturierter Verwend
-      ungszweck EBB 01041 003 DE
-    account_holder: |-
-      Empfaenger 3 mit 70 Zeichen
-       Empfaenger 3 mit 70 Zeiche
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR155344,11NTRFKREF+//0724710360908674
-    funds_code: :debit
-    amount: 15534411
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710360908674
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+TFNR 01041 00007?21KREF+TFNR 01041  Instructio?22n
-      Id 00007?23SVWZ+Strukturierter Verwend?24ungszweck EBB 01041 007 DE?25MTLG:Ggf.Meldevorschriften
-      ?26beachten?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger 7 mit 70
-      Zeichen?33 Empfaenger 7 mit 70 Zeiche
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: "EREF+TFNR 01041 00007\nKREF+TFNR 01041  Instructio\nn Id 00007\nSVWZ+Strukturierter
-      Verwend\nungszweck EBB 01041 007 DE\nMTLG:Ggf.Meldevorschriften \nbeachten"
-    account_holder: |-
-      Empfaenger 7 mit 70 Zeichen
-       Empfaenger 7 mit 70 Zeiche
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR415603,93NTRFNONREF//649D24F7C6EDAC53
-    funds_code: :debit
-    amount: 41560393
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 649D24F7C6EDAC53
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: '191?00ONLINE-UEBW.?100399?20MTLG:SBI-SEPA-SAMMELUEB.Anz?21:3 Referenz:
-      1930467116 Erf?22assung mit 003 Zahlungen'
-    code: 191
-    transaction_description: ONLINE-UEBW.
-    prima_nota: 0399
-    details: |-
-      MTLG:SBI-SEPA-SAMMELUEB.Anz
-      :3 Referenz: 1930467116 Erf
-      assung mit 003 Zahlungen
-    account_holder: ''
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR589103,86NTRFKREF+//AC59892B266252EC
-    funds_code: :debit
-    amount: 58910386
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: AC59892B266252EC
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 191?00SEPA-UEBERW?100399?20KREF+TFNr 05003 MSGID CTSc-?2101  BC PPP?22MTLG:SEPA-Ueberweisungsauft?23rag
-      Datei mit 0000003 Zahlu?24ngen
-    code: 191
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    details: |-
-      KREF+TFNr 05003 MSGID CTSc-
-      01  BC PPP
-      MTLG:SEPA-Ueberweisungsauft
-      rag Datei mit 0000003 Zahlu
-      ngen
-    account_holder: ''
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR915646,88NTRFKREF+//CDB988231C851A5B
-    funds_code: :debit
-    amount: 91564688
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: CDB988231C851A5B
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 191?00SEPA-UEBERW?100399?20KREF+TFNr 44005 MSGID CTSc-?2102 EBB?22MTLG:SEPA-Ueberweisungsauft?23rag
-      Datei mit 0000002 Zahlu?24ngen
-    code: 191
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    details: |-
-      KREF+TFNr 44005 MSGID CTSc-
-      02 EBB
-      MTLG:SEPA-Ueberweisungsauft
-      rag Datei mit 0000002 Zahlu
-      ngen
-    account_holder: ''
-  - !ruby/object:MT940::ClosingBalance
-    modifier: F
-    content: D070904EUR5019697,96
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 501969796
-    date: 2007-09-04
-  - !ruby/object:MT940::ValutaBalance
-    modifier: 
-    content: D070904EUR5019697,96
-    balance_type: 
-    sign: :debit
-    currency: EUR
-    amount: 501969796
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089414036000001
-    reference: T089414036000001
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194784900888
-    bank_code: '50880050'
-    account_number: 0194784900888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00001
-    number: 4
-    sheet: 1
-  - !ruby/object:MT940::AccountBalance
-    modifier: F
-    content: D070903EUR5777585,57
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 577758557
-    date: 2007-09-03
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR16500,07NTRFMSGID CTSc-01  B//0724710324666001
-    funds_code: :credit
-    amount: 1650007
-    swift_code: NTRF
-    reference: MSGID CTSc-01  B
-    transaction_description: '0724710324666001'
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 159?00RETOURE?100399?20EREF+EndToEndId TFNR 05 006?21 00002?22MTLG:Grund
-      nicht spezifizie?23rt Reject aus SEPA-Ueberwei?24sungsauftrag?34914
-    code: 159
-    transaction_description: RETOURE
-    prima_nota: 0399
-    details: |-
-      EREF+EndToEndId TFNR 05 006
-       00002
-      MTLG:Grund nicht spezifizie
-      rt Reject aus SEPA-Ueberwei
-      sungsauftrag
-    account_holder: ''
-    text_key_extension: '914'
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR154551,93NTRFMSGID CTSc-01  B//0724710324666006
-    funds_code: :credit
-    amount: 15455193
-    swift_code: NTRF
-    reference: MSGID CTSc-01  B
-    transaction_description: '0724710324666006'
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 159?00RETOURE?100399?20EREF+EndToEndId TFNR 05 006?21 00004?22MTLG:Grund
-      nicht spezifizie?23rt Reject aus SEPA-Ueberwei?24sungsauftrag?34914
-    code: 159
-    transaction_description: RETOURE
-    prima_nota: 0399
-    details: |-
-      EREF+EndToEndId TFNR 05 006
-       00004
-      MTLG:Grund nicht spezifizie
-      rt Reject aus SEPA-Ueberwei
-      sungsauftrag
-    account_holder: ''
-    text_key_extension: '914'
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR13990,05NTRFKREF+//0724710333354911
-    funds_code: :debit
-    amount: 1399005
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710333354911
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: '116?00ONLINE-UEBW.?100399?20EREF+EndToEndId TFNR 21 003?21 00001?22KREF+EndToEndId
-      TFNR 21 003?23 00001?24SVWZ+Verwend CTSc-01 PPP TF?25Nr 21 003?26MTLG:SBI-SEPA-UEB.DE6850880?2705001
-      Referenz: 1930467122?30DRESDEFF508?31DE68508800500194784901?32Empfaenger Josef
-      Jaeger UK?3301'
-    code: 116
-    transaction_description: ONLINE-UEBW.
-    prima_nota: 0399
-    bank_code: DRESDEFF508
-    account_number: DE68508800500194784901
-    details: |-
-      EREF+EndToEndId TFNR 21 003
-       00001
-      KREF+EndToEndId TFNR 21 003
-       00001
-      SVWZ+Verwend CTSc-01 PPP TF
-      Nr 21 003
-      MTLG:SBI-SEPA-UEB.DE6850880
-      05001 Referenz: 1930467122
-    account_holder: |-
-      Empfaenger Josef Jaeger UK
-      01
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR19990,05NTRFKREF+//0724710333377198
-    funds_code: :debit
-    amount: 1999005
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710333377198
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: '116?00ONLINE-UEBW.?100399?20EREF+EndToEndId TFNR 22 001?21 00001?22KREF+EndToEndId
-      TFNR 22 001?23 00001?24SVWZ+Verwend CTSc-01 PPP TF?25Nr 22 001?26MTLG:SBI-SEPA-UEB.DE0450880?2705001
-      Referenz: 1930467123?30DRESDEFF508?31DE04508800500194781300?32Empfaenger Gustav
-      Gans'
-    code: 116
-    transaction_description: ONLINE-UEBW.
-    prima_nota: 0399
-    bank_code: DRESDEFF508
-    account_number: DE04508800500194781300
-    details: |-
-      EREF+EndToEndId TFNR 22 001
-       00001
-      KREF+EndToEndId TFNR 22 001
-       00001
-      SVWZ+Verwend CTSc-01 PPP TF
-      Nr 22 001
-      MTLG:SBI-SEPA-UEB.DE0450880
-      05001 Referenz: 1930467123
-    account_holder: Empfaenger Gustav Gans
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR50990,05NTRFKREF+//0724710324651156
-    funds_code: :debit
-    amount: 5099005
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: '0724710324651156'
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+TFNR 22003 EndToEndId ?2100001?22KREF+TFNR
-      22003 Instruction?23 Id 00001?24SVWZ+Verw CTSc-01 BC-PPP TF?25Nr 22003?30DRESDEFF508?31DE96508800500194774600?32Empfaenger
-      Anton Ackermann
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: DRESDEFF508
-    account_number: DE96508800500194774600
-    details: "EREF+TFNR 22003 EndToEndId \n00001\nKREF+TFNR 22003 Instruction\n Id
-      00001\nSVWZ+Verw CTSc-01 BC-PPP TF\nNr 22003"
-    account_holder: Empfaenger Anton Ackermann
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR326609,66NTRFTFNr 01008 MEBB//9A4616CC6128D651
-    funds_code: :debit
-    amount: 32660966
-    swift_code: NTRF
-    reference: TFNr 01008 MEBB
-    transaction_description: 9A4616CC6128D651
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 191?00SEPA-UEBERW?100399?20MTLG:SEPA-Ueberweisungsauft?21rag Datei mit
-      0000006 Zahlu?22ngen
-    code: 191
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    details: |-
-      MTLG:SEPA-Ueberweisungsauft
-      rag Datei mit 0000006 Zahlu
-      ngen
-    account_holder: ''
-  - !ruby/object:MT940::ClosingBalance
-    modifier: M
-    content: D070904EUR6018113,38
-    balance_type: :intermediate
-    sign: :debit
-    currency: EUR
-    amount: 601811338
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089414036000002
-    reference: T089414036000002
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194784900888
-    bank_code: '50880050'
-    account_number: 0194784900888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00002
-    number: 4
-    sheet: 2
-  - !ruby/object:MT940::AccountBalance
-    modifier: M
-    content: D070904EUR6018113,38
-    balance_type: :intermediate
-    sign: :debit
-    currency: EUR
-    amount: 601811338
-    date: 2007-09-04
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR342104,NTRFKREF+//A26B6D6B5E821EA9
-    funds_code: :debit
-    amount: 342104
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: A26B6D6B5E821EA9
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 191?00SEPA-UEBERW?100399?20KREF+PayId CTSc-01  BC PPP ?21TFNr 05 006?22MTLG:SEPA-Ueberweisungsauft?23rag
-      Datei mit 0000004 Zahlu?24ngen
-    code: 191
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    details: "KREF+PayId CTSc-01  BC PPP \nTFNr 05 006\nMTLG:SEPA-Ueberweisungsauft\nrag
-      Datei mit 0000004 Zahlu\nngen"
-    account_holder: ''
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR962104,NTRFKREF+//493189D221858097
-    funds_code: :debit
-    amount: 962104
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 493189D221858097
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 191?00SEPA-UEBERW?100399?20KREF+TFNr 05009 MSGID CTSc-?2101 BC-PPP?22MTLG:SEPA-Ueberweisungsauft?23rag
-      Datei mit 0000004 Zahlu?24ngen
-    code: 191
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    details: |-
-      KREF+TFNr 05009 MSGID CTSc-
-      01 BC-PPP
-      MTLG:SEPA-Ueberweisungsauft
-      rag Datei mit 0000004 Zahlu
-      ngen
-    account_holder: ''
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR1522104,NTRFNONREF//75C62EC25E19D187
-    funds_code: :debit
-    amount: 1522104
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 75C62EC25E19D187
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: '191?00ONLINE-UEBW.?100399?20MTLG:SBI-SEPA-SAMMELUEB.Anz?21:4 Referenz:
-      1930467118 Erf?22assung mit 004 Zahlungen'
-    code: 191
-    transaction_description: ONLINE-UEBW.
-    prima_nota: 0399
-    details: |-
-      MTLG:SBI-SEPA-SAMMELUEB.Anz
-      :4 Referenz: 1930467118 Erf
-      assung mit 004 Zahlungen
-    account_holder: ''
-  - !ruby/object:MT940::ClosingBalance
-    modifier: F
-    content: D070904EUR8844425,38
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 884442538
-    date: 2007-09-04
-  - !ruby/object:MT940::ValutaBalance
-    modifier: 
-    content: D070904EUR8844425,38
-    balance_type: 
-    sign: :debit
-    currency: EUR
-    amount: 884442538
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089414046000001
-    reference: T089414046000001
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194784901888
-    bank_code: '50880050'
-    account_number: 0194784901888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00003/00001
-    number: 3
-    sheet: 1
-  - !ruby/object:MT940::AccountBalance
-    modifier: F
-    content: C070903EUR13990,05
-    balance_type: :start
-    sign: :credit
-    currency: EUR
-    amount: 1399005
-    date: 2007-09-03
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR13990,05NTRFNONREF//0724710333354911
-    funds_code: :credit
-    amount: 1399005
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 0724710333354911
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 166?00GUTSCHRIFT?100399?20EREF+EndToEndId TFNR 21 003?21 00001?22SVWZ+Verwend
-      CTSc-01 PPP TF?23Nr 21 003?30DRESDEFF508?31DE95508800500194784900?32JOSEF?33        JAEGER?70Empfaenger
-      Josef Jaeger UK?7101
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: DRESDEFF508
-    account_number: DE95508800500194784900
-    not_implemented_fields:
-    - - '70'
-      - Empfaenger Josef Jaeger UK
-    - - '71'
-      - '01'
-    details: |-
-      EREF+EndToEndId TFNR 21 003
-       00001
-      SVWZ+Verwend CTSc-01 PPP TF
-      Nr 21 003
-    account_holder: |-
-      JOSEF
-              JAEGER
-  - !ruby/object:MT940::ClosingBalance
-    modifier: F
-    content: C070904EUR27980,1
-    balance_type: :start
-    sign: :credit
-    currency: EUR
-    amount: 279801
-    date: 2007-09-04
-  - !ruby/object:MT940::ValutaBalance
-    modifier: 
-    content: C070904EUR27980,1
-    balance_type: 
-    sign: :credit
-    currency: EUR
-    amount: 279801
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089414056000001
-    reference: T089414056000001
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194785000888
-    bank_code: '50880050'
-    account_number: 0194785000888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00001
-    number: 4
-    sheet: 1
-  - !ruby/object:MT940::AccountBalance
-    modifier: F
-    content: D070903EUR3612519,02
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 361251902
-    date: 2007-09-03
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR57,34NTRFKREF+//0724710352971787
-    funds_code: :debit
-    amount: 5734
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710352971787
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+TFNR 01015 00001?21KREF+TFNR 01015  Instructio?22n
-      Id 00001?23SVWZ+Strukturierter Verwend?24ungszweck EBB 01015 001 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger
-      1 mit 70 Zeichen?33 Empfaenger 1 mit 70 Zeiche
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: |-
-      EREF+TFNR 01015 00001
-      KREF+TFNR 01015  Instructio
-      n Id 00001
-      SVWZ+Strukturierter Verwend
-      ungszweck EBB 01015 001 DE
-    account_holder: |-
-      Empfaenger 1 mit 70 Zeichen
-       Empfaenger 1 mit 70 Zeiche
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR5002,17NTRFKREF+//0724710352975390
-    funds_code: :debit
-    amount: 500217
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710352975390
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+TFNR 01015 00003?21KREF+TFNR 01015  Instructio?22n
-      Id 00003?23SVWZ+Strukturierter Verwend?24ungszweck EBB 01015 003 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger
-      3 mit 70 Zeichen?33 Empfaenger 3 mit 70 Zeiche
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: |-
-      EREF+TFNR 01015 00003
-      KREF+TFNR 01015  Instructio
-      n Id 00003
-      SVWZ+Strukturierter Verwend
-      ungszweck EBB 01015 003 DE
-    account_holder: |-
-      Empfaenger 3 mit 70 Zeichen
-       Empfaenger 3 mit 70 Zeiche
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR5002,17NTRFKREF+//0724710352980804
-    funds_code: :debit
-    amount: 500217
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710352980804
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+TFNR 01015 00006?21KREF+TFNR 01015  Instructio?22n
-      Id 00006?23SVWZ+Strukturierter Verwend?24ungszweck EBB 01015 006 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger
-      6 mit 70 Zeichen?33 Empfaenger 6 mit 70 Zeiche
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: |-
-      EREF+TFNR 01015 00006
-      KREF+TFNR 01015  Instructio
-      n Id 00006
-      SVWZ+Strukturierter Verwend
-      ungszweck EBB 01015 006 DE
-    account_holder: |-
-      Empfaenger 6 mit 70 Zeichen
-       Empfaenger 6 mit 70 Zeiche
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR5002,17NTRFKREF+//0724710352979070
-    funds_code: :debit
-    amount: 500217
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710352979070
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+TFNR 01015 00005?21KREF+TFNR 01015  Instructio?22n
-      Id 00005?23SVWZ+Strukturierter Verwend?24ungszweck EBB 01015 005 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger
-      5 mit 70 Zeichen?33 Empfaenger 5 mit 70 Zeiche
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: |-
-      EREF+TFNR 01015 00005
-      KREF+TFNR 01015  Instructio
-      n Id 00005
-      SVWZ+Strukturierter Verwend
-      ungszweck EBB 01015 005 DE
-    account_holder: |-
-      Empfaenger 5 mit 70 Zeichen
-       Empfaenger 5 mit 70 Zeiche
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR5002,17NTRFKREF+//0724710352973502
-    funds_code: :debit
-    amount: 500217
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710352973502
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+TFNR 01015 00002?21KREF+TFNR 01015  Instructio?22n
-      Id 00002?23SVWZ+Strukturierter Verwend?24ungszweck EBB 01015 002 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger
-      2 mit 70 Zeichen?33 Empfaenger 2 mit 70 Zeiche
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: |-
-      EREF+TFNR 01015 00002
-      KREF+TFNR 01015  Instructio
-      n Id 00002
-      SVWZ+Strukturierter Verwend
-      ungszweck EBB 01015 002 DE
-    account_holder: |-
-      Empfaenger 2 mit 70 Zeichen
-       Empfaenger 2 mit 70 Zeiche
-  - !ruby/object:MT940::ClosingBalance
-    modifier: M
-    content: D070904EUR3632585,04
-    balance_type: :intermediate
-    sign: :debit
-    currency: EUR
-    amount: 363258504
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089414056000002
-    reference: T089414056000002
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194785000888
-    bank_code: '50880050'
-    account_number: 0194785000888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00002
-    number: 4
-    sheet: 2
-  - !ruby/object:MT940::AccountBalance
-    modifier: M
-    content: D070904EUR3632585,04
-    balance_type: :intermediate
-    sign: :debit
-    currency: EUR
-    amount: 363258504
-    date: 2007-09-04
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR5002,17NTRFKREF+//0724710352977271
-    funds_code: :debit
-    amount: 500217
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710352977271
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+TFNR 01015 00004?21KREF+TFNR 01015  Instructio?22n
-      Id 00004?23SVWZ+Strukturierter Verwend?24ungszweck EBB 01015 004 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger
-      4 mit 70 Zeichen?33 Empfaenger 4 mit 70 Zeiche
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: |-
-      EREF+TFNR 01015 00004
-      KREF+TFNR 01015  Instructio
-      n Id 00004
-      SVWZ+Strukturierter Verwend
-      ungszweck EBB 01015 004 DE
-    account_holder: |-
-      Empfaenger 4 mit 70 Zeichen
-       Empfaenger 4 mit 70 Zeiche
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR19990,05NTRFKREF+//0724710333360224
-    funds_code: :debit
-    amount: 1999005
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: '0724710333360224'
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: '116?00ONLINE-UEBW.?100399?20EREF+EndToEndId TFNR 22 002?21 00001?22KREF+EndToEndId
-      TFNR 22 002?23 00001?24SVWZ+Verwend CTSc-01 PPP TF?25Nr 22 002?26MTLG:SBI-SEPA-UEB.DE1250880?2705001
-      Referenz: 1930467119?30DRESDEFF508?31DE12508800500194786200?32Empfaenger Ludwig
-      Loewe'
-    code: 116
-    transaction_description: ONLINE-UEBW.
-    prima_nota: 0399
-    bank_code: DRESDEFF508
-    account_number: DE12508800500194786200
-    details: |-
-      EREF+EndToEndId TFNR 22 002
-       00001
-      KREF+EndToEndId TFNR 22 002
-       00001
-      SVWZ+Verwend CTSc-01 PPP TF
-      Nr 22 002
-      MTLG:SBI-SEPA-UEB.DE1250880
-      05001 Referenz: 1930467119
-    account_holder: Empfaenger Ludwig Loewe
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR50990,05NTRFKREF+//0724710352952868
-    funds_code: :debit
-    amount: 5099005
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710352952868
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+TFNR 21007 EndToEndId ?2100001?22KREF+TFNR
-      21007 Instruction?23 Id 00001?24SVWZ+Verwend CTSc-01 eBB TF?25Nr 21007?30DRESDEFF508?31DE84508800500194785001?32Empfanger
-      Karl Kaufmann UK?3301
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: DRESDEFF508
-    account_number: DE84508800500194785001
-    details: "EREF+TFNR 21007 EndToEndId \n00001\nKREF+TFNR 21007 Instruction\n Id
-      00001\nSVWZ+Verwend CTSc-01 eBB TF\nNr 21007"
-    account_holder: |-
-      Empfanger Karl Kaufmann UK
-      01
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR50990,05NTRFKREF+//0724710333343453
-    funds_code: :debit
-    amount: 5099005
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: '0724710333343453'
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: '116?00ONLINE-UEBW.?100399?20EREF+EndToEndId TFNR 22 004?21 00001?22KREF+EndToEndId
-      TFNR 22 004?23 00001?24SVWZ+Verw CTSc-01 BC-PPP TF?25Nr 22 004?26MTLG:SBI-SEPA-UEB.DE1050880?2705001
-      Referenz: 1930467120?30DRESDEFF508?31DE10508800500194787400?32Empfaenger Marta
-      Metzger'
-    code: 116
-    transaction_description: ONLINE-UEBW.
-    prima_nota: 0399
-    bank_code: DRESDEFF508
-    account_number: DE10508800500194787400
-    details: |-
-      EREF+EndToEndId TFNR 22 004
-       00001
-      KREF+EndToEndId TFNR 22 004
-       00001
-      SVWZ+Verw CTSc-01 BC-PPP TF
-      Nr 22 004
-      MTLG:SBI-SEPA-UEB.DE1050880
-      05001 Referenz: 1930467120
-    account_holder: Empfaenger Marta Metzger
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR55344,11NTRFKREF+//0724710352982472
-    funds_code: :debit
-    amount: 5534411
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 0724710352982472
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 116?00SEPA-UEBERW?100399?20EREF+TFNR 01015 00007?21KREF+TFNR 01015  Instructio?22n
-      Id 00007?23SVWZ+Strukturierter Verwend?24ungszweck EBB 01015 007 DE?25MTLG:Ggf.Meldevorschriften
-      ?26beachten?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger 7 mit 70
-      Zeichen?33 Empfaenger 7 mit 70 Zeiche
-    code: 116
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: "EREF+TFNR 01015 00007\nKREF+TFNR 01015  Instructio\nn Id 00007\nSVWZ+Strukturierter
-      Verwend\nungszweck EBB 01015 007 DE\nMTLG:Ggf.Meldevorschriften \nbeachten"
-    account_holder: |-
-      Empfaenger 7 mit 70 Zeichen
-       Empfaenger 7 mit 70 Zeiche
-  - !ruby/object:MT940::ClosingBalance
-    modifier: M
-    content: D070904EUR3814901,47
-    balance_type: :intermediate
-    sign: :debit
-    currency: EUR
-    amount: 381490147
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089414056000003
-    reference: T089414056000003
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194785000888
-    bank_code: '50880050'
-    account_number: 0194785000888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00003
-    number: 4
-    sheet: 3
-  - !ruby/object:MT940::AccountBalance
-    modifier: M
-    content: D070904EUR3814901,47
-    balance_type: :intermediate
-    sign: :debit
-    currency: EUR
-    amount: 381490147
-    date: 2007-09-04
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR342104,NTRFKREF+//D4AF9E363A92E76F
-    funds_code: :debit
-    amount: 342104
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: D4AF9E363A92E76F
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 191?00SEPA-UEBERW?100399?20KREF+TFNr 05005 PayId CTSc-?2101  BC PPP?22MTLG:SEPA-Ueberweisungsauft?23rag
-      Datei mit 0000004 Zahlu?24ngen
-    code: 191
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    details: |-
-      KREF+TFNr 05005 PayId CTSc-
-      01  BC PPP
-      MTLG:SEPA-Ueberweisungsauft
-      rag Datei mit 0000004 Zahlu
-      ngen
-    account_holder: ''
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR956588,05NTRFKREF+//0724710333366624
-    funds_code: :debit
-    amount: 95658805
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: '0724710333366624'
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: '116?00ONLINE-UEBW.?100399?20EREF+EndToEndId TFNR 06 003?21 00001?22KREF+EndToEndId
-      TFNR 06 003?23 00001?24SVWZ+Unstrukturiert Verwend?25ungs/zweck mit 140 Stellen?26fur
-      /SEPA ZKA Buchungsschem?27a A-/CT-PTS-S01 A-CT-ENTNRZ?28-S01/ CTSc-01 BC PPP
-      TFNr 0?296 003/0001?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger
-      1?60MTLG:SBI-SEPA-UEB.FR1420041?6101005 Referenz: 1930467117G?62gf.Meldevorschriften
-      beacht?63en'
-    code: 116
-    transaction_description: ONLINE-UEBW.
-    prima_nota: 0399
-    bank_code: SOGEFRPPXXX
-    account_number: FR1420041010050500013M02606
-    details: |-
-      EREF+EndToEndId TFNR 06 003
-       00001
-      KREF+EndToEndId TFNR 06 003
-       00001
-      SVWZ+Unstrukturiert Verwend
-      ungs/zweck mit 140 Stellen
-      fur /SEPA ZKA Buchungsschem
-      a A-/CT-PTS-S01 A-CT-ENTNRZ
-      -S01/ CTSc-01 BC PPP TFNr 0
-      6 003/0001
-      MTLG:SBI-SEPA-UEB.FR1420041
-      01005 Referenz: 1930467117G
-      gf.Meldevorschriften beacht
-      en
-    account_holder: Empfaenger 1
-  - !ruby/object:MT940::ClosingBalance
-    modifier: F
-    content: D070904EUR5113593,52
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 511359352
-    date: 2007-09-04
-  - !ruby/object:MT940::ValutaBalance
-    modifier: 
-    content: D070904EUR5113593,52
-    balance_type: 
-    sign: :debit
-    currency: EUR
-    amount: 511359352
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089414066000001
-    reference: T089414066000001
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194785001888
-    bank_code: '50880050'
-    account_number: 0194785001888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00001
-    number: 4
-    sheet: 1
-  - !ruby/object:MT940::AccountBalance
-    modifier: F
-    content: C070903EUR152970,15
-    balance_type: :start
-    sign: :credit
-    currency: EUR
-    amount: 15297015
-    date: 2007-09-03
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR50990,05NTRFNONREF//0724710352952868
-    funds_code: :credit
-    amount: 5099005
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 0724710352952868
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 166?00GUTSCHRIFT?100399?20EREF+TFNR 21007 EndToEndId ?2100001?22SVWZ+Verwend
-      CTSc-01 eBB TF?23Nr 21007?30DRESDEFF508?31DE14508800500194785000?32Karl Kaufmann?70Empfanger
-      Karl Kaufmann UK?7101
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: DRESDEFF508
-    account_number: DE14508800500194785000
-    not_implemented_fields:
-    - - '70'
-      - Empfanger Karl Kaufmann UK
-    - - '71'
-      - '01'
-    details: "EREF+TFNR 21007 EndToEndId \n00001\nSVWZ+Verwend CTSc-01 eBB TF\nNr
-      21007"
-    account_holder: Karl Kaufmann
-  - !ruby/object:MT940::ClosingBalance
-    modifier: F
-    content: C070904EUR203960,2
-    balance_type: :start
-    sign: :credit
-    currency: EUR
-    amount: 2039602
-    date: 2007-09-04
-  - !ruby/object:MT940::ValutaBalance
-    modifier: 
-    content: C070904EUR203960,2
-    balance_type: 
-    sign: :credit
-    currency: EUR
-    amount: 2039602
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089414076000001
-    reference: T089414076000001
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194786200888
-    bank_code: '50880050'
-    account_number: 0194786200888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00001
-    number: 4
-    sheet: 1
-  - !ruby/object:MT940::AccountBalance
-    modifier: F
-    content: C070903EUR145964,58
-    balance_type: :start
-    sign: :credit
-    currency: EUR
-    amount: 14596458
-    date: 2007-09-03
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR16500,07NTRFNONREF//0724710324661086
-    funds_code: :credit
-    amount: 1650007
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 0724710324661086
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 166?00GUTSCHRIFT?100399?20EREF+TFNR 0500500002?21SVWZ+Strukturierter
-      Verwend?22ungszweck 50050002 DE?30DRESDEFF508?31DE14508800500194785000?32Karl
-      Kaufmann?70Empfaenger bei DRESDE
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: DRESDEFF508
-    account_number: DE14508800500194785000
-    not_implemented_fields:
-    - - '70'
-      - Empfaenger bei DRESDE
-    details: |-
-      EREF+TFNR 0500500002
-      SVWZ+Strukturierter Verwend
-      ungszweck 50050002 DE
-    account_holder: Karl Kaufmann
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR19990,05NTRFNONREF//0724710333360224
-    funds_code: :credit
-    amount: 1999005
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: '0724710333360224'
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 166?00GUTSCHRIFT?100399?20EREF+EndToEndId TFNR 22 002?21 00001?22SVWZ+Verwend
-      CTSc-01 PPP TF?23Nr 22 002?30DRESDEFF508?31DE14508800500194785000?32KARL?33        KAUFMANN?70Empfaenger
-      Ludwig Loewe
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: DRESDEFF508
-    account_number: DE14508800500194785000
-    not_implemented_fields:
-    - - '70'
-      - Empfaenger Ludwig Loewe
-    details: |-
-      EREF+EndToEndId TFNR 22 002
-       00001
-      SVWZ+Verwend CTSc-01 PPP TF
-      Nr 22 002
-    account_holder: |-
-      KARL
-              KAUFMANN
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR56500,07NTRFNONREF//0724710324647446
-    funds_code: :credit
-    amount: 5650007
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: '0724710324647446'
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 166?00GUTSCHRIFT?100399?20EREF+TFNR 0300300002?21SVWZ+Strukturierter
-      Verwend?22ungszweck 30030002 DE?30DRESDEFF508?31DE03508800500194791600?32Quentin
-      Quast?70Empfaenger bei DRESDE mit 7?710 Zeichen Empfaenger bei DR
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: DRESDEFF508
-    account_number: DE03508800500194791600
-    not_implemented_fields:
-    - - '70'
-      - Empfaenger bei DRESDE mit 7
-    - - '71'
-      - 0 Zeichen Empfaenger bei DR
-    details: |-
-      EREF+TFNR 0300300002
-      SVWZ+Strukturierter Verwend
-      ungszweck 30030002 DE
-    account_holder: Quentin Quast
-  - !ruby/object:MT940::ClosingBalance
-    modifier: F
-    content: C070904EUR238954,77
-    balance_type: :start
-    sign: :credit
-    currency: EUR
-    amount: 23895477
-    date: 2007-09-04
-  - !ruby/object:MT940::ValutaBalance
-    modifier: 
-    content: C070904EUR238954,77
-    balance_type: 
-    sign: :credit
-    currency: EUR
-    amount: 23895477
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089414086000001
-    reference: T089414086000001
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194787400888
-    bank_code: '50880050'
-    account_number: 0194787400888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00001
-    number: 4
-    sheet: 1
-  - !ruby/object:MT940::AccountBalance
-    modifier: F
-    content: C070903EUR766656,49
-    balance_type: :start
-    sign: :credit
-    currency: EUR
-    amount: 76665649
-    date: 2007-09-03
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709070904CR50990,05NTRFNONREF//0724710333343453
-    funds_code: :credit
-    amount: 5099005
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: '0724710333343453'
-    date: 2007-09-07
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 166?00GUTSCHRIFT?100399?20EREF+EndToEndId TFNR 22 004?21 00001?22SVWZ+Verw
-      CTSc-01 BC-PPP TF?23Nr 22 004?30DRESDEFF508?31DE14508800500194785000?32KARL?33        KAUFMANN?70Empfaenger
-      Marta Metzger
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: DRESDEFF508
-    account_number: DE14508800500194785000
-    not_implemented_fields:
-    - - '70'
-      - Empfaenger Marta Metzger
-    details: |-
-      EREF+EndToEndId TFNR 22 004
-       00001
-      SVWZ+Verw CTSc-01 BC-PPP TF
-      Nr 22 004
-    account_holder: |-
-      KARL
-              KAUFMANN
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709070904CR154551,93NTRFNONREF//0724710324647450
-    funds_code: :credit
-    amount: 15455193
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: '0724710324647450'
-    date: 2007-09-07
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 166?00GUTSCHRIFT?100399?20EREF+TFNR 0300300004?21SVWZ+Strukturierter
-      Verwend?22ungszweck 30030004 DE?30DRESDEFF508?31DE03508800500194791600?32Quentin
-      Quast?70Empfaenger bei DRESDE mit 7?710 Zeichen Empfaenger bei DR
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: DRESDEFF508
-    account_number: DE03508800500194791600
-    not_implemented_fields:
-    - - '70'
-      - Empfaenger bei DRESDE mit 7
-    - - '71'
-      - 0 Zeichen Empfaenger bei DR
-    details: |-
-      EREF+TFNR 0300300004
-      SVWZ+Strukturierter Verwend
-      ungszweck 30030004 DE
-    account_holder: Quentin Quast
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709070904CR154551,93NTRFNONREF//0724710324661090
-    funds_code: :credit
-    amount: 15455193
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 0724710324661090
-    date: 2007-09-07
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 166?00GUTSCHRIFT?100399?20EREF+TFNR 0500500004?21SVWZ+Strukturierter
-      Verwend?22ungszweck 50050004 DE?30DRESDEFF508?31DE14508800500194785000?32Karl
-      Kaufmann?70Empfaenger bei DRESDE
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: DRESDEFF508
-    account_number: DE14508800500194785000
-    not_implemented_fields:
-    - - '70'
-      - Empfaenger bei DRESDE
-    details: |-
-      EREF+TFNR 0500500004
-      SVWZ+Strukturierter Verwend
-      ungszweck 50050004 DE
-    account_holder: Karl Kaufmann
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR1500,NTRFKREF+//536D80EFEC56ACF8
-    funds_code: :debit
-    amount: 1500
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: 536D80EFEC56ACF8
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 191?00SEPA-UEBERW?100399?20KREF+TFNr 01022 MSGID CTSc-?2101 EBB?22MTLG:SEPA-Ueberweisungsauft?23rag
-      Datei mit 0000001 Zahlu?24ngen
-    code: 191
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    details: |-
-      KREF+TFNr 01022 MSGID CTSc-
-      01 EBB
-      MTLG:SEPA-Ueberweisungsauft
-      rag Datei mit 0000001 Zahlu
-      ngen
-    account_holder: ''
-  - !ruby/object:MT940::ClosingBalance
-    modifier: F
-    content: C070904EUR1125250,4
-    balance_type: :start
-    sign: :credit
-    currency: EUR
-    amount: 11252504
-    date: 2007-09-04
-  - !ruby/object:MT940::ValutaBalance
-    modifier: 
-    content: C070904EUR559614,51
-    balance_type: 
-    sign: :credit
-    currency: EUR
-    amount: 55961451
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089414096000001
-    reference: T089414096000001
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194791600888
-    bank_code: '50880050'
-    account_number: 0194791600888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00001
-    number: 4
-    sheet: 1
-  - !ruby/object:MT940::AccountBalance
-    modifier: F
-    content: D070903EUR1970431,87
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 197043187
-    date: 2007-09-03
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR300,NTRFTFNr 40001 MSGID//0724710345316116
-    funds_code: :credit
-    amount: 300
-    swift_code: NTRF
-    reference: TFNr 40001 MSGID
-    transaction_description: '0724710345316116'
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 159?00RETOURE?100399?20EREF+TFNR 40001 00005?21MTLG:Grund nicht spezifizie?22rt
-      Reject aus SEPA-Ueberwei?23sungsauftrag?34914
-    code: 159
-    transaction_description: RETOURE
-    prima_nota: 0399
-    details: |-
-      EREF+TFNR 40001 00005
-      MTLG:Grund nicht spezifizie
-      rt Reject aus SEPA-Ueberwei
-      sungsauftrag
-    account_holder: ''
-    text_key_extension: '914'
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR335,33NTRFTFNr 44001 MSGID//0724710351063401
-    funds_code: :credit
-    amount: 33533
-    swift_code: NTRF
-    reference: TFNr 44001 MSGID
-    transaction_description: '0724710351063401'
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 159?00RETOURE?100399?20EREF+TFNR 44001 00001?21MTLG:Grund nicht spezifizie?22rt
-      Reject aus SEPA-Ueberwei?23sungsauftrag?34914
-    code: 159
-    transaction_description: RETOURE
-    prima_nota: 0399
-    details: |-
-      EREF+TFNR 44001 00001
-      MTLG:Grund nicht spezifizie
-      rt Reject aus SEPA-Ueberwei
-      sungsauftrag
-    account_holder: ''
-    text_key_extension: '914'
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR15000,NTRFTFNr 40001 MSGID//0724710345316110
-    funds_code: :credit
-    amount: 15000
-    swift_code: NTRF
-    reference: TFNr 40001 MSGID
-    transaction_description: '0724710345316110'
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 159?00RETOURE?100399?20EREF+TFNR 40001 00002?21MTLG:Grund nicht spezifizie?22rt
-      Reject aus SEPA-Ueberwei?23sungsauftrag?34914
-    code: 159
-    transaction_description: RETOURE
-    prima_nota: 0399
-    details: |-
-      EREF+TFNR 40001 00002
-      MTLG:Grund nicht spezifizie
-      rt Reject aus SEPA-Ueberwei
-      sungsauftrag
-    account_holder: ''
-    text_key_extension: '914'
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR15000,05NTRFNONREF//0724710290659857
-    funds_code: :credit
-    amount: 1500005
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 0724710290659857
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 166?00GUTSCHRIFT?100399?20EREF+EndToEndIdTFNR20001000?2101?22SVWZ+TO
-      13 TFNr 20001 Einga?23ngskanal Mint Unstrukturier?24ter Verwendungszweck 140
-      Ze?25ichen Beginn Fuellzeichen x?26xxxxxxxxxxxxxxxxxxxxxxxxxxx?27xxxxxxxxxx?30PBNKDEFF100?31DE42100100100043921105?32Richter
-      Renate 70 Zeichen B?33eginn Fuellzeichen xxxxxxxx?70Quentin Quast 70 Zeichen
-      Be?71ginn Fuellzeichen xxxxxxxxx
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: PBNKDEFF100
-    account_number: DE42100100100043921105
-    not_implemented_fields:
-    - - '70'
-      - Quentin Quast 70 Zeichen Be
-    - - '71'
-      - ginn Fuellzeichen xxxxxxxxx
-    details: |-
-      EREF+EndToEndIdTFNR20001000
-      01
-      SVWZ+TO 13 TFNr 20001 Einga
-      ngskanal Mint Unstrukturier
-      ter Verwendungszweck 140 Ze
-      ichen Beginn Fuellzeichen x
-      xxxxxxxxxxxxxxxxxxxxxxxxxxx
-      xxxxxxxxxx
-    account_holder: |-
-      Richter Renate 70 Zeichen B
-      eginn Fuellzeichen xxxxxxxx
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR125004,88NTRFNONREF//0724710290624796
-    funds_code: :credit
-    amount: 12500488
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 0724710290624796
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 166?00GUTSCHRIFT?100399?20SVWZ+TO13 TF20005 MINT?30PBNKDEFF100?31DE42100100100043921105?32Richter
-      Renate 70 Zeichen B?33eginn Fuellzeichen xxxxxxxx?70Quentin Quast 70 Zeichen
-      Be?71ginn Fuellzeichen xxxxxxxxx
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: PBNKDEFF100
-    account_number: DE42100100100043921105
-    not_implemented_fields:
-    - - '70'
-      - Quentin Quast 70 Zeichen Be
-    - - '71'
-      - ginn Fuellzeichen xxxxxxxxx
-    details: SVWZ+TO13 TF20005 MINT
-    account_holder: |-
-      Richter Renate 70 Zeichen B
-      eginn Fuellzeichen xxxxxxxx
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR915311,55NTRFTFNr 44001 MSGID//R724710351063405
-    funds_code: :credit
-    amount: 91531155
-    swift_code: NTRF
-    reference: TFNr 44001 MSGID
-    transaction_description: R724710351063405
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 159?00RETOURE?100399?20EREF+TFNR 44001 00002?21MTLG:IBAN ungueltig Rueckue?22berweisung
-      aus SEPA-Ueberwe?23isungsauftrag?34901
-    code: 159
-    transaction_description: RETOURE
-    prima_nota: 0399
-    details: |-
-      EREF+TFNR 44001 00002
-      MTLG:IBAN ungueltig Rueckue
-      berweisung aus SEPA-Ueberwe
-      isungsauftrag
-    account_holder: ''
-    text_key_extension: '901'
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR3572569,03NMSCNONREF
-    funds_code: :debit
-    amount: 357256903
-    swift_code: NMSC
-    reference: NONREF
-    transaction_description: ''
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 079?00SAMMLER?109800?200904059001
-    code: 79
-    transaction_description: SAMMLER
-    prima_nota: '9800'
-    details: 0904059001
-    account_holder: ''
-  - !ruby/object:MT940::ClosingBalance
-    modifier: F
-    content: D070904EUR4472049,09
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 447204909
-    date: 2007-09-04
-  - !ruby/object:MT940::ValutaBalance
-    modifier: 
-    content: D070904EUR4472049,09
-    balance_type: 
-    sign: :debit
-    currency: EUR
-    amount: 447204909
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089414106000001
-    reference: T089414106000001
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194791601888
-    bank_code: '50880050'
-    account_number: 0194791601888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00001
-    number: 4
-    sheet: 1
-  - !ruby/object:MT940::AccountBalance
-    modifier: F
-    content: D070903EUR324910,25
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 32491025
-    date: 2007-09-03
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR1910,05NTRFNONREF//0724710333345079
-    funds_code: :credit
-    amount: 191005
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 0724710333345079
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 166?00GUTSCHRIFT?100399?20EREF+TFNR 21001 EndToEndId ?2100001?22SVWZ+Verwend
-      CTSc-01 FFP TF?23Nr 21 001?30DRESDEFF508?31DE03508800500194791600?32QUENTIN?33        QUAST?70Empfaenger
-      Quentin Quast UK?71 01
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: DRESDEFF508
-    account_number: DE03508800500194791600
-    not_implemented_fields:
-    - - '70'
-      - Empfaenger Quentin Quast UK
-    - - '71'
-      - " 01"
-    details: "EREF+TFNR 21001 EndToEndId \n00001\nSVWZ+Verwend CTSc-01 FFP TF\nNr
-      21 001"
-    account_holder: |-
-      QUENTIN
-              QUAST
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR50990,05NTRFNONREF//0724710352956584
-    funds_code: :credit
-    amount: 5099005
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 0724710352956584
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 166?00GUTSCHRIFT?100399?20EREF+TFNR 21004 EndToEndId ?2100001?22SVWZ+Verwend
-      CTSc-01 eBB TF?23Nr 21004?30DRESDEFF508?31DE03508800500194791600?32Quentin Quast?70Empfaenger
-      Quentin Quast UK?71 01
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: DRESDEFF508
-    account_number: DE03508800500194791600
-    not_implemented_fields:
-    - - '70'
-      - Empfaenger Quentin Quast UK
-    - - '71'
-      - " 01"
-    details: "EREF+TFNR 21004 EndToEndId \n00001\nSVWZ+Verwend CTSc-01 eBB TF\nNr
-      21004"
-    account_holder: Quentin Quast
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR125300,1NTRFKREF+//F2CA963F5C750549
-    funds_code: :debit
-    amount: 1253001
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: F2CA963F5C750549
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 191?00SEPA-UEBERW?100399?20KREF+TFNr 03005 MSGID CTSc-?2101 FFP?22MTLG:SEPA-Ueberweisungsauft?23rag
-      Datei mit 0000001 Zahlu?24ngen
-    code: 191
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    details: |-
-      KREF+TFNr 03005 MSGID CTSc-
-      01 FFP
-      MTLG:SEPA-Ueberweisungsauft
-      rag Datei mit 0000001 Zahlu
-      ngen
-    account_holder: ''
-  - !ruby/object:MT940::ClosingBalance
-    modifier: F
-    content: D070904EUR397310,25
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 39731025
-    date: 2007-09-04
-  - !ruby/object:MT940::ValutaBalance
-    modifier: 
-    content: D070904EUR397310,25
-    balance_type: 
-    sign: :debit
-    currency: EUR
-    amount: 39731025
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089414116000001
-    reference: T089414116000001
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194798900888
-    bank_code: '50880050'
-    account_number: 0194798900888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00001
-    number: 4
-    sheet: 1
-  - !ruby/object:MT940::AccountBalance
-    modifier: F
-    content: D070903EUR450,
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 450
-    date: 2007-09-03
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR150,NTRFKREF+//FFCD94B7601B6E06
-    funds_code: :debit
-    amount: 150
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: FFCD94B7601B6E06
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 191?00SEPA-UEBERW?100399?20KREF+TFNr 01031 PayId CTSc-?2101 EBB?22MTLG:SEPA-Ueberweisungsauft?23rag
-      Datei mit 0000001 Zahlu?24ngen
-    code: 191
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    details: |-
-      KREF+TFNr 01031 PayId CTSc-
-      01 EBB
-      MTLG:SEPA-Ueberweisungsauft
-      rag Datei mit 0000001 Zahlu
-      ngen
-    account_holder: ''
-  - !ruby/object:MT940::ClosingBalance
-    modifier: F
-    content: D070904EUR600,
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 600
-    date: 2007-09-04
-  - !ruby/object:MT940::ValutaBalance
-    modifier: 
-    content: D070904EUR600,
-    balance_type: 
-    sign: :debit
-    currency: EUR
-    amount: 600
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089414126000001
-    reference: T089414126000001
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194799000888
-    bank_code: '50880050'
-    account_number: 0194799000888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00004/00001
-    number: 4
-    sheet: 1
-  - !ruby/object:MT940::AccountBalance
-    modifier: F
-    content: D070903EUR450,
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 450
-    date: 2007-09-03
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904DR150,NTRFKREF+//DED4A9D0CA11033B
-    funds_code: :debit
-    amount: 150
-    swift_code: NTRF
-    reference: KREF+
-    transaction_description: DED4A9D0CA11033B
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 191?00SEPA-UEBERW?100399?20KREF+TFNr 01032 PayId CTSc-?2101 EBB?22MTLG:SEPA-Ueberweisungsauft?23rag
-      Datei mit 0000001 Zahlu?24ngen
-    code: 191
-    transaction_description: SEPA-UEBERW
-    prima_nota: 0399
-    details: |-
-      KREF+TFNr 01032 PayId CTSc-
-      01 EBB
-      MTLG:SEPA-Ueberweisungsauft
-      rag Datei mit 0000001 Zahlu
-      ngen
-    account_holder: ''
-  - !ruby/object:MT940::ClosingBalance
-    modifier: F
-    content: D070904EUR600,
-    balance_type: :start
-    sign: :debit
-    currency: EUR
-    amount: 600
-    date: 2007-09-04
-  - !ruby/object:MT940::ValutaBalance
-    modifier: 
-    content: D070904EUR600,
-    balance_type: 
-    sign: :debit
-    currency: EUR
-    amount: 600
-    date: 2007-09-04
-- - !ruby/object:MT940::Job
-    modifier: 
-    content: T089414136000001
-    reference: T089414136000001
-  - !ruby/object:MT940::Account
-    modifier: 
-    content: 50880050/0194804000888
-    bank_code: '50880050'
-    account_number: 0194804000888
-    account_currency: 
-  - !ruby/object:MT940::Statement
-    modifier: C
-    content: 00001/00001
-    number: 1
-    sheet: 1
-  - !ruby/object:MT940::AccountBalance
-    modifier: F
-    content: C070822EUR0,
-    balance_type: :start
-    sign: :credit
-    currency: EUR
-    amount: 0
-    date: 2007-08-22
-  - !ruby/object:MT940::StatementLine
-    modifier: 
-    content: 0709040904CR50,05NTRFNONREF//0724710290648274
-    funds_code: :credit
-    amount: 5005
-    swift_code: NTRF
-    reference: NONREF
-    transaction_description: 0724710290648274
-    date: 2007-09-04
-    entry_date: 2007-09-04
-  - !ruby/object:MT940::StatementLineInformation
-    modifier: 
-    content: 166?00GUTSCHRIFT?100399?20EREF+EndToEndIdTFNR50005000?2101?22SVWZ+TO
-      25 TFNr 50005 Einga?23ngskanal Mint Unstrukturier?24ter Verwendungszweck 140
-      Ze?25ichen Beginn Fuellzeichen x?26xxxxxxxxxxxxxxxxxxxxxxxxxxx?27xxxxxxxxxx?30DRESDEFF508?31DE51508800500190038900?32Richter
-      Renate 70 Zeichen B?33eginn Fuellzeichen xxxxxxxx?70Gerhard Geloscht 70 Zeichen?71
-      Beginn Fuellzeichen xxxxxx
-    code: 166
-    transaction_description: GUTSCHRIFT
-    prima_nota: 0399
-    bank_code: DRESDEFF508
-    account_number: DE51508800500190038900
-    not_implemented_fields:
-    - - '70'
-      - Gerhard Geloscht 70 Zeichen
-    - - '71'
-      - " Beginn Fuellzeichen xxxxxx"
-    details: |-
-      EREF+EndToEndIdTFNR50005000
-      01
-      SVWZ+TO 25 TFNr 50005 Einga
-      ngskanal Mint Unstrukturier
-      ter Verwendungszweck 140 Ze
-      ichen Beginn Fuellzeichen x
-      xxxxxxxxxxxxxxxxxxxxxxxxxxx
-      xxxxxxxxxx
-    account_holder: |-
-      Richter Renate 70 Zeichen B
-      eginn Fuellzeichen xxxxxxxx
-  - !ruby/object:MT940::ClosingBalance
-    modifier: F
-    content: C070904EUR50,05
-    balance_type: :start
-    sign: :credit
-    currency: EUR
-    amount: 5005
-    date: 2007-09-04
-  - !ruby/object:MT940::ValutaBalance
-    modifier: 
-    content: C070904EUR50,05
-    balance_type: 
-    sign: :credit
-    currency: EUR
-    amount: 5005
-    date: 2007-09-04
+&id001 !!python/object:mt940.models.Transactions
+data:
+  account_identification: 50880050/0194804000888
+  available_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['50.05']
+      currency: EUR
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    status: C
+  closing_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['50.05']
+      currency: EUR
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    status: C
+  opening_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['0']
+      currency: EUR
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cIFg==
+    status: C
+  sequence_number: '00001'
+  statement_number: '00001'
+  transaction_reference: T089414136000001
+processors:
+  post_account_identification: []
+  post_available_balance: []
+  post_closing_balance: []
+  post_forward_available_balance: []
+  post_opening_balance: []
+  post_related_reference: []
+  post_statement: [!!python/name:mt940.processors.date_cleanup_post_processor '']
+  post_statement_number: []
+  post_transaction_details: []
+  post_transaction_reference_number: []
+  pre_account_identification: []
+  pre_available_balance: []
+  pre_closing_balance: []
+  pre_forward_available_balance: []
+  pre_opening_balance: []
+  pre_related_reference: []
+  pre_statement: []
+  pre_statement_number: []
+  pre_transaction_details: []
+  pre_transaction_reference_number: []
+transactions:
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['300']
+      currency: EUR
+    bank_reference: 0724710345313905
+    currency: EUR
+    customer_reference: TFNr 40005 MSGID
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '159?00RETOURE?100399?20EREF+TFNR 40005 00005?21MTLG:Grund
+      nicht s
+
+      pezifizie?22rt Reject aus SEPA-Ueberwei?23sungsauftrag?34914'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['335.33']
+      currency: EUR
+    bank_reference: 0724710351061491
+    currency: EUR
+    customer_reference: TFNr 44003 MSGID
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '159?00RETOURE?100399?20EREF+TFNR 44003 00001?21MTLG:Grund
+      nicht s
+
+      pezifizie?22rt Reject aus SEPA-Ueberwei?23sungsauftrag?34914'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['15000']
+      currency: EUR
+    bank_reference: 0724710345313900
+    currency: EUR
+    customer_reference: TFNr 40005 MSGID
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '159?00RETOURE?100399?20EREF+TFNR 40005 00002?21MTLG:Grund
+      nicht s
+
+      pezifizie?22rt Reject aus SEPA-Ueberwei?23sungsauftrag?34914'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['66295.08']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NMSC
+    status: C
+    transaction_details: 079?00SAMMLER?109800?200904059001
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['915311.55']
+      currency: EUR
+    bank_reference: R724710351061495
+    currency: EUR
+    customer_reference: TFNr 44003 MSGID
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '159?00RETOURE?100399?20EREF+TFNR 44003 00002?21MTLG:Konto
+      gesperr
+
+      t Rueckue?22berweisung aus SEPA-Ueberwe?23isungsauftrag?34903'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['204.88']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NRTI
+    status: RC
+    transaction_details: 079?00SAMMLER/STORNO?109800?200904059003
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-999946.95']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NMSC
+    status: D
+    transaction_details: 079?00SAMMLER?109800?200904059002
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['15000.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247102
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '90621954'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: "166?00GUTSCHRIFT?100399?20EREF+EndToEndIdTFNR20004000?2101?22SVWZ\n\
+      +TO 13 TFNr 20004 Einga?23ngskanal Mint .............?24........ \n..................?25...\
+      \  ......................?26..............\n.............?27..........?28MTLG:SEPA-Ueberweisungseing?29ang\
+      \ Au\nftraggeber: Richter R?30PBNKDEFF100?31DE42100100100043921105?32Ri\n"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-500250']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//BD7CFA744
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: 85E7E69
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00SEPA-UEBERW?100399?20KREF+TFNr 01005 PayId CTSc-?2101
+      EBB?2
+
+      2MTLG:SEPA-Ueberweisungsauft?23rag Datei mit 0000005 Zahlu?24ngen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['50.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247102
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '90658244'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: "166?00GUTSCHRIFT?100399?20EREF+EndToEndIdTFNR52001000?2101?22SVWZ\n\
+      +Keine Buchung zu: TO13?23 TF52001 MINT?30PBNKDEFF100?31DE4210010\n0100043921105?32Richter\
+      \ Renate 70 Zeichen B?33eginn Fuellzeichen \nxxxxxxxx?70Dora Damm 70 Zeichen\
+      \ Beginn?71 Fuellzeichen xxxxxxxxxx\nxxx"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['125.88']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247102
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '90635078'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: "166?00GUTSCHRIFT?100399?20SVWZ+TO13 TF20018 MINT?30NIKACH22XXX?31\n\
+      CH8500779014054431109?32Cornelia Prochownik 70 Zeic?33hen Beginn \nFuellzeichen\
+      \ xxx?70Dora Damm 70 Zeichen Beginn?71 Fuellzeichen xx\nxxxxxxxxxxx"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['125004.88']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247102
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '90626371'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: "166?00GUTSCHRIFT?100399?20SVWZ+TO13 TF20008 MINT?21MTLG:Ggf.Melde\n\
+      vorschriften ?22beachten?30UBSWCHZH80A?31CH6500279279C31180700?32\nRichter Renate\
+      \ 70 Zeichen B?33eginn Fuellzeichen xxxxxxxx?70Dora \nDamm 70 Zeichen Beginn?71\
+      \ Fuellzeichen xxxxxxxxxxxxx"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-326609.66']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//DE85920B8
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: 4F8E98D
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00SEPA-UEBERW?100399?20KREF+TFNr 01007 PayId CTSc-?2101
+      EBB?2
+
+      2MTLG:SEPA-Ueberweisungsauft?23rag Datei mit 0000006 Zahlu?24ngen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-326609.66']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//D1C08A4EB
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '4664146'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00SEPA-UEBERW?100399?20KREF+TFNr 01024 PayId CTSc-?2101
+      EBB?2
+
+      2MTLG:SEPA-Ueberweisungsauft?23rag Datei mit 0000006 Zahlu?24ngen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['250000']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247102
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '90628244'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '166?00GUTSCHRIFT?100399?20SVWZ+TO13 TF20010 MINT 2001?210
+      2007-08
+
+      .30?30PBNKDEFF250?31DE40250100300325207300?32Daniel Severidt 70 Z
+
+      eichen?33Beginn Fuellzeichen xxxxxxx?70Eberhard Emil 70 Zeichen B
+
+      e?71ginn Fuellzeichen xxxxxxxxx'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['300000']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247102
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '90631813'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: "166?00GUTSCHRIFT?100399?20SVWZ+TO13 TF20014 MINT?30PBNKDEFF100?31\n\
+      DE40100100100000214105?32Cornelia Prochownik 70 Zeic?33hen Beginn\n Fuellzeichen\
+      \ xxx?70Eberhard Emil 70 Zeichen Be?71ginn Fuellzeich\nen xxxxxxxxx"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['500000']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247102
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '90630146'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '166?00GUTSCHRIFT?100399?20SVWZ+TO13 TF20011 MINT?30PBNKDEFF250?31
+
+      DE39250100300172064300?32Dirk Leunig 70 Zeichen Begi?33nn Fuellze
+
+      ichen xxxxxxxxxxx?70Eberhard Emil 70 Zeichen Be?71ginn Fuellzeich
+
+      en xxxxxxxxx'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['204.88']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NMSC
+    status: C
+    transaction_details: 079?00SAMMLER?109800?200904059001
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['204.88']
+      currency: EUR
+    bank_reference: R724710290656678
+    currency: EUR
+    customer_reference: MSGIDCTSc03MintT
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NRTI
+    status: RC
+    transaction_details: 116?00SEPA-UEBERW/STORNO?100399
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-50990.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471035
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '2954937'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+TFNR 21005 EndToEndId ?2100001?22
+
+      KREF+TFNR 21005 Instruction?23 Id 00001?24SVWZ+Verwend CTSc-01 eB
+
+      B TF?25Nr 21005?30DRESDEFF508?31DE76508800500194780101?32Empfaeng
+
+      er Florian Frech UK?33 01'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-175454.22']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//8AE316990
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: 1918BD3
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00SEPA-UEBERW?100399?20KREF+TFNr 01009 MSGID CTSc-?2101
+      EBB?2
+
+      2MTLG:SEPA-Ueberweisungsauft?23rag Datei mit 0000005 Zahlu?24ngen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-500250']
+      currency: EUR
+    bank_reference: E87048E11B394C1E
+    currency: EUR
+    customer_reference: TFNr 01006 PayId
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00SEPA-UEBERW?100399?20MTLG:SEPA-Ueberweisungsauft?21rag
+      Date
+
+      i mit 0000005 Zahlu?22ngen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['50990.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247103
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '52954937'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '166?00GUTSCHRIFT?100399?20EREF+TFNR 21005 EndToEndId ?2100001?22S
+
+      VWZ+Verwend CTSc-01 eBB TF?23Nr 21005?30DRESDEFF508?31DE065088005
+
+      00194780100?32Florian Frech?70Empfaenger Florian Frech UK?71 01'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['19990.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247103
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '33377198'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '166?00GUTSCHRIFT?100399?20EREF+EndToEndId TFNR 22 001?21
+      00001?22
+
+      SVWZ+Verwend CTSc-01 PPP TF?23Nr 22 001?24MTLG:SEPA-Ueberweisungs
+
+      eing?25ang Auftraggeber: JOSEF?30DRESDEFF508?31DE9550880050019478
+
+      4900?32JOSEF?33        JAEGER?70Empfaenger Gustav Gans'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-57.34']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471035
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '2996674'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: "116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011\
+      \ Instruct\nion?22 Id  00001?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit\
+      \ \n140 Stellen?25 fu/r SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und \nA-CT-N?27UD-/S01\
+      \ CTSc-01 EBB TFNr 01?28011/ 0001?30SOGEFRPPXXX?31\nFR1420041010050500013M02606?32Empfaenger\
+      \ 1 mit 70 Zeichen?33 Empf\n"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-5002.17']
+      currency: EUR
+    bank_reference: 0724710353006393
+    currency: EUR
+    customer_reference: TFNr 01011 MSGID
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: "116?00SEPA-UEBERW?100399?20EREF+NONREF?21SVWZ+Unstrukturierter\
+      \ Ve\nrwe?22ndungszweck mit 140 Stellen?23 fu/r SEPA COR Buchungssche?2\n4ma\
+      \ /A-CT-DTE-S01 und A-CT-N?25UD-/S01 CTSc-01 EBB TFNr 01?26011/\n 0006?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger\
+      \ 6 \nmit 70 Zeichen?33 Empfaenger 6 mit 70 Zeiche"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-5002.17']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471035
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '2998444'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: "116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011\
+      \ Instruct\nion?22 Id  00002?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit\
+      \ \n140 Stellen?25 fu/r SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und \nA-CT-N?27UD-/S01\
+      \ CTSc-01 EBB TFNr 01?28011/ 0002?30SOGEFRPPXXX?31\nFR1420041010050500013M02606?32Empfaenger\
+      \ 2 mit 70 Zeichen?33 Empf\n"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-5002.17']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471035
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '3002818'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: "116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011\
+      \ Instruct\nion?22 Id  00004?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit\
+      \ \n140 Stellen?25 fu/r SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und \nA-CT-N?27UD-/S01\
+      \ CTSc-01 EBB TFNr 01?28011/ 0004?30SOGEFRPPXXX?31\nFR1420041010050500013M02606?32Empfaenger\
+      \ 4 mit 70 Zeichen?33 Empf\n"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-5002.17']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471035
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '3000284'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: "116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011\
+      \ Instruct\nion?22 Id  00003?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit\
+      \ \n140 Stellen?25 fu/r SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und \nA-CT-N?27UD-/S01\
+      \ CTSc-01 EBB TFNr 01?28011/ 0003?30SOGEFRPPXXX?31\nFR1420041010050500013M02606?32Empfaenger\
+      \ 3 mit 70 Zeichen?33 Empf\n"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-5002.17']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471035
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '3004695'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: "116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011\
+      \ Instruct\nion?22 Id  00005?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit\
+      \ \n140 Stellen?25 fu/r SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und \nA-CT-N?27UD-/S01\
+      \ CTSc-01 EBB TFNr 01?28011/ 0005?30SOGEFRPPXXX?31\nFR1420041010050500013M02606?32Empfaenger\
+      \ 5 mit 70 Zeichen?33 Empf\n"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-55344.11']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471035
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '3008994'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: "116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011\
+      \ Instruct\nion?22 Id  00007?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit\
+      \ \n140 Stellen?25 fu/r SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und \nA-CT-N?27UD-/S01\
+      \ CTSc-01 EBB TFNr 01?28011/ 0007?29MTLG:Ggf.Melde\nvorschriften ?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfa\n"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['50']
+      currency: EUR
+    bank_reference: 0724710324649377
+    currency: EUR
+    customer_reference: TFNr 40016 MSGID
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '159?00RETOURE?100399?20EREF+TFNR 40016 00001?21MTLG:Grund
+      nicht s
+
+      pezifizie?22rt Reject aus SEPA-Ueberwei?23sungsauftrag?34914'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['50.05']
+      currency: EUR
+    bank_reference: 0724710345347489
+    currency: EUR
+    customer_reference: MCCT070927000002
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '159?00RETOURE?100399?20EREF+TFNR 40017 00001?21MTLG:Grund
+      nicht s
+
+      pezifizie?22rt Reject aus SEPA-Ueberwei?23sungsauftrag?34914'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['50.05']
+      currency: EUR
+    bank_reference: '0724710351065632'
+    currency: EUR
+    customer_reference: MCCT070927000004
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '159?00RETOURE?100399?20EREF+TFNR 40018 00001?21MTLG:Grund
+      nicht s
+
+      pezifizie?22rt Reject aus SEPA-Ueberwei?23sungsauftrag?34914'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['46500.07']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471033
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '3347237'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '159?00RETOURE?100399?20EREF+EndToEndId TFNR 06 004?21 00002?22KRE
+
+      F+EndToEndId TFNR 06 004?23 00002?24MTLG:Grund nicht spezifizie?2
+
+      5rt Reject aus SEPA-Ueberwei?26sungsauftrag?34914'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['154551.93']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471033
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '3347241'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '159?00RETOURE?100399?20EREF+EndToEndId TFNR 06 004?21 00004?22KRE
+
+      F+EndToEndId TFNR 06 004?23 00004?24MTLG:Grund nicht spezifizie?2
+
+      5rt Reject aus SEPA-Ueberwei?26sungsauftrag?34914'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-2550']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//31408CF87
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: AD5901E
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00SEPA-UEBERW?100399?20KREF+TFNr 40016 PayId CTSc-?2102
+      PPP?2
+
+      2MTLG:SEPA-Ueberweisungsauft?23rag Datei mit 0000002 Zahlu?24ngen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-2550.12']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: MCCT07090401//4F
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: 112D73FF96F4FB
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00SEPA-UEBERW?100399?20MTLG:SEPA-Ueberweisungsauft?21rag
+      Date
+
+      i mit 0000002 Zahlu?22ngen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-2550.12']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: MCCT07090402//EC
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: 4BA14CEA34BFF3
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00SEPA-UEBERW?100399?20MTLG:SEPA-Ueberweisungsauft?21rag
+      Date
+
+      i mit 0000002 Zahlu?22ngen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-65500.15']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//92D891C4
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: 54BC30B5
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00ONLINE-UEBW.?100399?20MTLG:SBI-SEPA-SAMMELUEB.Anz?21:4
+      Refe
+
+      renz: 1930467114 Erf?22assung mit 004 Zahlungen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-402104']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//57B4197C
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: C644DE8F
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00ONLINE-UEBW.?100399?20MTLG:SBI-SEPA-SAMMELUEB.Anz?21:4
+      Refe
+
+      renz: 1930467115 Erf?22assung mit 004 Zahlungen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-476921.44']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//06F8672B2
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: 8B7A92F
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00SEPA-UEBERW?100399?20KREF+TFNr 41003 PayId CTSc-?2101
+      EBB?2
+
+      2MTLG:SEPA-Ueberweisungsauft?23rag Datei mit 0000004 Zahlu?24ngen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['335.33']
+      currency: EUR
+    bank_reference: 0724710351059240
+    currency: EUR
+    customer_reference: TFNr 44005 MSGID
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '159?00RETOURE?100399?20EREF+TFNR 44005 00001?21MTLG:Grund
+      nicht s
+
+      pezifizie?22rt Reject aus SEPA-Ueberwei?23sungsauftrag?34914'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['915311.55']
+      currency: EUR
+    bank_reference: R724710351059243
+    currency: EUR
+    customer_reference: TFNr 44005 MSGID
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '159?00RETOURE?100399?20EREF+TFNR 44005 00002?21MTLG:Konto
+      gesperr
+
+      t Rueckue?22berweisung aus SEPA-Ueberwe?23isungsauftrag?34903'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-157.34']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471036
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: 0914647
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+TFNR 01041 00001?21KREF+TFNR
+      0104
+
+      1  Instructio?22n Id 00001?23SVWZ+Strukturierter Verwend?24ungszw
+
+      eck EBB 01041 001 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?
+
+      32Empfaenger 1 mit 70 Zeichen?33 Empfaenger 1 mit 70 Zeiche'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-6002.17']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471036
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: 0912501
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+TFNR 01041 00002?21KREF+TFNR
+      0104
+
+      1  Instructio?22n Id 00002?23SVWZ+Strukturierter Verwend?24ungszw
+
+      eck EBB 01041 002 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?
+
+      32Empfaenger 2 mit 70 Zeichen?33 Empfaenger 2 mit 70 Zeiche'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-6002.17']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471036
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: 0923556
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+TFNR 01041 00005?21KREF+TFNR
+      0104
+
+      1  Instructio?22n Id 00005?23SVWZ+Strukturierter Verwend?24ungszw
+
+      eck EBB 01041 005 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?
+
+      32Empfaenger 5 mit 70 Zeichen?33 Empfaenger 5 mit 70 Zeiche'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-6002.17']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471036
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: 0910575
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+TFNR 01041 00006?21KREF+TFNR
+      0104
+
+      1  Instructio?22n Id 00006?23SVWZ+Strukturierter Verwend?24ungszw
+
+      eck EBB 01041 006 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?
+
+      32Empfaenger 6 mit 70 Zeichen?33 Empfaenger 6 mit 70 Zeiche'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-6002.17']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471036
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: 0918027
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+TFNR 01041 00004?21KREF+TFNR
+      0104
+
+      1  Instructio?22n Id 00004?23SVWZ+Strukturierter Verwend?24ungszw
+
+      eck EBB 01041 004 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?
+
+      32Empfaenger 4 mit 70 Zeichen?33 Empfaenger 4 mit 70 Zeiche'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-6002.17']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471036
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: 0916341
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+TFNR 01041 00003?21KREF+TFNR
+      0104
+
+      1  Instructio?22n Id 00003?23SVWZ+Strukturierter Verwend?24ungszw
+
+      eck EBB 01041 003 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?
+
+      32Empfaenger 3 mit 70 Zeichen?33 Empfaenger 3 mit 70 Zeiche'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-155344.11']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471036
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: 0908674
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+TFNR 01041 00007?21KREF+TFNR
+      0104
+
+      1  Instructio?22n Id 00007?23SVWZ+Strukturierter Verwend?24ungszw
+
+      eck EBB 01041 007 DE?25MTLG:Ggf.Meldevorschriften ?26beachten?30S
+
+      OGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger 7 mit 70 Ze
+
+      ichen?33 Empfaenger 7 mit 70 Zeiche'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-415603.93']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//649D24F7
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: C6EDAC53
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00ONLINE-UEBW.?100399?20MTLG:SBI-SEPA-SAMMELUEB.Anz?21:3
+      Refe
+
+      renz: 1930467116 Erf?22assung mit 003 Zahlungen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-589103.86']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//AC59892B2
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: 66252EC
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00SEPA-UEBERW?100399?20KREF+TFNr 05003 MSGID CTSc-?2101  BC
+      P
+
+      PP?22MTLG:SEPA-Ueberweisungsauft?23rag Datei mit 0000003 Zahlu?24
+
+      ngen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-915646.88']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//CDB988231
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: C851A5B
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00SEPA-UEBERW?100399?20KREF+TFNr 44005 MSGID CTSc-?2102
+      EBB?2
+
+      2MTLG:SEPA-Ueberweisungsauft?23rag Datei mit 0000002 Zahlu?24ngen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['16500.07']
+      currency: EUR
+    bank_reference: '0724710324666001'
+    currency: EUR
+    customer_reference: MSGID CTSc-01  B
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '159?00RETOURE?100399?20EREF+EndToEndId TFNR 05 006?21 00002?22MTL
+
+      G:Grund nicht spezifizie?23rt Reject aus SEPA-Ueberwei?24sungsauf
+
+      trag?34914'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['154551.93']
+      currency: EUR
+    bank_reference: '0724710324666006'
+    currency: EUR
+    customer_reference: MSGID CTSc-01  B
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '159?00RETOURE?100399?20EREF+EndToEndId TFNR 05 006?21 00004?22MTL
+
+      G:Grund nicht spezifizie?23rt Reject aus SEPA-Ueberwei?24sungsauf
+
+      trag?34914'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-13990.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471033
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '3354911'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: "116?00ONLINE-UEBW.?100399?20EREF+EndToEndId TFNR 21 003?21\
+      \ 00001?\n22KREF+EndToEndId TFNR 21 003?23 00001?24SVWZ+Verwend CTSc-01 PPP\n\
+      \ TF?25Nr 21 003?26MTLG:SBI-SEPA-UEB.DE6850880?2705001 Referenz: 1\n930467122?30DRESDEFF508?31DE68508800500194784901?32Empfaenger\
+      \ Jos\nef Jaeger UK?3301"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-19990.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471033
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '3377198'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: "116?00ONLINE-UEBW.?100399?20EREF+EndToEndId TFNR 22 001?21\
+      \ 00001?\n22KREF+EndToEndId TFNR 22 001?23 00001?24SVWZ+Verwend CTSc-01 PPP\n\
+      \ TF?25Nr 22 001?26MTLG:SBI-SEPA-UEB.DE0450880?2705001 Referenz: 1\n930467123?30DRESDEFF508?31DE04508800500194781300?32Empfaenger\
+      \ Gus\ntav Gans"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-50990.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471032
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '4651156'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+TFNR 22003 EndToEndId ?2100001?22
+
+      KREF+TFNR 22003 Instruction?23 Id 00001?24SVWZ+Verw CTSc-01 BC-PP
+
+      P TF?25Nr 22003?30DRESDEFF508?31DE96508800500194774600?32Empfaeng
+
+      er Anton Ackermann'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-326609.66']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: TFNr 01008 MEBB/
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: /9A4616CC6128D651
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00SEPA-UEBERW?100399?20MTLG:SEPA-Ueberweisungsauft?21rag
+      Date
+
+      i mit 0000006 Zahlu?22ngen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-342104']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//A26B6D6B5
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: E821EA9
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: "191?00SEPA-UEBERW?100399?20KREF+PayId CTSc-01  BC PPP ?21TFNr\
+      \ 05 \n006?22MTLG:SEPA-Ueberweisungsauft?23rag Datei mit 0000004 Zahlu?2\n4ngen"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-962104']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//493189D22
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '1858097'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00SEPA-UEBERW?100399?20KREF+TFNr 05009 MSGID CTSc-?2101
+      BC-PP
+
+      P?22MTLG:SEPA-Ueberweisungsauft?23rag Datei mit 0000004 Zahlu?24n
+
+      gen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-1522104']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//75C62EC2
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: 5E19D187
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00ONLINE-UEBW.?100399?20MTLG:SBI-SEPA-SAMMELUEB.Anz?21:4
+      Refe
+
+      renz: 1930467118 Erf?22assung mit 004 Zahlungen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['13990.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247103
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '33354911'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: "166?00GUTSCHRIFT?100399?20EREF+EndToEndId TFNR 21 003?21\
+      \ 00001?22\nSVWZ+Verwend CTSc-01 PPP TF?23Nr 21 003?30DRESDEFF508?31DE9550880\n\
+      0500194784900?32JOSEF?33        JAEGER?70Empfaenger Josef Jaeger \nUK?7101"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-57.34']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471035
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '2971787'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+TFNR 01015 00001?21KREF+TFNR
+      0101
+
+      5  Instructio?22n Id 00001?23SVWZ+Strukturierter Verwend?24ungszw
+
+      eck EBB 01015 001 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?
+
+      32Empfaenger 1 mit 70 Zeichen?33 Empfaenger 1 mit 70 Zeiche'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-5002.17']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471035
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '2975390'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+TFNR 01015 00003?21KREF+TFNR
+      0101
+
+      5  Instructio?22n Id 00003?23SVWZ+Strukturierter Verwend?24ungszw
+
+      eck EBB 01015 003 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?
+
+      32Empfaenger 3 mit 70 Zeichen?33 Empfaenger 3 mit 70 Zeiche'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-5002.17']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471035
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '2980804'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+TFNR 01015 00006?21KREF+TFNR
+      0101
+
+      5  Instructio?22n Id 00006?23SVWZ+Strukturierter Verwend?24ungszw
+
+      eck EBB 01015 006 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?
+
+      32Empfaenger 6 mit 70 Zeichen?33 Empfaenger 6 mit 70 Zeiche'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-5002.17']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471035
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '2979070'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+TFNR 01015 00005?21KREF+TFNR
+      0101
+
+      5  Instructio?22n Id 00005?23SVWZ+Strukturierter Verwend?24ungszw
+
+      eck EBB 01015 005 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?
+
+      32Empfaenger 5 mit 70 Zeichen?33 Empfaenger 5 mit 70 Zeiche'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-5002.17']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471035
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '2973502'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+TFNR 01015 00002?21KREF+TFNR
+      0101
+
+      5  Instructio?22n Id 00002?23SVWZ+Strukturierter Verwend?24ungszw
+
+      eck EBB 01015 002 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?
+
+      32Empfaenger 2 mit 70 Zeichen?33 Empfaenger 2 mit 70 Zeiche'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-5002.17']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471035
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '2977271'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+TFNR 01015 00004?21KREF+TFNR
+      0101
+
+      5  Instructio?22n Id 00004?23SVWZ+Strukturierter Verwend?24ungszw
+
+      eck EBB 01015 004 DE?30SOGEFRPPXXX?31FR1420041010050500013M02606?
+
+      32Empfaenger 4 mit 70 Zeichen?33 Empfaenger 4 mit 70 Zeiche'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-19990.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471033
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '3360224'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: "116?00ONLINE-UEBW.?100399?20EREF+EndToEndId TFNR 22 002?21\
+      \ 00001?\n22KREF+EndToEndId TFNR 22 002?23 00001?24SVWZ+Verwend CTSc-01 PPP\n\
+      \ TF?25Nr 22 002?26MTLG:SBI-SEPA-UEB.DE1250880?2705001 Referenz: 1\n930467119?30DRESDEFF508?31DE12508800500194786200?32Empfaenger\
+      \ Lud\nwig Loewe"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-50990.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471035
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '2952868'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+TFNR 21007 EndToEndId ?2100001?22
+
+      KREF+TFNR 21007 Instruction?23 Id 00001?24SVWZ+Verwend CTSc-01 eB
+
+      B TF?25Nr 21007?30DRESDEFF508?31DE84508800500194785001?32Empfange
+
+      r Karl Kaufmann UK?3301'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-50990.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471033
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '3343453'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: "116?00ONLINE-UEBW.?100399?20EREF+EndToEndId TFNR 22 004?21\
+      \ 00001?\n22KREF+EndToEndId TFNR 22 004?23 00001?24SVWZ+Verw CTSc-01 BC-PPP\n\
+      \ TF?25Nr 22 004?26MTLG:SBI-SEPA-UEB.DE1050880?2705001 Referenz: 1\n930467120?30DRESDEFF508?31DE10508800500194787400?32Empfaenger\
+      \ Mar\nta Metzger"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-55344.11']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471035
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '2982472'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+TFNR 01015 00007?21KREF+TFNR
+      0101
+
+      5  Instructio?22n Id 00007?23SVWZ+Strukturierter Verwend?24ungszw
+
+      eck EBB 01015 007 DE?25MTLG:Ggf.Meldevorschriften ?26beachten?30S
+
+      OGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger 7 mit 70 Ze
+
+      ichen?33 Empfaenger 7 mit 70 Zeiche'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-342104']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//D4AF9E363
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: A92E76F
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00SEPA-UEBERW?100399?20KREF+TFNr 05005 PayId CTSc-?2101  BC
+      P
+
+      PP?22MTLG:SEPA-Ueberweisungsauft?23rag Datei mit 0000004 Zahlu?24
+
+      ngen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-956588.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//072471033
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '3366624'
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '116?00ONLINE-UEBW.?100399?20EREF+EndToEndId TFNR 06 003?21
+      00001?
+
+      22KREF+EndToEndId TFNR 06 003?23 00001?24SVWZ+Unstrukturiert Verw
+
+      end?25ungs/zweck mit 140 Stellen?26fur /SEPA ZKA Buchungsschem?27
+
+      a A-/CT-PTS-S01 A-CT-ENTNRZ?28-S01/ CTSc-01 BC PPP TFNr 0?296 003
+
+      /0001?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger 1?
+
+      '
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['50990.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247103
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '52952868'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '166?00GUTSCHRIFT?100399?20EREF+TFNR 21007 EndToEndId ?2100001?22S
+
+      VWZ+Verwend CTSc-01 eBB TF?23Nr 21007?30DRESDEFF508?31DE145088005
+
+      00194785000?32Karl Kaufmann?70Empfanger Karl Kaufmann UK?7101'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['16500.07']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247103
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '24661086'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '166?00GUTSCHRIFT?100399?20EREF+TFNR 0500500002?21SVWZ+Strukturier
+
+      ter Verwend?22ungszweck 50050002 DE?30DRESDEFF508?31DE14508800500
+
+      194785000?32Karl Kaufmann?70Empfaenger bei DRESDE'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['19990.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247103
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '33360224'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '166?00GUTSCHRIFT?100399?20EREF+EndToEndId TFNR 22 002?21
+      00001?22
+
+      SVWZ+Verwend CTSc-01 PPP TF?23Nr 22 002?30DRESDEFF508?31DE1450880
+
+      0500194785000?32KARL?33        KAUFMANN?70Empfaenger Ludwig Loewe'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['56500.07']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247103
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '24647446'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '166?00GUTSCHRIFT?100399?20EREF+TFNR 0300300002?21SVWZ+Strukturier
+
+      ter Verwend?22ungszweck 30030002 DE?30DRESDEFF508?31DE03508800500
+
+      194791600?32Quentin Quast?70Empfaenger bei DRESDE mit 7?710 Zeich
+
+      en Empfaenger bei DR'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['50990.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247103
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBw==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '33343453'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '166?00GUTSCHRIFT?100399?20EREF+EndToEndId TFNR 22 004?21
+      00001?22
+
+      SVWZ+Verw CTSc-01 BC-PPP TF?23Nr 22 004?30DRESDEFF508?31DE1450880
+
+      0500194785000?32KARL?33        KAUFMANN?70Empfaenger Marta Metzge
+
+      r'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['154551.93']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247103
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBw==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '24647450'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '166?00GUTSCHRIFT?100399?20EREF+TFNR 0300300004?21SVWZ+Strukturier
+
+      ter Verwend?22ungszweck 30030004 DE?30DRESDEFF508?31DE03508800500
+
+      194791600?32Quentin Quast?70Empfaenger bei DRESDE mit 7?710 Zeich
+
+      en Empfaenger bei DR'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['154551.93']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247103
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBw==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '24661090'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '166?00GUTSCHRIFT?100399?20EREF+TFNR 0500500004?21SVWZ+Strukturier
+
+      ter Verwend?22ungszweck 50050004 DE?30DRESDEFF508?31DE14508800500
+
+      194785000?32Karl Kaufmann?70Empfaenger bei DRESDE'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-1500']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//536D80EFE
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: C56ACF8
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00SEPA-UEBERW?100399?20KREF+TFNr 01022 MSGID CTSc-?2101
+      EBB?2
+
+      2MTLG:SEPA-Ueberweisungsauft?23rag Datei mit 0000001 Zahlu?24ngen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['300']
+      currency: EUR
+    bank_reference: '0724710345316116'
+    currency: EUR
+    customer_reference: TFNr 40001 MSGID
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '159?00RETOURE?100399?20EREF+TFNR 40001 00005?21MTLG:Grund
+      nicht s
+
+      pezifizie?22rt Reject aus SEPA-Ueberwei?23sungsauftrag?34914'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['335.33']
+      currency: EUR
+    bank_reference: '0724710351063401'
+    currency: EUR
+    customer_reference: TFNr 44001 MSGID
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '159?00RETOURE?100399?20EREF+TFNR 44001 00001?21MTLG:Grund
+      nicht s
+
+      pezifizie?22rt Reject aus SEPA-Ueberwei?23sungsauftrag?34914'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['15000']
+      currency: EUR
+    bank_reference: '0724710345316110'
+    currency: EUR
+    customer_reference: TFNr 40001 MSGID
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '159?00RETOURE?100399?20EREF+TFNR 40001 00002?21MTLG:Grund
+      nicht s
+
+      pezifizie?22rt Reject aus SEPA-Ueberwei?23sungsauftrag?34914'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['15000.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247102
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '90659857'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '166?00GUTSCHRIFT?100399?20EREF+EndToEndIdTFNR20001000?2101?22SVWZ
+
+      +TO 13 TFNr 20001 Einga?23ngskanal Mint Unstrukturier?24ter Verwe
+
+      ndungszweck 140 Ze?25ichen Beginn Fuellzeichen x?26xxxxxxxxxxxxxx
+
+      xxxxxxxxxxxxx?27xxxxxxxxxx?30PBNKDEFF100?31DE42100100100043921105
+
+      ?32Richter Renate 70 Zeichen B?33eginn Fuellzeichen xxxxxxxx?70Qu
+
+      '
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['125004.88']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247102
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '90624796'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '166?00GUTSCHRIFT?100399?20SVWZ+TO13 TF20005 MINT?30PBNKDEFF100?31
+
+      DE42100100100043921105?32Richter Renate 70 Zeichen B?33eginn Fuel
+
+      lzeichen xxxxxxxx?70Quentin Quast 70 Zeichen Be?71ginn Fuellzeich
+
+      en xxxxxxxxx'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['915311.55']
+      currency: EUR
+    bank_reference: R724710351063405
+    currency: EUR
+    customer_reference: TFNr 44001 MSGID
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '159?00RETOURE?100399?20EREF+TFNR 44001 00002?21MTLG:IBAN
+      unguelti
+
+      g Rueckue?22berweisung aus SEPA-Ueberwe?23isungsauftrag?34901'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-3572569.03']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: ''
+    funds_code: R
+    id: NMSC
+    status: D
+    transaction_details: 079?00SAMMLER?109800?200904059001
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['1910.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247103
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '33345079'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: "166?00GUTSCHRIFT?100399?20EREF+TFNR 21001 EndToEndId ?2100001?22S\n\
+      VWZ+Verwend CTSc-01 FFP TF?23Nr 21 001?30DRESDEFF508?31DE03508800\n500194791600?32QUENTIN?33\
+      \        QUAST?70Empfaenger Quentin Quast\n UK?71 01"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['50990.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247103
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '52956584'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '166?00GUTSCHRIFT?100399?20EREF+TFNR 21004 EndToEndId ?2100001?22S
+
+      VWZ+Verwend CTSc-01 eBB TF?23Nr 21004?30DRESDEFF508?31DE035088005
+
+      00194791600?32Quentin Quast?70Empfaenger Quentin Quast UK?71 01'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-125300.1']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//F2CA963F5
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: C750549
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00SEPA-UEBERW?100399?20KREF+TFNr 03005 MSGID CTSc-?2101
+      FFP?2
+
+      2MTLG:SEPA-Ueberweisungsauft?23rag Datei mit 0000001 Zahlu?24ngen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-150']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//FFCD94B76
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: 01B6E06
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00SEPA-UEBERW?100399?20KREF+TFNr 01031 PayId CTSc-?2101
+      EBB?2
+
+      2MTLG:SEPA-Ueberweisungsauft?23rag Datei mit 0000001 Zahlu?24ngen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-150']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: KREF+//DED4A9D0C
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: A11033B
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: '191?00SEPA-UEBERW?100399?20KREF+TFNr 01032 PayId CTSc-?2101
+      EBB?2
+
+      2MTLG:SEPA-Ueberweisungsauft?23rag Datei mit 0000001 Zahlu?24ngen'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['50.05']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF//07247102
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    extra_details: '90648274'
+    funds_code: R
+    id: NTRF
+    status: C
+    transaction_details: '166?00GUTSCHRIFT?100399?20EREF+EndToEndIdTFNR50005000?2101?22SVWZ
+
+      +TO 25 TFNr 50005 Einga?23ngskanal Mint Unstrukturier?24ter Verwe
+
+      ndungszweck 140 Ze?25ichen Beginn Fuellzeichen x?26xxxxxxxxxxxxxx
+
+      xxxxxxxxxxxxx?27xxxxxxxxxx?30DRESDEFF508?31DE51508800500190038900
+
+      ?32Richter Renate 70 Zeichen B?33eginn Fuellzeichen xxxxxxxx?70Ge
+
+      '
+  transactions: *id001

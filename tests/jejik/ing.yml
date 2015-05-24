@@ -1,13 +1,25 @@
 &id001 !!python/object:mt940.models.Transactions
 data:
+  account_identification: '0001234567'
   closing_balance: !!python/object:mt940.models.Balance
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['42570.04']
+      amount: !!python/object/apply:decimal.Decimal ['3.47']
       currency: EUR
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
-      B9oDFw==
+      B9oHFw==
     status: C
+  opening_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['0.00']
+      currency: EUR
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9oHFg==
+    status: C
+  sequence_number: null
+  statement_number: '000'
+  transaction_reference: MPBZ
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -31,5 +43,21 @@ processors:
   pre_transaction_reference_number: []
 transactions:
 - !!python/object:mt940.models.Transaction
-  data: {}
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['1.00']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NGT NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9oHFw==
+    extra_details: ''
+    funds_code: null
+    id: null
+    status: C
+    transaction_details: 'D000004C000002D25,24C28,71
+
+      -XXX'
   transactions: *id001

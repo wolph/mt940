@@ -1,5 +1,5 @@
 &id001 !!python/object:mt940.models.Transactions
-data: {}
+data: {sequence_number: '001', statement_number: '00035'}
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -23,7 +23,5 @@ processors:
   pre_transaction_reference_number: []
 transactions:
 - !!python/object:mt940.models.Transaction
-  data: {transaction_details: '091
-
-      -'}
+  data: {}
   transactions: *id001
