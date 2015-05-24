@@ -36,6 +36,8 @@ setup(
     tests_require=['pytest'],
     cmdclass={'test': PyTest},
     classifiers=['License :: OSI Approved :: BSD License'],
-    install_requires=[],
+    install_requires=[
+        'enum34',
+    ],
 )
 
