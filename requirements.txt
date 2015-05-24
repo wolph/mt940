@@ -1,4 +1,3 @@
-enum34
 pytest
 pytest-pep8
 pytest-flakes
