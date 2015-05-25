@@ -3,6 +3,10 @@ import yaml
 import mt940
 import pytest
 import decimal
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_sta_files():
@@ -22,18 +26,24 @@ def get_yaml_data(sta_file):
 
 def compare(a, b):
     if isinstance(a, (str, int, long, unicode, decimal.Decimal)):
+        logger.debug('%r == %r', a, b)
         assert a == b
     elif a is None:
+        logger.debug('%r is %r', a, b)
         assert a is b
     elif isinstance(a, dict):
         for k in a:
             compare(a[k], b[k])
-    elif isinstance(a, mt940.models.Model):
-        compare(a.__dict__, b.__dict__)
+    elif isinstance(a, (list, tuple)):
+        for av, bv in zip(a, b):
+            compare(av, bv)
     elif hasattr(a, 'data'):
         compare(a.data, b.data)
+    elif isinstance(a, mt940.models.Model):
+        compare(a.__dict__, b.__dict__)
     else:
-        assert a == b
+        raise TypeError('Unsupported type %s' % type(a))
+
 
 @pytest.mark.parametrize('input', get_sta_files())
 def test_parse(input):
@@ -56,5 +66,8 @@ def test_parse(input):
             str(v)
             repr(v)
 
+    # Compare transaction data
     compare(transactions, expected)
+    # Compare actual transactions
+    compare(transactions[:], expected[:])
 

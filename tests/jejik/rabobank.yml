@@ -57,7 +57,13 @@ transactions:
     funds_code: null
     id: N044
     status: D
-    transaction_details: '20095731'
+    transaction_details: 'Terugboeking
+
+      NIET AKKOORD MET AFSCHRIJVING
+
+      KOSTEN KINDEROPVANG JUNI
+
+      20095731'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -74,7 +80,9 @@ transactions:
     funds_code: null
     id: N060
     status: D
-    transaction_details: FACTUURNUMMER 987654321
+    transaction_details: 'BETALINGSKENM.  123456789
+
+      FACTUURNUMMER 987654321'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -108,7 +116,13 @@ transactions:
     funds_code: null
     id: N060
     status: D
-    transaction_details: KPN - MOBIEL
+    transaction_details: 'BETALINGSKENM.  173787046000009
+
+      FACTUUR * 173787046 000009
+
+      ZIE REKENING OP KPN.COM OF HI.NL
+
+      KPN - MOBIEL'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:

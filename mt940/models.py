@@ -204,7 +204,14 @@ class Transactions(collections.Sequence):
                 else:
                     transaction.data.update(result)
             elif tag.scope is Transaction:
-                transaction.update(result)
+                # Combine multiple results together as one string, Rabobank has
+                # multiple :86: tags for a single transaction
+                for k, v in result.iteritems():
+                    if k in transaction.data:
+                        transaction.data[k] += '\n%s' % v.strip()
+                    else:
+                        transaction.data[k] = v
+
             elif tag.scope is Transactions:
                 self.data.update(result)
 
