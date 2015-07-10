@@ -42,6 +42,7 @@ except ImportError:  # pragma: no cover
         Enum = object
 
 import mt940
+from . import models
 
 
 logger = logging.getLogger(__name__)
@@ -49,7 +50,7 @@ logger = logging.getLogger(__name__)
 
 class Tag(object):
     id = 0
-    scope = mt940.models.Transactions
+    scope = models.Transactions
 
     def __init__(self):
         self.re = re.compile(self.pattern, re.IGNORECASE | re.VERBOSE)
@@ -131,10 +132,10 @@ class BalanceBase(Tag):
 
     def __call__(self, transactions, value):
         data = super(BalanceBase, self).__call__(transactions, value)
-        data['amount'] = mt940.models.Amount(**data)
-        data['date'] = mt940.models.Date(**data)
+        data['amount'] = models.Amount(**data)
+        data['date'] = models.Date(**data)
         return {
-            self.slug: mt940.models.Balance(**data)
+            self.slug: models.Balance(**data)
         }
 
 
@@ -148,7 +149,7 @@ class Statement(Tag):
     Pattern: 6!n[4!n]2a[1!a]15d1!a3!c16x[//16x]
     '''
     id = 61
-    scope = mt940.models.Transaction
+    scope = models.Transaction
     pattern = r'''^
     (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
     (?P<month>\d{2})
@@ -170,11 +171,11 @@ class Statement(Tag):
         data = super(Statement, self).__call__(transactions, value)
         data.setdefault('currency', transactions.currency)
 
-        data['amount'] = mt940.models.Amount(**data)
-        data['date'] = mt940.models.Date(**data)
+        data['amount'] = models.Amount(**data)
+        data['date'] = models.Date(**data)
 
         if data.get('entry_day') and data.get('entry_month'):
-            data['entry_date'] = mt940.models.Date(
+            data['entry_date'] = models.Date(
                 day=data.get('entry_day'),
                 month=data.get('entry_month'),
                 year=str(data['date'].year),
@@ -200,7 +201,7 @@ class TransactionDetails(Tag):
     Pattern: 6x65x
     '''
     id = 86
-    scope = mt940.models.Transaction
+    scope = models.Transaction
     pattern = r'(?P<transaction_details>[\s\S]{0,330})'
 
 

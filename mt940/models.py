@@ -4,6 +4,8 @@ import datetime
 import collections
 
 import mt940
+from . import tags
+from . import processors
 
 
 class Model(object):
@@ -121,7 +123,7 @@ class Transactions(collections.Sequence):
         pre_related_reference=[],
         post_related_reference=[],
         pre_statement=[],
-        post_statement=[mt940.processors.date_cleanup_post_processor],
+        post_statement=[processors.date_cleanup_post_processor],
         pre_statement_number=[],
         post_statement_number=[],
         pre_transaction_details=[],
@@ -172,10 +174,10 @@ class Transactions(collections.Sequence):
 
         for i, match in enumerate(matches):
             tag_id = int(match.group('tag'))
-            assert tag_id in mt940.tags.TAG_BY_ID, 'Unknown tag %r' \
+            assert tag_id in tags.TAG_BY_ID, 'Unknown tag %r' \
                 'in line: %r' % (tag_id, match.group(0))
 
-            tag = mt940.tags.TAG_BY_ID[tag_id]
+            tag = tags.TAG_BY_ID[tag_id]
 
             # Nice trick to get all the text that is part of this tag, python
             # regex matches have a `end()` and `start()` to indicate the start
@@ -197,7 +199,7 @@ class Transactions(collections.Sequence):
             for processor in self.processors.get('post_%s' % tag.slug):
                 result = processor(self, tag, tag_dict, result)
 
-            if isinstance(tag, mt940.tags.Statement):
+            if isinstance(tag, tags.Statement):
                 if transaction.data.get('id'):
                     transaction = Transaction(self, result)
                     self.transactions.append(transaction)
