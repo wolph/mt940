@@ -19,7 +19,8 @@ MT940
     :alt: Supported Python versions
     :target: https://crate.io/packages/mt940?version=latest
 
-``mt940`` - A library to parse MT940 files and returns smart Python collections for statistics and manipulation.
+``mt940`` - A library to parse MT940 files and returns smart Python collections
+for statistics and manipulation.
 
 Links
 -----
@@ -66,7 +67,21 @@ everything in all supported python versions.
 Usage
 -----
 
-* TODO
+.. python::
+
+   import mt940
+   import pprint
+
+   transactions = mt940.parse('tests/jejik/abnamro.sta')
+
+   print 'Transactions:'
+   print transactions
+   pprint.pprint(transactions.data)
+
+   print
+   for transaction in transactions:
+       print 'Transaction: ', transaction
+       pprint.pprint(transaction.data)
 
 Contributing
 ------------
