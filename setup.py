@@ -1,14 +1,61 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import os
 import sys
-from mt940 import metadata
-from setuptools import setup, find_packages
-from setuptools.command.test import test as TestCommand
 
-if os.path.isfile('README.rst'):
-    long_description = open('README.rst').read()
-else:
-    long_description = 'See http://pypi.python.org/pypi/%s/' % (
-        metadata.__package_name__)
+
+try:
+    from setuptools import setup, find_packages
+    from setuptools.command.test import test as TestCommand
+except ImportError:
+    from distutils.core import setup, find_packages, Command as TestCommand
+
+about = {}
+with open("mt940/__about__.py") as fp:
+    exec(fp.read(), about)
+
+
+install_reqs = []
+tests_reqs = []
+
+if sys.version_info < (2, 7):
+    install_reqs += ['argparse']
+    tests_reqs += ['unittest2']
+
+if sys.version_info < (3, 0):
+    install_reqs += ['enum34']
+
+def parse_requirements(filename):
+    '''Read the requirements from the filename, supports includes'''
+    requirements = []
+
+    if os.path.isfile(filename):
+        with open(filename) as fh:
+            for line in fh:
+                line = line.strip()
+                if line.startswith('-r'):
+                    requirements += parse_requirements(
+                        os.path.join(os.path.dirname(filename),
+                                     line.split(' ', 1)[-1]))
+                elif line and not line.startswith('#'):
+                    requirements.append(line)
+
+    return requirements
+
+install_reqs += parse_requirements('requirements.txt')
+tests_reqs += parse_requirements('tests/requirements.txt')
+
+if sys.argv[-1] == 'info':
+    for k, v in about.items():
+        print('%s: %s' % (k, v))
+    sys.exit()
+
+with open('README.rst') as fh:
+    readme = fh.read()
+
+with open('CHANGES') as fh:
+    history = fh.read().replace('.. :changelog:', '')
 
 
 class PyTest(TestCommand):
@@ -24,20 +71,32 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 setup(
-    name=metadata.__package_name__,
-    version=metadata.__version__,
-    author=metadata.__author__,
-    author_email=metadata.__author_email__,
-    description=metadata.__description__,
-    url=metadata.__url__,
-    license='BSD',
-    packages=find_packages(),
-    long_description=long_description,
-    tests_require=['pytest'],
+    name=about['__title__'],
+    version=about['__version__'],
+    author=about['__author__'],
+    author_email=about['__email__'],
+    description=about['__description__'],
+    url=about['__url__'],
+    license=about['__license__'],
+    keywords=about['__title__'],
+    packages=find_packages(exclude=['docs']),
+    long_description=readme + '\n\n' + history,
+    include_package_data=True,
+    install_requires=install_reqs,
+    tests_require=tests_reqs,
+    zip_safe=False,
     cmdclass={'test': PyTest},
-    classifiers=['License :: OSI Approved :: BSD License'],
-    install_requires=[
-        'enum34',
+    classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: BSD License',
+        'Natural Language :: English',
+        "Programming Language :: Python :: 2",
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: Implementation :: PyPy',
+        'Programming Language :: Python :: Implementation :: PyPy3',
     ],
 )
-

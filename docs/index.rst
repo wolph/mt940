@@ -1,15 +1,20 @@
-MT940 library for Python
-========================================
+Welcome to MT940's documentation!
+=================================
 
 Contents:
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
 
+   installation
    usage
-   mt940
+   modules
+   contributing
+   authors
+   history
 
 .. include:: ../README.rst
+    :start-line: 23
 
 Indices and tables
 ==================
@@ -17,4 +22,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

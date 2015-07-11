@@ -37,7 +37,7 @@ def parse(fh):
     :return: Collection of transactions
     :rtype: Transactions
     '''
-    if not hasattr(fh, 'read'):
+    if not hasattr(fh, 'read'):  # pragma: no branch
         fh = open(fh)
     data = fh.read()
 

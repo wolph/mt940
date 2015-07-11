@@ -1,3 +1,7 @@
+========
+Usage
+========
 
-.. include :: ../README.rst
+To use MT940 in a project::
 
+	import mt940
