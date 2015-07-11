@@ -23,6 +23,8 @@ if sys.version_info < (2, 7):
     install_reqs += ['argparse']
     tests_reqs += ['unittest2']
 
+if sys.version_info < (3, 0):
+    install_reqs += ['enum34']
 
 def parse_requirements(filename):
     '''Read the requirements from the filename, supports includes'''
@@ -98,4 +100,3 @@ setup(
         'Programming Language :: Python :: Implementation :: PyPy3',
     ],
 )
-

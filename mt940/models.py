@@ -3,9 +3,9 @@ import decimal
 import datetime
 import collections
 
-import mt940
-from . import tags
 from . import processors
+from . import _compat
+import mt940
 
 
 class Model(object):
@@ -43,12 +43,12 @@ class Amount(Model):
 
     Args:
         amount (str): Amount using either a , or a . as decimal separator
-        currency (str): A 3 letter currency (e.g. EUR)
         status (str): Either C or D for credit or debit respectively
+        currency (str): A 3 letter currency (e.g. EUR)
 
-    >>> Amount('123.45', 'EUR', 'C')
+    >>> Amount('123.45', 'C', 'EUR')
     <123.45 EUR>
-    >>> Amount('123.45', 'EUR', 'D')
+    >>> Amount('123.45', 'D', 'EUR')
     <-123.45 EUR>
     '''
     def __init__(self, amount, status, currency=None, **kwargs):
@@ -74,18 +74,22 @@ class Balance(Model):
         amount (Amount): Object containing the amount and currency
         date (date): The balance date
 
-    >>> balance = Balance.parse('C100722EUR0,00')
+    >>> balance = Balance('C', '0.00', Date(2010, 7, 22))
     >>> balance.status
     'C'
     >>> balance.amount.amount
     Decimal('0.00')
-    >>> balance.date
-    Date(2010, 7, 22)
+    >>> isinstance(balance.date, Date)
+    True
+    >>> balance.date.year, balance.date.month, balance.date.day
+    (2010, 7, 22)
 
     >>> Balance()
     <None @ None>
     '''
     def __init__(self, status=None, amount=None, date=None, **kwargs):
+        if amount and not isinstance(amount, Amount):
+            amount = Amount(amount, status, kwargs.get('currency'))
         self.status = status
         self.amount = amount
         self.date = date
@@ -174,10 +178,10 @@ class Transactions(collections.Sequence):
 
         for i, match in enumerate(matches):
             tag_id = int(match.group('tag'))
-            assert tag_id in tags.TAG_BY_ID, 'Unknown tag %r' \
+            assert tag_id in mt940.tags.TAG_BY_ID, 'Unknown tag %r' \
                 'in line: %r' % (tag_id, match.group(0))
 
-            tag = tags.TAG_BY_ID[tag_id]
+            tag = mt940.tags.TAG_BY_ID[tag_id]
 
             # Nice trick to get all the text that is part of this tag, python
             # regex matches have a `end()` and `start()` to indicate the start
@@ -199,7 +203,7 @@ class Transactions(collections.Sequence):
             for processor in self.processors.get('post_%s' % tag.slug):
                 result = processor(self, tag, tag_dict, result)
 
-            if isinstance(tag, tags.Statement):
+            if isinstance(tag, mt940.tags.Statement):
                 if transaction.data.get('id'):
                     transaction = Transaction(self, result)
                     self.transactions.append(transaction)
@@ -208,13 +212,13 @@ class Transactions(collections.Sequence):
             elif tag.scope is Transaction:
                 # Combine multiple results together as one string, Rabobank has
                 # multiple :86: tags for a single transaction
-                for k, v in result.iteritems():
+                for k, v in _compat.iteritems(result):
                     if k in transaction.data:
                         transaction.data[k] += '\n%s' % v.strip()
                     else:
                         transaction.data[k] = v
 
-            elif tag.scope is Transactions:
+            elif tag.scope is Transactions:  # pragma: no branch
                 self.data.update(result)
 
         return self.transactions
@@ -229,7 +233,7 @@ class Transactions(collections.Sequence):
         return '<%s[%s]>' % (
             self.__class__.__name__,
             ']['.join('%s: %s' % (k.replace('_balance', ''), v)
-                      for k, v in self.data.iteritems()
+                      for k, v in _compat.iteritems(self.data)
                       if k.endswith('balance'))
         )
 

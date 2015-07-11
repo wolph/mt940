@@ -41,7 +41,6 @@ except ImportError:  # pragma: no cover
 
         Enum = object
 
-import mt940
 from . import models
 
 
