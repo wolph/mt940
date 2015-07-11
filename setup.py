@@ -23,7 +23,7 @@ if sys.version_info < (2, 7):
     install_reqs += ['argparse']
     tests_reqs += ['unittest2']
 
-if sys.version_info < (3, 0):
+if sys.version_info < (3, 4):
     install_reqs += ['enum34']
 
 def parse_requirements(filename):
