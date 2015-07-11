@@ -87,7 +87,7 @@ setup(
     zip_safe=False,
     cmdclass={'test': PyTest},
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 6 - Mature',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',
