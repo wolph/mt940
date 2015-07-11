@@ -11,10 +11,10 @@ env:
 
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
-    pip install -r tests/requirements.txt
-    pip install -e .
-    pip install tox
-    pip install coveralls
+    - pip install -r tests/requirements.txt
+    - pip install -e .
+    - pip install tox
+    - pip install coveralls
 
 script:
     - tox -e $TOX_ENV
