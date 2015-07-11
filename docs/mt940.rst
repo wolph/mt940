@@ -4,14 +4,6 @@ mt940 package
 Submodules
 ----------
 
-mt940.metadata module
----------------------
-
-.. automodule:: mt940.metadata
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 mt940.models module
 -------------------
 

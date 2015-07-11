@@ -1,0 +1,55 @@
+=========
+Changelog
+=========
+
+Here you can find the recent changes to MT940..
+
+A complete list of changes can be read through the commit log:
+https://github.com/WoLpH/mt940/commits/develop
+
+.. changelog::
+    :version: dev
+    :released: Ongoing
+
+    .. change::
+
+        Just look at the commits and you'll see :)
+
+.. changelog::
+    :version: 3.0
+    :released: 2015-07-11
+
+    .. change::
+        :tags: project, docs, tests, coverage, python 3
+
+        Pretty large rewrite with Python 3 support, 100% test coverage,
+        coveralls support and more
+
+.. changelog::
+    :version: 2.1
+    :released: 2015-05-24
+
+    .. change::
+        :tags: project, docs, tests, coverage
+
+        Enabled coveralls, added more docs, improved tests
+
+.. changelog::
+    :version: 2.0
+    :released: 2015-05-24
+
+    .. change::
+        :tags: project, docs, tests, coverage
+
+        Large rewrite and 100% test coverage
+
+.. changelog::
+    :version: 1.0
+    :released: 2014-04-09
+
+    .. change::
+        :tags: project
+
+        First release on PyPi.
+
+.. todo:: vim: set filetype=rst:

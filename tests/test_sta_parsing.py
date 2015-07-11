@@ -5,6 +5,8 @@ import pytest
 import decimal
 import logging
 
+from mt940 import _compat
+
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +27,10 @@ def get_yaml_data(sta_file):
 
 
 def compare(a, b):
-    if isinstance(a, (str, int, long, unicode, decimal.Decimal)):
+    simple_types = (
+        decimal.Decimal,
+    ) + _compat.string_types + _compat.integer_types
+    if isinstance(a, simple_types):
         logger.debug('%r == %r', a, b)
         assert a == b
     elif a is None:
@@ -54,7 +59,7 @@ def test_parse(input):
     repr(transactions)
     str(transactions)
 
-    for k, v in transactions.data.iteritems():
+    for k, v in transactions.data.items():
         str(v)
         repr(v)
 
@@ -62,7 +67,7 @@ def test_parse(input):
         repr(transaction)
         str(transaction)
 
-        for k, v in transaction.data.iteritems():
+        for k, v in transaction.data.items():
             str(v)
             repr(v)
 
