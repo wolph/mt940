@@ -9,15 +9,15 @@ MT940
 
 .. image:: https://badge.fury.io/py/mt940.svg
     :alt: MT940 Pypi version
-    :target: https://pypi.python.org/pypi/mt940
+    :target: https://pypi.python.org/pypi/mt-940
 
 .. image:: https://coveralls.io/repos/WoLpH/mt940/badge.svg?branch=master
     :alt: MT940 code coverage
     :target: https://coveralls.io/r/WoLpH/mt940?branch=master
 
-.. image:: https://img.shields.io/pypi/pyversions/mt940.svg
+.. image:: https://img.shields.io/pypi/pyversions/mt-940.svg
     :alt: Supported Python versions
-    :target: https://crate.io/packages/mt940?version=latest
+    :target: https://crate.io/packages/mt-940?version=latest
 
 ``mt940`` - A library to parse MT940 files and returns smart Python collections
 for statistics and manipulation.
@@ -32,7 +32,7 @@ Links
 * Bug reports 
     - https://github.com/WoLpH/mt940/issues
 * Package homepage
-    - https://pypi.python.org/pypi/mt940
+    - https://pypi.python.org/pypi/mt-940
 * My blog
     - http://wol.ph/
 
@@ -107,8 +107,8 @@ API             http://mt940.readthedocs.org/en/latest/modules.html
 Issues/roadmap  https://github.com/WoLpH/mt940/issues
 Travis          http://travis-ci.org/WoLpH/mt940
 Test coverage   https://coveralls.io/r/WoLpH/mt940
-Pypi            https://pypi.python.org/pypi/mt940
-Ohloh           https://www.ohloh.net/p/mt940
+Pypi            https://pypi.python.org/pypi/mt-940
+Ohloh           https://www.ohloh.net/p/mt-940
 License         `BSD`_.
 git repo        .. code-block:: bash
 
