@@ -67,7 +67,7 @@ everything in all supported python versions.
 Usage
 -----
 
-.. python::
+.. code-block:: python
 
    import mt940
    import pprint
