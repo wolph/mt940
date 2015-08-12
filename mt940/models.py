@@ -170,7 +170,8 @@ class Transactions(collections.Sequence):
         # The pattern is a bit annoying to match by regex, even with a greedy
         # match it's difficult to get both the beginning and the end so we're
         # working around it in a safer way to get everything.
-        tag_re = re.compile(r':(?P<tag>[0-9]{2})(?P<sub_tag>[A-Z])?:')
+        tag_re = re.compile(r'^:(?P<tag>[0-9]{2})(?P<sub_tag>[A-Z])?:',
+                            re.MULTILINE)
         matches = list(tag_re.finditer(data))
 
         transaction = Transaction(self)
