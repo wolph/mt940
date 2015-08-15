@@ -120,10 +120,18 @@ class Transactions(collections.Sequence):
         post_available_balance=[],
         pre_closing_balance=[],
         post_closing_balance=[],
+        pre_intermediate_closing_balance=[],
+        post_intermediate_closing_balance=[],
+        pre_final_closing_balance=[],
+        post_final_closing_balance=[],
         pre_forward_available_balance=[],
         post_forward_available_balance=[],
         pre_opening_balance=[],
         post_opening_balance=[],
+        pre_intermediate_opening_balance=[],
+        post_intermediate_opening_balance=[],
+        pre_final_opening_balance=[],
+        post_final_opening_balance=[],
         pre_related_reference=[],
         post_related_reference=[],
         pre_statement=[],
@@ -147,10 +155,14 @@ class Transactions(collections.Sequence):
     @property
     def currency(self):
         balance = mt940.utils.coalesce(
+            self.data.get('final_opening_balance'),
             self.data.get('opening_balance'),
+            self.data.get('intermediate_opening_balance'),
             self.data.get('available_balance'),
             self.data.get('forward_available_balance'),
+            self.data.get('final_closing_balance'),
             self.data.get('closing_balance'),
+            self.data.get('intermediate_closing_balance'),
         )
         if balance:
             return balance.amount.currency
@@ -170,8 +182,9 @@ class Transactions(collections.Sequence):
         # The pattern is a bit annoying to match by regex, even with a greedy
         # match it's difficult to get both the beginning and the end so we're
         # working around it in a safer way to get everything.
-        tag_re = re.compile(r'^:(?P<tag>[0-9]{2})(?P<sub_tag>[A-Z])?:',
-                            re.MULTILINE)
+        tag_re = re.compile(
+            r'^:(?P<full_tag>(?P<tag>[0-9]{2})(?P<sub_tag>[A-Z])?):',
+            re.MULTILINE)
         matches = list(tag_re.finditer(data))
 
         transaction = Transaction(self)
@@ -182,7 +195,8 @@ class Transactions(collections.Sequence):
             assert tag_id in mt940.tags.TAG_BY_ID, 'Unknown tag %r' \
                 'in line: %r' % (tag_id, match.group(0))
 
-            tag = mt940.tags.TAG_BY_ID[tag_id]
+            tag = mt940.tags.TAG_BY_ID.get(match.group('full_tag')) \
+                or mt940.tags.TAG_BY_ID[tag_id]
 
             # Nice trick to get all the text that is part of this tag, python
             # regex matches have a `end()` and `start()` to indicate the start

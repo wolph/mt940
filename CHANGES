@@ -16,6 +16,25 @@ https://github.com/WoLpH/mt940/commits/develop
         Just look at the commits and you'll see :)
 
 .. changelog::
+    :version: 3.2
+    :released: 2015-08-15
+
+    .. change::
+        :tags: project, tests
+
+        Added support for final and intermediate opening/closing balance
+
+.. changelog::
+    :version: 3.1
+    :released: 2015-08-12
+
+    .. change::
+        :tags: project, tests
+
+        Fixed bug that allowed non-tags (for example, timestamps)
+        to be recognized as tags. 
+
+.. changelog::
     :version: 3.0
     :released: 2015-07-11
 

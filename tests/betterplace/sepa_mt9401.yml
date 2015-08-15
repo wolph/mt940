@@ -9,7 +9,7 @@ data:
     - !!binary |
       B9cJBA==
     status: C
-  closing_balance: !!python/object:mt940.models.Balance
+  final_closing_balance: !!python/object:mt940.models.Balance
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['50.05']
       currency: EUR
@@ -17,7 +17,7 @@ data:
     - !!binary |
       B9cJBA==
     status: C
-  opening_balance: !!python/object:mt940.models.Balance
+  final_opening_balance: !!python/object:mt940.models.Balance
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['0']
       currency: EUR
@@ -25,6 +25,22 @@ data:
     - !!binary |
       B9cIFg==
     status: C
+  intermediate_closing_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-3814901.47']
+      currency: EUR
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    status: D
+  intermediate_opening_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-3814901.47']
+      currency: EUR
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
+    status: D
   sequence_number: '00001'
   statement_number: '00001'
   transaction_reference: T089414136000001
@@ -32,7 +48,11 @@ processors:
   post_account_identification: []
   post_available_balance: []
   post_closing_balance: []
+  post_final_closing_balance: []
+  post_final_opening_balance: []
   post_forward_available_balance: []
+  post_intermediate_closing_balance: []
+  post_intermediate_opening_balance: []
   post_opening_balance: []
   post_related_reference: []
   post_statement: [!!python/name:mt940.processors.date_cleanup_post_processor '']
@@ -42,7 +62,11 @@ processors:
   pre_account_identification: []
   pre_available_balance: []
   pre_closing_balance: []
+  pre_final_closing_balance: []
+  pre_final_opening_balance: []
   pre_forward_available_balance: []
+  pre_intermediate_closing_balance: []
+  pre_intermediate_opening_balance: []
   pre_opening_balance: []
   pre_related_reference: []
   pre_statement: []

@@ -50,10 +50,10 @@ def compare(a, b):
         raise TypeError('Unsupported type %s' % type(a))
 
 
-@pytest.mark.parametrize('input_', get_sta_files())
-def test_parse(input_):
-    transactions = mt940.parse(input_)
-    expected = get_yaml_data(input_)
+@pytest.mark.parametrize('sta_file', get_sta_files())
+def test_parse(sta_file):
+    transactions = mt940.parse(sta_file)
+    expected = get_yaml_data(sta_file)
 
     assert len(transactions) >= 0
     repr(transactions)
