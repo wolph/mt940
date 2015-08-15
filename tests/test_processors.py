@@ -10,17 +10,17 @@ def sta_data():
 
 def test_pre_processor(sta_data):
     transactions = mt940.models.Transactions(processors=dict(
-        pre_closing_balance=[
+        pre_final_closing_balance=[
             mt940.processors.add_currency_pre_processor('USD'),
         ],
-        pre_opening_balance=[
+        pre_final_opening_balance=[
             mt940.processors.add_currency_pre_processor('EUR'),
         ],
     ))
 
     transactions.parse(sta_data)
-    assert transactions.data['closing_balance'].amount.currency == 'USD'
-    assert transactions.data['opening_balance'].amount.currency == 'EUR'
+    assert transactions.data['final_closing_balance'].amount.currency == 'USD'
+    assert transactions.data['final_opening_balance'].amount.currency == 'EUR'
 
 
 def test_post_processor(sta_data):

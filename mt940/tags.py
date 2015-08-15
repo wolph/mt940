@@ -142,6 +142,14 @@ class OpeningBalance(BalanceBase):
     id = 60
 
 
+class FinalOpeningBalance(BalanceBase):
+    id = '60F'
+
+
+class IntermediateOpeningBalance(BalanceBase):
+    id = '60M'
+
+
 class Statement(Tag):
     '''Statement
 
@@ -186,6 +194,14 @@ class ClosingBalance(BalanceBase):
     id = 62
 
 
+class FinalClosingBalance(ClosingBalance):
+    id = '62F'
+
+
+class IntermediateClosingBalance(ClosingBalance):
+    id = '62M'
+
+
 class AvailableBalance(BalanceBase):
     id = 64
 
@@ -211,8 +227,12 @@ class Tags(enum.Enum):
     ACCOUNT_IDENTIFICATION = AccountIdentification()
     STATEMENT_NUMBER = StatementNumber()
     OPENING_BALANCE = OpeningBalance()
+    INTERMEDIATE_OPENING_BALANCE = IntermediateOpeningBalance()
+    FINAL_OPENING_BALANCE = FinalOpeningBalance()
     STATEMENT = Statement()
     CLOSING_BALANCE = ClosingBalance()
+    INTERMEDIATE_CLOSING_BALANCE = IntermediateClosingBalance()
+    FINAL_CLOSING_BALANCE = FinalClosingBalance()
     AVAILABLE_BALANCE = AvailableBalance()
     FORWARD_AVAILABLE_BALANCE = ForwardAvailableBalance()
     TRANSACTION_DETAILS = TransactionDetails()

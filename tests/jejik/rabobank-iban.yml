@@ -1,7 +1,7 @@
 &id001 !!python/object:mt940.models.Transactions
 data:
   account_identification: NL71RABO0123456789
-  closing_balance: !!python/object:mt940.models.Balance
+  final_closing_balance: !!python/object:mt940.models.Balance
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['930.00']
       currency: EUR
@@ -9,7 +9,7 @@ data:
     - !!binary |
       B90BDw==
     status: C
-  opening_balance: !!python/object:mt940.models.Balance
+  final_opening_balance: !!python/object:mt940.models.Balance
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['965.00']
       currency: EUR
@@ -24,7 +24,11 @@ processors:
   post_account_identification: []
   post_available_balance: []
   post_closing_balance: []
+  post_final_closing_balance: []
+  post_final_opening_balance: []
   post_forward_available_balance: []
+  post_intermediate_closing_balance: []
+  post_intermediate_opening_balance: []
   post_opening_balance: []
   post_related_reference: []
   post_statement: [!!python/name:mt940.processors.date_cleanup_post_processor '']
@@ -34,7 +38,11 @@ processors:
   pre_account_identification: []
   pre_available_balance: []
   pre_closing_balance: []
+  pre_final_closing_balance: []
+  pre_final_opening_balance: []
   pre_forward_available_balance: []
+  pre_intermediate_closing_balance: []
+  pre_intermediate_opening_balance: []
   pre_opening_balance: []
   pre_related_reference: []
   pre_statement: []
