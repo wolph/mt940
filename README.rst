@@ -7,7 +7,7 @@ MT940
     :alt: MT940 test status
     :target: https://travis-ci.org/WoLpH/mt940
 
-.. image:: https://badge.fury.io/py/mt940.svg
+.. image:: https://badge.fury.io/py/mt-940.svg
     :alt: MT940 Pypi version
     :target: https://pypi.python.org/pypi/mt-940
 
@@ -43,13 +43,13 @@ To install the latest release:
 
 .. code-block:: bash
 
-    pip install mt940
+    pip install mt-940
 
 Or if `pip` is not available:
     
 .. code-block:: bash
 
-    easy_install mt940
+    easy_install mt-940
    
 To install the latest development release:
 
