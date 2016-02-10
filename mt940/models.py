@@ -228,7 +228,7 @@ class Transactions(collections.Sequence):
                 # Combine multiple results together as one string, Rabobank has
                 # multiple :86: tags for a single transaction
                 for k, v in _compat.iteritems(result):
-                    if k in transaction.data:
+                    if k in transaction.data and hasattr(v, 'strip'):
                         transaction.data[k] += '\n%s' % v.strip()
                     else:
                         transaction.data[k] = v
