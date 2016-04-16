@@ -1,5 +1,5 @@
 &id001 !!python/object:mt940.models.Transactions
-data: {transaction_reference: TELEREPORTING}
+data: {}
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -31,5 +31,5 @@ processors:
   pre_transaction_reference_number: []
 transactions:
 - !!python/object:mt940.models.Transaction
-  data: {}
+  data: {transaction_reference: TELEREPORTING}
   transactions: *id001
