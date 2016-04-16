@@ -19,7 +19,6 @@ data:
     status: C
   sequence_number: null
   statement_number: '000'
-  transaction_reference: MPBZ
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -73,4 +72,5 @@ transactions:
       0111111111 GPPeking 170000001AC\n0123456789 EJ46GREENP100610T1456 CLIEOP TMG\
       \ GPHONGKONG AMSTERDAM\n0111111111 Hr S Marechal\nROSMALEN Hr S Marechal ROSMALEN\n\
       Betaling transactiedatum: 22-07-2010\nD000004C000002D25,24C28,71\n-XXX"
+    transaction_reference: MPBZ
   transactions: *id001
