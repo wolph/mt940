@@ -53,24 +53,133 @@ transactions:
 - !!python/object:mt940.models.Transaction
   data:
     amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-25.03']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9oHFg==
+    extra_details: ''
+    funds_code: null
+    id: NTRF
+    status: D
+    transaction_details: 'RC AFREKENING BETALINGSVERKEER
+
+      BETREFT REKENING 4715589 PERIODE: 01-10-2010 / 31-12-2010
+
+      ING Bank N.V. tarifering ING'
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-3.03']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9oHFg==
+    extra_details: ''
+    funds_code: null
+    id: NTRF
+    status: D
+    transaction_details: "0111111111 GPSEOUL SPOEDBETALING\tMPBZS1016000047 GPSEOUL"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-1.11']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: TMG TANGO
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9oHFg==
+    extra_details: ''
+    funds_code: null
+    id: NTRF
+    status: D
+    transaction_details: !!python/str "0111111111 ING iDEAL KN: TMG TANGO TRANSACTIENR\
+      \ 0050000534527978 10\xAD06\xAD2010 15:32 TMG TANGO ING Bank inzake GPKyoto"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-20.00']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9oHFg==
+    extra_details: ''
+    funds_code: null
+    id: NTRF
+    status: D
+    transaction_details: !!python/str "ABN AMRO BANK>AMSTERDAM 22\xAD07\xAD2010 09:57\
+      \ 002\t5595781"
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-1.10']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9oHFg==
+    extra_details: ''
+    funds_code: null
+    id: NTRF
+    status: D
+    transaction_details: 0111111111 GPPeking 170000001AC
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['3.68']
+      currency: EUR
+    bank_reference: null
+    currency: EUR
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9oHFg==
+    extra_details: ''
+    funds_code: null
+    id: NTRF
+    status: C
+    transaction_details: 0123456789 EJ46GREENP100610T1456 CLIEOP TMG GPHONGKONG AMSTERDAM
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['1.00']
       currency: EUR
     bank_reference: null
     currency: EUR
-    customer_reference: NGT NONREF
+    customer_reference: NONREF
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9oHFw==
     extra_details: ''
     funds_code: null
-    id: null
+    id: NTRF
     status: C
-    transaction_details: !!python/str "RC AFREKENING BETALINGSVERKEER\nBETREFT REKENING\
-      \ 4715589 PERIODE: 01-10-2010 / 31-12-2010\nING Bank N.V. tarifering ING\n0111111111\
-      \ GPSEOUL SPOEDBETALING\tMPBZS1016000047 GPSEOUL\n0111111111 ING iDEAL KN: TMG\
-      \ TANGO TRANSACTIENR 0050000534527978 10\xAD06\xAD2010 15:32 TMG TANGO ING Bank\
-      \ inzake GPKyoto\nABN AMRO BANK>AMSTERDAM 22\xAD07\xAD2010 09:57 002\t5595781\n\
-      0111111111 GPPeking 170000001AC\n0123456789 EJ46GREENP100610T1456 CLIEOP TMG\
-      \ GPHONGKONG AMSTERDAM\n0111111111 Hr S Marechal\nROSMALEN Hr S Marechal ROSMALEN\n\
-      Betaling transactiedatum: 22-07-2010\nD000004C000002D25,24C28,71\n-XXX"
+    transaction_details: '0111111111 Hr S Marechal
+
+      ROSMALEN Hr S Marechal ROSMALEN
+
+      Betaling transactiedatum: 22-07-2010
+
+      D000004C000002D25,24C28,71
+
+      -XXX'
   transactions: *id001
