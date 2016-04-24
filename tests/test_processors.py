@@ -8,6 +8,22 @@ def sta_data():
         return fh.read()
 
 
+@pytest.fixture
+def february_30_data():
+    with open('tests/self-provided/february_30.sta') as fh:
+        return fh.read()
+
+
+def test_date_fixup_pre_processor(february_30_data):
+    transactions = mt940.models.Transactions(processors=dict(
+        pre_statement=[
+            mt940.processors.date_fixup_pre_processor,
+        ],
+    ))
+    transactions.parse(february_30_data)
+    assert transactions[0].data['date'] == mt940.models.Date(2016, 2, 29)
+
+
 def test_pre_processor(sta_data):
     transactions = mt940.models.Transactions(processors=dict(
         pre_final_closing_balance=[

@@ -134,7 +134,7 @@ class Transactions(collections.Sequence):
         post_final_opening_balance=[],
         pre_related_reference=[],
         post_related_reference=[],
-        pre_statement=[],
+        pre_statement=[processors.date_fixup_pre_processor],
         post_statement=[processors.date_cleanup_post_processor],
         pre_statement_number=[],
         post_statement_number=[],
