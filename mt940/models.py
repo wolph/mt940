@@ -218,7 +218,13 @@ class Transactions(collections.Sequence):
             for processor in self.processors.get('post_%s' % tag.slug):
                 result = processor(self, tag, tag_dict, result)
 
-            if isinstance(tag, mt940.tags.Statement):
+            # Creating a new transaction for :20: and :61: tags allows the
+            # tags from :20: to :61: to be captured as part of the transaction.
+            if isinstance(tag, mt940.tags.TransactionReferenceNumber) or \
+                    isinstance(tag, mt940.tags.Statement):
+                # Transactions only get a Transaction Reference Code ID from a
+                # :61: tag which is why a new transaction is created if the
+                # 'id' has a value.
                 if transaction.data.get('id'):
                     transaction = Transaction(self, result)
                     self.transactions.append(transaction)

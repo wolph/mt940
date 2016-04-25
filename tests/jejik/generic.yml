@@ -19,7 +19,6 @@ data:
     status: C
   sequence_number: null
   statement_number: '2'
-  transaction_reference: GENERIC
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -66,6 +65,7 @@ transactions:
     id: N000
     status: D
     transaction_details: ''
+    transaction_reference: GENERIC
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -83,4 +83,5 @@ transactions:
     id: N000
     status: D
     transaction_details: ''
+    transaction_reference: GENERIC
   transactions: *id001

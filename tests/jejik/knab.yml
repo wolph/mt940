@@ -19,7 +19,6 @@ data:
     status: C
   sequence_number: '1'
   statement_number: '999'
-  transaction_reference: B4G30MS9D00A003D
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -71,6 +70,7 @@ transactions:
     transaction_details: 'HIER EEN MOOIE OMSCHRIJVING IN HOOFDLETTERS
 
       WANT DAT IS ZOALS DE NEDERLANDSE BANKEN COMMUNICEREN'
+    transaction_reference: B4E08MS9D00A0009
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -93,6 +93,7 @@ transactions:
     transaction_details: 'FACTUUR 201403110, 201403113
 
       REK: NL65INGB0123456789/NAAM: PICQER'
+    transaction_reference: B4G30MS9D00A003D
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:

@@ -20,7 +20,6 @@ data:
   related_reference: '9876543210'
   sequence_number: '001'
   statement_number: 00084
-  transaction_reference: TELEWIZORY S.A.
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -67,6 +66,7 @@ transactions:
     id: NCHK
     status: D
     transaction_details: 999PN5477SCHECK-NR. 0000016703074
+    transaction_reference: '131110'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -257,6 +257,7 @@ transactions:
     id: NSTO
     status: D
     transaction_details: 008?00DAUERAUFTRAG?100599?20Miete November?3010020030?31234567?32MUELLER?34339
+    transaction_reference: '1234567'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -311,6 +312,7 @@ transactions:
       \ ZA FABRYKATY DO TUB?25 - 200 S ZTUK, TRANZY \nSTORY-?26300 SZT GR544 I OPORNIKI-5?2700\
       \ SZT GTX847 FAKTURA 333/ \n2?28003.?3010600076?310000777777777777?32HUTA SZKLA\
       \ TOPIC UL \nPRZEM"
+    transaction_reference: TELEWIZORY S.A.
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
