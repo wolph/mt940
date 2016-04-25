@@ -2,27 +2,43 @@
 
 sudo: false
 language: python
-python: 2.7
-env:
-    - TOX_ENV=docs
-    - TOX_ENV=flake8
-    - TOX_ENV=py27 
-    - TOX_ENV=py33 
-    - TOX_ENV=py34 
 
-# command to install dependencies, e.g. pip install -r requirements.txt 
+env:
+  global:
+    - PIP_WHEEL_DIR=$HOME/.wheels
+    - PIP_FIND_LINKS=file://$PIP_WHEEL_DIR
+
+matrix:
+  include:
+    - python: '2.7'
+      env: TOXENV=docs
+    - python: '2.7'
+      env: TOXENV=flake8
+    - python: '2.7'
+      env: TOXENV=py27
+    - python: '3.3'
+      env: TOXENV=py33
+    - python: '3.4'
+      env: TOXENV=py34
+    - python: '3.5'
+      env: TOXENV=py35
+
+cache:
+  directories:
+    - $HOME/.wheels
+
+# command to install dependencies, e.g. pip install -r requirements.txt
 install:
-    - pip install -r tests/requirements.txt
-    - pip install -e .
-    - pip install tox
-    - pip install coveralls
+  - mkdir -p $PIP_WHEEL_DIR
+  - pip wheel -r tests/requirements.txt
+  - pip install -e .
+  - pip install tox coveralls
 
 script:
-    - tox -e $TOX_ENV
-    - py.test
+  - tox
 
 after_success:
-    - coveralls
+  - coveralls
 
 notifications:
   email:
