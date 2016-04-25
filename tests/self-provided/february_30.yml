@@ -71,4 +71,5 @@ transactions:
     transaction_details: '805?00ENTGELTABSCHLUSS?106666?20Pauschalen?3012345678?1122334
 
       45566'
+    transaction_reference: STARTUMSE
   transactions: *id001

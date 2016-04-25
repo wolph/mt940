@@ -31,13 +31,12 @@ def compare(a, b):
         decimal.Decimal,
     ) + _compat.string_types + _compat.integer_types
     if isinstance(a, simple_types):
-        logger.debug('%r == %r', a, b)
         assert a == b
     elif a is None:
-        logger.debug('%r is %r', a, b)
         assert a is b
     elif isinstance(a, dict):
         for k in a:
+            assert k in b
             compare(a[k], b[k])
     elif isinstance(a, (list, tuple)):
         for av, bv in zip(a, b):
