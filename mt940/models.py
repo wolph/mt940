@@ -134,7 +134,7 @@ class Transactions(collections.Sequence):
         post_final_opening_balance=[],
         pre_related_reference=[],
         post_related_reference=[],
-        pre_statement=[],
+        pre_statement=[processors.date_fixup_pre_processor],
         post_statement=[processors.date_cleanup_post_processor],
         pre_statement_number=[],
         post_statement_number=[],
@@ -167,6 +167,25 @@ class Transactions(collections.Sequence):
         if balance:
             return balance.amount.currency
 
+    @classmethod
+    def strip(cls, lines):
+        for line in lines:
+            # We don't like carriage returns in case of Windows files so let's
+            # just replace them with nothing
+            line = line.replace('\r', '')
+
+            # Strip trailing whitespace from lines since they cause incorrect
+            # files
+            line = line.rstrip()
+
+            # Skip separators
+            if line.strip() == '-':
+                continue
+
+            # Return actual lines
+            if line:
+                yield line
+
     def parse(self, data):
         '''Parses mt940 data, expects a string with data
 
@@ -175,9 +194,8 @@ class Transactions(collections.Sequence):
 
         Returns: :py:class:`list` of :py:class:`Transaction`
         '''
-        # We don't like carriage returns in case of Windows files so let's just
-        # replace them with nothing
-        data = data.replace('\r', '')
+        # Remove extraneous whitespace and such
+        data = '\n'.join(self.strip(data.split('\n')))
 
         # The pattern is a bit annoying to match by regex, even with a greedy
         # match it's difficult to get both the beginning and the end so we're
@@ -218,7 +236,13 @@ class Transactions(collections.Sequence):
             for processor in self.processors.get('post_%s' % tag.slug):
                 result = processor(self, tag, tag_dict, result)
 
-            if isinstance(tag, mt940.tags.Statement):
+            # Creating a new transaction for :20: and :61: tags allows the
+            # tags from :20: to :61: to be captured as part of the transaction.
+            if isinstance(tag, mt940.tags.TransactionReferenceNumber) or \
+                    isinstance(tag, mt940.tags.Statement):
+                # Transactions only get a Transaction Reference Code ID from a
+                # :61: tag which is why a new transaction is created if the
+                # 'id' has a value.
                 if transaction.data.get('id'):
                     transaction = Transaction(self, result)
                     self.transactions.append(transaction)
@@ -228,7 +252,7 @@ class Transactions(collections.Sequence):
                 # Combine multiple results together as one string, Rabobank has
                 # multiple :86: tags for a single transaction
                 for k, v in _compat.iteritems(result):
-                    if k in transaction.data:
+                    if k in transaction.data and hasattr(v, 'strip'):
                         transaction.data[k] += '\n%s' % v.strip()
                     else:
                         transaction.data[k] = v

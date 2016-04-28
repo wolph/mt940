@@ -7,7 +7,7 @@ MT940
     :alt: MT940 test status
     :target: https://travis-ci.org/WoLpH/mt940
 
-.. image:: https://badge.fury.io/py/mt940.svg
+.. image:: https://badge.fury.io/py/mt-940.svg
     :alt: MT940 Pypi version
     :target: https://pypi.python.org/pypi/mt-940
 
@@ -43,13 +43,13 @@ To install the latest release:
 
 .. code-block:: bash
 
-    pip install mt940
+    pip install mt-940
 
 Or if `pip` is not available:
     
 .. code-block:: bash
 
-    easy_install mt940
+    easy_install mt-940
    
 To install the latest development release:
 
@@ -67,6 +67,8 @@ everything in all supported python versions.
 Usage
 -----
 
+Basic parsing:
+
 .. code-block:: python
 
    import mt940
@@ -79,6 +81,31 @@ Usage
    pprint.pprint(transactions.data)
 
    print
+   for transaction in transactions:
+       print 'Transaction: ', transaction
+       pprint.pprint(transaction.data)
+
+Set opening / closing balance information on each transaction:
+
+.. code-block:: python
+
+   import mt940
+   import pprint
+
+   mt940.tags.BalanceBase.scope = mt940.models.Transaction
+
+   # The currency has to be set manually when setting the BalanceBase scope to Transaction.
+   transactions = mt940.models.Transactions(processors=dict(
+       pre_statement=[
+           mt940.processors.add_currency_pre_processor('EUR'),
+       ],
+   ))
+
+   with open('tests/jejik/abnamro.sta') as f:
+       data = f.read()
+
+   transactions.parse(data)
+
    for transaction in transactions:
        print 'Transaction: ', transaction
        pprint.pprint(transaction.data)

@@ -27,7 +27,6 @@ data:
     status: D
   sequence_number: '00001'
   statement_number: '00004'
-  transaction_reference: T089414096000001
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -84,6 +83,7 @@ transactions:
       0500194785000?32KARL?33        KAUFMANN?70Empfaenger Marta Metzge
 
       r'
+    transaction_reference: T089414086000001
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -180,6 +180,7 @@ transactions:
       nicht s
 
       pezifizie?22rt Reject aus SEPA-Ueberwei?23sungsauftrag?34914'
+    transaction_reference: T089414096000001
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
