@@ -179,6 +179,9 @@ class Transactions(collections.Sequence):
         # replace them with nothing
         data = data.replace('\r', '')
 
+        # Strip trailing whitespace from lines
+        data = '\n'.join(line.rstrip() for line in data.split('\n'))
+
         # The pattern is a bit annoying to match by regex, even with a greedy
         # match it's difficult to get both the beginning and the end so we're
         # working around it in a safer way to get everything.
