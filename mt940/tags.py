@@ -57,11 +57,11 @@ class Tag(object):
 
     def parse(self, transactions, value):
         match = self.re.match(value)
-        if match:
+        if match:  # pragma: no branch
             self.logger.debug(
                 'matched (%d) "%s" against "%s", got: %r',
                 len(value), value, self.pattern, match.groupdict())
-        else:
+        else:  # pragma: no cover
             self.logger.info(
                 'matching (%d) "%s" against "%s"', len(value), value,
                 self.pattern)
