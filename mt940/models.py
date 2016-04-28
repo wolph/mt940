@@ -167,6 +167,25 @@ class Transactions(collections.Sequence):
         if balance:
             return balance.amount.currency
 
+    @classmethod
+    def strip(cls, lines):
+        for line in lines:
+            # We don't like carriage returns in case of Windows files so let's
+            # just replace them with nothing
+            line = line.replace('\r', '')
+
+            # Strip trailing whitespace from lines since they cause incorrect
+            # files
+            line = line.rstrip()
+
+            # Skip separators
+            if line.strip() == '-':
+                continue
+
+            # Return actual lines
+            if line:
+                yield line
+
     def parse(self, data):
         '''Parses mt940 data, expects a string with data
 
@@ -175,12 +194,8 @@ class Transactions(collections.Sequence):
 
         Returns: :py:class:`list` of :py:class:`Transaction`
         '''
-        # We don't like carriage returns in case of Windows files so let's just
-        # replace them with nothing
-        data = data.replace('\r', '')
-
-        # Strip trailing whitespace from lines
-        data = '\n'.join(line.rstrip() for line in data.split('\n'))
+        # Remove extraneous whitespace and such
+        data = '\n'.join(self.strip(data.split('\n')))
 
         # The pattern is a bit annoying to match by regex, even with a greedy
         # match it's difficult to get both the beginning and the end so we're

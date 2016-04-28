@@ -186,7 +186,7 @@ class Statement(Tag):
     (?P<id>[A-Z][A-Z0-9]{3})?  # 1!a3!c Transaction Type Identification Code
     (?P<customer_reference>.{0,16})  # 16x Customer Reference
     (//(?P<bank_reference>.{0,16}))?  # [//16x] Bank Reference
-    (\n(?P<extra_details>.{0,34}))?  # [34x] Supplementary Details
+    (\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary Details
                                              # (this will be on a new/separate
                                              # line)
     $'''
