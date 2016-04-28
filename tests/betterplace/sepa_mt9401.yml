@@ -244,10 +244,17 @@ transactions:
     funds_code: R
     id: NTRF
     status: C
-    transaction_details: "166?00GUTSCHRIFT?100399?20EREF+EndToEndIdTFNR20004000?2101?22SVWZ\n\
-      +TO 13 TFNr 20004 Einga?23ngskanal Mint .............?24........ \n..................?25...\
-      \  ......................?26..............\n.............?27..........?28MTLG:SEPA-Ueberweisungseing?29ang\
-      \ Au\nftraggeber: Richter R?30PBNKDEFF100?31DE42100100100043921105?32Ri\n"
+    transaction_details: '166?00GUTSCHRIFT?100399?20EREF+EndToEndIdTFNR20004000?2101?22SVWZ
+
+      +TO 13 TFNr 20004 Einga?23ngskanal Mint .............?24........
+
+      ..................?25...  ......................?26..............
+
+      .............?27..........?28MTLG:SEPA-Ueberweisungseing?29ang Au
+
+      ftraggeber: Richter R?30PBNKDEFF100?31DE42100100100043921105?32Ri
+
+      c'
     transaction_reference: T089413956000001
   transactions: *id001
 - !!python/object:mt940.models.Transaction
@@ -291,10 +298,15 @@ transactions:
     funds_code: R
     id: NTRF
     status: C
-    transaction_details: "166?00GUTSCHRIFT?100399?20EREF+EndToEndIdTFNR52001000?2101?22SVWZ\n\
-      +Keine Buchung zu: TO13?23 TF52001 MINT?30PBNKDEFF100?31DE4210010\n0100043921105?32Richter\
-      \ Renate 70 Zeichen B?33eginn Fuellzeichen \nxxxxxxxx?70Dora Damm 70 Zeichen\
-      \ Beginn?71 Fuellzeichen xxxxxxxxxx\nxxx"
+    transaction_details: '166?00GUTSCHRIFT?100399?20EREF+EndToEndIdTFNR52001000?2101?22SVWZ
+
+      +Keine Buchung zu: TO13?23 TF52001 MINT?30PBNKDEFF100?31DE4210010
+
+      0100043921105?32Richter Renate 70 Zeichen B?33eginn Fuellzeichen
+
+      xxxxxxxx?70Dora Damm 70 Zeichen Beginn?71 Fuellzeichen xxxxxxxxxx
+
+      xxx'
     transaction_reference: T089413966000001
   transactions: *id001
 - !!python/object:mt940.models.Transaction
@@ -315,9 +327,13 @@ transactions:
     funds_code: R
     id: NTRF
     status: C
-    transaction_details: "166?00GUTSCHRIFT?100399?20SVWZ+TO13 TF20018 MINT?30NIKACH22XXX?31\n\
-      CH8500779014054431109?32Cornelia Prochownik 70 Zeic?33hen Beginn \nFuellzeichen\
-      \ xxx?70Dora Damm 70 Zeichen Beginn?71 Fuellzeichen xx\nxxxxxxxxxxx"
+    transaction_details: '166?00GUTSCHRIFT?100399?20SVWZ+TO13 TF20018 MINT?30NIKACH22XXX?31
+
+      CH8500779014054431109?32Cornelia Prochownik 70 Zeic?33hen Beginn
+
+      Fuellzeichen xxx?70Dora Damm 70 Zeichen Beginn?71 Fuellzeichen xx
+
+      xxxxxxxxxxx'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -337,10 +353,13 @@ transactions:
     funds_code: R
     id: NTRF
     status: C
-    transaction_details: "166?00GUTSCHRIFT?100399?20SVWZ+TO13 TF20008 MINT?21MTLG:Ggf.Melde\n\
-      vorschriften ?22beachten?30UBSWCHZH80A?31CH6500279279C31180700?32\nRichter Renate\
-      \ 70 Zeichen B?33eginn Fuellzeichen xxxxxxxx?70Dora \nDamm 70 Zeichen Beginn?71\
-      \ Fuellzeichen xxxxxxxxxxxxx"
+    transaction_details: '166?00GUTSCHRIFT?100399?20SVWZ+TO13 TF20008 MINT?21MTLG:Ggf.Melde
+
+      vorschriften ?22beachten?30UBSWCHZH80A?31CH6500279279C31180700?32
+
+      Richter Renate 70 Zeichen B?33eginn Fuellzeichen xxxxxxxx?70Dora
+
+      Damm 70 Zeichen Beginn?71 Fuellzeichen xxxxxxxxxxxxx'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -648,11 +667,18 @@ transactions:
     funds_code: R
     id: NTRF
     status: D
-    transaction_details: "116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011\
-      \ Instruct\nion?22 Id  00001?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit\
-      \ \n140 Stellen?25 fu/r SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und \nA-CT-N?27UD-/S01\
-      \ CTSc-01 EBB TFNr 01?28011/ 0001?30SOGEFRPPXXX?31\nFR1420041010050500013M02606?32Empfaenger\
-      \ 1 mit 70 Zeichen?33 Empf\n"
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011
+      Instruct
+
+      ion?22 Id  00001?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit
+
+      140 Stellen?25 fu/r SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und
+
+      A-CT-N?27UD-/S01 CTSc-01 EBB TFNr 01?28011/ 0001?30SOGEFRPPXXX?31
+
+      FR1420041010050500013M02606?32Empfaenger 1 mit 70 Zeichen?33 Empf
+
+      ae'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -675,7 +701,7 @@ transactions:
     transaction_details: "116?00SEPA-UEBERW?100399?20EREF+NONREF?21SVWZ+Unstrukturierter\
       \ Ve\nrwe?22ndungszweck mit 140 Stellen?23 fu/r SEPA COR Buchungssche?2\n4ma\
       \ /A-CT-DTE-S01 und A-CT-N?25UD-/S01 CTSc-01 EBB TFNr 01?26011/\n 0006?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger\
-      \ 6 \nmit 70 Zeichen?33 Empfaenger 6 mit 70 Zeiche"
+      \ 6\nmit 70 Zeichen?33 Empfaenger 6 mit 70 Zeiche"
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -695,11 +721,18 @@ transactions:
     funds_code: R
     id: NTRF
     status: D
-    transaction_details: "116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011\
-      \ Instruct\nion?22 Id  00002?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit\
-      \ \n140 Stellen?25 fu/r SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und \nA-CT-N?27UD-/S01\
-      \ CTSc-01 EBB TFNr 01?28011/ 0002?30SOGEFRPPXXX?31\nFR1420041010050500013M02606?32Empfaenger\
-      \ 2 mit 70 Zeichen?33 Empf\n"
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011
+      Instruct
+
+      ion?22 Id  00002?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit
+
+      140 Stellen?25 fu/r SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und
+
+      A-CT-N?27UD-/S01 CTSc-01 EBB TFNr 01?28011/ 0002?30SOGEFRPPXXX?31
+
+      FR1420041010050500013M02606?32Empfaenger 2 mit 70 Zeichen?33 Empf
+
+      ae'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -719,11 +752,18 @@ transactions:
     funds_code: R
     id: NTRF
     status: D
-    transaction_details: "116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011\
-      \ Instruct\nion?22 Id  00004?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit\
-      \ \n140 Stellen?25 fu/r SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und \nA-CT-N?27UD-/S01\
-      \ CTSc-01 EBB TFNr 01?28011/ 0004?30SOGEFRPPXXX?31\nFR1420041010050500013M02606?32Empfaenger\
-      \ 4 mit 70 Zeichen?33 Empf\n"
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011
+      Instruct
+
+      ion?22 Id  00004?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit
+
+      140 Stellen?25 fu/r SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und
+
+      A-CT-N?27UD-/S01 CTSc-01 EBB TFNr 01?28011/ 0004?30SOGEFRPPXXX?31
+
+      FR1420041010050500013M02606?32Empfaenger 4 mit 70 Zeichen?33 Empf
+
+      ae'
     transaction_reference: T089414006000002
   transactions: *id001
 - !!python/object:mt940.models.Transaction
@@ -744,11 +784,18 @@ transactions:
     funds_code: R
     id: NTRF
     status: D
-    transaction_details: "116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011\
-      \ Instruct\nion?22 Id  00003?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit\
-      \ \n140 Stellen?25 fu/r SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und \nA-CT-N?27UD-/S01\
-      \ CTSc-01 EBB TFNr 01?28011/ 0003?30SOGEFRPPXXX?31\nFR1420041010050500013M02606?32Empfaenger\
-      \ 3 mit 70 Zeichen?33 Empf\n"
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011
+      Instruct
+
+      ion?22 Id  00003?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit
+
+      140 Stellen?25 fu/r SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und
+
+      A-CT-N?27UD-/S01 CTSc-01 EBB TFNr 01?28011/ 0003?30SOGEFRPPXXX?31
+
+      FR1420041010050500013M02606?32Empfaenger 3 mit 70 Zeichen?33 Empf
+
+      ae'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -768,11 +815,18 @@ transactions:
     funds_code: R
     id: NTRF
     status: D
-    transaction_details: "116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011\
-      \ Instruct\nion?22 Id  00005?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit\
-      \ \n140 Stellen?25 fu/r SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und \nA-CT-N?27UD-/S01\
-      \ CTSc-01 EBB TFNr 01?28011/ 0005?30SOGEFRPPXXX?31\nFR1420041010050500013M02606?32Empfaenger\
-      \ 5 mit 70 Zeichen?33 Empf\n"
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011
+      Instruct
+
+      ion?22 Id  00005?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit
+
+      140 Stellen?25 fu/r SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und
+
+      A-CT-N?27UD-/S01 CTSc-01 EBB TFNr 01?28011/ 0005?30SOGEFRPPXXX?31
+
+      FR1420041010050500013M02606?32Empfaenger 5 mit 70 Zeichen?33 Empf
+
+      ae'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -792,10 +846,18 @@ transactions:
     funds_code: R
     id: NTRF
     status: D
-    transaction_details: "116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011\
-      \ Instruct\nion?22 Id  00007?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit\
-      \ \n140 Stellen?25 fu/r SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und \nA-CT-N?27UD-/S01\
-      \ CTSc-01 EBB TFNr 01?28011/ 0007?29MTLG:Ggf.Melde\nvorschriften ?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfa\n"
+    transaction_details: '116?00SEPA-UEBERW?100399?20EREF+NONREF?21KREF+TFNR 01011
+      Instruct
+
+      ion?22 Id  00007?23SVWZ+Unstrukturierter Verwe?24ndungszweck mit
+
+      140 Stellen?25 fu/r SEPA COR Buchungssche?26ma /A-CT-DTE-S01 und
+
+      A-CT-N?27UD-/S01 CTSc-01 EBB TFNr 01?28011/ 0007?29MTLG:Ggf.Melde
+
+      vorschriften ?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfa
+
+      en'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -1526,8 +1588,12 @@ transactions:
     funds_code: R
     id: NTRF
     status: D
-    transaction_details: "191?00SEPA-UEBERW?100399?20KREF+PayId CTSc-01  BC PPP ?21TFNr\
-      \ 05 \n006?22MTLG:SEPA-Ueberweisungsauft?23rag Datei mit 0000004 Zahlu?2\n4ngen"
+    transaction_details: '191?00SEPA-UEBERW?100399?20KREF+PayId CTSc-01  BC PPP ?21TFNr
+      05
+
+      006?22MTLG:SEPA-Ueberweisungsauft?23rag Datei mit 0000004 Zahlu?2
+
+      4ngen'
     transaction_reference: T089414036000002
   transactions: *id001
 - !!python/object:mt940.models.Transaction
@@ -1596,9 +1662,14 @@ transactions:
     funds_code: R
     id: NTRF
     status: C
-    transaction_details: "166?00GUTSCHRIFT?100399?20EREF+EndToEndId TFNR 21 003?21\
-      \ 00001?22\nSVWZ+Verwend CTSc-01 PPP TF?23Nr 21 003?30DRESDEFF508?31DE9550880\n\
-      0500194784900?32JOSEF?33        JAEGER?70Empfaenger Josef Jaeger \nUK?7101"
+    transaction_details: '166?00GUTSCHRIFT?100399?20EREF+EndToEndId TFNR 21 003?21
+      00001?22
+
+      SVWZ+Verwend CTSc-01 PPP TF?23Nr 21 003?30DRESDEFF508?31DE9550880
+
+      0500194784900?32JOSEF?33        JAEGER?70Empfaenger Josef Jaeger
+
+      UK?7101'
     transaction_reference: T089414046000001
   transactions: *id001
 - !!python/object:mt940.models.Transaction

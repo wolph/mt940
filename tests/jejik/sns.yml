@@ -63,12 +63,13 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9wGCA==
-    extra_details: ''
+    extra_details: marechal s
     funds_code: null
     id: NIOB
     status: D
-    transaction_details: "0987654321 marechal s\n                                \
-      \                                 \ndit is een test"
+    transaction_details: '0987654321 marechal s
+
+      dit is een test'
     transaction_reference: '0000000000'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
@@ -85,12 +86,13 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9wGCA==
-    extra_details: ''
+    extra_details: marechal s
     funds_code: null
     id: NIOB
     status: D
-    transaction_details: "0987654321 marechal s\n                                \
-      \                                 \ndit is test 2"
+    transaction_details: '0987654321 marechal s
+
+      dit is test 2'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data: {transaction_reference: '0000000000'}

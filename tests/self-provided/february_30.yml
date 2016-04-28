@@ -19,7 +19,6 @@ data:
     status: C
   sequence_number: '001'
   statement_number: '00000'
-  transaction_reference: STARTUMSE
 processors:
   post_account_identification: []
   post_available_balance: []

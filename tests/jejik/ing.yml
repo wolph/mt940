@@ -87,7 +87,6 @@ transactions:
     id: NTRF
     status: D
     transaction_details: "0111111111 GPSEOUL SPOEDBETALING\tMPBZS1016000047 GPSEOUL"
-    transaction_reference: MPBZ
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -106,7 +105,6 @@ transactions:
     status: D
     transaction_details: !!python/str "0111111111 ING iDEAL KN: TMG TANGO TRANSACTIENR\
       \ 0050000534527978 10\xAD06\xAD2010 15:32 TMG TANGO ING Bank inzake GPKyoto"
-    transaction_reference: MPBZ
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -125,7 +123,6 @@ transactions:
     status: D
     transaction_details: !!python/str "ABN AMRO BANK>AMSTERDAM 22\xAD07\xAD2010 09:57\
       \ 002\t5595781"
-    transaction_reference: MPBZ
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -143,7 +140,6 @@ transactions:
     id: NTRF
     status: D
     transaction_details: 0111111111 GPPeking 170000001AC
-    transaction_reference: MPBZ
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -161,7 +157,6 @@ transactions:
     id: NTRF
     status: C
     transaction_details: 0123456789 EJ46GREENP100610T1456 CLIEOP TMG GPHONGKONG AMSTERDAM
-    transaction_reference: MPBZ
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -187,5 +182,4 @@ transactions:
       D000004C000002D25,24C28,71
 
       -XXX'
-    transaction_reference: MPBZ
   transactions: *id001

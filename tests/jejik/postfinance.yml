@@ -79,7 +79,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B90MCQ==
-    extra_details: ''
+    extra_details: '20131209007602198765432000000012'
     funds_code: null
     id: FMSC
     status: C
@@ -101,7 +101,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B90MCQ==
-    extra_details: ''
+    extra_details: '20131209007602187654321000000012'
     funds_code: null
     id: FMSC
     status: C
@@ -122,7 +122,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B90MEA==
-    extra_details: ''
+    extra_details: '20131216007602112345678000000012'
     funds_code: null
     id: FMSC
     status: D
@@ -147,7 +147,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B90MEg==
-    extra_details: ''
+    extra_details: '20131216816204000100125000000012'
     funds_code: null
     id: FMSC
     status: C

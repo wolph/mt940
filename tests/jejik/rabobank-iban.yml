@@ -56,11 +56,11 @@ transactions:
       currency: EUR
     bank_reference: null
     currency: EUR
-    customer_reference: 'EREF            '
+    customer_reference: EREF
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B90BAQ==
-    extra_details: ''
+    extra_details: NL70ABNA0987654321
     funds_code: null
     id: N102
     status: D
@@ -77,11 +77,11 @@ transactions:
       currency: EUR
     bank_reference: null
     currency: EUR
-    customer_reference: 'NONREF          '
+    customer_reference: NONREF
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B90BAg==
-    extra_details: ''
+    extra_details: P001234567
     funds_code: null
     id: N154
     status: D
@@ -94,11 +94,11 @@ transactions:
       currency: EUR
     bank_reference: null
     currency: EUR
-    customer_reference: 'EREF            '
+    customer_reference: EREF
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B90BCA==
-    extra_details: ''
+    extra_details: NL70ABNA0987654321
     funds_code: null
     id: N102
     status: D
@@ -115,11 +115,11 @@ transactions:
       currency: EUR
     bank_reference: null
     currency: EUR
-    customer_reference: 'NONREF          '
+    customer_reference: NONREF
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B90BCQ==
-    extra_details: ''
+    extra_details: P001234567
     funds_code: null
     id: N154
     status: D
