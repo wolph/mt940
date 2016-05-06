@@ -189,7 +189,7 @@ class Statement(Tag):
     (\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary Details
                                              # (this will be on a new/separate
                                              # line)
-    $'''
+    '''
 
     def __call__(self, transactions, value):
         data = super(Statement, self).__call__(transactions, value)
