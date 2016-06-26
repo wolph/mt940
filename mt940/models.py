@@ -138,6 +138,8 @@ class Transactions(collections.Sequence):
         post_statement=[processors.date_cleanup_post_processor],
         pre_statement_number=[],
         post_statement_number=[],
+        pre_non_swift=[],
+        post_non_swift=[],
         pre_transaction_details=[],
         post_transaction_details=[],
         pre_transaction_reference_number=[],
@@ -201,7 +203,7 @@ class Transactions(collections.Sequence):
         # match it's difficult to get both the beginning and the end so we're
         # working around it in a safer way to get everything.
         tag_re = re.compile(
-            r'^:(?P<full_tag>(?P<tag>[0-9]{2})(?P<sub_tag>[A-Z])?):',
+            r'^:(?P<full_tag>(?P<tag>[0-9]{2}|NS)(?P<sub_tag>[A-Z])?):',
             re.MULTILINE)
         matches = list(tag_re.finditer(data))
 
@@ -209,7 +211,11 @@ class Transactions(collections.Sequence):
         self.transactions.append(transaction)
 
         for i, match in enumerate(matches):
-            tag_id = int(match.group('tag'))
+            tag_id = match.group('tag')
+            # Since non-digit tags exist, make the conversion optional
+            if tag_id.isdigit():
+                tag_id = int(tag_id)
+
             assert tag_id in mt940.tags.TAG_BY_ID, 'Unknown tag %r' \
                 'in line: %r' % (tag_id, match.group(0))
 

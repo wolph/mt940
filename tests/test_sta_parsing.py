@@ -26,6 +26,12 @@ def get_yaml_data(sta_file):
         return yaml.load(fh)
 
 
+def write_yaml_data(sta_file, data):
+    yml_file = sta_file.replace('.sta', '.yml')
+    with open(yml_file, 'w') as fh:
+        fh.write(yaml.dump(data))
+
+
 def compare(a, b, key=''):
     if key:
         keys = [key]

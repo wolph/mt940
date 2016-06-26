@@ -126,6 +126,27 @@ class StatementNumber(Tag):
     pattern = r'''
     (?P<statement_number>\d{1,5})  # 5n
     (?:/(?P<sequence_number>\d{1,5}))?  # [/5n]
+    $'''
+
+
+class NonSwift(Tag):
+
+    '''Non-swift extension for MT940 containing extra information. The
+    actual definition is not consistent between banks so the current
+    implementation is a tad limited. Feel free to extend the implmentation
+    and create a pull request with a better version :)
+
+    Pattern: 2!n35x
+    '''
+    id = 'NS'
+    pattern = r'''
+    (?P<non_swift>
+        (\d{2}.{0,35})
+        (\n\d{2}.{0,35})*
+    )
+    $'''
+    sub_pattern = r'''
+    (?P<ns_id>\d{2})(?P<ns_data>.{0,35})
     '''
 
 
@@ -189,7 +210,7 @@ class Statement(Tag):
     (\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary Details
                                              # (this will be on a new/separate
                                              # line)
-    '''
+    $'''
 
     def __call__(self, transactions, value):
         data = super(Statement, self).__call__(transactions, value)
@@ -254,6 +275,7 @@ class Tags(enum.Enum):
     AVAILABLE_BALANCE = AvailableBalance()
     FORWARD_AVAILABLE_BALANCE = ForwardAvailableBalance()
     TRANSACTION_DETAILS = TransactionDetails()
+    NON_SWIFT = NonSwift()
 
 
 TAG_BY_ID = {t.value.id: t.value for t in Tags}

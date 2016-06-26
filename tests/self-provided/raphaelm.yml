@@ -1,0 +1,222 @@
+&id001 !!python/object:mt940.models.Transactions
+data:
+  account_identification: '3346780111'
+  final_closing_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['0.00']
+      currency: '950'
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9IDGA==
+    status: C
+  final_opening_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['145000.00']
+      currency: DEM
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9IDGA==
+    status: C
+  intermediate_closing_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['0.00']
+      currency: '105'
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9IDDw==
+    status: C
+  intermediate_opening_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['105000.00']
+      currency: DEM
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9IDDw==
+    status: C
+  non_swift: '01bekannt
+
+    1812345'
+  sequence_number: '1'
+  statement_number: '2'
+processors:
+  post_account_identification: []
+  post_available_balance: []
+  post_closing_balance: []
+  post_final_closing_balance: []
+  post_final_opening_balance: []
+  post_forward_available_balance: []
+  post_intermediate_closing_balance: []
+  post_intermediate_opening_balance: []
+  post_non_swift: []
+  post_opening_balance: []
+  post_related_reference: []
+  post_statement: [!!python/name:mt940.processors.date_cleanup_post_processor '']
+  post_statement_number: []
+  post_transaction_details: []
+  post_transaction_reference_number: []
+  pre_account_identification: []
+  pre_available_balance: []
+  pre_closing_balance: []
+  pre_final_closing_balance: []
+  pre_final_opening_balance: []
+  pre_forward_available_balance: []
+  pre_intermediate_closing_balance: []
+  pre_intermediate_opening_balance: []
+  pre_non_swift: []
+  pre_opening_balance: []
+  pre_related_reference: []
+  pre_statement: [!!python/name:mt940.processors.date_fixup_pre_processor '']
+  pre_statement_number: []
+  pre_transaction_details: []
+  pre_transaction_reference_number: []
+transactions:
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['5000.00']
+      currency: DEM
+    bank_reference: null
+    currency: DEM
+    customer_reference: '68790452'
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9IDEQ==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9IDFA==
+    extra_details: ''
+    funds_code: M
+    id: S051
+    status: C
+    transaction_reference: STARTUMS
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['20000.00']
+      currency: DEM
+    bank_reference: null
+    currency: DEM
+    customer_reference: ''
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9IDFg==
+    extra_details: ''
+    funds_code: M
+    id: NCHG
+    status: C
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['20000.00']
+      currency: DEM
+    bank_reference: null
+    currency: DEM
+    customer_reference: ''
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9IDFg==
+    extra_details: ''
+    funds_code: M
+    id: S051
+    status: C
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['20000.00']
+      currency: DEM
+    bank_reference: null
+    currency: DEM
+    customer_reference: ''
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9IDFg==
+    extra_details: ''
+    funds_code: M
+    id: S051
+    status: C
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['20000.00']
+      currency: DEM
+    bank_reference: null
+    currency: DEM
+    customer_reference: ''
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9IDFg==
+    extra_details: ''
+    funds_code: M
+    id: S051
+    status: C
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['20000.00']
+      currency: DEM
+    bank_reference: null
+    currency: DEM
+    customer_reference: ''
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9IDFg==
+    extra_details: ''
+    funds_code: M
+    id: S051
+    status: C
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['20000.00']
+      currency: DEM
+    bank_reference: null
+    currency: DEM
+    customer_reference: ''
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9IDFg==
+    extra_details: ''
+    funds_code: M
+    id: S051
+    status: C
+    transaction_reference: STARTUMS
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['20000.00']
+      currency: DEM
+    bank_reference: null
+    currency: DEM
+    customer_reference: ''
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9IDFg==
+    extra_details: ''
+    funds_code: M
+    id: S051
+    status: C
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-50000.00']
+      currency: DEM
+    bank_reference: null
+    currency: DEM
+    customer_reference: ''
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9IDGA==
+    extra_details: ''
+    funds_code: M
+    id: S051
+    status: D
+    transaction_reference: STARTUMS
+  transactions: *id001

@@ -1,3 +1,16 @@
+[run]
+branch = True
+source = 
+    mt940
+    tests
+
+omit =
+    */mock/*
+    */nose/*
+[paths]
+source =
+    mt940
+
 [report]
 fail_under = 100
 exclude_lines =
@@ -9,8 +22,4 @@ exclude_lines =
     raise NotImplementedError
     if 0:
     if __name__ == .__main__.:
-
-[run]
-source = mt-940
-branch = True
 
