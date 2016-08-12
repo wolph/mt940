@@ -29,6 +29,7 @@ Sources:
 import mt940
 from os.path import isfile
 
+
 def parse(src):
     '''
     Parses mt940 data and returns transactions object
