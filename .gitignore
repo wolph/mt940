@@ -4,6 +4,7 @@
 *.so
 
 # Packages
+.eggs
 *.egg
 *.egg-info
 dist
@@ -43,3 +44,4 @@ output/*/index.html
 docs/_build
 /docs/doctrees/
 /docs/html/
+/docs/doctrees/

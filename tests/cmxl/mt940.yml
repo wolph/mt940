@@ -20,7 +20,6 @@ data:
   related_reference: '9876543210'
   sequence_number: '001'
   statement_number: 00084
-  transaction_reference: TELEWIZORY S.A.
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -67,6 +66,7 @@ transactions:
     id: NCHK
     status: D
     transaction_details: 999PN5477SCHECK-NR. 0000016703074
+    transaction_reference: '131110'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -257,6 +257,7 @@ transactions:
     id: NSTO
     status: D
     transaction_details: 008?00DAUERAUFTRAG?100599?20Miete November?3010020030?31234567?32MUELLER?34339
+    transaction_reference: '1234567'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -293,64 +294,77 @@ transactions:
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['20000.00']
       currency: PLN
-    bank_reference: null
+    bank_reference: '8327000090031789'
     currency: PLN
-    customer_reference: NONREF//83270000
+    customer_reference: NONREF
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9MKFA==
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9MKFA==
-    extra_details: '90031789 '
+    extra_details: Card transaction
     funds_code: null
     id: FMSC
     status: C
-    transaction_details: "020?00Wyplata-(dysp/przel)?2008106000760000777777777777?2115617?\n\
-      22INFO INFO INFO INFO INFO INFO 1 END?23INFO INFO INFO INFO INFO \nINFO 2 END?24ZAPLATA\
-      \ ZA FABRYKATY DO TUB?25 - 200 S ZTUK, TRANZY \nSTORY-?26300 SZT GR544 I OPORNIKI-5?2700\
-      \ SZT GTX847 FAKTURA 333/ \n2?28003.?3010600076?310000777777777777?32HUTA SZKLA\
-      \ TOPIC UL \nPRZEM"
+    transaction_details: '020?00Wyplata-(dysp/przel)?2008106000760000777777777777?2115617?
+
+      22INFO INFO INFO INFO INFO INFO 1 END?23INFO INFO INFO INFO INFO
+
+      INFO 2 END?24ZAPLATA ZA FABRYKATY DO TUB?25 - 200 S ZTUK, TRANZY
+
+      STORY-?26300 SZT GR544 I OPORNIKI-5?2700 SZT GTX847 FAKTURA 333/
+
+      2?28003.?3010600076?310000777777777777?32HUTA SZKLA TOPIC UL
+
+      PRZEMY?33'
+    transaction_reference: TELEWIZORY S.A.
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['-10000.00']
       currency: PLN
-    bank_reference: null
+    bank_reference: '8327000090031790'
     currency: PLN
-    customer_reference: REF 25611247//83
+    customer_reference: REF 25611247
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9MKFA==
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9MKFA==
-    extra_details: '27000090031790 '
+    extra_details: Transfer
     funds_code: null
     id: FTRF
     status: D
-    transaction_details: "020?00Wyplata-(dysp/przel)?2008106000760000777777777777?2115617?\n\
-      22INFO INFO INFO INFO INFO INFO 1 END?23INFO INFO INFO INFO INFO \nINFO 2 END?24ZAPLATA\
-      \ ZA FABRYKATY DO TUB?25 - 200 S ZTUK, TRANZY \nSTORY-?26300 SZT GR544 I OPORNIKI-5?2700\
-      \ SZT GTX847 FAKTURA 333/ \n2?28003.?3010600076?310000777777777777?38PL081060007600007777777\
-      \ \n7"
+    transaction_details: '020?00Wyplata-(dysp/przel)?2008106000760000777777777777?2115617?
+
+      22INFO INFO INFO INFO INFO INFO 1 END?23INFO INFO INFO INFO INFO
+
+      INFO 2 END?24ZAPLATA ZA FABRYKATY DO TUB?25 - 200 S ZTUK, TRANZY
+
+      STORY-?26300 SZT GR544 I OPORNIKI-5?2700 SZT GTX847 FAKTURA 333/
+
+      2?28003.?3010600076?310000777777777777?38PL081060007600007777777
+
+      77777'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['40.00']
       currency: PLN
-    bank_reference: null
+    bank_reference: '8327000090031791'
     currency: PLN
-    customer_reference: NONREF//83270000
+    customer_reference: NONREF
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9MKFA==
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9MKFA==
-    extra_details: '90031791 '
+    extra_details: Interest credit
     funds_code: null
     id: FTRF
     status: C

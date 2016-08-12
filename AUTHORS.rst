@@ -10,7 +10,9 @@ Development Lead
 Contributors
 ------------
 
-None yet. Why not be the first? (since 2015-07-11, new format)
+* Ben Konrath (benkonrath)
+
+Why not join the club?
 
 A more up to date list can be found here: 
 https://github.com/WoLpH/mt940/graphs/contributors

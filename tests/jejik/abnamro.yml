@@ -35,7 +35,6 @@ data:
     status: C
   sequence_number: '1'
   statement_number: '19322'
-  transaction_reference: ABN AMRO BANK NV
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -89,6 +88,7 @@ transactions:
       5314606715                       BETREFT FACTUUR D.D. 20-05-2011
 
       INCL. 1,44 BTW'
+    transaction_reference: ABN AMRO BANK NV
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -252,6 +252,7 @@ transactions:
     id: N426
     status: D
     transaction_details: BEA   NR:XXX1234   24.05.11/09.18 PETS PLACE KATWIJK KATWI,PAS999
+    transaction_reference: ABN AMRO BANK NV
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:

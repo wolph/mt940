@@ -27,21 +27,25 @@ Sources:
 '''
 
 import mt940
+from os.path import isfile
 
 
-def parse(fh):
+def parse(src):
     '''
     Parses mt940 data and returns transactions object
 
-    :param file or str fh: file handler or filename to read
+    :param src: file handler to read, filename to read or raw data as string
     :return: Collection of transactions
     :rtype: Transactions
     '''
-    if not hasattr(fh, 'read'):  # pragma: no branch
-        fh = open(fh)
-    data = fh.read()
+    if hasattr(src, 'read'):  # pragma: no branch
+        data = src.read()
+    elif isfile(src):
+        src = open(src)
+        data = src.read()
+    else:
+        data = src
 
     transactions = mt940.models.Transactions()
     transactions.parse(data)
     return transactions
-

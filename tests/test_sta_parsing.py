@@ -26,24 +26,34 @@ def get_yaml_data(sta_file):
         return yaml.load(fh)
 
 
-def compare(a, b):
+def write_yaml_data(sta_file, data):
+    yml_file = sta_file.replace('.sta', '.yml')
+    with open(yml_file, 'w') as fh:
+        fh.write(yaml.dump(data))
+
+
+def compare(a, b, key=''):
+    if key:
+        keys = [key]
+    else:
+        keys = []
+
     simple_types = (
         decimal.Decimal,
     ) + _compat.string_types + _compat.integer_types
     if isinstance(a, simple_types):
-        logger.debug('%r == %r', a, b)
         assert a == b
     elif a is None:
-        logger.debug('%r is %r', a, b)
         assert a is b
     elif isinstance(a, dict):
         for k in a:
-            compare(a[k], b[k])
+            assert k in b
+            compare(a[k], b[k], '.'.join(keys + [k]))
     elif isinstance(a, (list, tuple)):
         for av, bv in zip(a, b):
-            compare(av, bv)
+            compare(av, bv, key)
     elif hasattr(a, 'data'):
-        compare(a.data, b.data)
+        compare(a.data, b.data, '.'.join(keys + ['data']))
     elif isinstance(a, mt940.models.Model):
         compare(a.__dict__, b.__dict__)
     else:
@@ -59,10 +69,12 @@ def test_parse(sta_file):
     repr(transactions)
     str(transactions)
 
+    # Test string and representation methods
     for k, v in transactions.data.items():
         str(v)
         repr(v)
 
+    # Test string and representation methods
     for transaction in transactions:
         repr(transaction)
         str(transaction)

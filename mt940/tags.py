@@ -52,13 +52,22 @@ class Tag(object):
     scope = models.Transactions
 
     def __init__(self):
-        self.re = re.compile(self.pattern, re.IGNORECASE | re.VERBOSE)
+        self.re = re.compile(self.pattern,
+                             re.IGNORECASE | re.VERBOSE | re.UNICODE)
 
     def parse(self, transactions, value):
-        logger.debug('matching (%d) %r against %r', len(value), value,
-                     self.pattern)
         match = self.re.match(value)
-        assert match is not None, 'Unable to parse %r from %r' % (self, value)
+        if match:  # pragma: no branch
+            self.logger.debug(
+                'matched (%d) "%s" against "%s", got: %r',
+                len(value), value, self.pattern, match.groupdict())
+        else:  # pragma: no cover
+            self.logger.info(
+                'matching (%d) "%s" against "%s"', len(value), value,
+                self.pattern)
+            raise RuntimeError(
+                'Unable to parse "%s" from "%s"' % (self, value),
+                self, value)
         return match.groupdict()
 
     def __call__(self, transactions, value):
@@ -69,6 +78,7 @@ class Tag(object):
 
         words = re.findall('([A-Z][a-z]+)', cls.__name__)
         cls.slug = '_'.join(w.lower() for w in words)
+        cls.logger = logger.getChild(cls.name)
 
         return object.__new__(cls, *args, **kwargs)
 
@@ -77,6 +87,7 @@ class Tag(object):
 
 
 class TransactionReferenceNumber(Tag):
+
     '''Transaction reference number
 
     Pattern: 16x
@@ -86,6 +97,7 @@ class TransactionReferenceNumber(Tag):
 
 
 class RelatedReference(Tag):
+
     '''Related reference
 
     Pattern: 16x
@@ -95,6 +107,7 @@ class RelatedReference(Tag):
 
 
 class AccountIdentification(Tag):
+
     '''Account identification
 
     Pattern: 35x
@@ -104,6 +117,7 @@ class AccountIdentification(Tag):
 
 
 class StatementNumber(Tag):
+
     '''Statement number / sequence number
 
     Pattern: 5n[/5n]
@@ -112,10 +126,32 @@ class StatementNumber(Tag):
     pattern = r'''
     (?P<statement_number>\d{1,5})  # 5n
     (?:/(?P<sequence_number>\d{1,5}))?  # [/5n]
+    $'''
+
+
+class NonSwift(Tag):
+
+    '''Non-swift extension for MT940 containing extra information. The
+    actual definition is not consistent between banks so the current
+    implementation is a tad limited. Feel free to extend the implmentation
+    and create a pull request with a better version :)
+
+    Pattern: 2!n35x
+    '''
+    id = 'NS'
+    pattern = r'''
+    (?P<non_swift>
+        (\d{2}.{0,35})
+        (\n\d{2}.{0,35})*
+    )
+    $'''
+    sub_pattern = r'''
+    (?P<ns_id>\d{2})(?P<ns_data>.{0,35})
     '''
 
 
 class BalanceBase(Tag):
+
     '''Balance base
 
     Pattern: 1!a6!n3!a15d
@@ -151,6 +187,7 @@ class IntermediateOpeningBalance(BalanceBase):
 
 
 class Statement(Tag):
+
     '''Statement
 
     Pattern: 6!n[4!n]2a[1!a]15d1!a3!c16x[//16x]
@@ -170,9 +207,10 @@ class Statement(Tag):
     (?P<id>[A-Z][A-Z0-9]{3})?  # 1!a3!c Transaction Type Identification Code
     (?P<customer_reference>.{0,16})  # 16x Customer Reference
     (//(?P<bank_reference>.{0,16}))?  # [//16x] Bank Reference
-    (?P<extra_details>.{0,34})  # [34x] Supplementary Details (this will be on
-                                # a new/separate line)
-    '''
+    (\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary Details
+                                             # (this will be on a new/separate
+                                             # line)
+    $'''
 
     def __call__(self, transactions, value):
         data = super(Statement, self).__call__(transactions, value)
@@ -211,6 +249,7 @@ class ForwardAvailableBalance(BalanceBase):
 
 
 class TransactionDetails(Tag):
+
     '''Transaction details
 
     Pattern: 6x65x
@@ -236,6 +275,7 @@ class Tags(enum.Enum):
     AVAILABLE_BALANCE = AvailableBalance()
     FORWARD_AVAILABLE_BALANCE = ForwardAvailableBalance()
     TRANSACTION_DETAILS = TransactionDetails()
+    NON_SWIFT = NonSwift()
 
 
 TAG_BY_ID = {t.value.id: t.value for t in Tags}

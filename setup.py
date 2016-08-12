@@ -7,10 +7,11 @@ import sys
 
 try:
     from setuptools import setup, find_packages
-    from setuptools.command.test import test as TestCommand
 except ImportError:
-    from distutils.core import setup, find_packages, Command as TestCommand
+    from distutils.core import setup, find_packages
 
+# To prevent importing about and thereby breaking the coverage info we use this
+# exec hack
 about = {}
 with open("mt940/__about__.py") as fp:
     exec(fp.read(), about)
@@ -23,8 +24,12 @@ if sys.version_info < (2, 7):
     install_reqs += ['argparse']
     tests_reqs += ['unittest2']
 
-if sys.version_info < (3, 4):
+try:
+    import enum
+    assert enum
+except ImportError:
     install_reqs += ['enum34']
+
 
 def parse_requirements(filename):
     '''Read the requirements from the filename, supports includes'''
@@ -58,44 +63,34 @@ with open('CHANGES') as fh:
     history = fh.read().replace('.. :changelog:', '')
 
 
-class PyTest(TestCommand):
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
-
-    def run_tests(self):
-        # import here, cause outside the eggs aren't loaded
-        import pytest
-        errno = pytest.main(self.test_args)
-        sys.exit(errno)
-
-setup(
-    name=about['__package_name__'],
-    version=about['__version__'],
-    author=about['__author__'],
-    author_email=about['__email__'],
-    description=about['__description__'],
-    url=about['__url__'],
-    license=about['__license__'],
-    keywords=about['__title__'],
-    packages=find_packages(exclude=['docs']),
-    long_description=readme + '\n\n' + history,
-    include_package_data=True,
-    install_requires=install_reqs,
-    tests_require=tests_reqs,
-    zip_safe=False,
-    cmdclass={'test': PyTest},
-    classifiers=[
-        'Development Status :: 6 - Mature',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
-        'Natural Language :: English',
-        "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: Implementation :: PyPy',
-    ],
-)
+if __name__ == '__main__':
+    setup(
+        name=about['__package_name__'],
+        version=about['__version__'],
+        author=about['__author__'],
+        author_email=about['__email__'],
+        description=about['__description__'],
+        url=about['__url__'],
+        license=about['__license__'],
+        keywords=about['__title__'],
+        packages=find_packages(exclude=['docs']),
+        long_description=readme + '\n\n' + history,
+        include_package_data=True,
+        install_requires=install_reqs,
+        tests_require=tests_reqs,
+        setup_requires=['setuptools', 'pytest-runner>=2.8'],
+        zip_safe=False,
+        classifiers=[
+            'Development Status :: 6 - Mature',
+            'Intended Audience :: Developers',
+            'License :: OSI Approved :: BSD License',
+            'Natural Language :: English',
+            "Programming Language :: Python :: 2",
+            'Programming Language :: Python :: 2.7',
+            'Programming Language :: Python :: 3',
+            'Programming Language :: Python :: 3.3',
+            'Programming Language :: Python :: 3.4',
+            'Programming Language :: Python :: 3.5',
+            'Programming Language :: Python :: Implementation :: PyPy',
+        ],
+    )
