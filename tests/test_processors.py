@@ -24,6 +24,20 @@ def test_date_fixup_pre_processor(february_30_data):
     assert transactions[0].data['date'] == mt940.models.Date(2016, 2, 29)
 
 
+def test_parse_data():
+    with open('tests/jejik/abnamro.sta') as fh:
+        mt940.parse(fh.read())
+
+
+def test_parse_fh():
+    with open('tests/jejik/abnamro.sta') as fh:
+        mt940.parse(fh)
+
+
+def test_parse_filename():
+    mt940.parse('tests/jejik/abnamro.sta')
+
+
 def test_pre_processor(sta_data):
     transactions = mt940.models.Transactions(processors=dict(
         pre_final_closing_balance=[
