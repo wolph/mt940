@@ -244,8 +244,7 @@ class Transactions(collections.Sequence):
 
             # Creating a new transaction for :20: and :61: tags allows the
             # tags from :20: to :61: to be captured as part of the transaction.
-            if isinstance(tag, mt940.tags.TransactionReferenceNumber) or \
-                    isinstance(tag, mt940.tags.Statement):
+            if isinstance(tag, mt940.tags.Statement):
                 # Transactions only get a Transaction Reference Code ID from a
                 # :61: tag which is why a new transaction is created if the
                 # 'id' has a value.

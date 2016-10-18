@@ -19,6 +19,7 @@ data:
     status: C
   sequence_number: '1'
   statement_number: '161'
+  transaction_reference: '0000000000'
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -28,6 +29,7 @@ processors:
   post_forward_available_balance: []
   post_intermediate_closing_balance: []
   post_intermediate_opening_balance: []
+  post_non_swift: []
   post_opening_balance: []
   post_related_reference: []
   post_statement: [!!python/name:mt940.processors.date_cleanup_post_processor '']
@@ -42,9 +44,10 @@ processors:
   pre_forward_available_balance: []
   pre_intermediate_closing_balance: []
   pre_intermediate_opening_balance: []
+  pre_non_swift: []
   pre_opening_balance: []
   pre_related_reference: []
-  pre_statement: []
+  pre_statement: [!!python/name:mt940.processors.date_fixup_pre_processor '']
   pre_statement_number: []
   pre_transaction_details: []
   pre_transaction_reference_number: []
@@ -70,7 +73,6 @@ transactions:
     transaction_details: '0987654321 marechal s
 
       dit is een test'
-    transaction_reference: '0000000000'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -93,7 +95,4 @@ transactions:
     transaction_details: '0987654321 marechal s
 
       dit is test 2'
-  transactions: *id001
-- !!python/object:mt940.models.Transaction
-  data: {transaction_reference: '0000000000'}
   transactions: *id001

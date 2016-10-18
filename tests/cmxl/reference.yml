@@ -1,5 +1,5 @@
 &id001 !!python/object:mt940.models.Transactions
-data: {}
+data: {transaction_reference: D140902049}
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -9,6 +9,7 @@ processors:
   post_forward_available_balance: []
   post_intermediate_closing_balance: []
   post_intermediate_opening_balance: []
+  post_non_swift: []
   post_opening_balance: []
   post_related_reference: []
   post_statement: [!!python/name:mt940.processors.date_cleanup_post_processor '']
@@ -23,13 +24,14 @@ processors:
   pre_forward_available_balance: []
   pre_intermediate_closing_balance: []
   pre_intermediate_opening_balance: []
+  pre_non_swift: []
   pre_opening_balance: []
   pre_related_reference: []
-  pre_statement: []
+  pre_statement: [!!python/name:mt940.processors.date_fixup_pre_processor '']
   pre_statement_number: []
   pre_transaction_details: []
   pre_transaction_reference_number: []
 transactions:
 - !!python/object:mt940.models.Transaction
-  data: {transaction_reference: D140902049}
+  data: {}
   transactions: *id001

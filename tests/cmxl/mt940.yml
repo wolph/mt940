@@ -20,6 +20,7 @@ data:
   related_reference: '9876543210'
   sequence_number: '001'
   statement_number: 00084
+  transaction_reference: TELEWIZORY S.A.
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -29,6 +30,7 @@ processors:
   post_forward_available_balance: []
   post_intermediate_closing_balance: []
   post_intermediate_opening_balance: []
+  post_non_swift: []
   post_opening_balance: []
   post_related_reference: []
   post_statement: [!!python/name:mt940.processors.date_cleanup_post_processor '']
@@ -43,9 +45,10 @@ processors:
   pre_forward_available_balance: []
   pre_intermediate_closing_balance: []
   pre_intermediate_opening_balance: []
+  pre_non_swift: []
   pre_opening_balance: []
   pre_related_reference: []
-  pre_statement: []
+  pre_statement: [!!python/name:mt940.processors.date_fixup_pre_processor '']
   pre_statement_number: []
   pre_transaction_details: []
   pre_transaction_reference_number: []
@@ -66,7 +69,6 @@ transactions:
     id: NCHK
     status: D
     transaction_details: 999PN5477SCHECK-NR. 0000016703074
-    transaction_reference: '131110'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -257,7 +259,6 @@ transactions:
     id: NSTO
     status: D
     transaction_details: 008?00DAUERAUFTRAG?100599?20Miete November?3010020030?31234567?32MUELLER?34339
-    transaction_reference: '1234567'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -318,7 +319,6 @@ transactions:
       2?28003.?3010600076?310000777777777777?32HUTA SZKLA TOPIC UL
 
       PRZEMY?33'
-    transaction_reference: TELEWIZORY S.A.
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:

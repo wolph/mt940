@@ -38,6 +38,7 @@ data:
     1812345'
   sequence_number: '1'
   statement_number: '2'
+  transaction_reference: STARTUMS
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -88,7 +89,6 @@ transactions:
     funds_code: M
     id: S051
     status: C
-    transaction_reference: STARTUMS
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -185,7 +185,6 @@ transactions:
     funds_code: M
     id: S051
     status: C
-    transaction_reference: STARTUMS
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -218,5 +217,4 @@ transactions:
     funds_code: M
     id: S051
     status: D
-    transaction_reference: STARTUMS
   transactions: *id001
