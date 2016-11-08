@@ -37,6 +37,38 @@ class Date(datetime.date, Model):
             # No need to do anything special there :)
             return datetime.date.__new__(cls, *args, **kwargs)
 
+class DateTime(datetime.datetime, Model):
+    '''Just a regular datetime object which supports dates given as strings
+
+    Args:
+        year (str): The year (0-100), will automatically add 2000 when needed
+        month (str): The month
+        day (str): The day
+        hour (str): The hour
+        minute (str): The minute
+        second (str): The second
+        tzinfo (tzinfo): Timezone information
+    '''
+    def __new__(cls, *args, **kwargs):
+        year = kwargs.get('year')
+        month = kwargs.get('month')
+        day = kwargs.get('day')
+        hour = kwargs.get('hour', '0')
+        minute = kwargs.get('minute', '0')
+        second = kwargs.get('second', '0')
+        microsecond = kwargs.get('microsecond', '0')
+        tz = kwargs.get('tzinfo')
+        year = int(year, 10)
+        if year < 1000:
+            year += 2000
+
+        month = int(month, 10)
+        day = int(day, 10)
+        hour = int(hour, 10)
+        minute = int(minute, 10)
+        second = int(second, 10)
+        microsecond = int(microsecond, 10)
+        return datetime.datetime(year, month, day, hour, minute, second, microsecond, tzinfo=tz)
 
 class Amount(Model):
     '''Amount object containing currency and amount
@@ -144,6 +176,14 @@ class Transactions(collections.Sequence):
         post_transaction_details=[],
         pre_transaction_reference_number=[],
         post_transaction_reference_number=[],
+        pre_floor_limit_indicator=[],
+        post_floor_limit_indicator=[],
+        pre_date_time_indication=[],
+        post_date_time_indication=[],
+        pre_sum_credit_entries=[],
+        post_sum_credit_entries=[],
+        pre_sum_debit_entries=[],
+        post_sum_debit_entries=[]
     )
 
     def __init__(self, processors=None):
@@ -216,7 +256,7 @@ class Transactions(collections.Sequence):
             if tag_id.isdigit():
                 tag_id = int(tag_id)
 
-            assert tag_id in mt940.tags.TAG_BY_ID, 'Unknown tag %r' \
+            assert tag_id in mt940.tags.TAG_BY_ID, 'Unknown tag %r ' \
                 'in line: %r' % (tag_id, match.group(0))
 
             tag = mt940.tags.TAG_BY_ID.get(match.group('full_tag')) \

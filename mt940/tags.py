@@ -86,6 +86,22 @@ class Tag(object):
         return self.id
 
 
+class DateTimeIndication(Tag):
+    '''Date/Time indication at which the report was created
+
+    Pattern: 6!n4!n1! x4!n
+    '''
+    id = 13
+    pattern = r'(?P<year>\d{2})(?P<month>\d{2})(?P<day>\d{2})(?P<hour>\d{2})(?P<minute>\d{2})\+(?P<offset>\d{4})'
+
+    def __call__(self, transactions, value):
+        data = super(DateTimeIndication, self).__call__(transactions, value)
+        return {
+            'date': models.DateTime(**data)
+        }
+
+
+
 class TransactionReferenceNumber(Tag):
 
     '''Transaction reference number
@@ -128,6 +144,25 @@ class StatementNumber(Tag):
     (?:/(?P<sequence_number>\d{1,5}))?  # [/5n]
     $'''
 
+
+class FloorLimitIndicator(Tag):
+    '''Floor limit indicator
+    indicates the minimum value reported in the message for both debit and credit amounts.
+
+    Pattern: :34F:GHSC0,00
+    '''
+    id = 34
+    pattern = r'''^
+    (?P<currency>.{3})  # 3!a Currency
+    (?P<status>[A-Z]?[DC])  # 2a Debit/Credit Mark
+    (?P<amount>[0-9,]{0,16})  # 15d Amount (includes decimal sign, so 16)
+    $'''
+
+    def __call__(self, transactions, value):
+        data = super(FloorLimitIndicator, self).__call__(transactions, value)
+        return {
+            data['status'].lower() + '_floor_limit': data
+        }
 
 class NonSwift(Tag):
 
@@ -258,9 +293,28 @@ class TransactionDetails(Tag):
     scope = models.Transaction
     pattern = r'(?P<transaction_details>[\s\S]{0,330})'
 
+class SumEntries(Tag):
+    '''Number and Sum of debit Entries
+
+    '''
+
+    id = 90
+    pattern = r'''^
+    (?P<number>\d+)
+    (?P<currency>.{3})  # 3!a Currency
+    (?P<amount>[\d,]{1,15})  # 15d Amount
+    '''
+
+class SumDebitEntries(SumEntries):
+    id = '90D'
+
+class SumCreditEntries(SumEntries):
+    id = '90C'
+
 
 @enum.unique
 class Tags(enum.Enum):
+    DATE_TIME_INDICATION = DateTimeIndication()
     TRANSACTION_REFERENCE_NUMBER = TransactionReferenceNumber()
     RELATED_REFERENCE = RelatedReference()
     ACCOUNT_IDENTIFICATION = AccountIdentification()
@@ -275,7 +329,11 @@ class Tags(enum.Enum):
     AVAILABLE_BALANCE = AvailableBalance()
     FORWARD_AVAILABLE_BALANCE = ForwardAvailableBalance()
     TRANSACTION_DETAILS = TransactionDetails()
+    FLOOR_LIMIT_INDICATOR = FloorLimitIndicator()
     NON_SWIFT = NonSwift()
+    SUM_ENTRIES = SumEntries()
+    SUM_DEBIT_ENTRIES = SumDebitEntries()
+    SUM_CREDIT_ENTRIES = SumCreditEntries()
 
 
 TAG_BY_ID = {t.value.id: t.value for t in Tags}
