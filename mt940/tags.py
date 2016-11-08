@@ -92,14 +92,19 @@ class DateTimeIndication(Tag):
     Pattern: 6!n4!n1! x4!n
     '''
     id = 13
-    pattern = r'(?P<year>\d{2})(?P<month>\d{2})(?P<day>\d{2})(?P<hour>\d{2})(?P<minute>\d{2})\+(?P<offset>\d{4})'
+    pattern = r'''^
+    (?P<year>\d{2})
+    (?P<month>\d{2})
+    (?P<day>\d{2})
+    (?P<hour>\d{2})
+    (?P<minute>\d{2})\+(?P<offset>\d{4})
+    '''
 
     def __call__(self, transactions, value):
         data = super(DateTimeIndication, self).__call__(transactions, value)
         return {
             'date': models.DateTime(**data)
         }
-
 
 
 class TransactionReferenceNumber(Tag):
@@ -147,7 +152,7 @@ class StatementNumber(Tag):
 
 class FloorLimitIndicator(Tag):
     '''Floor limit indicator
-    indicates the minimum value reported in the message for both debit and credit amounts.
+    indicates the minimum value reported for debit and credit amounts
 
     Pattern: :34F:GHSC0,00
     '''
@@ -163,6 +168,7 @@ class FloorLimitIndicator(Tag):
         return {
             data['status'].lower() + '_floor_limit': data
         }
+
 
 class NonSwift(Tag):
 
@@ -293,6 +299,7 @@ class TransactionDetails(Tag):
     scope = models.Transaction
     pattern = r'(?P<transaction_details>[\s\S]{0,330})'
 
+
 class SumEntries(Tag):
     '''Number and Sum of debit Entries
 
@@ -305,8 +312,10 @@ class SumEntries(Tag):
     (?P<amount>[\d,]{1,15})  # 15d Amount
     '''
 
+
 class SumDebitEntries(SumEntries):
     id = '90D'
+
 
 class SumCreditEntries(SumEntries):
     id = '90C'

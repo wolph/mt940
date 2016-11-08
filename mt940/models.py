@@ -37,6 +37,7 @@ class Date(datetime.date, Model):
             # No need to do anything special there :)
             return datetime.date.__new__(cls, *args, **kwargs)
 
+
 class DateTime(datetime.datetime, Model):
     '''Just a regular datetime object which supports dates given as strings
 
@@ -68,7 +69,9 @@ class DateTime(datetime.datetime, Model):
         minute = int(minute, 10)
         second = int(second, 10)
         microsecond = int(microsecond, 10)
-        return datetime.datetime(year, month, day, hour, minute, second, microsecond, tzinfo=tz)
+        return datetime.datetime(year, month, day,
+                                 hour, minute, second, microsecond, tzinfo=tz)
+
 
 class Amount(Model):
     '''Amount object containing currency and amount
