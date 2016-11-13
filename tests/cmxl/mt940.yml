@@ -368,6 +368,6 @@ transactions:
     funds_code: null
     id: FTRF
     status: C
-    transaction_details: !!python/str "844?00Uznanie kwot\u0105 odsetek?20Odsetki\
-      \ od lokaty nr 101000?21022086"
+    transaction_details: "844?00Uznanie kwot\u0105 odsetek?20Odsetki od lokaty nr\
+      \ 101000?21022086"
   transactions: *id001
