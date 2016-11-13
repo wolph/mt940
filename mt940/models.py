@@ -12,68 +12,81 @@ class Model(object):
     pass
 
 
-class Date(datetime.date, Model):
-    '''Just a regular date object which supports dates given as strings
-
-    Args:
-        year (str): The year (0-100), will automatically add 2000 when needed
-        month (str): The month
-        day (str): The day
-    '''
-    def __new__(cls, *args, **kwargs):
-        if kwargs:
-            year = kwargs.get('year')
-            month = kwargs.get('month')
-            day = kwargs.get('day')
-            year = int(year, 10)
-            if year < 1000:
-                year += 2000
-
-            month = int(month, 10)
-            day = int(day, 10)
-            return datetime.date.__new__(cls, year, month, day)
-        else:
-            # For pickling the date object uses it's own binary format
-            # No need to do anything special there :)
-            return datetime.date.__new__(cls, *args, **kwargs)
-
-
 class DateTime(datetime.datetime, Model):
+
     '''Just a regular datetime object which supports dates given as strings
 
+    >>> DateTime(year='2000', month='1', day='2', hour='3', minute='4',
+    ...          second='5', microsecond='6')
+    DateTime(2000, 1, 2, 3, 4, 5, 6)
+    >>> DateTime(2000, 1, 2, 3, 4, 5, 6)
+    DateTime(2000, 1, 2, 3, 4, 5, 6)
+
     Args:
-        year (str): The year (0-100), will automatically add 2000 when needed
-        month (str): The month
-        day (str): The day
-        hour (str): The hour
-        minute (str): The minute
-        second (str): The second
+        year (str): Year (0-100), will automatically add 2000 when needed
+        month (str): Month
+        day (str): Day
+        hour (str): Hour
+        minute (str): Minute
+        second (str): Second
+        microsecond (str): Microsecond
         tzinfo (tzinfo): Timezone information
     '''
     def __new__(cls, *args, **kwargs):
-        year = kwargs.get('year')
-        month = kwargs.get('month')
-        day = kwargs.get('day')
-        hour = kwargs.get('hour', '0')
-        minute = kwargs.get('minute', '0')
-        second = kwargs.get('second', '0')
-        microsecond = kwargs.get('microsecond', '0')
-        tz = kwargs.get('tzinfo')
-        year = int(year, 10)
-        if year < 1000:
-            year += 2000
+        if kwargs:
+            values = dict(
+                year=None,
+                month=None,
+                day=None,
+                hour='0',
+                minute='0',
+                second='0',
+                microsecond='0',
+            )
 
-        month = int(month, 10)
-        day = int(day, 10)
-        hour = int(hour, 10)
-        minute = int(minute, 10)
-        second = int(second, 10)
-        microsecond = int(microsecond, 10)
-        return datetime.datetime(year, month, day,
-                                 hour, minute, second, microsecond, tzinfo=tz)
+            # The list makes sure this works in both Python 2 and 3
+            for key, default in list(values.items()):
+                # Fetch the value or the default
+                value = kwargs.get(key, default)
+                # Convert the value to integer and force base 10 to make sure
+                # it doesn't get recognized as octal
+                value = int(value, 10)
+                # Save the values again
+                values[key] = value
+
+            if values['year'] < 1000:
+                values['year'] += 2000
+
+            values['tzinfo'] = kwargs.get('tzinfo')
+
+            return datetime.datetime.__new__(cls, **values)
+        else:
+            return datetime.datetime.__new__(cls, *args, **kwargs)
+
+
+class Date(datetime.date, Model):
+
+    '''Just a regular date object which supports dates given as strings
+
+    >>> Date(year='2000', month='1', day='2')
+    Date(2000, 1, 2)
+
+    Args:
+        year (str): Year (0-100), will automatically add 2000 when needed
+        month (str): Month
+        day (str): Day
+    '''
+
+    def __new__(cls, *args, **kwargs):
+        if kwargs:
+            dt = DateTime(*args, **kwargs).date()
+            return datetime.date.__new__(cls, dt.year, dt.month, dt.day)
+        else:
+            return datetime.date.__new__(cls, *args, **kwargs)
 
 
 class Amount(Model):
+
     '''Amount object containing currency and amount
 
     Args:
@@ -86,6 +99,7 @@ class Amount(Model):
     >>> Amount('123.45', 'D', 'EUR')
     <-123.45 EUR>
     '''
+
     def __init__(self, amount, status, currency=None, **kwargs):
         self.amount = decimal.Decimal(amount.replace(',', '.'))
         self.currency = currency
@@ -102,6 +116,7 @@ class Amount(Model):
 
 
 class Balance(Model):
+
     '''Parse balance statement
 
     Args:
@@ -122,6 +137,7 @@ class Balance(Model):
     >>> Balance()
     <None @ None>
     '''
+
     def __init__(self, status=None, amount=None, date=None, **kwargs):
         if amount and not isinstance(amount, Amount):
             amount = Amount(amount, status, kwargs.get('currency'))
@@ -140,6 +156,7 @@ class Balance(Model):
 
 
 class Transactions(collections.Sequence):
+
     '''
     Collection of :py:class:`Transaction` objects with global properties such
     as begin and end balance
@@ -326,6 +343,7 @@ class Transactions(collections.Sequence):
 
 
 class Transaction(Model):
+
     def __init__(self, transactions, data=None):
         self.transactions = transactions
         self.data = {}
