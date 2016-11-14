@@ -4,6 +4,7 @@ import mt940
 import pytest
 import decimal
 import logging
+import datetime
 
 from mt940 import _compat
 
@@ -39,6 +40,7 @@ def compare(a, b, key=''):
         keys = []
 
     simple_types = (
+        datetime.datetime,
         decimal.Decimal,
     ) + _compat.string_types + _compat.integer_types
     if isinstance(a, simple_types):
