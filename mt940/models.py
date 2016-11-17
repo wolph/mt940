@@ -53,7 +53,9 @@ class DateTime(datetime.datetime, Model):
         minute (str): Minute
         second (str): Second
         microsecond (str): Microsecond
-        tzinfo (tzinfo): Timezone information
+        tzinfo (tzinfo): Timezone information. Overwrites `offset`
+        offset (str): Timezone offset in minutes, generates a tzinfo object
+                      with the given offset if no tzinfo is available.
     '''
     def __new__(cls, *args, **kwargs):
         if kwargs:
@@ -80,10 +82,12 @@ class DateTime(datetime.datetime, Model):
             if values['year'] < 1000:
                 values['year'] += 2000
 
+            values['tzinfo'] = None
             if kwargs.get('tzinfo'):
-                values['tzinfo'] = FixedOffset(kwargs.get('tzinfo'))
-            else:
-                values['tzinfo'] = None
+                values['tzinfo'] = kwargs['tzinfo']
+
+            if kwargs.get('offset'):
+                values['tzinfo'] = FixedOffset(kwargs['offset'])
 
             return datetime.datetime.__new__(cls, **values)
         else:
