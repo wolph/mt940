@@ -12,6 +12,24 @@ class Model(object):
     pass
 
 
+class FixedOffset(datetime.tzinfo):
+    # Based on the Python docs
+    # https://docs.python.org/2/library/datetime.html#tzinfo-objects
+
+    def __init__(self, offset, name=None):
+        self._name = name or str(offset)
+        self._offset = datetime.timedelta(offset)
+
+    def utcoffset(self, dt):
+        return self._offset
+
+    def dst(self, dt):
+        return datetime.timedelta(0)
+
+    def tzname(self, dt):
+        return self._name
+
+
 class DateTime(datetime.datetime, Model):
 
     '''Just a regular datetime object which supports dates given as strings
@@ -19,6 +37,11 @@ class DateTime(datetime.datetime, Model):
     >>> DateTime(year='2000', month='1', day='2', hour='3', minute='4',
     ...          second='5', microsecond='6')
     DateTime(2000, 1, 2, 3, 4, 5, 6)
+
+    >>> DateTime(year='123', month='1', day='2', hour='3', minute='4',
+    ...          second='5', microsecond='6')
+    DateTime(2123, 1, 2, 3, 4, 5, 6)
+
     >>> DateTime(2000, 1, 2, 3, 4, 5, 6)
     DateTime(2000, 1, 2, 3, 4, 5, 6)
 
@@ -57,7 +80,10 @@ class DateTime(datetime.datetime, Model):
             if values['year'] < 1000:
                 values['year'] += 2000
 
-            values['tzinfo'] = kwargs.get('tzinfo')
+            if kwargs.get('tzinfo'):
+                values['tzinfo'] = FixedOffset(kwargs.get('tzinfo'))
+            else:
+                values['tzinfo'] = None
 
             return datetime.datetime.__new__(cls, **values)
         else:
@@ -70,6 +96,9 @@ class Date(datetime.date, Model):
 
     >>> Date(year='2000', month='1', day='2')
     Date(2000, 1, 2)
+
+    >>> Date(year='123', month='1', day='2')
+    Date(2123, 1, 2)
 
     Args:
         year (str): Year (0-100), will automatically add 2000 when needed
