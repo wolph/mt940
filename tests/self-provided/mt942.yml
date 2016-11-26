@@ -1,5 +1,21 @@
 &id001 !!python/object:mt940.models.Transactions
-data: {account_identification: PL25106000760000888888888888}
+data:
+  account_identification: GJB0291077111
+  amount: 2,30
+  c_floor_limit: {amount: '0,00', currency: EUR, status: C}
+  currency: EUR
+  d_floor_limit: {amount: '0,00', currency: EUR, status: D}
+  date: !!python/object/apply:mt940.models.DateTime
+  - !!binary |
+    B+AKHhEeAAAAAA==
+  - !!python/object/apply:mt940.models.FixedOffset
+    state:
+      _name: '0000'
+      _offset: !!python/object/apply:datetime.timedelta [0, 0, 0]
+  number: '1'
+  sequence_number: '00001'
+  statement_number: 03917
+  transaction_reference: CGNGHKLI0290980
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -41,5 +57,24 @@ processors:
   pre_transaction_reference_number: []
 transactions:
 - !!python/object:mt940.models.Transaction
-  data: {}
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-0.42']
+      currency: null
+    bank_reference: '055001022000001'
+    currency: null
+    customer_reference: NONREF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+AKHg==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+AKHw==
+    extra_details: YAY MT942 CHG
+    funds_code: null
+    id: MCI0
+    status: D
+    transaction_details: 'REMIT:Costs to MT940 Parsing.
+
+      This is Somuchfun.'
   transactions: *id001

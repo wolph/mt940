@@ -19,33 +19,44 @@ data:
     status: C
   sequence_number: null
   statement_number: '2'
+  transaction_reference: GENERIC
 processors:
   post_account_identification: []
   post_available_balance: []
   post_closing_balance: []
+  post_date_time_indication: []
   post_final_closing_balance: []
   post_final_opening_balance: []
+  post_floor_limit_indicator: []
   post_forward_available_balance: []
   post_intermediate_closing_balance: []
   post_intermediate_opening_balance: []
+  post_non_swift: []
   post_opening_balance: []
   post_related_reference: []
   post_statement: [!!python/name:mt940.processors.date_cleanup_post_processor '']
   post_statement_number: []
+  post_sum_credit_entries: []
+  post_sum_debit_entries: []
   post_transaction_details: []
   post_transaction_reference_number: []
   pre_account_identification: []
   pre_available_balance: []
   pre_closing_balance: []
+  pre_date_time_indication: []
   pre_final_closing_balance: []
   pre_final_opening_balance: []
+  pre_floor_limit_indicator: []
   pre_forward_available_balance: []
   pre_intermediate_closing_balance: []
   pre_intermediate_opening_balance: []
+  pre_non_swift: []
   pre_opening_balance: []
   pre_related_reference: []
-  pre_statement: []
+  pre_statement: [!!python/name:mt940.processors.date_fixup_pre_processor '']
   pre_statement_number: []
+  pre_sum_credit_entries: []
+  pre_sum_debit_entries: []
   pre_transaction_details: []
   pre_transaction_reference_number: []
 transactions:
@@ -65,7 +76,6 @@ transactions:
     id: N000
     status: D
     transaction_details: ''
-    transaction_reference: GENERIC
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -83,5 +93,4 @@ transactions:
     id: N000
     status: D
     transaction_details: ''
-    transaction_reference: GENERIC
   transactions: *id001

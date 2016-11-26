@@ -12,33 +12,129 @@ class Model(object):
     pass
 
 
-class Date(datetime.date, Model):
-    '''Just a regular date object which supports dates given as strings
+class FixedOffset(datetime.tzinfo):
+    '''Fixed time offset based on the Python docs
+    Source: https://docs.python.org/2/library/datetime.html#tzinfo-objects
+
+    >>> offset = FixedOffset(60)
+    >>> offset.utcoffset(None)
+    datetime.timedelta(0, 3600)
+    >>> offset.dst(None)
+    datetime.timedelta(0)
+    >>> offset.tzname(None)
+    '60'
+    '''
+
+    def __init__(self, offset=0, name=None):
+        self._name = name or str(offset)
+        if not isinstance(offset, int):
+            offset = int(offset)
+        self._offset = datetime.timedelta(minutes=offset)
+
+    def utcoffset(self, dt):
+        return self._offset
+
+    def dst(self, dt):
+        return datetime.timedelta(0)
+
+    def tzname(self, dt):
+        return self._name
+
+
+class DateTime(datetime.datetime, Model):
+
+    '''Just a regular datetime object which supports dates given as strings
+
+    >>> DateTime(year='2000', month='1', day='2', hour='3', minute='4',
+    ...          second='5', microsecond='6')
+    DateTime(2000, 1, 2, 3, 4, 5, 6)
+
+    >>> DateTime(year='123', month='1', day='2', hour='3', minute='4',
+    ...          second='5', microsecond='6')
+    DateTime(2123, 1, 2, 3, 4, 5, 6)
+
+    >>> DateTime(2000, 1, 2, 3, 4, 5, 6)
+    DateTime(2000, 1, 2, 3, 4, 5, 6)
+
+    >>> DateTime(year='123', month='1', day='2', hour='3', minute='4',
+    ...          second='5', microsecond='6', tzinfo=FixedOffset('60'))
+    DateTime(2123, 1, 2, 3, 4, 5, 6, tzinfo=<mt940.models.FixedOffset ...>)
 
     Args:
-        year (str): The year (0-100), will automatically add 2000 when needed
-        month (str): The month
-        day (str): The day
+        year (str): Year (0-100), will automatically add 2000 when needed
+        month (str): Month
+        day (str): Day
+        hour (str): Hour
+        minute (str): Minute
+        second (str): Second
+        microsecond (str): Microsecond
+        tzinfo (tzinfo): Timezone information. Overwrites `offset`
+        offset (str): Timezone offset in minutes, generates a tzinfo object
+                      with the given offset if no tzinfo is available.
     '''
     def __new__(cls, *args, **kwargs):
         if kwargs:
-            year = kwargs.get('year')
-            month = kwargs.get('month')
-            day = kwargs.get('day')
-            year = int(year, 10)
-            if year < 1000:
-                year += 2000
+            values = dict(
+                year=None,
+                month=None,
+                day=None,
+                hour='0',
+                minute='0',
+                second='0',
+                microsecond='0',
+            )
 
-            month = int(month, 10)
-            day = int(day, 10)
-            return datetime.date.__new__(cls, year, month, day)
+            # The list makes sure this works in both Python 2 and 3
+            for key, default in list(values.items()):
+                # Fetch the value or the default
+                value = kwargs.get(key, default)
+                # Convert the value to integer and force base 10 to make sure
+                # it doesn't get recognized as octal
+                value = int(value, 10)
+                # Save the values again
+                values[key] = value
+
+            if values['year'] < 1000:
+                values['year'] += 2000
+
+            values['tzinfo'] = None
+            if kwargs.get('tzinfo'):
+                values['tzinfo'] = kwargs['tzinfo']
+
+            if kwargs.get('offset'):
+                values['tzinfo'] = FixedOffset(kwargs['offset'])
+
+            return datetime.datetime.__new__(cls, **values)
         else:
-            # For pickling the date object uses it's own binary format
-            # No need to do anything special there :)
+            return datetime.datetime.__new__(cls, *args, **kwargs)
+
+
+class Date(datetime.date, Model):
+
+    '''Just a regular date object which supports dates given as strings
+
+    >>> Date(year='2000', month='1', day='2')
+    Date(2000, 1, 2)
+
+    >>> Date(year='123', month='1', day='2')
+    Date(2123, 1, 2)
+
+    Args:
+        year (str): Year (0-100), will automatically add 2000 when needed
+        month (str): Month
+        day (str): Day
+    '''
+
+    def __new__(cls, *args, **kwargs):
+        if kwargs:
+            dt = DateTime(*args, **kwargs).date()
+            return datetime.date.__new__(cls, dt.year, dt.month, dt.day)
+        else:
             return datetime.date.__new__(cls, *args, **kwargs)
 
 
 class Amount(Model):
+
     '''Amount object containing currency and amount
 
     Args:
@@ -51,6 +147,7 @@ class Amount(Model):
     >>> Amount('123.45', 'D', 'EUR')
     <-123.45 EUR>
     '''
+
     def __init__(self, amount, status, currency=None, **kwargs):
         self.amount = decimal.Decimal(amount.replace(',', '.'))
         self.currency = currency
@@ -67,6 +164,7 @@ class Amount(Model):
 
 
 class Balance(Model):
+
     '''Parse balance statement
 
     Args:
@@ -87,6 +185,7 @@ class Balance(Model):
     >>> Balance()
     <None @ None>
     '''
+
     def __init__(self, status=None, amount=None, date=None, **kwargs):
         if amount and not isinstance(amount, Amount):
             amount = Amount(amount, status, kwargs.get('currency'))
@@ -105,6 +204,7 @@ class Balance(Model):
 
 
 class Transactions(collections.Sequence):
+
     '''
     Collection of :py:class:`Transaction` objects with global properties such
     as begin and end balance
@@ -144,6 +244,14 @@ class Transactions(collections.Sequence):
         post_transaction_details=[],
         pre_transaction_reference_number=[],
         post_transaction_reference_number=[],
+        pre_floor_limit_indicator=[],
+        post_floor_limit_indicator=[],
+        pre_date_time_indication=[],
+        post_date_time_indication=[],
+        pre_sum_credit_entries=[],
+        post_sum_credit_entries=[],
+        pre_sum_debit_entries=[],
+        post_sum_debit_entries=[]
     )
 
     def __init__(self, processors=None):
@@ -216,7 +324,7 @@ class Transactions(collections.Sequence):
             if tag_id.isdigit():
                 tag_id = int(tag_id)
 
-            assert tag_id in mt940.tags.TAG_BY_ID, 'Unknown tag %r' \
+            assert tag_id in mt940.tags.TAG_BY_ID, 'Unknown tag %r ' \
                 'in line: %r' % (tag_id, match.group(0))
 
             tag = mt940.tags.TAG_BY_ID.get(match.group('full_tag')) \
@@ -244,8 +352,7 @@ class Transactions(collections.Sequence):
 
             # Creating a new transaction for :20: and :61: tags allows the
             # tags from :20: to :61: to be captured as part of the transaction.
-            if isinstance(tag, mt940.tags.TransactionReferenceNumber) or \
-                    isinstance(tag, mt940.tags.Statement):
+            if isinstance(tag, mt940.tags.Statement):
                 # Transactions only get a Transaction Reference Code ID from a
                 # :61: tag which is why a new transaction is created if the
                 # 'id' has a value.
@@ -284,6 +391,7 @@ class Transactions(collections.Sequence):
 
 
 class Transaction(Model):
+
     def __init__(self, transactions, data=None):
         self.transactions = transactions
         self.data = {}

@@ -4,6 +4,7 @@ import mt940
 import pytest
 import decimal
 import logging
+import datetime
 
 from mt940 import _compat
 
@@ -39,6 +40,7 @@ def compare(a, b, key=''):
         keys = []
 
     simple_types = (
+        datetime.datetime,
         decimal.Decimal,
     ) + _compat.string_types + _compat.integer_types
     if isinstance(a, simple_types):
@@ -63,6 +65,7 @@ def compare(a, b, key=''):
 @pytest.mark.parametrize('sta_file', get_sta_files())
 def test_parse(sta_file):
     transactions = mt940.parse(sta_file)
+    write_yaml_data(sta_file, transactions)
     expected = get_yaml_data(sta_file)
 
     assert len(transactions) >= 0

@@ -19,33 +19,44 @@ data:
     status: C
   sequence_number: '1'
   statement_number: '999'
+  transaction_reference: B4G30MS9D00A003D
 processors:
   post_account_identification: []
   post_available_balance: []
   post_closing_balance: []
+  post_date_time_indication: []
   post_final_closing_balance: []
   post_final_opening_balance: []
+  post_floor_limit_indicator: []
   post_forward_available_balance: []
   post_intermediate_closing_balance: []
   post_intermediate_opening_balance: []
+  post_non_swift: []
   post_opening_balance: []
   post_related_reference: []
   post_statement: [!!python/name:mt940.processors.date_cleanup_post_processor '']
   post_statement_number: []
+  post_sum_credit_entries: []
+  post_sum_debit_entries: []
   post_transaction_details: []
   post_transaction_reference_number: []
   pre_account_identification: []
   pre_available_balance: []
   pre_closing_balance: []
+  pre_date_time_indication: []
   pre_final_closing_balance: []
   pre_final_opening_balance: []
+  pre_floor_limit_indicator: []
   pre_forward_available_balance: []
   pre_intermediate_closing_balance: []
   pre_intermediate_opening_balance: []
+  pre_non_swift: []
   pre_opening_balance: []
   pre_related_reference: []
-  pre_statement: []
+  pre_statement: [!!python/name:mt940.processors.date_fixup_pre_processor '']
   pre_statement_number: []
+  pre_sum_credit_entries: []
+  pre_sum_debit_entries: []
   pre_transaction_details: []
   pre_transaction_reference_number: []
 transactions:
@@ -70,7 +81,6 @@ transactions:
     transaction_details: 'HIER EEN MOOIE OMSCHRIJVING IN HOOFDLETTERS
 
       WANT DAT IS ZOALS DE NEDERLANDSE BANKEN COMMUNICEREN'
-    transaction_reference: B4E08MS9D00A0009
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -93,7 +103,6 @@ transactions:
     transaction_details: 'FACTUUR 201403110, 201403113
 
       REK: NL65INGB0123456789/NAAM: PICQER'
-    transaction_reference: B4G30MS9D00A003D
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
