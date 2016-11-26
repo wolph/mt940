@@ -13,12 +13,23 @@ class Model(object):
 
 
 class FixedOffset(datetime.tzinfo):
-    # Based on the Python docs
-    # https://docs.python.org/2/library/datetime.html#tzinfo-objects
+    '''Fixed time offset based on the Python docs
+    Source: https://docs.python.org/2/library/datetime.html#tzinfo-objects
 
-    def __init__(self, offset, name=None):
+    >>> offset = FixedOffset(60)
+    >>> offset.utcoffset(None)
+    datetime.timedelta(0, 3600)
+    >>> offset.dst(None)
+    datetime.timedelta(0)
+    >>> offset.tzname(None)
+    '60'
+    '''
+
+    def __init__(self, offset=0, name=None):
         self._name = name or str(offset)
-        self._offset = datetime.timedelta(offset)
+        if not isinstance(offset, int):
+            offset = int(offset)
+        self._offset = datetime.timedelta(minutes=offset)
 
     def utcoffset(self, dt):
         return self._offset
@@ -44,6 +55,10 @@ class DateTime(datetime.datetime, Model):
 
     >>> DateTime(2000, 1, 2, 3, 4, 5, 6)
     DateTime(2000, 1, 2, 3, 4, 5, 6)
+
+    >>> DateTime(year='123', month='1', day='2', hour='3', minute='4',
+    ...          second='5', microsecond='6', tzinfo=FixedOffset('60'))
+    DateTime(2123, 1, 2, 3, 4, 5, 6, tzinfo=<mt940.models.FixedOffset ...>)
 
     Args:
         year (str): Year (0-100), will automatically add 2000 when needed

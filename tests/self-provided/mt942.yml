@@ -5,7 +5,13 @@ data:
   c_floor_limit: {amount: '0,00', currency: EUR, status: C}
   currency: EUR
   d_floor_limit: {amount: '0,00', currency: EUR, status: D}
-  date: 2016-10-30 17:30:00
+  date: !!python/object/apply:mt940.models.DateTime
+  - !!binary |
+    B+AKHhEeAAAAAA==
+  - !!python/object/apply:mt940.models.FixedOffset
+    state:
+      _name: '0000'
+      _offset: !!python/object/apply:datetime.timedelta [0, 0, 0]
   number: '1'
   sequence_number: '00001'
   statement_number: 03917
