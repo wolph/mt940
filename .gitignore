@@ -27,6 +27,8 @@ pip-log.txt
 .tox
 nosetests.xml
 cover
+/.cache/
+/htmlcov/
 
 # Translations
 *.mo
@@ -44,4 +46,3 @@ output/*/index.html
 docs/_build
 /docs/doctrees/
 /docs/html/
-/docs/doctrees/
