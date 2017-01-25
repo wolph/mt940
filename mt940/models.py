@@ -163,6 +163,21 @@ class Amount(Model):
         )
 
 
+class SumAmount(Amount):
+
+    def __init__(self, *args, **kwargs):
+        number = kwargs.pop('number')
+        super(SumAmount, self).__init__(*args, **kwargs)
+        self.number = number
+
+    def __repr__(self):
+        return '<%s %s in %s stmts)>' % (
+            self.amount,
+            self.currency,
+            self.number
+        )
+
+
 class Balance(Model):
 
     '''Parse balance statement
@@ -273,8 +288,14 @@ class Transactions(collections.Sequence):
             self.data.get('final_closing_balance'),
             self.data.get('closing_balance'),
             self.data.get('intermediate_closing_balance'),
+            self.data.get('c_floor_limit'),
+            self.data.get('d_floor_limit'),
+            self.data.get('sum_credit_entries'),
+            self.data.get('sum_debit_entries')
         )
         if balance:
+            if isinstance(balance, Amount):
+                return balance.currency
             return balance.amount.currency
 
     @classmethod

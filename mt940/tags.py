@@ -167,7 +167,7 @@ class FloorLimitIndicator(Tag):
         data = super(FloorLimitIndicator, self).__call__(transactions, value)
         if data['status']:
             return {
-                data['status'].lower() + '_floor_limit': data
+                data['status'].lower() + '_floor_limit': models.Amount(**data)
             }
 
         data_d = data.copy()
@@ -175,8 +175,8 @@ class FloorLimitIndicator(Tag):
         data_d.update({'status': 'D'})
         data_c.update({'status': 'C'})
         return {
-            'd_floor_limit': data_d,
-            'c_floor_limit': data_c
+            'd_floor_limit': models.Amount(**data_d),
+            'c_floor_limit': models.Amount(**data_c)
         }
 
 
@@ -322,12 +322,22 @@ class SumEntries(Tag):
     (?P<amount>[\d,]{1,15})  # 15d Amount
     '''
 
+    def __call__(self, transactions, value):
+        data = super(SumEntries, self).__call__(transactions, value)
+
+        data['status'] = self.status
+        return {
+            self.slug: models.SumAmount(**data)
+        }
+
 
 class SumDebitEntries(SumEntries):
+    status = 'D'
     id = '90D'
 
 
 class SumCreditEntries(SumEntries):
+    status = 'C'
     id = '90C'
 
 
