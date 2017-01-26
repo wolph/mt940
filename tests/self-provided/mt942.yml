@@ -1,10 +1,12 @@
 &id001 !!python/object:mt940.models.Transactions
 data:
   account_identification: GJB0291077111
-  amount: 2,30
-  c_floor_limit: {amount: '0,00', currency: EUR, status: C}
-  currency: EUR
-  d_floor_limit: {amount: '0,00', currency: EUR, status: D}
+  c_floor_limit: !!python/object:mt940.models.Amount
+    amount: !!python/object/apply:decimal.Decimal ['0.00']
+    currency: EUR
+  d_floor_limit: !!python/object:mt940.models.Amount
+    amount: !!python/object/apply:decimal.Decimal ['0.00']
+    currency: EUR
   date: !!python/object/apply:mt940.models.DateTime
   - !!binary |
     B+AKHhEeAAAAAA==
@@ -12,9 +14,12 @@ data:
     state:
       _name: '0000'
       _offset: !!python/object/apply:datetime.timedelta [0, 0, 0]
-  number: '1'
   sequence_number: '00001'
   statement_number: 03917
+  sum_debit_entries: !!python/object:mt940.models.SumAmount
+    amount: !!python/object/apply:decimal.Decimal ['-2.30']
+    currency: EUR
+    number: '1'
   transaction_reference: CGNGHKLI0290980
 processors:
   post_account_identification: []
@@ -60,9 +65,9 @@ transactions:
   data:
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['-0.42']
-      currency: null
+      currency: EUR
     bank_reference: '055001022000001'
-    currency: null
+    currency: EUR
     customer_reference: NONREF
     date: !!python/object/apply:mt940.models.Date
     - !!binary |

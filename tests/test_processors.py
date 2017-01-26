@@ -64,3 +64,23 @@ def test_post_processor(sta_data):
     assert 'closing_balance_day' not in transactions.data
 
 
+@pytest.fixture
+def mBank_mt942_data():
+    with open('tests/mBank/mt942.sta') as fh:
+        return fh.read()
+
+
+def test_mBank_processors(mBank_mt942_data):
+    transactions = mt940.models.Transactions(processors=dict(
+        post_transaction_details=[
+            mt940.processors.mBank_set_transaction_code,
+            mt940.processors.mBank_set_iph_id,
+            mt940.processors.mBank_set_tnr,
+        ],
+    ))
+
+    transaction = transactions.parse(mBank_mt942_data)[0].data
+    assert transaction['transaction_code'] == 911
+    assert transaction['iph_id'] == '000000000001'
+    assert transaction['tnr'] == '179171073864111.010001'
+
