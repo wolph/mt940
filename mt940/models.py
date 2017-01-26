@@ -290,8 +290,6 @@ class Transactions(collections.Sequence):
             self.data.get('intermediate_closing_balance'),
             self.data.get('c_floor_limit'),
             self.data.get('d_floor_limit'),
-            self.data.get('sum_credit_entries'),
-            self.data.get('sum_debit_entries')
         )
         if balance:
             if isinstance(balance, Amount):
