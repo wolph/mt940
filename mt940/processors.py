@@ -1,4 +1,5 @@
 import calendar
+import re
 
 
 def add_currency_pre_processor(currency, overwrite=True):
@@ -33,4 +34,44 @@ def date_cleanup_post_processor(transactions, tag, tag_dict, result):
     return result
 
 
+def mBank_set_transaction_code(transactions, tag, tag_dict, *args):
+    """
+    mBank Collect uses transaction code 911 to distinguish icoming mass
+    payments transactions, adding transaction_code may be helpful in further
+    processing
+    """
+    tag_dict['transaction_code'] = int(
+        tag_dict[tag.slug].split(';')[0].split(' ', 1)[0])
+    return tag_dict
 
+
+iph_id_re = re.compile(' ID IPH: X*(?P<iph_id>\d{0,14});')
+
+
+def mBank_set_iph_id(transactions, tag, tag_dict, *args):
+    """
+    mBank Collect uses ID IPH to distinguish between virtual accounts,
+    adding iph_id may be helpful in further processing
+    """
+    matches = iph_id_re.search(tag_dict[tag.slug])
+    if matches:  # pragma no branch
+        tag_dict['iph_id'] = matches.groupdict()['iph_id']
+    return tag_dict
+
+
+tnr_re = re.compile('^TNR: (?P<tnr>\d+\.\d+)', flags=re.MULTILINE)
+
+
+def mBank_set_tnr(transactions, tag, tag_dict, *args):
+    """
+    mBank Collect states TNR in transaction details as unique id for
+    transactions, that may be used to identify the same transactions in
+    different statement files eg. partial mt942 and full mt940
+    Information about tnr uniqueness has been obtained from mBank support,
+    it lacks in mt940 mBank specification.
+    """
+
+    matches = tnr_re.search(tag_dict[tag.slug])
+    if matches:  # pragma no branch
+        tag_dict['tnr'] = matches.groupdict()['tnr']
+    return tag_dict
