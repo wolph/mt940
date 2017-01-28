@@ -84,3 +84,32 @@ def test_mBank_processors(mBank_mt942_data):
     assert transaction['iph_id'] == '000000000001'
     assert transaction['tnr'] == '179171073864111.010001'
 
+
+@pytest.fixture
+def invalid_statement_data():
+    with open('tests/mBank/invalid_statement.sta') as fh:
+        return fh.read()
+
+
+def test_default_processors_dont_add_none_transaction_parsing_invalid_stmt(
+        invalid_statement_data):
+
+    transactions = mt940.models.Transactions()
+    transactions.parse(invalid_statement_data)
+
+    assert(len(transactions.transactions) == 0)
+
+
+def test_mbank_processors_dont_add_none_transaction_parsing_invalid_stmt(
+        invalid_statement_data):
+
+    transactions = mt940.models.Transactions(processors=dict(
+        post_transaction_details=[
+            mt940.processors.mBank_set_transaction_code,
+            mt940.processors.mBank_set_iph_id,
+            mt940.processors.mBank_set_tnr,
+        ],
+    ))
+    transactions.parse(invalid_statement_data)
+
+    assert(len(transactions.transactions) == 0)
