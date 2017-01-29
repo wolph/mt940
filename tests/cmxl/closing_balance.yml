@@ -1,4 +1,4 @@
-&id001 !!python/object:mt940.models.Transactions
+!!python/object:mt940.models.Transactions
 data:
   final_closing_balance: !!python/object:mt940.models.Balance
     amount: !!python/object:mt940.models.Amount
@@ -47,7 +47,4 @@ processors:
   pre_sum_debit_entries: []
   pre_transaction_details: []
   pre_transaction_reference_number: []
-transactions:
-- !!python/object:mt940.models.Transaction
-  data: {}
-  transactions: *id001
+transactions: []

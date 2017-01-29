@@ -1,4 +1,4 @@
-&id001 !!python/object:mt940.models.Transactions
+!!python/object:mt940.models.Transactions
 data: {transaction_reference: D140902049}
 processors:
   post_account_identification: []
@@ -39,7 +39,4 @@ processors:
   pre_sum_debit_entries: []
   pre_transaction_details: []
   pre_transaction_reference_number: []
-transactions:
-- !!python/object:mt940.models.Transaction
-  data: {}
-  transactions: *id001
+transactions: []
