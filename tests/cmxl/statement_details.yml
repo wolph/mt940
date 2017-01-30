@@ -1,4 +1,4 @@
-!!python/object:mt940.models.Transactions
+&id001 !!python/object:mt940.models.Transactions
 data: {}
 processors:
   post_account_identification: []
@@ -39,4 +39,26 @@ processors:
   pre_sum_debit_entries: []
   pre_transaction_details: []
   pre_transaction_reference_number: []
-transactions: []
+transactions:
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-1.62']
+      currency: null
+    bank_reference: 025498557/000001
+    currency: null
+    customer_reference: 0000549855700010
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B94JAQ==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B94JAg==
+    extra_details: ''
+    funds_code: R
+    id: NTRF
+    status: D
+    transaction_details: 171?00SEPA LASTSCHRIFT KUNDE?10281?20EREF+TRX-0A4A47C3-F846-4729?21-8A1B-5DF620F?22MREF+CAC97D2144174318AC18D9?23BF815BD4FB?24CRED+DE98ZZZ09999999999?25SVWZ+FOO
+      TRX-0A4A47C3-F84?266-4729-8A1B-5DF620F?30HYVEDEMMXXX?31HUkkbbbsssskcccccccccccccccx?32Peter
+      Pan?34171
+  transactions: *id001
