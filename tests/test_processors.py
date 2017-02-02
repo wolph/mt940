@@ -84,3 +84,21 @@ def test_mBank_processors(mBank_mt942_data):
     assert transaction['iph_id'] == '000000000001'
     assert transaction['tnr'] == '179171073864111.010001'
 
+
+@pytest.fixture
+def mBank_with_newline_in_tnr():
+    with open('tests/mBank/with_newline_in_tnr.sta') as fh:
+        return fh.read()
+
+
+def test_mBank_set_tnr_parses_tnr_with_newlines(mBank_with_newline_in_tnr):
+    transactions = mt940.models.Transactions(processors=dict(
+        post_transaction_details=[
+            mt940.processors.mBank_set_tnr,
+        ],
+    ))
+
+    transactions_ = transactions.parse(mBank_with_newline_in_tnr)
+    assert transactions_[0].data['tnr'] == '179301073837502.000001'
+    assert transactions_[1].data['tnr'] == '179301073844398.000001'
+
