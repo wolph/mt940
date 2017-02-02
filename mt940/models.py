@@ -334,9 +334,6 @@ class Transactions(collections.Sequence):
             re.MULTILINE)
         matches = list(tag_re.finditer(data))
 
-        transaction = Transaction(self)
-        self.transactions.append(transaction)
-
         for i, match in enumerate(matches):
             tag_id = match.group('tag')
             # Since non-digit tags exist, make the conversion optional
@@ -375,12 +372,16 @@ class Transactions(collections.Sequence):
                 # Transactions only get a Transaction Reference Code ID from a
                 # :61: tag which is why a new transaction is created if the
                 # 'id' has a value.
+                if not self.transactions:
+                    transaction = Transaction(self)
+                    self.transactions.append(transaction)
+
                 if transaction.data.get('id'):
                     transaction = Transaction(self, result)
                     self.transactions.append(transaction)
                 else:
                     transaction.data.update(result)
-            elif tag.scope is Transaction:
+            elif tag.scope is Transaction and self.transactions:
                 # Combine multiple results together as one string, Rabobank has
                 # multiple :86: tags for a single transaction
                 for k, v in _compat.iteritems(result):
