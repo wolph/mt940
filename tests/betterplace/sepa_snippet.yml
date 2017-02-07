@@ -265,7 +265,7 @@ transactions:
 
       ?32Richter Renate 70 Zeichen B?33eginn Fuellzeichen xxxxxxxx?70Qu
 
-      '
+      entin Quast 70 Zeichen Be?71ginn Fuellzeichen xxxxxxxxx'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
