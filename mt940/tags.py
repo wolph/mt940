@@ -307,7 +307,9 @@ class TransactionDetails(Tag):
     '''
     id = 86
     scope = models.Transaction
-    pattern = r'(?P<transaction_details>[\s\S]{0,330})'
+    pattern = r'''
+    (?P<transaction_details>(([\s\S]{0,65}\r?\n?){0,5}[\s\S]{0,65}))
+    '''
 
 
 class SumEntries(Tag):

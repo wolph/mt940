@@ -264,7 +264,7 @@ transactions:
 
       ftraggeber: Richter R?30PBNKDEFF100?31DE42100100100043921105?32Ri
 
-      c'
+      chter Renate 70 Zeichen B?33eginn Fuellzeichen xxxxxxxx?60enat?70'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -682,7 +682,7 @@ transactions:
 
       FR1420041010050500013M02606?32Empfaenger 1 mit 70 Zeichen?33 Empf
 
-      ae'
+      aenger 1 mit 70 Zeiche'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -736,7 +736,7 @@ transactions:
 
       FR1420041010050500013M02606?32Empfaenger 2 mit 70 Zeichen?33 Empf
 
-      ae'
+      aenger 2 mit 70 Zeiche'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -767,7 +767,7 @@ transactions:
 
       FR1420041010050500013M02606?32Empfaenger 4 mit 70 Zeichen?33 Empf
 
-      ae'
+      aenger 4 mit 70 Zeiche'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -798,7 +798,7 @@ transactions:
 
       FR1420041010050500013M02606?32Empfaenger 3 mit 70 Zeichen?33 Empf
 
-      ae'
+      aenger 3 mit 70 Zeiche'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -829,7 +829,7 @@ transactions:
 
       FR1420041010050500013M02606?32Empfaenger 5 mit 70 Zeichen?33 Empf
 
-      ae'
+      aenger 5 mit 70 Zeiche'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -860,7 +860,7 @@ transactions:
 
       vorschriften ?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfa
 
-      en'
+      enger 7 mit 70 Zeichen?33 Empfaenger 7 mit 70 Zeiche?60beachten'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -1985,7 +1985,7 @@ transactions:
 
       /0001?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger 1?
 
-      '
+      60MTLG:SBI-SEPA-UEB.FR1420041?6101005 Referenz: 1930467117G?62gf.'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -2283,7 +2283,7 @@ transactions:
 
       ?32Richter Renate 70 Zeichen B?33eginn Fuellzeichen xxxxxxxx?70Qu
 
-      '
+      entin Quast 70 Zeichen Be?71ginn Fuellzeichen xxxxxxxxx'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -2497,5 +2497,5 @@ transactions:
 
       ?32Richter Renate 70 Zeichen B?33eginn Fuellzeichen xxxxxxxx?70Ge
 
-      '
+      rhard Geloscht 70 Zeichen?71 Beginn Fuellzeichen xxxxxx'
   transactions: *id001
