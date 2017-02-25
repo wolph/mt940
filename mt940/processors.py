@@ -59,7 +59,7 @@ def mBank_set_iph_id(transactions, tag, tag_dict, *args):
     return tag_dict
 
 
-tnr_re = re.compile('^TNR: (?P<tnr>\d+\.\d+)', flags=re.MULTILINE)
+tnr_re = re.compile('TNR:[ \n](?P<tnr>\d+\.\d+)', flags=re.MULTILINE)
 
 
 def mBank_set_tnr(transactions, tag, tag_dict, *args):
