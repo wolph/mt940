@@ -97,7 +97,8 @@ class DateTimeIndication(Tag):
     (?P<month>\d{2})
     (?P<day>\d{2})
     (?P<hour>\d{2})
-    (?P<minute>\d{2})\+(?P<offset>\d{4})
+    (?P<minute>\d{2})
+    (\+(?P<offset>\d{4})|)
     '''
 
     def __call__(self, transactions, value):
