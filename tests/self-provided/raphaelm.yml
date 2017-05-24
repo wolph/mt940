@@ -33,9 +33,32 @@ data:
     - !!binary |
       B9IDDw==
     status: C
-  non_swift: '01bekannt
-
-    1812345'
+  non_swift: |-
+    22Test GmbH
+    23Testkonto
+    240,800
+    25010102311202
+    3037010000
+    3190000022
+    32
+    33
+    34LEER
+  non_swift_text: |-
+    Test GmbH
+    Testkonto
+    0,800
+    010102311202
+    37010000
+    90000022
+    
+    LEER
+  non_swift_22: 'Test GmbH'
+  non_swift_23: 'Testkonto'
+  non_swift_24: '0,800'
+  non_swift_25: '010102311202'
+  non_swift_30: '37010000'
+  non_swift_31: '90000022'
+  non_swift_34: 'LEER'
   sequence_number: '1'
   statement_number: '2'
   transaction_reference: STARTUMS
@@ -97,6 +120,29 @@ transactions:
     funds_code: M
     id: S051
     status: C
+    non_swift: |-
+      01Verwendungszweck 1
+      02Verwendungszweck 2
+      15Empfänger
+      17Buchungstext
+      1812345
+      191000
+      204711
+    non_swift_text: |-
+      Verwendungszweck 1
+      Verwendungszweck 2
+      Empfänger
+      Buchungstext
+      12345
+      1000
+      4711
+    non_swift_01: 'Verwendungszweck 1'
+    non_swift_02: 'Verwendungszweck 2'
+    non_swift_15: 'Empfänger'
+    non_swift_17: 'Buchungstext'
+    non_swift_18: '12345'
+    non_swift_19: '1000'
+    non_swift_20: '4711'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -177,6 +223,9 @@ transactions:
     funds_code: M
     id: S051
     status: C
+    non_swift: '223037010000'
+    non_swift_text: '3037010000'
+    non_swift_22: '3037010000'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -209,6 +258,20 @@ transactions:
     funds_code: M
     id: S051
     status: C
+    non_swift: |-
+      22Meyer + Schneider
+      23Testkonto
+      3037010000
+      3187132101
+    non_swift_text: |-
+      Meyer + Schneider
+      Testkonto
+      37010000
+      87132101
+    non_swift_22: 'Meyer + Schneider'
+    non_swift_23: 'Testkonto'
+    non_swift_30: '37010000'
+    non_swift_31: '87132101'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -225,4 +288,12 @@ transactions:
     funds_code: M
     id: S051
     status: D
+    non_swift: |-
+      01bekannt
+      1812345
+    non_swift_text: |-
+      bekannt
+      12345
+    non_swift_01: 'bekannt'
+    non_swift_18: '12345'
   transactions: *id001
