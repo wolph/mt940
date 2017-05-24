@@ -43,7 +43,6 @@ except ImportError:  # pragma: no cover
 
 from . import models
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -97,7 +96,8 @@ class DateTimeIndication(Tag):
     (?P<month>\d{2})
     (?P<day>\d{2})
     (?P<hour>\d{2})
-    (?P<minute>\d{2})\+(?P<offset>\d{4})
+    (?P<minute>\d{2})
+    (\+(?P<offset>\d{4})|)
     '''
 
     def __call__(self, transactions, value):
@@ -189,16 +189,37 @@ class NonSwift(Tag):
 
     Pattern: 2!n35x
     '''
+
+    class scope(models.Transaction, models.Transactions):
+        pass
     id = 'NS'
+
     pattern = r'''
     (?P<non_swift>
-        (\d{2}.{0,35})
-        (\n\d{2}.{0,35})*
+        (\d{2}.{0,})
+        (\n\d{2}.{0,})*
     )
     $'''
     sub_pattern = r'''
-    (?P<ns_id>\d{2})(?P<ns_data>.{0,35})
+    (?P<ns_id>\d{2})(?P<ns_data>.{0,})
     '''
+    sub_pattern_m = re.compile(sub_pattern,
+                               re.IGNORECASE | re.VERBOSE | re.UNICODE)
+
+    def __call__(self, transactions, value):
+        text = []
+        data = value['non_swift']
+        for line in data.split('\n'):
+            frag = self.sub_pattern_m.match(line)
+            if frag and frag.group(2):
+                ns = frag.groupdict()
+                value['non_swift_' + ns['ns_id']] = ns['ns_data']
+                text.append(ns['ns_data'])
+            elif len(text) and text[-1]:
+                text.append('')
+        value['non_swift_text'] = '\n'.join(text)
+        value['non_swift'] = data
+        return value
 
 
 class BalanceBase(Tag):

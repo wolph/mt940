@@ -42,18 +42,30 @@ def compare(a, b, key=''):
     simple_types = (
         datetime.datetime,
         decimal.Decimal,
-    ) + _compat.string_types + _compat.integer_types
+    ) + _compat.integer_types
     if isinstance(a, simple_types):
         assert a == b
+    elif isinstance(a, _compat.string_types):
+        if _compat.PY2:
+            if not isinstance(a, unicode):
+                a = a.decode('utf-8', 'replace')
+
+            if not isinstance(b, unicode):
+                b = b.decode('utf-8', 'replace')
+
+        assert a == b
+
     elif a is None:
         assert a is b
     elif isinstance(a, dict):
         for k in a:
             assert k in b
             compare(a[k], b[k], '.'.join(keys + [k]))
+
     elif isinstance(a, (list, tuple)):
         for av, bv in zip(a, b):
             compare(av, bv, key)
+
     elif hasattr(a, 'data'):
         compare(a.data, b.data, '.'.join(keys + ['data']))
     elif isinstance(a, mt940.models.Model):
