@@ -123,7 +123,7 @@ transactions:
     non_swift: |-
       01Verwendungszweck 1
       02Verwendungszweck 2
-      15Empfaenger
+      15Empfänger
       17Buchungstext
       1812345
       191000
@@ -131,14 +131,14 @@ transactions:
     non_swift_text: |-
       Verwendungszweck 1
       Verwendungszweck 2
-      Empfaenger
+      Empfänger
       Buchungstext
       12345
       1000
       4711
     non_swift_01: 'Verwendungszweck 1'
     non_swift_02: 'Verwendungszweck 2'
-    non_swift_15: 'Empfaenger'
+    non_swift_15: 'Empfänger'
     non_swift_17: 'Buchungstext'
     non_swift_18: '12345'
     non_swift_19: '1000'
