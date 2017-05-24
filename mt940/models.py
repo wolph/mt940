@@ -381,7 +381,7 @@ class Transactions(collections.Sequence):
                     self.transactions.append(transaction)
                 else:
                     transaction.data.update(result)
-            elif tag.scope is Transaction and self.transactions:
+            elif issubclass(tag.scope, Transaction) and self.transactions:
                 # Combine multiple results together as one string, Rabobank has
                 # multiple :86: tags for a single transaction
                 for k, v in _compat.iteritems(result):
@@ -390,7 +390,7 @@ class Transactions(collections.Sequence):
                     else:
                         transaction.data[k] = v
 
-            elif tag.scope is Transactions:  # pragma: no branch
+            elif issubclass(tag.scope, Transactions):  # pragma: no branch
                 self.data.update(result)
 
         return self.transactions
