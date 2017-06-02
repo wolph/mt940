@@ -47,11 +47,8 @@ def compare(a, b, key=''):
         assert a == b
     elif isinstance(a, _compat.string_types):
         if _compat.PY2:
-            if not isinstance(a, unicode):
-                a = a.decode('utf-8', 'replace')
-
-            if not isinstance(b, unicode):
-                b = b.decode('utf-8', 'replace')
+            a = _compat.console_to_str(a)
+            b = _compat.console_to_str(b)
 
         assert a == b
 
