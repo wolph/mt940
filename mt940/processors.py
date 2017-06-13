@@ -136,8 +136,12 @@ def _parse_mt940_details(detail_str):
             result[DETAIL_KEYS[key]] = value
         else:
             if key == '33':
+                if result[DETAIL_KEYS['32']] is None:
+                    result[DETAIL_KEYS['32']] = ''
                 result[DETAIL_KEYS['32']] += value
             elif key.startswith('2'):
+                if result[DETAIL_KEYS['20']] is None:
+                    result[DETAIL_KEYS['20']] = ''
                 result[DETAIL_KEYS['20']] += value
     return result
 
