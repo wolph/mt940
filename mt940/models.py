@@ -256,7 +256,8 @@ class Transactions(collections.Sequence):
         pre_non_swift=[],
         post_non_swift=[],
         pre_transaction_details=[],
-        post_transaction_details=[],
+        post_transaction_details=[
+            processors.transaction_details_post_processor],
         pre_transaction_reference_number=[],
         post_transaction_reference_number=[],
         pre_floor_limit_indicator=[],

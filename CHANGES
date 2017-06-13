@@ -13,6 +13,8 @@ https://github.com/WoLpH/mt940/commits/develop
 
     .. change::
 
+        Added mt940 transaction detail parser.
+
         Just look at the commits and you'll see :)
 
 .. changelog::
