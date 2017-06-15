@@ -174,14 +174,20 @@ def _parse_mt940_gvcodes(purpose):
 
 
 def transaction_details_post_processor(transactions, tag, tag_dict, result):
+    parsed = False
     detail_str = ''.join(
         d.strip() for d in tag_dict['transaction_details'].splitlines())
 
-    result.update(_parse_mt940_details(detail_str))
+    gvc = detail_str[:3]
+    if gvc in ['177', '105', '166', '171', '109', '192', '809', '159', '152',
+               '117'] and detail_str[3:6] == '?00':
+        result.update(_parse_mt940_details(detail_str))
+        parsed = True
 
-    if not result['Verwendungszweck']:
-        return result
+    purpose = result.get('Verwendungszweck')
+    if parsed and purpose and purpose[:4] in GVC_KEYS:
+        result.update(_parse_mt940_gvcodes(result['Verwendungszweck']))
 
-    result.update(_parse_mt940_gvcodes(result['Verwendungszweck']))
-
+    if parsed:
+        del result['transaction_details']
     return result
