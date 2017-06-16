@@ -80,39 +80,39 @@ def mBank_set_tnr(transactions, tag, tag_dict, *args):
 
 # https://www.db-bankline.deutsche-bank.com/download/MT940_Deutschland_Structure2002.pdf
 DETAIL_KEYS = {
-    '': 'Geschäftsvorfall-Code',
-    '00': 'Buchungstext',
-    '10': 'Primanota',
-    '20': 'Verwendungszweck',
-    '30': 'Auftraggeber BLZ',
-    '31': 'Auftraggeber Kontonummer',
-    '32': 'Auftraggeber Name',
-    '34': 'Rücklastschriften',
-    '35': 'Empfänger: Name',
-    '60': 'Zusätzl. Verwendungszweckangaben',
+    '': 'transaction_code',
+    '00': 'posting_text',
+    '10': 'prima_nota',
+    '20': 'purpose',
+    '30': 'applicant_bin',
+    '31': 'applicant_iban',
+    '32': 'applicant_name',
+    '34': 'return_debit_notes',
+    '35': 'recipient_name',
+    '60': 'additional_purpose',
 }
 
-# https://www.hettwer-beratung.de/sepa-spezialwissen/sepa-technische-anforderungen/sepa-geschäftsvorfallcodes-gvc-mt-940/
+# https://www.hettwer-beratung.de/suepa-spezialwissen/sepa-tecshnische-anforderungen/sepa-geschäftsvorfallcodes-gvct-mt-940c/
 GVC_KEYS = {
-    '': 'Verwendungszweck',
-    'IBAN': 'Auftraggeber IBAN',
-    'BIC ': 'Auftraggeber BIC',
-    'EREF': 'End to End Referenz',
-    'MREF': 'Mandatsreferenz',
-    'CRED': 'Auftraggeber Creditor ID',
-    'PURP': 'Purpose Code',
-    'SVWZ': 'Verwendungszweck',
-    'MDAT': 'Mandatsdatum',
-    'ABWA': 'Abweichender Auftraggeber',
-    'ABWE': 'Abweichender Empfänger',
-    'SQTP': 'FRST / ONE / OFF /RECC',
-    'ORCR': 'SEPA Mandatsänderung: alte SEPA CI',
-    'ORMR': 'SEPA Mandatsänderung: alte SEPA Mandatsreferenz',
-    'DDAT': 'SEPA Settlement Tag für R- Message',
-    'KREF': 'Kundenreferenz',
-    'DEBT': 'Debtor Identifier bei SEPA Überweisung',
-    'COAM': 'Compensation Amount',
-    'OAMT': 'Original Amount',
+    '': 'purpose',
+    'IBAN': 'applicant_iban',
+    'BIC ': 'applicant_bin',
+    'EREF': 'end_to_end_reference',
+    'MREF': 'additional_position_reference',
+    'CRED': 'applicant_creditor_id',
+    'PURP': 'purpose_code',
+    'SVWZ': 'purpose',
+    'MDAT': 'additional_position_date',
+    'ABWA': 'deviate_applicant',
+    'ABWE': 'deviate_recipient',
+    'SQTP': 'FRST_ONE_OFF_RECC',
+    'ORCR': 'old_SEPA_CI',
+    'ORMR': 'old_SEPA_additional_position_reference',
+    'DDAT': 'settlement_tag',
+    'KREF': 'customer_reference',
+    'DEBT': 'debitor_identifier',
+    'COAM': 'compensation_amount',
+    'OAMT': 'original_amount',
 }
 
 
@@ -184,9 +184,9 @@ def transaction_details_post_processor(transactions, tag, tag_dict, result):
         result.update(_parse_mt940_details(detail_str))
         parsed = True
 
-    purpose = result.get('Verwendungszweck')
+    purpose = result.get('purpose')
     if parsed and purpose and purpose[:4] in GVC_KEYS:
-        result.update(_parse_mt940_gvcodes(result['Verwendungszweck']))
+        result.update(_parse_mt940_gvcodes(result['purpose']))
 
     if parsed:
         del result['transaction_details']
