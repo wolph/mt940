@@ -95,8 +95,8 @@ DETAIL_KEYS = {
 # https://www.hettwer-beratung.de/suepa-spezialwissen/sepa-tecshnische-anforderungen/sepa-geschäftsvorfallcodes-gvct-mt-940c/
 GVC_KEYS = {
     '': 'purpose',
-    'IBAN': 'applicant_iban',
-    'BIC ': 'applicant_bin',
+    'IBAN': 'gvc_applicant_iban',
+    'BIC ': 'gvc_applicant_bin',
     'EREF': 'end_to_end_reference',
     'MREF': 'additional_position_reference',
     'CRED': 'applicant_creditor_id',
@@ -131,6 +131,8 @@ def _parse_mt940_details(detail_str):
         tmp[segment_type] = segment if not segment_type else segment[2:]
         segment_type = detail_str[index + 1] + detail_str[index + 2]
         segment = ''
+    if segment_type:
+        tmp[segment_type] = segment if not segment_type else segment[2:]
     for key, value in tmp.items():
         if key in DETAIL_KEYS:
             result[DETAIL_KEYS[key]] = value
