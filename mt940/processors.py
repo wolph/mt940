@@ -117,9 +117,7 @@ GVC_KEYS = {
 
 
 def _parse_mt940_details(detail_str):
-    result = {}
-    for key, value in DETAIL_KEYS.items():
-        result[value] = None
+    result = dict.fromkeys(DETAIL_KEYS.values())
 
     tmp = {}
     segment = ''
@@ -131,20 +129,18 @@ def _parse_mt940_details(detail_str):
         tmp[segment_type] = segment if not segment_type else segment[2:]
         segment_type = detail_str[index + 1] + detail_str[index + 2]
         segment = ''
-    if segment_type:
+    if segment_type:  # pragma: no branch
         tmp[segment_type] = segment if not segment_type else segment[2:]
+
     for key, value in tmp.items():
         if key in DETAIL_KEYS:
             result[DETAIL_KEYS[key]] = value
-        else:
-            if key == '33':
-                if result[DETAIL_KEYS['32']] is None:
-                    result[DETAIL_KEYS['32']] = ''
-                result[DETAIL_KEYS['32']] += value
-            elif key.startswith('2'):
-                if result[DETAIL_KEYS['20']] is None:
-                    result[DETAIL_KEYS['20']] = ''
-                result[DETAIL_KEYS['20']] += value
+        elif key == '33':
+            key32 = DETAIL_KEYS['32']
+            result[key32] = (result[key32] or '') + value
+        elif key.startswith('2'):
+            key20 = DETAIL_KEYS['20']
+            result[key20] = (result[key20] or '') + value
     return result
 
 
@@ -166,30 +162,27 @@ def _parse_mt940_gvcodes(purpose):
             segment_type = purpose[index - 4:index]
         else:
             text += char
-    if segment_type:
+    if segment_type:  # pragma: no branch
         tmp[segment_type] = text
     else:
-        tmp[''] = text
+        tmp[''] = text  # pragma: no cover
     for key, value in tmp.items():
         result[GVC_KEYS[key]] = value
     return result
 
 
 def transaction_details_post_processor(transactions, tag, tag_dict, result):
-    parsed = False
-    detail_str = ''.join(
-        d.strip() for d in tag_dict['transaction_details'].splitlines())
+    details = tag_dict['transaction_details']
+    details = ''.join(detail.strip() for detail in details.splitlines())
 
-    gvc = detail_str[:3]
-    if gvc in ['177', '105', '166', '171', '109', '192', '809', '159', '152',
-               '117'] and detail_str[3:6] == '?00':
-        result.update(_parse_mt940_details(detail_str))
-        parsed = True
+    gvcs = set([177, 105, 166, 171, 109, 192, 809, 159, 152, 117])
+    gvc = details[:3]
+    if gvc.isdigit() and int(gvc) in gvcs and details[3:6] == '?00':
+        result.update(_parse_mt940_details(details))
 
-    purpose = result.get('purpose')
-    if parsed and purpose and purpose[:4] in GVC_KEYS:
-        result.update(_parse_mt940_gvcodes(result['purpose']))
+        purpose = result.get('purpose')
+        if purpose and purpose[:4] in GVC_KEYS:  # pragma: no branch
+            result.update(_parse_mt940_gvcodes(result['purpose']))
 
-    if parsed:
         del result['transaction_details']
     return result

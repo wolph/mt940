@@ -77,6 +77,8 @@ def compare(a, b, key=''):
 @pytest.mark.parametrize('sta_file', get_sta_files())
 def test_parse(sta_file):
     transactions = mt940.parse(sta_file)
+    # To update the yaml files after changing the code, uncomment the following
+    # Only for development purposes
     # write_yaml_data(sta_file, transactions)
     expected = get_yaml_data(sta_file)
 
