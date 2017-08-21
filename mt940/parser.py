@@ -26,8 +26,9 @@ Sources:
     n = Numeric
 '''
 
+import os
+
 import mt940
-from os.path import isfile
 
 
 def parse(src):
@@ -38,9 +39,10 @@ def parse(src):
     :return: Collection of transactions
     :rtype: Transactions
     '''
+
     if hasattr(src, 'read'):  # pragma: no branch
         data = src.read()
-    elif isfile(src):
+    elif os.path.isfile(src):
         src = open(src)
         data = src.read()
     else:
@@ -48,4 +50,5 @@ def parse(src):
 
     transactions = mt940.models.Transactions()
     transactions.parse(data)
+
     return transactions
