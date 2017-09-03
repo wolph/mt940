@@ -15,16 +15,17 @@ def add_currency_pre_processor(currency, overwrite=True):
 
 def date_fixup_pre_processor(transactions, tag, tag_dict, *args):
     """
-    Replace illegal February 30 dates with the last day of February.
+    Replace illegal February 29, 30 dates with the last day of February.
 
     German banks use a variant of the 30/360 interest rate calculation,
     where each month has always 30 days even February. Python's datetime
     module won't accept such dates.
     """
-    if tag_dict['day'] == '30' and tag_dict['month'] == '02':
+    if tag_dict['month'] == '02':
         year = int(tag_dict['year'], 10)
-        tag_dict['day'] = str(calendar.monthrange(year, 2)[1])
-        tag_dict['month'] = '02'
+        _, max_month_day = calendar.monthrange(year, 2)
+        if int(tag_dict['day'], 10) > max_month_day:
+            tag_dict['day'] = str(max_month_day)
     return tag_dict
 
 
