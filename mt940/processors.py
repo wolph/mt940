@@ -1,6 +1,7 @@
 # encoding=utf-8
 import re
 import calendar
+import collections
 
 
 def add_currency_pre_processor(currency, overwrite=True):
@@ -65,7 +66,8 @@ def mBank_set_iph_id(transactions, tag, tag_dict, *args):
     return tag_dict
 
 
-tnr_re = re.compile('TNR:[ \n](?P<tnr>\d+\.\d+)', flags=re.MULTILINE)
+tnr_re = re.compile('TNR:[ \n](?P<tnr>\d+\.\d+)',
+                    flags=re.MULTILINE | re.UNICODE)
 
 
 def mBank_set_tnr(transactions, tag, tag_dict, *args):
@@ -126,7 +128,7 @@ GVC_KEYS = {
 def _parse_mt940_details(detail_str):
     result = dict.fromkeys(DETAIL_KEYS.values())
 
-    tmp = {}
+    tmp = collections.OrderedDict()
     segment = ''
     segment_type = ''
 
@@ -143,6 +145,7 @@ def _parse_mt940_details(detail_str):
         tmp[segment_type] = segment if not segment_type else segment[2:]
 
     for key, value in tmp.items():
+        print('%s = %s' % (key, value))
         if key in DETAIL_KEYS:
             result[DETAIL_KEYS[key]] = value
         elif key == '33':
