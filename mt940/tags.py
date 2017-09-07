@@ -26,6 +26,7 @@ Sources:
     n = Numeric
 '''
 import re
+import pprint
 import logging
 
 try:
@@ -58,8 +59,9 @@ class Tag(object):
         match = self.re.match(value)
         if match:  # pragma: no branch
             self.logger.debug(
-                'matched (%d) "%s" against "%s", got: %r',
-                len(value), value, self.pattern, match.groupdict())
+                'matched (%d) "%s" against "%s", got: %s',
+                len(value), value, self.pattern,
+                pprint.pformat(match.groupdict()))
         else:  # pragma: no cover
             self.logger.info(
                 'matching (%d) "%s" against "%s"', len(value), value,

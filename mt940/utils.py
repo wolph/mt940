@@ -12,6 +12,7 @@ def coalesce(*args):
     >>> coalesce(None, 0)
     0
     '''
+
     for arg in args:
         if arg is not None:
             return arg
@@ -29,6 +30,7 @@ def join_lines(string, strip=Strip.BOTH):
     Join strings together and strip whitespace in between if needed
     '''
     lines = []
+
     for line in string.splitlines():
         if strip & Strip.RIGHT:
             line = line.rstrip()
@@ -39,4 +41,3 @@ def join_lines(string, strip=Strip.BOTH):
         lines.append(line)
 
     return ''.join(lines)
-

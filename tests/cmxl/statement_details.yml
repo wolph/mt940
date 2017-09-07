@@ -44,7 +44,7 @@ transactions:
   data:
     FRST_ONE_OFF_RECC: null
     additional_position_date: null
-    additional_position_reference: CAC97D2144174318AC18D9BF815BD4FB6-4729-8A1B-5DF620F
+    additional_position_reference: CAC97D2144174318AC18D9BF815BD4FB
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['-1.62']
@@ -77,7 +77,7 @@ transactions:
     original_amount: null
     posting_text: SEPA LASTSCHRIFT KUNDE
     prima_nota: '281'
-    purpose: FOO TRX-0A4A47C3-F84
+    purpose: FOO TRX-0A4A47C3-F846-4729-8A1B-5DF620F
     purpose_code: null
     recipient_name: null
     return_debit_notes: '171'

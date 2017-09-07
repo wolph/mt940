@@ -6,6 +6,7 @@ PY2 = sys.version_info[0] == 2
 def _identity(x):  # pragma: no cover
     return x
 
+
 __all__ = [
     'BytesIO',
     'PY2',
@@ -35,7 +36,6 @@ __all__ = [
     'urlretrieve',
     '_identity',
 ]
-
 
 if PY2:  # pragma: no cover
     unichr = unichr
@@ -78,7 +78,7 @@ if PY2:  # pragma: no cover
 else:  # pragma: no cover
     unichr = chr
     text_type = str
-    string_types = (str,)
+    string_types = (str, )
     integer_types = (int, )
 
     def text_to_native(s, enc):
@@ -122,8 +122,8 @@ else:  # pragma: no cover
 
     def reraise(tp, value, tb=None):
         if value.__traceback__ is not tb:
-            raise(value.with_traceback(tb))
+            raise (value.with_traceback(tb))
         raise value
 
 
-number_types = integer_types + (float,)
+number_types = integer_types + (float, )

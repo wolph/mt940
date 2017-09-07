@@ -3,9 +3,10 @@ import decimal
 import datetime
 import collections
 
-from . import processors
-from . import _compat
 import mt940
+
+from . import _compat
+from . import processors
 
 
 class Model(object):
@@ -27,6 +28,7 @@ class FixedOffset(datetime.tzinfo):
 
     def __init__(self, offset=0, name=None):
         self._name = name or str(offset)
+
         if not isinstance(offset, int):
             offset = int(offset)
         self._offset = datetime.timedelta(minutes=offset)
@@ -42,7 +44,6 @@ class FixedOffset(datetime.tzinfo):
 
 
 class DateTime(datetime.datetime, Model):
-
     '''Just a regular datetime object which supports dates given as strings
 
     >>> DateTime(year='2000', month='1', day='2', hour='3', minute='4',
@@ -72,6 +73,7 @@ class DateTime(datetime.datetime, Model):
         offset (str): Timezone offset in minutes, generates a tzinfo object
                       with the given offset if no tzinfo is available.
     '''
+
     def __new__(cls, *args, **kwargs):
         if kwargs:
             values = dict(
@@ -81,10 +83,10 @@ class DateTime(datetime.datetime, Model):
                 hour='0',
                 minute='0',
                 second='0',
-                microsecond='0',
-            )
+                microsecond='0', )
 
             # The list makes sure this works in both Python 2 and 3
+
             for key, default in list(values.items()):
                 # Fetch the value or the default
                 value = kwargs.get(key, default)
@@ -98,6 +100,7 @@ class DateTime(datetime.datetime, Model):
                 values['year'] += 2000
 
             values['tzinfo'] = None
+
             if kwargs.get('tzinfo'):
                 values['tzinfo'] = kwargs['tzinfo']
 
@@ -110,7 +113,6 @@ class DateTime(datetime.datetime, Model):
 
 
 class Date(datetime.date, Model):
-
     '''Just a regular date object which supports dates given as strings
 
     >>> Date(year='2000', month='1', day='2')
@@ -128,13 +130,13 @@ class Date(datetime.date, Model):
     def __new__(cls, *args, **kwargs):
         if kwargs:
             dt = DateTime(*args, **kwargs).date()
+
             return datetime.date.__new__(cls, dt.year, dt.month, dt.day)
         else:
             return datetime.date.__new__(cls, *args, **kwargs)
 
 
 class Amount(Model):
-
     '''Amount object containing currency and amount
 
     Args:
@@ -153,33 +155,28 @@ class Amount(Model):
         self.currency = currency
 
         # C = credit, D = debit
+
         if status == 'D':
             self.amount = -self.amount
 
     def __repr__(self):
         return '<%s %s>' % (
             self.amount,
-            self.currency,
-        )
+            self.currency, )
 
 
 class SumAmount(Amount):
-
     def __init__(self, *args, **kwargs):
         number = kwargs.pop('number')
         super(SumAmount, self).__init__(*args, **kwargs)
         self.number = number
 
     def __repr__(self):
-        return '<%s %s in %s stmts)>' % (
-            self.amount,
-            self.currency,
-            self.number
-        )
+        return '<%s %s in %s stmts)>' % (self.amount, self.currency,
+                                         self.number)
 
 
 class Balance(Model):
-
     '''Parse balance statement
 
     Args:
@@ -214,12 +211,10 @@ class Balance(Model):
     def __str__(self):
         return '%s @ %s' % (
             self.amount,
-            self.date,
-        )
+            self.date, )
 
 
 class Transactions(collections.Sequence):
-
     '''
     Collection of :py:class:`Transaction` objects with global properties such
     as begin and end balance
@@ -257,7 +252,8 @@ class Transactions(collections.Sequence):
         post_non_swift=[],
         pre_transaction_details=[],
         post_transaction_details=[
-            processors.transaction_details_post_processor],
+            processors.transaction_details_post_processor
+        ],
         pre_transaction_reference_number=[],
         post_transaction_reference_number=[],
         pre_floor_limit_indicator=[],
@@ -267,11 +263,11 @@ class Transactions(collections.Sequence):
         pre_sum_credit_entries=[],
         post_sum_credit_entries=[],
         pre_sum_debit_entries=[],
-        post_sum_debit_entries=[]
-    )
+        post_sum_debit_entries=[])
 
     def __init__(self, processors=None):
         self.processors = self.DEFAULT_PROCESSORS.copy()
+
         if processors:
             self.processors.update(processors)
 
@@ -290,11 +286,12 @@ class Transactions(collections.Sequence):
             self.data.get('closing_balance'),
             self.data.get('intermediate_closing_balance'),
             self.data.get('c_floor_limit'),
-            self.data.get('d_floor_limit'),
-        )
+            self.data.get('d_floor_limit'), )
+
         if balance:
             if isinstance(balance, Amount):
                 return balance.currency
+
             return balance.amount.currency
 
     @classmethod
@@ -309,10 +306,12 @@ class Transactions(collections.Sequence):
             line = line.rstrip()
 
             # Skip separators
+
             if line.strip() == '-':
                 continue
 
             # Return actual lines
+
             if line:
                 yield line
 
@@ -338,6 +337,7 @@ class Transactions(collections.Sequence):
         for i, match in enumerate(matches):
             tag_id = match.group('tag')
             # Since non-digit tags exist, make the conversion optional
+
             if tag_id.isdigit():
                 tag_id = int(tag_id)
 
@@ -350,6 +350,7 @@ class Transactions(collections.Sequence):
             # Nice trick to get all the text that is part of this tag, python
             # regex matches have a `end()` and `start()` to indicate the start
             # and end index of the match.
+
             if matches[i + 1:]:
                 tag_data = data[match.end():matches[i + 1].start()].strip()
             else:
@@ -358,21 +359,25 @@ class Transactions(collections.Sequence):
             tag_dict = tag.parse(self, tag_data)
 
             # Preprocess data before creating the object
+
             for processor in self.processors.get('pre_%s' % tag.slug):
                 tag_dict = processor(self, tag, tag_dict)
 
             result = tag(self, tag_dict)
 
             # Postprocess the object
+
             for processor in self.processors.get('post_%s' % tag.slug):
                 result = processor(self, tag, tag_dict, result)
 
             # Creating a new transaction for :20: and :61: tags allows the
             # tags from :20: to :61: to be captured as part of the transaction.
+
             if isinstance(tag, mt940.tags.Statement):
                 # Transactions only get a Transaction Reference Code ID from a
                 # :61: tag which is why a new transaction is created if the
                 # 'id' has a value.
+
                 if not self.transactions:
                     transaction = Transaction(self)
                     self.transactions.append(transaction)
@@ -385,6 +390,7 @@ class Transactions(collections.Sequence):
             elif issubclass(tag.scope, Transaction) and self.transactions:
                 # Combine multiple results together as one string, Rabobank has
                 # multiple :86: tags for a single transaction
+
                 for k, v in _compat.iteritems(result):
                     if k in transaction.data and hasattr(v, 'strip'):
                         transaction.data[k] += '\n%s' % v.strip()
@@ -407,12 +413,10 @@ class Transactions(collections.Sequence):
             self.__class__.__name__,
             ']['.join('%s: %s' % (k.replace('_balance', ''), v)
                       for k, v in _compat.iteritems(self.data)
-                      if k.endswith('balance'))
-        )
+                      if k.endswith('balance')))
 
 
 class Transaction(Model):
-
     def __init__(self, transactions, data=None):
         self.transactions = transactions
         self.data = {}
@@ -426,6 +430,4 @@ class Transaction(Model):
         return '<%s[%s] %s>' % (
             self.__class__.__name__,
             self.data.get('date'),
-            self.data.get('amount'),
-        )
-
+            self.data.get('amount'), )

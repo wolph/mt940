@@ -1,10 +1,10 @@
 from __future__ import absolute_import
 
-from . import processors
-from . import parser
-from . import models
-from . import utils
 from . import tags
+from . import utils
+from . import models
+from . import parser
+from . import processors
 
 parse = parser.parse
 
