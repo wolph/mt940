@@ -340,7 +340,7 @@ transactions:
     applicant_bin: PBNKDEFF100
     applicant_creditor_id: null
     applicant_iban: DE42100100100043921105
-    applicant_name: Richter Renate 70 Zeichen B
+    applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
     bank_reference: null
     compensation_amount: null
     currency: EUR
@@ -365,8 +365,8 @@ transactions:
     original_amount: null
     posting_text: GUTSCHRIFT
     prima_nota: 0399
-    purpose: 'TO 13 TFNr 20004 Eingangskanal Mint .............MTLG:SEPA-Ueberweisungseing...........................ang
-      Auftraggeber: Richter R...  ................................................'
+    purpose: 'TO 13 TFNr 20004 Eingangskanal Mint ..........................................  ...........................................................MTLG:SEPA-Ueberweisungseingang
+      Auftraggeber: Richter R'
     purpose_code: null
     recipient_name: null
     return_debit_notes: null
@@ -409,7 +409,7 @@ transactions:
     applicant_bin: PBNKDEFF100
     applicant_creditor_id: null
     applicant_iban: DE42100100100043921105
-    applicant_name: Richter Renate 70 Zeichen B
+    applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichenxxxxxxxx
     bank_reference: null
     compensation_amount: null
     currency: EUR
@@ -454,7 +454,7 @@ transactions:
     applicant_bin: NIKACH22XXX
     applicant_creditor_id: null
     applicant_iban: CH8500779014054431109
-    applicant_name: Cornelia Prochownik 70 Zeic
+    applicant_name: Cornelia Prochownik 70 Zeichen BeginnFuellzeichen xxx
     bank_reference: null
     compensation_amount: null
     currency: EUR
@@ -499,7 +499,7 @@ transactions:
     applicant_bin: UBSWCHZH80A
     applicant_creditor_id: null
     applicant_iban: CH6500279279C31180700
-    applicant_name: Richter Renate 70 Zeichen B
+    applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
     bank_reference: null
     compensation_amount: null
     currency: EUR
@@ -590,7 +590,7 @@ transactions:
     applicant_bin: PBNKDEFF250
     applicant_creditor_id: null
     applicant_iban: DE40250100300325207300
-    applicant_name: Daniel Severidt 70 Zeichen
+    applicant_name: Daniel Severidt 70 ZeichenBeginn Fuellzeichen xxxxxxx
     bank_reference: null
     compensation_amount: null
     currency: EUR
@@ -635,7 +635,7 @@ transactions:
     applicant_bin: PBNKDEFF100
     applicant_creditor_id: null
     applicant_iban: DE40100100100000214105
-    applicant_name: Cornelia Prochownik 70 Zeic
+    applicant_name: Cornelia Prochownik 70 Zeichen BeginnFuellzeichen xxx
     bank_reference: null
     compensation_amount: null
     currency: EUR
@@ -680,7 +680,7 @@ transactions:
     applicant_bin: PBNKDEFF250
     applicant_creditor_id: null
     applicant_iban: DE39250100300172064300
-    applicant_name: Dirk Leunig 70 Zeichen Begi
+    applicant_name: Dirk Leunig 70 Zeichen Beginn Fuellzeichen xxxxxxxxxxx
     bank_reference: null
     compensation_amount: null
     currency: EUR
@@ -882,7 +882,7 @@ transactions:
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
     applicant_iban: DE95508800500194784900
-    applicant_name: JOSEF
+    applicant_name: JOSEF        JAEGER
     bank_reference: null
     compensation_amount: null
     currency: EUR
@@ -907,7 +907,8 @@ transactions:
     original_amount: null
     posting_text: GUTSCHRIFT
     prima_nota: 0399
-    purpose: 'Verwend CTSc-01 PPP TFNr 22 001ang Auftraggeber: JOSEFMTLG:SEPA-Ueberweisungseing'
+    purpose: 'Verwend CTSc-01 PPP TFNr 22 001MTLG:SEPA-Ueberweisungseingang Auftraggeber:
+      JOSEF'
     purpose_code: null
     recipient_name: null
     return_debit_notes: null
@@ -1280,8 +1281,7 @@ transactions:
     currency: EUR
     customer_reference: 'KREF+//072471033
 
-      EndToEndId TFNR 06 004 00002sungsauftragrt Reject aus SEPA-UeberweiMTLG:Grund
-      nicht spezifizie'
+      EndToEndId TFNR 06 004 00002MTLG:Grund nicht spezifiziert Reject aus SEPA-Ueberweisungsauftrag'
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -1328,8 +1328,7 @@ transactions:
     currency: EUR
     customer_reference: 'KREF+//072471033
 
-      EndToEndId TFNR 06 004 00004sungsauftragrt Reject aus SEPA-UeberweiMTLG:Grund
-      nicht spezifizie'
+      EndToEndId TFNR 06 004 00004MTLG:Grund nicht spezifiziert Reject aus SEPA-Ueberweisungsauftrag'
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -2122,7 +2121,7 @@ transactions:
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
     applicant_iban: DE95508800500194784900
-    applicant_name: JOSEF
+    applicant_name: JOSEF        JAEGER
     bank_reference: null
     compensation_amount: null
     currency: EUR
@@ -2576,7 +2575,7 @@ transactions:
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
     applicant_iban: DE14508800500194785000
-    applicant_name: KARL
+    applicant_name: KARL        KAUFMANN
     bank_reference: null
     compensation_amount: null
     currency: EUR
@@ -2666,7 +2665,7 @@ transactions:
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
     applicant_iban: DE14508800500194785000
-    applicant_name: KARL
+    applicant_name: KARL        KAUFMANN
     bank_reference: null
     compensation_amount: null
     currency: EUR
@@ -2962,7 +2961,7 @@ transactions:
     applicant_bin: PBNKDEFF100
     applicant_creditor_id: null
     applicant_iban: DE42100100100043921105
-    applicant_name: Richter Renate 70 Zeichen B
+    applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
     bank_reference: null
     compensation_amount: null
     currency: EUR
@@ -2987,8 +2986,8 @@ transactions:
     original_amount: null
     posting_text: GUTSCHRIFT
     prima_nota: 0399
-    purpose: TO 13 TFNr 20001 Eingangskanal Mint Unstrukturierxxxxxxxxxxxxxxxxxxxxxxxxxxxichen
-      Beginn Fuellzeichen xter Verwendungszweck 140 Ze
+    purpose: TO 13 TFNr 20001 Eingangskanal Mint Unstrukturierter Verwendungszweck
+      140 Zeichen Beginn Fuellzeichen xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     purpose_code: null
     recipient_name: null
     return_debit_notes: null
@@ -3008,7 +3007,7 @@ transactions:
     applicant_bin: PBNKDEFF100
     applicant_creditor_id: null
     applicant_iban: DE42100100100043921105
-    applicant_name: Richter Renate 70 Zeichen B
+    applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
     bank_reference: null
     compensation_amount: null
     currency: EUR
@@ -3119,7 +3118,7 @@ transactions:
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
     applicant_iban: DE03508800500194791600
-    applicant_name: QUENTIN
+    applicant_name: QUENTIN        QUAST
     bank_reference: null
     compensation_amount: null
     currency: EUR
@@ -3278,7 +3277,7 @@ transactions:
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
     applicant_iban: DE51508800500190038900
-    applicant_name: Richter Renate 70 Zeichen B
+    applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
     bank_reference: null
     compensation_amount: null
     currency: EUR
@@ -3303,8 +3302,8 @@ transactions:
     original_amount: null
     posting_text: GUTSCHRIFT
     prima_nota: 0399
-    purpose: TO 25 TFNr 50005 Eingangskanal Mint Unstrukturierxxxxxxxxxxxxxxxxxxxxxxxxxxxichen
-      Beginn Fuellzeichen xter Verwendungszweck 140 Ze
+    purpose: TO 25 TFNr 50005 Eingangskanal Mint Unstrukturierter Verwendungszweck
+      140 Zeichen Beginn Fuellzeichen xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     purpose_code: null
     recipient_name: null
     return_debit_notes: null

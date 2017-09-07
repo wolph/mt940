@@ -113,8 +113,8 @@ transactions:
     funds_code: null
     id: NTRF
     status: D
-    transaction_details: !!python/str "0111111111 ING iDEAL KN: TMG TANGO TRANSACTIENR\
-      \ 0050000534527978 10\xAD06\xAD2010 15:32 TMG TANGO ING Bank inzake GPKyoto"
+    transaction_details: "0111111111 ING iDEAL KN: TMG TANGO TRANSACTIENR 0050000534527978\
+      \ 10\xAD06\xAD2010 15:32 TMG TANGO ING Bank inzake GPKyoto"
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
@@ -131,8 +131,7 @@ transactions:
     funds_code: null
     id: NTRF
     status: D
-    transaction_details: !!python/str "ABN AMRO BANK>AMSTERDAM 22\xAD07\xAD2010 09:57\
-      \ 002\t5595781"
+    transaction_details: "ABN AMRO BANK>AMSTERDAM 22\xAD07\xAD2010 09:57 002\t5595781"
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:

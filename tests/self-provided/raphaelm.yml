@@ -131,17 +131,17 @@ transactions:
     extra_details: ''
     funds_code: M
     id: S051
-    non_swift: !!python/str "01Verwendungszweck 1\n02Verwendungszweck 2\n15Empf\xE4\
-      nger\n17Buchungstext\n1812345\n191000\n204711"
+    non_swift: "01Verwendungszweck 1\n02Verwendungszweck 2\n15Empf\xE4nger\n17Buchungstext\n\
+      1812345\n191000\n204711"
     non_swift_01: Verwendungszweck 1
     non_swift_02: Verwendungszweck 2
-    non_swift_15: !!python/str "Empf\xE4nger"
+    non_swift_15: "Empf\xE4nger"
     non_swift_17: Buchungstext
     non_swift_18: '12345'
     non_swift_19: '1000'
     non_swift_20: '4711'
-    non_swift_text: !!python/str "Verwendungszweck 1\nVerwendungszweck 2\nEmpf\xE4\
-      nger\nBuchungstext\n12345\n1000\n4711"
+    non_swift_text: "Verwendungszweck 1\nVerwendungszweck 2\nEmpf\xE4nger\nBuchungstext\n\
+      12345\n1000\n4711"
     status: C
   transactions: *id001
 - !!python/object:mt940.models.Transaction

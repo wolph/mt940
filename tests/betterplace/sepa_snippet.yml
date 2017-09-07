@@ -80,7 +80,7 @@ transactions:
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
     applicant_iban: DE14508800500194785000
-    applicant_name: KARL
+    applicant_name: KARL        KAUFMANN
     bank_reference: null
     compensation_amount: null
     currency: EUR
@@ -376,7 +376,7 @@ transactions:
     applicant_bin: PBNKDEFF100
     applicant_creditor_id: null
     applicant_iban: DE42100100100043921105
-    applicant_name: Richter Renate 70 Zeichen B
+    applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
     bank_reference: null
     compensation_amount: null
     currency: EUR
@@ -401,8 +401,8 @@ transactions:
     original_amount: null
     posting_text: GUTSCHRIFT
     prima_nota: 0399
-    purpose: TO 13 TFNr 20001 Eingangskanal Mint Unstrukturierxxxxxxxxxxxxxxxxxxxxxxxxxxxichen
-      Beginn Fuellzeichen xter Verwendungszweck 140 Ze
+    purpose: TO 13 TFNr 20001 Eingangskanal Mint Unstrukturierter Verwendungszweck
+      140 Zeichen Beginn Fuellzeichen xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     purpose_code: null
     recipient_name: null
     return_debit_notes: null
@@ -422,7 +422,7 @@ transactions:
     applicant_bin: PBNKDEFF100
     applicant_creditor_id: null
     applicant_iban: DE42100100100043921105
-    applicant_name: Richter Renate 70 Zeichen B
+    applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
     bank_reference: null
     compensation_amount: null
     currency: EUR

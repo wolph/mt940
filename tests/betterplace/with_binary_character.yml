@@ -19,7 +19,7 @@ data:
     status: C
   sequence_number: '00001'
   statement_number: '00053'
-  transaction_reference: !!python/str "STAR1\xDCTUMS"
+  transaction_reference: "STAR1\xDCTUMS"
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -149,7 +149,7 @@ transactions:
     funds_code: R
     id: N085
     status: C
-    transaction_details: !!python/str "085?00Zahlung m.Elektr.Unterschr.?10991135?20Belegloser\
+    transaction_details: "085?00Zahlung m.Elektr.Unterschr.?10991135?20Belegloser\
       \ Zahlu\nngsauftrag?21\xDCberweisung:19.03.2010?22Anzahl Posten :\n7?23Anw-Nr.:\
       \ 69725663086?34540"
   transactions: *id001
