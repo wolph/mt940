@@ -18,7 +18,7 @@ processors:
   post_statement_number: []
   post_sum_credit_entries: []
   post_sum_debit_entries: []
-  post_transaction_details: []
+  post_transaction_details: [!!python/name:mt940.processors.transaction_details_post_processor '']
   post_transaction_reference_number: []
   pre_account_identification: []
   pre_available_balance: []

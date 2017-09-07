@@ -47,10 +47,10 @@ def compare(a, b, key=''):
         assert a == b
     elif isinstance(a, _compat.string_types):
         if _compat.PY2:
-            if not isinstance(a, unicode):
+            if not isinstance(a, _compat.text_type):
                 a = a.decode('utf-8', 'replace')
 
-            if not isinstance(b, unicode):
+            if not isinstance(b, _compat.text_type):
                 b = b.decode('utf-8', 'replace')
 
         assert a == b
@@ -77,6 +77,8 @@ def compare(a, b, key=''):
 @pytest.mark.parametrize('sta_file', get_sta_files())
 def test_parse(sta_file):
     transactions = mt940.parse(sta_file)
+    # To update the yaml files after changing the code, uncomment the following
+    # Only for development purposes
     # write_yaml_data(sta_file, transactions)
     expected = get_yaml_data(sta_file)
 

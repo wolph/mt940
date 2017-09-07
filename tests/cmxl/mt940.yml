@@ -39,7 +39,7 @@ processors:
   post_statement_number: []
   post_sum_credit_entries: []
   post_sum_debit_entries: []
-  post_transaction_details: []
+  post_transaction_details: [!!python/name:mt940.processors.transaction_details_post_processor '']
   post_transaction_reference_number: []
   pre_account_identification: []
   pre_available_balance: []
@@ -378,6 +378,6 @@ transactions:
     funds_code: null
     id: FTRF
     status: C
-    transaction_details: !!python/str "844?00Uznanie kwot\u0105 odsetek?20Odsetki\
-      \ od lokaty nr 101000?21022086"
+    transaction_details: "844?00Uznanie kwot\u0105 odsetek?20Odsetki od lokaty nr\
+      \ 101000?21022086"
   transactions: *id001
