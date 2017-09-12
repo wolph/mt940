@@ -145,7 +145,6 @@ def _parse_mt940_details(detail_str):
         tmp[segment_type] = segment if not segment_type else segment[2:]
 
     for key, value in tmp.items():
-        print('%s = %s' % (key, value))
         if key in DETAIL_KEYS:
             result[DETAIL_KEYS[key]] = value
         elif key == '33':
