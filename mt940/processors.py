@@ -153,6 +153,9 @@ def _parse_mt940_details(detail_str):
         elif key.startswith('2'):
             key20 = DETAIL_KEYS['20']
             result[key20] = (result[key20] or '') + value
+        elif key in ('61', '62', '63'):
+            key60 = DETAIL_KEYS['60']
+            result[key60] = (result[key60] or '') + value
 
     return result
 
