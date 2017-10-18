@@ -101,7 +101,7 @@ DETAIL_KEYS = {
     '60': 'additional_purpose',
 }
 
-# https://www.hettwer-beratung.de/suepa-spezialwissen/sepa-tecshnische-anforderungen/sepa-geschäftsvorfallcodes-gvct-mt-940c/
+# https://www.hettwer-beratung.de/sepa-spezialwissen/sepa-technische-anforderungen/sepa-gesch%C3%A4ftsvorfallcodes-gvc-mt-940/
 GVC_KEYS = {
     '': 'purpose',
     'IBAN': 'gvc_applicant_iban',
