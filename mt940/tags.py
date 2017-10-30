@@ -331,7 +331,7 @@ class TransactionDetails(Tag):
     id = 86
     scope = models.Transaction
     pattern = r'''
-    (?P<transaction_details>(([\s\S]{0,65}\r?\n?){0,5}[\s\S]{0,65}))
+    (?P<transaction_details>(([\s\S]{0,65}\r?\n?){0,8}[\s\S]{0,65}))
     '''
 
 
