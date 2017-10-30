@@ -737,7 +737,7 @@ transactions:
     applicant_bin: PBNKDEFF100
     applicant_creditor_id: null
     applicant_iban: DE40100100100000214105
-    applicant_name: Cornelia Prochownik 70 Zeichen BeginnFuellzeichen xxx
+    applicant_name: Cornelia Prochownik 70 Zeichen Beginn Fuellzeichen xxx
     bank_reference: null
     compensation_amount: null
     currency: EUR
@@ -1174,7 +1174,7 @@ transactions:
     posting_text: SEPA-UEBERW
     prima_nota: 0399
     purpose: Unstrukturierter Verwendungszweck mit 140 Stellen fu/r SEPA COR Buchungsschema
-      /A-CT-DTE-S01 und A-CT-NUD-/S01 CTSc-01 EBB TFNr 01011/0006
+      /A-CT-DTE-S01 und A-CT-NUD-/S01 CTSc-01 EBB TFNr 01011/ 0006
     purpose_code: null
     recipient_name: null
     return_debit_notes: null
@@ -2547,7 +2547,7 @@ transactions:
     original_amount: null
     posting_text: ONLINE-UEBW.
     prima_nota: 0399
-    purpose: 'Verwend CTSc-01 PPPTFNr 21 003MTLG:SBI-SEPA-UEB.DE685088005001 Referenz:
+    purpose: 'Verwend CTSc-01 PPP TFNr 21 003MTLG:SBI-SEPA-UEB.DE685088005001 Referenz:
       1930467122'
     purpose_code: null
     recipient_name: null
@@ -2595,7 +2595,7 @@ transactions:
     original_amount: null
     posting_text: ONLINE-UEBW.
     prima_nota: 0399
-    purpose: 'Verwend CTSc-01 PPPTFNr 22 001MTLG:SBI-SEPA-UEB.DE045088005001 Referenz:
+    purpose: 'Verwend CTSc-01 PPP TFNr 22 001MTLG:SBI-SEPA-UEB.DE045088005001 Referenz:
       1930467123'
     purpose_code: null
     recipient_name: null
@@ -3172,7 +3172,7 @@ transactions:
     original_amount: null
     posting_text: ONLINE-UEBW.
     prima_nota: 0399
-    purpose: 'Verwend CTSc-01 PPPTFNr 22 002MTLG:SBI-SEPA-UEB.DE125088005001 Referenz:
+    purpose: 'Verwend CTSc-01 PPP TFNr 22 002MTLG:SBI-SEPA-UEB.DE125088005001 Referenz:
       1930467119'
     purpose_code: null
     recipient_name: null
@@ -3267,7 +3267,7 @@ transactions:
     original_amount: null
     posting_text: ONLINE-UEBW.
     prima_nota: 0399
-    purpose: 'Verw CTSc-01 BC-PPPTFNr 22 004MTLG:SBI-SEPA-UEB.DE105088005001 Referenz:
+    purpose: 'Verw CTSc-01 BC-PPP TFNr 22 004MTLG:SBI-SEPA-UEB.DE105088005001 Referenz:
       1930467120'
     purpose_code: null
     recipient_name: null

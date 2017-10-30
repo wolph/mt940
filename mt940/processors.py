@@ -194,7 +194,7 @@ def _parse_mt940_gvcodes(purpose):
 
 def transaction_details_post_processor(transactions, tag, tag_dict, result):
     details = tag_dict['transaction_details']
-    details = ''.join(detail.strip() for detail in details.splitlines())
+    details = ''.join(detail.strip('\n\r') for detail in details.splitlines())
 
     gvc = details[:3]
     if gvc.isdigit() and details[3:6] == '?00':
