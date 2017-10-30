@@ -19,7 +19,7 @@ data:
     status: C
   sequence_number: '00001'
   statement_number: '00053'
-  transaction_reference: "STAR1\xDCTUMS"
+  transaction_reference: !!python/str "STAR1\xDCTUMS"
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -62,9 +62,13 @@ processors:
 transactions:
 - !!python/object:mt940.models.Transaction
   data:
+    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['27.00']
       currency: EUR
+    applicant_bin: '50070010'
+    applicant_iban: '0175526300'
+    applicant_name: PAYPAL
     bank_reference: 32-P1-TCS49518
     currency: EUR
     customer_reference: 100323-03-100323
@@ -77,18 +81,23 @@ transactions:
     extra_details: ''
     funds_code: R
     id: NTRF
+    posting_text: Bank Transfer Credit
+    prima_nota: '930226'
+    purpose: QQW53T2245ZGY46J ABBUCHUNGVOM PAYPAL-KONTO100318P3TX1433EV
+    recipient_name: null
+    return_debit_notes: '000'
     status: C
-    transaction_details: '051?00Bank Transfer Credit?10930226?20QQW53T2245ZGY46J ABBUCH
-
-      UNG?21VOM PAYPAL-KONTO?22100318P3TX1433EV?3050070010?310175526300
-
-      ?32PAYPAL?34000'
+    transaction_code: '051'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
+    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['13068.30']
       currency: EUR
+    applicant_bin: '51230800'
+    applicant_iban: '9990437808'
+    applicant_name: WIRECARD BANK AG
     bank_reference: null
     currency: EUR
     customer_reference: NONREF
@@ -101,16 +110,23 @@ transactions:
     extra_details: ''
     funds_code: R
     id: N051
+    posting_text: Bank Transfer Credit
+    prima_nota: '991118'
+    purpose: BETTERPLACE WDB E08.03.10-14.03.10
+    recipient_name: null
+    return_debit_notes: '000'
     status: C
-    transaction_details: '051?00Bank Transfer Credit?10991118?20BETTERPLACE WDB E?2108.
-
-      03.10-14.03.10?3051230800?319990437808?32WIRECARD BANK AG?34000'
+    transaction_code: '051'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
+    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['-193282.05']
       currency: EUR
+    applicant_bin: null
+    applicant_iban: null
+    applicant_name: null
     bank_reference: null
     currency: EUR
     customer_reference: NONREF
@@ -123,19 +139,24 @@ transactions:
     extra_details: ''
     funds_code: R
     id: N035
+    posting_text: Zahlung m.Elektr.Unterschr.
+    prima_nota: '991132'
+    purpose: 'Belegloser ZahlungsauftragErstellungsdatum:19.03.2010Anzahl Posten :      94Anw-Nr.:
+      69725563000'
+    recipient_name: null
+    return_debit_notes: '540'
     status: D
-    transaction_details: '035?00Zahlung m.Elektr.Unterschr.?10991132?20Belegloser
-      Zahlu
-
-      ngsauftrag?21Erstellungsdatum:19.03.2010?22Anzahl Posten :      9
-
-      4?23Anw-Nr.: 69725563000?34540'
+    transaction_code: '035'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
+    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['1120.00']
       currency: EUR
+    applicant_bin: null
+    applicant_iban: null
+    applicant_name: null
     bank_reference: null
     currency: EUR
     customer_reference: NONREF
@@ -148,8 +169,12 @@ transactions:
     extra_details: ''
     funds_code: R
     id: N085
+    posting_text: Zahlung m.Elektr.Unterschr.
+    prima_nota: '991135'
+    purpose: !!python/str "Belegloser Zahlungsauftrag\xDCberweisung:19.03.2010Anzahl\
+      \ Posten :7Anw-Nr.: 69725663086"
+    recipient_name: null
+    return_debit_notes: '540'
     status: C
-    transaction_details: "085?00Zahlung m.Elektr.Unterschr.?10991135?20Belegloser\
-      \ Zahlu\nngsauftrag?21\xDCberweisung:19.03.2010?22Anzahl Posten :\n7?23Anw-Nr.:\
-      \ 69725663086?34540"
+    transaction_code: 085
   transactions: *id001

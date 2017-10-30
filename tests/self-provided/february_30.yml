@@ -62,9 +62,13 @@ processors:
 transactions:
 - !!python/object:mt940.models.Transaction
   data:
+    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['-6.00']
       currency: EUR
+    applicant_bin: '12345678'
+    applicant_iban: null
+    applicant_name: null
     bank_reference: null
     currency: EUR
     customer_reference: NONREF
@@ -77,8 +81,11 @@ transactions:
     extra_details: ''
     funds_code: R
     id: N024
+    posting_text: ENTGELTABSCHLUSS
+    prima_nota: '6666'
+    purpose: Pauschalen
+    recipient_name: null
+    return_debit_notes: null
     status: D
-    transaction_details: '805?00ENTGELTABSCHLUSS?106666?20Pauschalen?3012345678?1122334
-
-      45566'
+    transaction_code: '805'
   transactions: *id001
