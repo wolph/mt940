@@ -2471,7 +2471,9 @@ transactions:
 
       /0001?30SOGEFRPPXXX?31FR1420041010050500013M02606?32Empfaenger 1?
 
-      60MTLG:SBI-SEPA-UEB.FR1420041?6101005 Referenz: 1930467117G?62gf.'
+      60MTLG:SBI-SEPA-UEB.FR1420041?6101005 Referenz: 1930467117G?62gf.
+
+      Meldevorschriften beacht?63en'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
