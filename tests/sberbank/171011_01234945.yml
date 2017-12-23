@@ -1,0 +1,205 @@
+&id001 !!python/object:mt940.models.Transactions
+data:
+  account_identification: '1966315302010001'
+  available_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['617874.30']
+      currency: HUF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+EKCw==
+    status: C
+  final_closing_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['617874.30']
+      currency: HUF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+EKCw==
+    status: C
+  final_opening_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['627311.30']
+      currency: HUF
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+EKCw==
+    status: C
+  non_swift: '22JOHN DOE
+
+    23John Doe
+
+    25171004171011
+
+    3014100000
+
+    318125061
+
+    32010'
+  non_swift_22: JOHN DOE
+  non_swift_23: John Doe
+  non_swift_25: '171004171011'
+  non_swift_30: '14100000'
+  non_swift_31: '8125061'
+  non_swift_32: '010'
+  non_swift_text: 'JOHN DOE
+
+    John Doe
+
+    171004171011
+
+    14100000
+
+    8125061
+
+    010'
+  sequence_number: null
+  statement_number: '00046'
+  transaction_reference: STARTUMS
+processors:
+  post_account_identification: []
+  post_available_balance: []
+  post_closing_balance: []
+  post_date_time_indication: []
+  post_final_closing_balance: []
+  post_final_opening_balance: []
+  post_floor_limit_indicator: []
+  post_forward_available_balance: []
+  post_intermediate_closing_balance: []
+  post_intermediate_opening_balance: []
+  post_non_swift: []
+  post_opening_balance: []
+  post_related_reference: []
+  post_statement: [!!python/name:mt940.processors.date_cleanup_post_processor '']
+  post_statement_number: []
+  post_sum_credit_entries: []
+  post_sum_debit_entries: []
+  post_transaction_details: [!!python/name:mt940.processors.transaction_details_post_processor '']
+  post_transaction_reference_number: []
+  pre_account_identification: []
+  pre_available_balance: []
+  pre_closing_balance: []
+  pre_date_time_indication: []
+  pre_final_closing_balance: []
+  pre_final_opening_balance: []
+  pre_floor_limit_indicator: []
+  pre_forward_available_balance: []
+  pre_intermediate_closing_balance: []
+  pre_intermediate_opening_balance: []
+  pre_non_swift: []
+  pre_opening_balance: []
+  pre_related_reference: []
+  pre_statement: [!!python/name:mt940.processors.date_fixup_pre_processor '']
+  pre_statement_number: []
+  pre_sum_credit_entries: []
+  pre_sum_debit_entries: []
+  pre_transaction_details: []
+  pre_transaction_reference_number: []
+transactions:
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-2402.00']
+      currency: HUF
+    bank_reference: null
+    currency: HUF
+    customer_reference: X
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+EKCw==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+EKCw==
+    extra_details: ''
+    funds_code: F
+    id: 'S   '
+    non_swift: !!python/str "01526715\n02A12596785    20170926000100\n031366\n04526715\n\
+      09Tranzakci\uFFFDs Illet\uFFFDk:7.21HUF\n15ERGO Versicherung AG Fiokte\n16lep\n\
+      17G200000137791678\n18652055\n3310918001\n340000004279070017"
+    non_swift_01: '526715'
+    non_swift_02: A12596785    20170926000100
+    non_swift_03: '1366'
+    non_swift_04: '526715'
+    non_swift_09: !!python/str "Tranzakci\uFFFDs Illet\uFFFDk:7.21HUF"
+    non_swift_15: ERGO Versicherung AG Fiokte
+    non_swift_16: lep
+    non_swift_17: G200000137791678
+    non_swift_18: '652055'
+    non_swift_33: '10918001'
+    non_swift_34: 0000004279070017
+    non_swift_text: !!python/str "526715\nA12596785    20170926000100\n1366\n526715\n\
+      Tranzakci\uFFFDs Illet\uFFFDk:7.21HUF\nERGO Versicherung AG Fiokte\nlep\nG200000137791678\n\
+      652055\n10918001\n0000004279070017"
+    status: D
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-3460.00']
+      currency: HUF
+    bank_reference: null
+    currency: HUF
+    customer_reference: X
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+EKCw==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+EKCw==
+    extra_details: ''
+    funds_code: F
+    id: 'S   '
+    non_swift: !!python/str "01136508\n02A10580361    20170926000100\n033009\n04136508\n\
+      09Tranz. Illet\uFFFDk: 10.38HUF\n15ERGO Eletbiztosito Zrt.\n17G200000015891789\n\
+      18791033\n3310918001\n340000002595841185"
+    non_swift_01: '136508'
+    non_swift_02: A10580361    20170926000100
+    non_swift_03: '3009'
+    non_swift_04: '136508'
+    non_swift_09: !!python/str "Tranz. Illet\uFFFDk: 10.38HUF"
+    non_swift_15: ERGO Eletbiztosito Zrt.
+    non_swift_17: G200000015891789
+    non_swift_18: '791033'
+    non_swift_33: '10918001'
+    non_swift_34: 0000002595841185
+    non_swift_text: !!python/str "136508\nA10580361    20170926000100\n3009\n136508\n\
+      Tranz. Illet\uFFFDk: 10.38HUF\nERGO Eletbiztosito Zrt.\nG200000015891789\n791033\n\
+      10918001\n0000002595841185"
+    status: D
+  transactions: *id001
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-3575.00']
+      currency: HUF
+    bank_reference: null
+    currency: HUF
+    customer_reference: X
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+EKCw==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+EKCw==
+    extra_details: ''
+    funds_code: F
+    id: 'S   '
+    non_swift: !!python/str "01625006\n02A14282085    20170926000100\n031221\n04625006\n\
+      09Tranz. Illet\uFFFDk: 10.73HUF\n15ERGO Versicherung AG Fiokte\n16lep\n17G200011025720127\n\
+      18561351\n3310918001\n340000004279070017"
+    non_swift_01: '625006'
+    non_swift_02: A14282085    20170926000100
+    non_swift_03: '1221'
+    non_swift_04: '625006'
+    non_swift_09: !!python/str "Tranz. Illet\uFFFDk: 10.73HUF"
+    non_swift_15: ERGO Versicherung AG Fiokte
+    non_swift_16: lep
+    non_swift_17: G200011025720127
+    non_swift_18: '561351'
+    non_swift_33: '10918001'
+    non_swift_34: 0000004279070017
+    non_swift_text: !!python/str "625006\nA14282085    20170926000100\n1221\n625006\n\
+      Tranz. Illet\uFFFDk: 10.73HUF\nERGO Versicherung AG Fiokte\nlep\nG200011025720127\n\
+      561351\n10918001\n0000004279070017"
+    status: D
+  transactions: *id001

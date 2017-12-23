@@ -42,6 +42,10 @@ cover
 .project
 .pydevproject
 
+# Pycharm
+.idea
+venv
+
 # Complexity
 output/*.html
 output/*/index.html
