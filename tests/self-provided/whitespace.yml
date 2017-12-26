@@ -3,23 +3,23 @@ data:
   account_identification: 12345678/1020304050
   final_closing_balance: !!python/object:mt940.models.Balance
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['1194.00']
+      amount: !!python/object/apply:decimal.Decimal ['12345.98']
       currency: EUR
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
-      B+ADAQ==
+      B+EJDg==
     status: C
   final_opening_balance: !!python/object:mt940.models.Balance
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['1200.00']
+      amount: !!python/object/apply:decimal.Decimal ['12345.12']
       currency: EUR
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
-      B+ACHQ==
+      B+EJDg==
     status: C
-  sequence_number: '001'
-  statement_number: '00000'
-  transaction_reference: STARTUMSE
+  sequence_number: null
+  statement_number: '0'
+  transaction_reference: STARTUMS
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -64,28 +64,25 @@ transactions:
   data:
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-6.00']
+      amount: !!python/object/apply:decimal.Decimal ['-233.15']
       currency: EUR
-    applicant_bin: '12345678'
-    applicant_iban: null
-    applicant_name: null
+    applicant_bin: '12030000'
+    applicant_iban: '9003932309'
+    applicant_name: DEUTSCHE KREDITBANK AG
     bank_reference: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: ''
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
-      B+ACHQ==
-    entry_date: !!python/object/apply:mt940.models.Date
-    - !!binary |
-      B+ADAQ==
+      B+EJDg==
     extra_details: ''
-    funds_code: R
-    id: N024
-    posting_text: ENTGELTABSCHLUSS
-    prima_nota: '6666'
-    purpose: Pauschalen
+    funds_code: null
+    id: NMSC
+    posting_text: UMBUCHUNG
+    prima_nota: '9392'
+    purpose: ERSTATTUNG AUSLANDSEINSATZENTGELT FUER VISA 4998 XXXXXXXX 1234
     recipient_name: null
     return_debit_notes: null
     status: D
-    transaction_code: '805'
+    transaction_code: '820'
   transactions: *id001

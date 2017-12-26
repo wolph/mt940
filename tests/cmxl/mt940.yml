@@ -250,9 +250,13 @@ transactions:
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
+    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['-800']
       currency: EUR
+    applicant_bin: '10020030'
+    applicant_iban: '234567'
+    applicant_name: MUELLER
     bank_reference: null
     currency: EUR
     customer_reference: NONREF//55555
@@ -265,14 +269,23 @@ transactions:
     extra_details: ''
     funds_code: R
     id: NSTO
+    posting_text: DAUERAUFTRAG
+    prima_nota: 0599
+    purpose: Miete November
+    recipient_name: null
+    return_debit_notes: '339'
     status: D
-    transaction_details: 008?00DAUERAUFTRAG?100599?20Miete November?3010020030?31234567?32MUELLER?34339
+    transaction_code: 008
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
+    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['3000']
       currency: EUR
+    applicant_bin: '50060400'
+    applicant_iban: 0847564700
+    applicant_name: MUELLER
     bank_reference: null
     currency: EUR
     customer_reference: NONREF//55555
@@ -285,24 +298,23 @@ transactions:
     extra_details: ''
     funds_code: R
     id: NTRF
+    posting_text: UEBERWEISUNG
+    prima_nota: 0599
+    purpose: Gehalt OktoberFirmaMustermannGmbH
+    recipient_name: null
+    return_debit_notes: '339'
     status: C
-    transaction_details: '051?00UEBERWEISUNG?100599?20Gehalt Oktob
-
-      er
-
-      ?21Firma
-
-      Mustermann
-
-      GmbH?3050060400?31084756
-
-      4700?32MUELLER?34339'
+    transaction_code: '051'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
+    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['20000.00']
       currency: PLN
+    applicant_bin: '10600076'
+    applicant_iban: '0000777777777777'
+    applicant_name: HUTA SZKLA TOPIC ULPRZEMYSLOWA 67 32-669 WROCLAW
     bank_reference: '8327000090031789'
     currency: PLN
     customer_reference: NONREF
@@ -315,26 +327,25 @@ transactions:
     extra_details: Card transaction
     funds_code: null
     id: FMSC
+    posting_text: Wyplata-(dysp/przel)
+    prima_nota: null
+    purpose: 0810600076000077777777777715617INFO INFO INFO INFO INFO INFO 1 ENDINFO
+      INFO INFO INFO INFOINFO 2 ENDZAPLATA ZA FABRYKATY DO TUB - 200 S ZTUK, TRANZYSTORY-300
+      SZT GR544 I OPORNIKI-500 SZT GTX847 FAKTURA 333/2003.
+    recipient_name: null
+    return_debit_notes: null
     status: C
-    transaction_details: '020?00Wyplata-(dysp/przel)?2008106000760000777777777777?2115617?
-
-      22INFO INFO INFO INFO INFO INFO 1 END?23INFO INFO INFO INFO INFO
-
-      INFO 2 END?24ZAPLATA ZA FABRYKATY DO TUB?25 - 200 S ZTUK, TRANZY
-
-      STORY-?26300 SZT GR544 I OPORNIKI-5?2700 SZT GTX847 FAKTURA 333/
-
-      2?28003.?3010600076?310000777777777777?32HUTA SZKLA TOPIC UL
-
-      PRZEMY?33SLOWA 67 32-669 WROCLAW?38PL081060007600007777777
-
-      77777'
+    transaction_code: '020'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
+    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['-10000.00']
       currency: PLN
+    applicant_bin: '10600076'
+    applicant_iban: '0000777777777777'
+    applicant_name: null
     bank_reference: '8327000090031790'
     currency: PLN
     customer_reference: REF 25611247
@@ -347,24 +358,25 @@ transactions:
     extra_details: Transfer
     funds_code: null
     id: FTRF
+    posting_text: Wyplata-(dysp/przel)
+    prima_nota: null
+    purpose: 0810600076000077777777777715617INFO INFO INFO INFO INFO INFO 1 ENDINFO
+      INFO INFO INFO INFOINFO 2 ENDZAPLATA ZA FABRYKATY DO TUB - 200 S ZTUK, TRANZYSTORY-300
+      SZT GR544 I OPORNIKI-500 SZT GTX847 FAKTURA 333/2003.
+    recipient_name: null
+    return_debit_notes: null
     status: D
-    transaction_details: '020?00Wyplata-(dysp/przel)?2008106000760000777777777777?2115617?
-
-      22INFO INFO INFO INFO INFO INFO 1 END?23INFO INFO INFO INFO INFO
-
-      INFO 2 END?24ZAPLATA ZA FABRYKATY DO TUB?25 - 200 S ZTUK, TRANZY
-
-      STORY-?26300 SZT GR544 I OPORNIKI-5?2700 SZT GTX847 FAKTURA 333/
-
-      2?28003.?3010600076?310000777777777777?38PL081060007600007777777
-
-      77777'
+    transaction_code: '020'
   transactions: *id001
 - !!python/object:mt940.models.Transaction
   data:
+    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['40.00']
       currency: PLN
+    applicant_bin: null
+    applicant_iban: null
+    applicant_name: null
     bank_reference: '8327000090031791'
     currency: PLN
     customer_reference: NONREF
@@ -377,7 +389,11 @@ transactions:
     extra_details: Interest credit
     funds_code: null
     id: FTRF
+    posting_text: !!python/str "Uznanie kwot\u0105 odsetek"
+    prima_nota: null
+    purpose: Odsetki od lokaty nr 101000022086
+    recipient_name: null
+    return_debit_notes: null
     status: C
-    transaction_details: "844?00Uznanie kwot\u0105 odsetek?20Odsetki od lokaty nr\
-      \ 101000?21022086"
+    transaction_code: '844'
   transactions: *id001
