@@ -324,10 +324,10 @@ class Transactions(collections.Sequence):
         return tag_id
 
     @classmethod
-    def sanatize_tag_id_matches(cls, tag_matches):
+    def sanatize_tag_id_matches(cls, matches):
         i_next = 0
-        for i, match in enumerate(tag_matches):
-            # tag match was rejected
+        for i, match in enumerate(matches):
+            # match was rejected
             if i < i_next:
                 continue
 
@@ -341,21 +341,22 @@ class Transactions(collections.Sequence):
             assert tag_id in mt940.tags.TAG_BY_ID, 'Unknown tag %r ' \
                 'in line: %r' % (tag_id, match.group(0))
 
-            # special treatnment for long tag content with possible
+            # special treatment for long tag content with possible
             # bad line wrap which produces tag_id like line beginnings
-            # seen in :86: tag
+            # seen with :86: tag
             if tag_id == mt940.tags.Tags.TRANSACTION_DETAILS.value.id:
                 # search subsequent tags for unknown tag ids
                 # these lines likely belong to the previous tag
-                for j in range(i+1, len(tag_matches)):
-                    next_tag_id = cls.normalize_tag_id(tag_matches[j].group('tag'))
+                for j in range(i_next, len(matches)):
+                    next_tag_id = cls.normalize_tag_id(matches[j].group('tag'))
                     if next_tag_id in mt940.tags.TAG_BY_ID:
-                        # extend range to found valid tag
+                        # this one is the next valid match
                         i_next = j
                         break;
-
-            # a valid tag match
-            yield { 'tag_id': tag_id , 'start': i, 'end': i_next - 1 }                
+                    # else reject match
+                    
+            # a valid match
+            yield match               
                 
     def parse(self, data):
         '''Parses mt940 data, expects a string with data
@@ -377,14 +378,12 @@ class Transactions(collections.Sequence):
         matches = list(tag_re.finditer(data))
 
         # identify valid matches
-        valid_match_ranges = list(self.sanatize_tag_id_matches(matches))
+        valid_matches = list(self.sanatize_tag_id_matches(matches))
 
-        for i, tr in enumerate(valid_match_ranges):
-            match = matches[tr['start']]
-            tag_id = tr['tag_id'];
+        for i, match in enumerate(valid_matches):
+            tag_id = self.normalize_tag_id(match.group('tag'))
 
             # get tag instance corresponding to tag id
-            
             tag = mt940.tags.TAG_BY_ID.get(match.group('full_tag')) \
                 or mt940.tags.TAG_BY_ID[tag_id]
 
@@ -392,8 +391,8 @@ class Transactions(collections.Sequence):
             # regex matches have a `end()` and `start()` to indicate the start
             # and end index of the match.
 
-            if valid_match_ranges[i + 1:]:
-                tag_data = data[match.end():matches[valid_match_ranges[i + 1]['start']].start()].strip()
+            if valid_matches[i + 1:]:
+                tag_data = data[match.end():valid_matches[i + 1].start()].strip()
             else:
                 tag_data = data[match.end():].strip()
 
