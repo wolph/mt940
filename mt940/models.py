@@ -392,7 +392,7 @@ class Transactions(collections.Sequence):
             # and end index of the match.
 
             if valid_matches[i + 1:]:
-                tag_data = 
+                tag_data = \
                     data[match.end():valid_matches[i + 1].start()].strip()
             else:
                 tag_data = data[match.end():].strip()
