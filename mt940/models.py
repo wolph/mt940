@@ -352,12 +352,12 @@ class Transactions(collections.Sequence):
                     if next_tag_id in mt940.tags.TAG_BY_ID:
                         # this one is the next valid match
                         i_next = j
-                        break;
+                        break
                     # else reject match
-                    
+
             # a valid match
-            yield match               
-                
+            yield match
+
     def parse(self, data):
         '''Parses mt940 data, expects a string with data
 
@@ -392,7 +392,8 @@ class Transactions(collections.Sequence):
             # and end index of the match.
 
             if valid_matches[i + 1:]:
-                tag_data = data[match.end():valid_matches[i + 1].start()].strip()
+                tag_data = 
+                    data[match.end():valid_matches[i + 1].start()].strip()
             else:
                 tag_data = data[match.end():].strip()
 
