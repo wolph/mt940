@@ -196,8 +196,8 @@ def transaction_details_post_processor(transactions, tag, tag_dict, result):
     details = tag_dict['transaction_details']
     details = ''.join(detail.strip('\n\r') for detail in details.splitlines())
 
-    gvc = details[:3]
-    if gvc.isdigit() and details[3:6] == '?00':
+    # check for e.g. 103?00...
+    if re.match(r'^\d{3}\?\d{2}', details):
         result.update(_parse_mt940_details(details))
 
         purpose = result.get('purpose')

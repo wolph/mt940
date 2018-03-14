@@ -1,0 +1,108 @@
+&id001 !!python/object:mt940.models.Transactions
+data:
+  account_identification: 12345678/1020304050
+  final_closing_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['1194.00']
+      currency: EUR
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+ADAQ==
+    status: C
+  final_opening_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['1200.00']
+      currency: EUR
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+ACHQ==
+    status: C
+  sequence_number: '001'
+  statement_number: '00000'
+  transaction_reference: STARTUMSE
+processors:
+  post_account_identification: []
+  post_available_balance: []
+  post_closing_balance: []
+  post_date_time_indication: []
+  post_final_closing_balance: []
+  post_final_opening_balance: []
+  post_floor_limit_indicator: []
+  post_forward_available_balance: []
+  post_intermediate_closing_balance: []
+  post_intermediate_opening_balance: []
+  post_non_swift: []
+  post_opening_balance: []
+  post_related_reference: []
+  post_statement: [!!python/name:mt940.processors.date_cleanup_post_processor '']
+  post_statement_number: []
+  post_sum_credit_entries: []
+  post_sum_debit_entries: []
+  post_transaction_details: [!!python/name:mt940.processors.transaction_details_post_processor '']
+  post_transaction_reference_number: []
+  pre_account_identification: []
+  pre_available_balance: []
+  pre_closing_balance: []
+  pre_date_time_indication: []
+  pre_final_closing_balance: []
+  pre_final_opening_balance: []
+  pre_floor_limit_indicator: []
+  pre_forward_available_balance: []
+  pre_intermediate_closing_balance: []
+  pre_intermediate_opening_balance: []
+  pre_non_swift: []
+  pre_opening_balance: []
+  pre_related_reference: []
+  pre_statement: [!!python/name:mt940.processors.date_fixup_pre_processor '']
+  pre_statement_number: []
+  pre_sum_credit_entries: []
+  pre_sum_debit_entries: []
+  pre_transaction_details: []
+  pre_transaction_reference_number: []
+transactions:
+- !!python/object:mt940.models.Transaction
+  data:
+    FRST_ONE_OFF_RECC: null
+    additional_position_date: null
+    additional_position_reference: '000000'
+    additional_purpose: null
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-6.00']
+      currency: EUR
+    applicant_bin: null
+    applicant_creditor_id: XX0000000000000000ABCDEFGHIJKLMNOPQRSTUVW/PL 12-09-2014T16:26:37
+      Folgenr. 007
+    applicant_iban: null
+    applicant_name: null
+    bank_reference: null
+    compensation_amount: null
+    currency: EUR
+    customer_reference: null
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+ACHQ==
+    debitor_identifier: null
+    deviate_applicant: null
+    deviate_recipient: null
+    end_to_end_reference: VZ0000000000000000
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+ADAQ==
+    extra_details: ''
+    funds_code: R
+    gvc_applicant_bin: null
+    gvc_applicant_iban: null
+    id: N024
+    old_SEPA_CI: null
+    old_SEPA_additional_position_reference: null
+    original_amount: null
+    posting_text: 0000/661
+    prima_nota: null
+    purpose: null
+    purpose_code: null
+    recipient_name: null
+    return_debit_notes: null
+    settlement_tag: null
+    status: D
+    transaction_code: '106'
+  transactions: *id001

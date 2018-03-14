@@ -315,6 +315,49 @@ class Transactions(collections.Sequence):
             if line:
                 yield line
 
+    @classmethod
+    def normalize_tag_id(cls, tag_id):
+        # Since non-digit tags exist, make the conversion optional
+        if tag_id.isdigit():
+            tag_id = int(tag_id)
+
+        return tag_id
+
+    @classmethod
+    def sanatize_tag_id_matches(cls, matches):
+        i_next = 0
+        for i, match in enumerate(matches):
+            # match was rejected
+            if i < i_next:
+                continue
+
+            # next match would be
+            i_next = i + 1
+
+            # normalize tag id
+            tag_id = cls.normalize_tag_id(match.group('tag'))
+
+            # tag should be known
+            assert tag_id in mt940.tags.TAG_BY_ID, 'Unknown tag %r ' \
+                'in line: %r' % (tag_id, match.group(0))
+
+            # special treatment for long tag content with possible
+            # bad line wrap which produces tag_id like line beginnings
+            # seen with :86: tag
+            if tag_id == mt940.tags.Tags.TRANSACTION_DETAILS.value.id:
+                # search subsequent tags for unknown tag ids
+                # these lines likely belong to the previous tag
+                for j in range(i_next, len(matches)):
+                    next_tag_id = cls.normalize_tag_id(matches[j].group('tag'))
+                    if next_tag_id in mt940.tags.TAG_BY_ID:
+                        # this one is the next valid match
+                        i_next = j
+                        break
+                    # else reject match
+
+            # a valid match
+            yield match
+
     def parse(self, data):
         '''Parses mt940 data, expects a string with data
 
@@ -334,16 +377,13 @@ class Transactions(collections.Sequence):
             re.MULTILINE)
         matches = list(tag_re.finditer(data))
 
-        for i, match in enumerate(matches):
-            tag_id = match.group('tag')
-            # Since non-digit tags exist, make the conversion optional
+        # identify valid matches
+        valid_matches = list(self.sanatize_tag_id_matches(matches))
 
-            if tag_id.isdigit():
-                tag_id = int(tag_id)
+        for i, match in enumerate(valid_matches):
+            tag_id = self.normalize_tag_id(match.group('tag'))
 
-            assert tag_id in mt940.tags.TAG_BY_ID, 'Unknown tag %r ' \
-                'in line: %r' % (tag_id, match.group(0))
-
+            # get tag instance corresponding to tag id
             tag = mt940.tags.TAG_BY_ID.get(match.group('full_tag')) \
                 or mt940.tags.TAG_BY_ID[tag_id]
 
@@ -351,8 +391,9 @@ class Transactions(collections.Sequence):
             # regex matches have a `end()` and `start()` to indicate the start
             # and end index of the match.
 
-            if matches[i + 1:]:
-                tag_data = data[match.end():matches[i + 1].start()].strip()
+            if valid_matches[i + 1:]:
+                tag_data = \
+                    data[match.end():valid_matches[i + 1].start()].strip()
             else:
                 tag_data = data[match.end():].strip()
 
