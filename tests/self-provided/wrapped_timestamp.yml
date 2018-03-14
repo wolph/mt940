@@ -62,30 +62,47 @@ processors:
 transactions:
 - !!python/object:mt940.models.Transaction
   data:
-    additional_purpose: '2017-01-01T13:12:11'
+    FRST_ONE_OFF_RECC: null
+    additional_position_date: null
+    additional_position_reference: '000000'
+    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['-6.00']
       currency: EUR
-    applicant_bin: '12345678'
+    applicant_bin: null
+    applicant_creditor_id: XX0000000000000000ABCDEFGHIJKLMNOPQRSTUVW/PL 12-09-2014T16:26:37
+      Folgenr. 007
     applicant_iban: null
     applicant_name: null
     bank_reference: null
+    compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B+ACHQ==
+    debitor_identifier: null
+    deviate_applicant: null
+    deviate_recipient: null
+    end_to_end_reference: VZ0000000000000000
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B+ADAQ==
     extra_details: ''
     funds_code: R
+    gvc_applicant_bin: null
+    gvc_applicant_iban: null
     id: N024
-    posting_text: ENTGELTABSCHLUSS
-    prima_nota: '6666'
-    purpose: Pauschalen
+    old_SEPA_CI: null
+    old_SEPA_additional_position_reference: null
+    original_amount: null
+    posting_text: 0000/661
+    prima_nota: null
+    purpose: null
+    purpose_code: null
     recipient_name: null
     return_debit_notes: null
+    settlement_tag: null
     status: D
-    transaction_code: '805'
+    transaction_code: '106'
   transactions: *id001
