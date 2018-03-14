@@ -110,6 +110,26 @@ Set opening / closing balance information on each transaction:
        print 'Transaction: ', transaction
        pprint.pprint(transaction.data)
 
+Simple json encoding:
+
+.. code-block:: python
+
+    import json
+    import mt940
+
+    transactions = mt940.parse('tests/jejik/abnamro.sta')
+
+    def default(value):
+        if isinstance(value, mt940.models.Transactions):
+            data = value.data.copy()
+            data['transactions'] = value.transactions
+            return data
+
+        elif hasattr(value, 'data'):
+            return value.data
+
+    print(json.dumps(transactions, default=default, indent=4))
+
 Contributing
 ------------
 
