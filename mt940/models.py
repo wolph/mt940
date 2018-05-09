@@ -264,12 +264,16 @@ class Transactions(collections.Sequence):
         post_sum_credit_entries=[],
         pre_sum_debit_entries=[],
         post_sum_debit_entries=[])
+    DEFAULT_TAGS = mt940.tags.TAG_BY_ID
 
-    def __init__(self, processors=None):
+    def __init__(self, processors=None, tags=None):
         self.processors = self.DEFAULT_PROCESSORS.copy()
+        self.tags = self.DEFAULT_TAGS.copy()
 
         if processors:
             self.processors.update(processors)
+        if tags:
+            self.tags.update(tags)
 
         self.transactions = []
         self.data = {}
@@ -384,8 +388,8 @@ class Transactions(collections.Sequence):
             tag_id = self.normalize_tag_id(match.group('tag'))
 
             # get tag instance corresponding to tag id
-            tag = mt940.tags.TAG_BY_ID.get(match.group('full_tag')) \
-                or mt940.tags.TAG_BY_ID[tag_id]
+            tag = self.tags.get(match.group('full_tag')) \
+                or self.tags[tag_id]
 
             # Nice trick to get all the text that is part of this tag, python
             # regex matches have a `end()` and `start()` to indicate the start
