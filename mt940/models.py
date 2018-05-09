@@ -264,11 +264,10 @@ class Transactions(collections.Sequence):
         post_sum_credit_entries=[],
         pre_sum_debit_entries=[],
         post_sum_debit_entries=[])
-    DEFAULT_TAGS = mt940.tags.TAG_BY_ID
 
     def __init__(self, processors=None, tags=None):
         self.processors = self.DEFAULT_PROCESSORS.copy()
-        self.tags = self.DEFAULT_TAGS.copy()
+        self.tags = Transactions.defaultTags().copy()
 
         if processors:
             self.processors.update(processors)
@@ -297,6 +296,10 @@ class Transactions(collections.Sequence):
                 return balance.currency
 
             return balance.amount.currency
+
+    @staticmethod
+    def defaultTags():
+        return mt940.tags.TAG_BY_ID
 
     @classmethod
     def strip(cls, lines):
@@ -342,7 +345,7 @@ class Transactions(collections.Sequence):
             tag_id = cls.normalize_tag_id(match.group('tag'))
 
             # tag should be known
-            assert tag_id in mt940.tags.TAG_BY_ID, 'Unknown tag %r ' \
+            assert tag_id in cls.tags, 'Unknown tag %r ' \
                 'in line: %r' % (tag_id, match.group(0))
 
             # special treatment for long tag content with possible
@@ -353,7 +356,7 @@ class Transactions(collections.Sequence):
                 # these lines likely belong to the previous tag
                 for j in range(i_next, len(matches)):
                     next_tag_id = cls.normalize_tag_id(matches[j].group('tag'))
-                    if next_tag_id in mt940.tags.TAG_BY_ID:
+                    if next_tag_id in cls.tags:
                         # this one is the next valid match
                         i_next = j
                         break
