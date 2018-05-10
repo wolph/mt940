@@ -148,7 +148,7 @@ class StatementNumber(Tag):
     id = 28
     pattern = r'''
     (?P<statement_number>\d{1,5})  # 5n
-    (?:/(?P<sequence_number>\d{1,5}))?  # [/5n]
+    (?:/?(?P<sequence_number>\d{1,5}))?  # [/5n]
     $'''
 
 
