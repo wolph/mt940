@@ -12,13 +12,18 @@ from mt940 import _compat
 logger = logging.getLogger(__name__)
 
 
+def is_ignored(f):
+    return f.endswith('self-provided/long_statement_number.sta')
+
+
 def get_sta_files():
     base_path = os.path.abspath(os.path.dirname(__file__))
     for path, dirs, files in os.walk(base_path):
         for file in files:
             _, ext = os.path.splitext(file)
-            if ext.lower() == '.sta':
-                yield os.path.join(path, file)
+            f = os.path.join(path, file)
+            if ext.lower() == '.sta' and not is_ignored(f):
+                yield f
 
 
 def get_yaml_data(sta_file):

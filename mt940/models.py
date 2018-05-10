@@ -330,8 +330,7 @@ class Transactions(collections.Sequence):
 
         return tag_id
 
-    @classmethod
-    def sanatize_tag_id_matches(cls, matches):
+    def sanatize_tag_id_matches(self, matches):
         i_next = 0
         for i, match in enumerate(matches):
             # match was rejected
@@ -342,10 +341,10 @@ class Transactions(collections.Sequence):
             i_next = i + 1
 
             # normalize tag id
-            tag_id = cls.normalize_tag_id(match.group('tag'))
+            tag_id = self.normalize_tag_id(match.group('tag'))
 
             # tag should be known
-            assert tag_id in cls.tags, 'Unknown tag %r ' \
+            assert tag_id in self.tags, 'Unknown tag %r ' \
                 'in line: %r' % (tag_id, match.group(0))
 
             # special treatment for long tag content with possible
@@ -355,8 +354,9 @@ class Transactions(collections.Sequence):
                 # search subsequent tags for unknown tag ids
                 # these lines likely belong to the previous tag
                 for j in range(i_next, len(matches)):
-                    next_tag_id = cls.normalize_tag_id(matches[j].group('tag'))
-                    if next_tag_id in cls.tags:
+                    next_tag_id = self.normalize_tag_id(
+                        matches[j].group('tag'))
+                    if next_tag_id in self.tags:
                         # this one is the next valid match
                         i_next = j
                         break
@@ -408,14 +408,14 @@ class Transactions(collections.Sequence):
 
             # Preprocess data before creating the object
 
-            for processor in self.processors.get('pre_%s' % tag.slug):
+            for processor in self.processors.get('pre_%s' % tag.slug, []):
                 tag_dict = processor(self, tag, tag_dict)
 
             result = tag(self, tag_dict)
 
             # Postprocess the object
 
-            for processor in self.processors.get('post_%s' % tag.slug):
+            for processor in self.processors.get('post_%s' % tag.slug, []):
                 result = processor(self, tag, tag_dict, result)
 
             # Creating a new transaction for :20: and :61: tags allows the
