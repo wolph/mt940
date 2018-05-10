@@ -139,7 +139,21 @@ branch and to run `tox` before creating pull requests.
 Travis tests for `flake8` support and test coverage so it's always good to
 check those before creating a pull request.
 
-Development branch: https://github.com/WoLpH/mt940/tree/development
+Development branch: https://github.com/WoLpH/mt940/tree/develop
+
+To run the tests:
+
+.. code-block:: shell
+
+    pip install -r tests/requirements.txt
+    py.test
+    
+Or to run the tests on all available Python versions:
+
+.. code-block:: shell
+
+    pip install tox
+    tox
 
 Info
 ----
