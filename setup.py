@@ -61,7 +61,11 @@ if __name__ == '__main__':
 
     try:
         import git
-        repo = git.Repo('.')
+        try:
+            repo = git.Repo('.')
+        except git.exc.InvalidGitRepositoryError:
+            raise ImportError()
+
         if repo.bare:
             raise ImportError()
 
