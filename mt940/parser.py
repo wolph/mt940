@@ -59,7 +59,7 @@ def parse(src, encoding=None):
                 exception = e
         else:  # pragma: no cover
             raise exception
-    else:
+    else:  # pragma: no cover
         data = src
 
     transactions = mt940.models.Transactions()

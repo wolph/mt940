@@ -12,6 +12,12 @@ from mt940 import _compat
 logger = logging.getLogger(__name__)
 
 
+try:  # pragma: no cover
+    string_type = unicode
+except NameError:
+    string_type = str
+
+
 def get_sta_files():
     base_path = os.path.abspath(os.path.dirname(__file__))
     for path, dirs, files in os.walk(base_path):
@@ -88,16 +94,16 @@ def test_parse(sta_file):
 
     # Test string and representation methods
     for k, v in transactions.data.items():
-        str(v)
+        string_type(v)
         repr(v)
 
     # Test string and representation methods
     for transaction in transactions:
         repr(transaction)
-        str(transaction)
+        string_type(transaction)
 
         for k, v in transaction.data.items():
-            str(v)
+            string_type(v)
             repr(v)
 
     # Compare transaction data
