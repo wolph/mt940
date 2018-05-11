@@ -98,9 +98,7 @@ tags:
         \  # 1!a3!c Transaction Type Identification Code\n    (?P<customer_reference>.{0,16})\
         \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,16}))?  # [//16x]\
         \ Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary\
-        \ Details\n                                             # (this will be on\
-        \ a new/separate\n                                             # line)\n \
-        \   $", 98]
+        \ Details\n    $", 98]
   62: !!python/object:mt940.tags.ClosingBalance
     re: *id001
   62M: !!python/object:mt940.tags.IntermediateClosingBalance
