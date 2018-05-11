@@ -111,7 +111,10 @@ else:  # pragma: no cover
     import urllib.parse as urlparse
     from urllib.request import urlretrieve
 
-    console_encoding = sys.__stdout__.encoding
+    if getattr(sys, '__stdout__', None):
+        console_encoding = sys.__stdout__.encoding
+    else:
+        console_encoding = sys.stdout.encoding
 
     def console_to_str(s):
         ''' From pypa/pip project, pip.backwardwardcompat. License MIT. '''
