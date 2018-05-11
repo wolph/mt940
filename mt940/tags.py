@@ -49,11 +49,11 @@ logger = logging.getLogger(__name__)
 
 class Tag(object):
     id = 0
+    RE_FLAGS = re.IGNORECASE | re.VERBOSE | re.UNICODE
     scope = models.Transactions
 
     def __init__(self):
-        self.re = re.compile(self.pattern,
-                             re.IGNORECASE | re.VERBOSE | re.UNICODE)
+        self.re = re.compile(self.pattern, self.RE_FLAGS)
 
     def parse(self, transactions, value):
         match = self.re.match(value)
@@ -63,9 +63,22 @@ class Tag(object):
                 len(value), value, self.pattern,
                 pprint.pformat(match.groupdict()))
         else:  # pragma: no cover
-            self.logger.info(
+            self.logger.error(
                 'matching (%d) "%s" against "%s"', len(value), value,
                 self.pattern)
+
+            part_value = value
+            for pattern in self.pattern.split('\n'):
+                match = re.match(pattern, part_value, self.RE_FLAGS)
+                if match:
+                    self.logger.info('matched "%s" against "%s", got: %s',
+                                     pattern, match.group(0),
+                                     pprint.pformat(match.groupdict()))
+                    part_value = part_value[len(match.group(0)):]
+                else:
+                    self.logger.error('no match for "%s" against "%s"',
+                                      pattern, part_value)
+
             raise RuntimeError(
                 'Unable to parse "%s" from "%s"' % (self, value),
                 self, value)
@@ -148,7 +161,7 @@ class StatementNumber(Tag):
     id = 28
     pattern = r'''
     (?P<statement_number>\d{1,5})  # 5n
-    (?:/(?P<sequence_number>\d{1,5}))?  # [/5n]
+    (?:/?(?P<sequence_number>\d{1,5}))?  # [/5n]
     $'''
 
 
@@ -282,8 +295,6 @@ class Statement(Tag):
     (?P<customer_reference>.{0,16})  # 16x Customer Reference
     (//(?P<bank_reference>.{0,16}))?  # [//16x] Bank Reference
     (\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary Details
-                                             # (this will be on a new/separate
-                                             # line)
     $'''
 
     def __call__(self, transactions, value):

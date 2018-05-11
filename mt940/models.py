@@ -265,11 +265,14 @@ class Transactions(collections.Sequence):
         pre_sum_debit_entries=[],
         post_sum_debit_entries=[])
 
-    def __init__(self, processors=None):
+    def __init__(self, processors=None, tags=None):
         self.processors = self.DEFAULT_PROCESSORS.copy()
+        self.tags = Transactions.defaultTags().copy()
 
         if processors:
             self.processors.update(processors)
+        if tags:
+            self.tags.update(tags)
 
         self.transactions = []
         self.data = {}
@@ -293,6 +296,10 @@ class Transactions(collections.Sequence):
                 return balance.currency
 
             return balance.amount.currency
+
+    @staticmethod
+    def defaultTags():
+        return mt940.tags.TAG_BY_ID
 
     @classmethod
     def strip(cls, lines):
@@ -323,8 +330,7 @@ class Transactions(collections.Sequence):
 
         return tag_id
 
-    @classmethod
-    def sanatize_tag_id_matches(cls, matches):
+    def sanatize_tag_id_matches(self, matches):
         i_next = 0
         for i, match in enumerate(matches):
             # match was rejected
@@ -335,10 +341,10 @@ class Transactions(collections.Sequence):
             i_next = i + 1
 
             # normalize tag id
-            tag_id = cls.normalize_tag_id(match.group('tag'))
+            tag_id = self.normalize_tag_id(match.group('tag'))
 
             # tag should be known
-            assert tag_id in mt940.tags.TAG_BY_ID, 'Unknown tag %r ' \
+            assert tag_id in self.tags, 'Unknown tag %r ' \
                 'in line: %r' % (tag_id, match.group(0))
 
             # special treatment for long tag content with possible
@@ -348,8 +354,9 @@ class Transactions(collections.Sequence):
                 # search subsequent tags for unknown tag ids
                 # these lines likely belong to the previous tag
                 for j in range(i_next, len(matches)):
-                    next_tag_id = cls.normalize_tag_id(matches[j].group('tag'))
-                    if next_tag_id in mt940.tags.TAG_BY_ID:
+                    next_tag_id = self.normalize_tag_id(
+                        matches[j].group('tag'))
+                    if next_tag_id in self.tags:
                         # this one is the next valid match
                         i_next = j
                         break
@@ -384,8 +391,8 @@ class Transactions(collections.Sequence):
             tag_id = self.normalize_tag_id(match.group('tag'))
 
             # get tag instance corresponding to tag id
-            tag = mt940.tags.TAG_BY_ID.get(match.group('full_tag')) \
-                or mt940.tags.TAG_BY_ID[tag_id]
+            tag = self.tags.get(match.group('full_tag')) \
+                or self.tags[tag_id]
 
             # Nice trick to get all the text that is part of this tag, python
             # regex matches have a `end()` and `start()` to indicate the start
@@ -401,14 +408,14 @@ class Transactions(collections.Sequence):
 
             # Preprocess data before creating the object
 
-            for processor in self.processors.get('pre_%s' % tag.slug):
+            for processor in self.processors.get('pre_%s' % tag.slug, []):
                 tag_dict = processor(self, tag, tag_dict)
 
             result = tag(self, tag_dict)
 
             # Postprocess the object
 
-            for processor in self.processors.get('post_%s' % tag.slug):
+            for processor in self.processors.get('post_%s' % tag.slug, []):
                 result = processor(self, tag, tag_dict, result)
 
             # Creating a new transaction for :20: and :61: tags allows the
