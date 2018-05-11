@@ -31,7 +31,7 @@ import os
 import mt940
 
 
-def parse(src):
+def parse(src, encoding=None):
     '''
     Parses mt940 data and returns transactions object
 
@@ -43,8 +43,22 @@ def parse(src):
     if hasattr(src, 'read'):  # pragma: no branch
         data = src.read()
     elif os.path.isfile(src):
-        src = open(src)
-        data = src.read()
+        return parse(open(src, 'rb').read())
+    elif hasattr(src, 'decode'):
+        exception = None
+        encodings = [encoding, 'utf-8', 'cp852', 'iso8859-15', 'latin1']
+
+        for encoding in encodings:  # pragma: no branch
+            if not encoding:
+                continue
+
+            try:
+                data = src.decode(encoding)
+                break
+            except UnicodeDecodeError as e:
+                exception = e
+        else:  # pragma: no cover
+            raise exception
     else:
         data = src
 
