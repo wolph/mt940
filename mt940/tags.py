@@ -174,7 +174,7 @@ class FloorLimitIndicator(Tag):
     id = 34
     pattern = r'''^
     (?P<currency>[A-Z]{3})  # 3!a Currency
-    (?P<status>[DC]?)  # 2a Debit/Credit Mark
+    (?P<status>[DC ]?)  # 2a Debit/Credit Mark
     (?P<amount>[0-9,]{0,16})  # 15d Amount (includes decimal sign, so 16)
     $'''
 
@@ -353,7 +353,7 @@ class SumEntries(Tag):
 
     id = 90
     pattern = r'''^
-    (?P<number>\d+)
+    (?P<number>\d*)
     (?P<currency>.{3})  # 3!a Currency
     (?P<amount>[\d,]{1,15})  # 15d Amount
     '''
