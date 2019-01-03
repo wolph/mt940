@@ -1,7 +1,12 @@
 import re
 import decimal
 import datetime
-import collections
+
+# python 3.8+ compatibility
+try:  # pragma: no cover
+    from collections import abc
+except ImportError:  # pragma: no cover
+    import collections as abc
 
 import mt940
 
@@ -18,8 +23,8 @@ class FixedOffset(datetime.tzinfo):
     Source: https://docs.python.org/2/library/datetime.html#tzinfo-objects
 
     >>> offset = FixedOffset(60)
-    >>> offset.utcoffset(None)
-    datetime.timedelta(0, 3600)
+    >>> offset.utcoffset(None).total_seconds()
+    3600.0
     >>> offset.dst(None)
     datetime.timedelta(0)
     >>> offset.tzname(None)
@@ -214,7 +219,7 @@ class Balance(Model):
             self.date, )
 
 
-class Transactions(collections.Sequence):
+class Transactions(abc.Sequence):
     '''
     Collection of :py:class:`Transaction` objects with global properties such
     as begin and end balance
