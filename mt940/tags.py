@@ -290,6 +290,7 @@ class Statement(Tag):
     (?P<status>[A-Z]?[DC])  # 2a Debit/Credit Mark
     (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd character of the currency
                             # code, if needed)
+    \n? # apparently some banks (sparkassen) incorporate newlines here
     (?P<amount>[\d,]{1,15})  # 15d Amount
     (?P<id>[A-Z][A-Z0-9 ]{3})?  # 1!a3!c Transaction Type Identification Code
     (?P<customer_reference>.{0,16})  # 16x Customer Reference

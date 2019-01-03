@@ -90,6 +90,7 @@ tags:
         d{2})?  # [4!n] Entry Date (MMDD)\n    (?P<entry_day>\\d{2})?\n    (?P<status>[A-Z]?[DC])\
         \  # 2a Debit/Credit Mark\n    (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd\
         \ character of the currency\n                            # code, if needed)\n\
+        \    \\n? # apparently some banks (sparkassen) incorporate newlines here\n\
         \    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    (?P<id>[A-Z][A-Z0-9 ]{3})?\
         \  # 1!a3!c Transaction Type Identification Code\n    (?P<customer_reference>.{0,16})\
         \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,16}))?  # [//16x]\
@@ -110,13 +111,13 @@ tags:
         S]{0,65}\\r?\\n?){0,8}[\\s\\S]{0,65}))\n    ", 98]
   34: !!python/object:mt940.tags.FloorLimitIndicator
     re: !!python/object/apply:re._compile ["^\n    (?P<currency>[A-Z]{3})  # 3!a Currency\n\
-        \    (?P<status>[DC]?)  # 2a Debit/Credit Mark\n    (?P<amount>[0-9,]{0,16})\
+        \    (?P<status>[DC ]?)  # 2a Debit/Credit Mark\n    (?P<amount>[0-9,]{0,16})\
         \  # 15d Amount (includes decimal sign, so 16)\n    $", 98]
   NS: !!python/object:mt940.tags.NonSwift
     re: !!python/object/apply:re._compile ["\n    (?P<non_swift>\n        (\\d{2}.{0,})\n\
         \        (\\n\\d{2}.{0,})*\n    )\n    $", 98]
   90: !!python/object:mt940.tags.SumEntries
-    re: &id002 !!python/object/apply:re._compile ["^\n    (?P<number>\\d+)\n    (?P<currency>.{3})\
+    re: &id002 !!python/object/apply:re._compile ["^\n    (?P<number>\\d*)\n    (?P<currency>.{3})\
         \  # 3!a Currency\n    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    ", 98]
   90D: !!python/object:mt940.tags.SumDebitEntries
     re: *id002
