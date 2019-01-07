@@ -97,7 +97,8 @@ class DateTime(datetime.datetime, Model):
                 value = kwargs.get(key, default)
                 # Convert the value to integer and force base 10 to make sure
                 # it doesn't get recognized as octal
-                value = int(value, 10)
+                if not isinstance(value, int):
+                    value = int(value, 10)
                 # Save the values again
                 values[key] = value
 

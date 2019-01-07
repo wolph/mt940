@@ -177,6 +177,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -223,6 +226,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -269,6 +275,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -305,6 +314,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     id: NMSC
     posting_text: SAMMLER
     prima_nota: '9800'
@@ -344,6 +356,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -380,6 +395,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     id: NRTI
     posting_text: SAMMLER/STORNO
     prima_nota: '9800'
@@ -409,6 +427,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     id: NMSC
     posting_text: SAMMLER
     prima_nota: '9800'
@@ -447,6 +468,9 @@ transactions:
       B9cJBA==
     extra_details: '90621954'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -496,6 +520,9 @@ transactions:
       B9cJBA==
     extra_details: 85E7E69
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -541,6 +568,9 @@ transactions:
       B9cJBA==
     extra_details: '90658244'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -586,6 +616,9 @@ transactions:
       B9cJBA==
     extra_details: '90635078'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -631,6 +664,9 @@ transactions:
       B9cJBA==
     extra_details: '90626371'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -679,6 +715,9 @@ transactions:
       B9cJBA==
     extra_details: 4F8E98D
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -727,6 +766,9 @@ transactions:
       B9cJBA==
     extra_details: '4664146'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -772,6 +814,9 @@ transactions:
       B9cJBA==
     extra_details: '90628244'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -817,6 +862,9 @@ transactions:
       B9cJBA==
     extra_details: '90631813'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -862,6 +910,9 @@ transactions:
       B9cJBA==
     extra_details: '90630146'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -898,6 +949,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     id: NMSC
     posting_text: SAMMLER
     prima_nota: '9800'
@@ -927,6 +981,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     id: NRTI
     posting_text: SEPA-UEBERW/STORNO
     prima_nota: 0399
@@ -967,6 +1024,9 @@ transactions:
       B9cJBA==
     extra_details: '2954937'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -1015,6 +1075,9 @@ transactions:
       B9cJBA==
     extra_details: 1918BD3
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -1051,6 +1114,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     id: NTRF
     posting_text: SEPA-UEBERW
     prima_nota: 0399
@@ -1089,6 +1155,9 @@ transactions:
       B9cJBA==
     extra_details: '52954937'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -1134,6 +1203,9 @@ transactions:
       B9cJBA==
     extra_details: '33377198'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -1182,6 +1254,9 @@ transactions:
       B9cJBA==
     extra_details: '2996674'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -1228,6 +1303,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -1276,6 +1354,9 @@ transactions:
       B9cJBA==
     extra_details: '2998444'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -1324,6 +1405,9 @@ transactions:
       B9cJBA==
     extra_details: '3002818'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -1372,6 +1456,9 @@ transactions:
       B9cJBA==
     extra_details: '3000284'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -1420,6 +1507,9 @@ transactions:
       B9cJBA==
     extra_details: '3004695'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -1468,6 +1558,9 @@ transactions:
       B9cJBA==
     extra_details: '3008994'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -1515,6 +1608,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -1561,6 +1657,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -1607,6 +1706,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -1654,6 +1756,9 @@ transactions:
       B9cJBA==
     extra_details: '3347237'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -1701,6 +1806,9 @@ transactions:
       B9cJBA==
     extra_details: '3347241'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -1749,6 +1857,9 @@ transactions:
       B9cJBA==
     extra_details: AD5901E
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -1785,6 +1896,9 @@ transactions:
       B9cJBA==
     extra_details: 112D73FF96F4FB
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     id: NTRF
     posting_text: SEPA-UEBERW
     prima_nota: 0399
@@ -1814,6 +1928,9 @@ transactions:
       B9cJBA==
     extra_details: 4BA14CEA34BFF3
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     id: NTRF
     posting_text: SEPA-UEBERW
     prima_nota: 0399
@@ -1843,6 +1960,9 @@ transactions:
       B9cJBA==
     extra_details: 54BC30B5
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     id: NTRF
     posting_text: ONLINE-UEBW.
     prima_nota: 0399
@@ -1873,6 +1993,9 @@ transactions:
       B9cJBA==
     extra_details: C644DE8F
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     id: NTRF
     posting_text: ONLINE-UEBW.
     prima_nota: 0399
@@ -1915,6 +2038,9 @@ transactions:
       B9cJBA==
     extra_details: 8B7A92F
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -1961,6 +2087,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -2007,6 +2136,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -2054,6 +2186,9 @@ transactions:
       B9cJBA==
     extra_details: 0914647
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -2101,6 +2236,9 @@ transactions:
       B9cJBA==
     extra_details: 0912501
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -2148,6 +2286,9 @@ transactions:
       B9cJBA==
     extra_details: 0923556
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -2195,6 +2336,9 @@ transactions:
       B9cJBA==
     extra_details: 0910575
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -2242,6 +2386,9 @@ transactions:
       B9cJBA==
     extra_details: 0918027
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -2289,6 +2436,9 @@ transactions:
       B9cJBA==
     extra_details: 0916341
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -2336,6 +2486,9 @@ transactions:
       B9cJBA==
     extra_details: 0908674
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -2373,6 +2526,9 @@ transactions:
       B9cJBA==
     extra_details: C6EDAC53
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     id: NTRF
     posting_text: ONLINE-UEBW.
     prima_nota: 0399
@@ -2415,6 +2571,9 @@ transactions:
       B9cJBA==
     extra_details: 66252EC
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -2463,6 +2622,9 @@ transactions:
       B9cJBA==
     extra_details: C851A5B
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -2509,6 +2671,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -2555,6 +2720,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -2602,6 +2770,9 @@ transactions:
       B9cJBA==
     extra_details: '3354911'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -2650,6 +2821,9 @@ transactions:
       B9cJBA==
     extra_details: '3377198'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -2698,6 +2872,9 @@ transactions:
       B9cJBA==
     extra_details: '4651156'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -2734,6 +2911,9 @@ transactions:
       B9cJBA==
     extra_details: /9A4616CC6128D651
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     id: NTRF
     posting_text: SEPA-UEBERW
     prima_nota: 0399
@@ -2775,6 +2955,9 @@ transactions:
       B9cJBA==
     extra_details: E821EA9
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -2823,6 +3006,9 @@ transactions:
       B9cJBA==
     extra_details: '1858097'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -2859,6 +3045,9 @@ transactions:
       B9cJBA==
     extra_details: 5E19D187
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     id: NTRF
     posting_text: ONLINE-UEBW.
     prima_nota: 0399
@@ -2898,6 +3087,9 @@ transactions:
       B9cJBA==
     extra_details: '33354911'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -2945,6 +3137,9 @@ transactions:
       B9cJBA==
     extra_details: '2971787'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -2992,6 +3187,9 @@ transactions:
       B9cJBA==
     extra_details: '2975390'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3039,6 +3237,9 @@ transactions:
       B9cJBA==
     extra_details: '2980804'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3086,6 +3287,9 @@ transactions:
       B9cJBA==
     extra_details: '2979070'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3133,6 +3337,9 @@ transactions:
       B9cJBA==
     extra_details: '2973502'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3180,6 +3387,9 @@ transactions:
       B9cJBA==
     extra_details: '2977271'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3227,6 +3437,9 @@ transactions:
       B9cJBA==
     extra_details: '3360224'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3275,6 +3488,9 @@ transactions:
       B9cJBA==
     extra_details: '2952868'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3322,6 +3538,9 @@ transactions:
       B9cJBA==
     extra_details: '3343453'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3370,6 +3589,9 @@ transactions:
       B9cJBA==
     extra_details: '2982472'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3419,6 +3641,9 @@ transactions:
       B9cJBA==
     extra_details: A92E76F
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3467,6 +3692,9 @@ transactions:
       B9cJBA==
     extra_details: '3366624'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3513,6 +3741,9 @@ transactions:
       B9cJBA==
     extra_details: '52952868'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3558,6 +3789,9 @@ transactions:
       B9cJBA==
     extra_details: '24661086'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3603,6 +3837,9 @@ transactions:
       B9cJBA==
     extra_details: '33360224'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3648,6 +3885,9 @@ transactions:
       B9cJBA==
     extra_details: '24647446'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3693,6 +3933,9 @@ transactions:
       B9cJBA==
     extra_details: '33343453'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3738,6 +3981,9 @@ transactions:
       B9cJBA==
     extra_details: '24647450'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3783,6 +4029,9 @@ transactions:
       B9cJBA==
     extra_details: '24661090'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3831,6 +4080,9 @@ transactions:
       B9cJBA==
     extra_details: C56ACF8
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3877,6 +4129,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3923,6 +4178,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -3969,6 +4227,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -4014,6 +4275,9 @@ transactions:
       B9cJBA==
     extra_details: '90659857'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -4060,6 +4324,9 @@ transactions:
       B9cJBA==
     extra_details: '90624796'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -4106,6 +4373,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -4142,6 +4412,9 @@ transactions:
       B9cJBA==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     id: NMSC
     posting_text: SAMMLER
     prima_nota: '9800'
@@ -4180,6 +4453,9 @@ transactions:
       B9cJBA==
     extra_details: '33345079'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -4225,6 +4501,9 @@ transactions:
       B9cJBA==
     extra_details: '52956584'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -4273,6 +4552,9 @@ transactions:
       B9cJBA==
     extra_details: C750549
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -4321,6 +4603,9 @@ transactions:
       B9cJBA==
     extra_details: 01B6E06
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -4369,6 +4654,9 @@ transactions:
       B9cJBA==
     extra_details: A11033B
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF
@@ -4414,6 +4702,9 @@ transactions:
       B9cJBA==
     extra_details: '90648274'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: NTRF

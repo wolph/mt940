@@ -139,6 +139,9 @@ transactions:
       B9wGCA==
     extra_details: marechal s
     funds_code: null
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9wGCA==
     id: NIOB
     status: D
     transaction_details: '0987654321 marechal s
@@ -161,6 +164,9 @@ transactions:
       B9wGCA==
     extra_details: marechal s
     funds_code: null
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9wGCA==
     id: NIOB
     status: D
     transaction_details: '0987654321 marechal s

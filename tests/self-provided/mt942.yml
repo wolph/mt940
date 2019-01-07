@@ -140,6 +140,9 @@ transactions:
       B+AKHw==
     extra_details: YAY MT942 CHG
     funds_code: null
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+AKHw==
     id: MCI0
     status: D
     transaction_details: 'REMIT:Costs to MT940 Parsing.

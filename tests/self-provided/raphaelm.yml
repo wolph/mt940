@@ -193,6 +193,9 @@ transactions:
       B9IDFA==
     extra_details: ''
     funds_code: M
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9IDFA==
     id: S051
     non_swift: "01Verwendungszweck 1\n02Verwendungszweck 2\n15Empf\xE4nger\n17Buchungstext\n\
       1812345\n191000\n204711"

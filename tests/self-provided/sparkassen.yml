@@ -132,6 +132,9 @@ transactions:
       B+ILGg==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+ILGg==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
     id: N062

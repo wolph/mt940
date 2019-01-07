@@ -143,6 +143,9 @@ transactions:
       B9oDEw==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9oDEw==
     id: NTRF
     posting_text: Bank Transfer Credit
     prima_nota: '930226'
@@ -172,6 +175,9 @@ transactions:
       B9oDEw==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9oDEw==
     id: N051
     posting_text: Bank Transfer Credit
     prima_nota: '991118'
@@ -201,6 +207,9 @@ transactions:
       B9oDEw==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9oDEw==
     id: N035
     posting_text: Zahlung m.Elektr.Unterschr.
     prima_nota: '991132'
@@ -231,6 +240,9 @@ transactions:
       B9oDEw==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9oDEw==
     id: N085
     posting_text: Zahlung m.Elektr.Unterschr.
     prima_nota: '991135'

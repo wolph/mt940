@@ -175,6 +175,9 @@ transactions:
       B+EKCw==
     extra_details: ''
     funds_code: F
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+EKCw==
     id: 'S   '
     non_swift: "01526715\n02A12596785    20170926000100\n031366\n04526715\n09Tranzakci\uFFFD\
       s Illet\uFFFDk:7.21HUF\n15ERGO Versicherung AG Fiokte\n16lep\n17G200000137791678\n\
@@ -211,6 +214,9 @@ transactions:
       B+EKCw==
     extra_details: ''
     funds_code: F
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+EKCw==
     id: 'S   '
     non_swift: "01136508\n02A10580361    20170926000100\n033009\n04136508\n09Tranz.\
       \ Illet\uFFFDk: 10.38HUF\n15ERGO Eletbiztosito Zrt.\n17G200000015891789\n18791033\n\
@@ -245,6 +251,9 @@ transactions:
       B+EKCw==
     extra_details: ''
     funds_code: F
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+EKCw==
     id: 'S   '
     non_swift: "01625006\n02A14282085    20170926000100\n031221\n04625006\n09Tranz.\
       \ Illet\uFFFDk: 10.73HUF\n15ERGO Versicherung AG Fiokte\n16lep\n17G200011025720127\n\

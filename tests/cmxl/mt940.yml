@@ -331,6 +331,9 @@ transactions:
       B9ILAg==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9ILAg==
     id: NSTO
     posting_text: DAUERAUFTRAG
     prima_nota: 0599
@@ -360,6 +363,9 @@ transactions:
       B9ILAg==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9ILAg==
     id: NTRF
     posting_text: UEBERWEISUNG
     prima_nota: 0599
@@ -389,6 +395,9 @@ transactions:
       B9MKFA==
     extra_details: Card transaction
     funds_code: null
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9MKFA==
     id: FMSC
     posting_text: Wyplata-(dysp/przel)
     prima_nota: null
@@ -420,6 +429,9 @@ transactions:
       B9MKFA==
     extra_details: Transfer
     funds_code: null
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9MKFA==
     id: FTRF
     posting_text: Wyplata-(dysp/przel)
     prima_nota: null
@@ -451,6 +463,9 @@ transactions:
       B9MKFA==
     extra_details: Interest credit
     funds_code: null
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9MKFA==
     id: FTRF
     posting_text: "Uznanie kwot\u0105 odsetek"
     prima_nota: null

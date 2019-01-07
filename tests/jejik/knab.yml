@@ -139,6 +139,9 @@ transactions:
       B94FBw==
     extra_details: 0J000023
     funds_code: null
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B94FBw==
     id: NTRF
     status: C
     transaction_details: 'HIER EEN MOOIE OMSCHRIJVING IN HOOFDLETTERS
@@ -161,6 +164,9 @@ transactions:
       B94HHQ==
     extra_details: VO7Q06US
     funds_code: null
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B94HHQ==
     id: NTRF
     status: D
     transaction_details: 'FACTUUR 201403110, 201403113
@@ -183,6 +189,9 @@ transactions:
       B94HHQ==
     extra_details: ''
     funds_code: null
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B94HHQ==
     id: NTRF
     status: C
     transaction_details: '12160475 0050001631430920 ORDERID: 264267 MEDIA MARKT ONLINE

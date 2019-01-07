@@ -147,6 +147,9 @@ transactions:
       B+ECAQ==
     extra_details: 911-TRANSAKCJA IPH
     funds_code: N
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+ECAQ==
     id: NTRF
     status: C
     transaction_details: '911 TRANSAKCJA COLLECT; ID IPH: XX000002052409; Z RACH.:
@@ -175,6 +178,9 @@ transactions:
       B+ECAQ==
     extra_details: 911-TRANSAKCJA IPH
     funds_code: N
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+ECAQ==
     id: NTRF
     status: C
     transaction_details: '911 TRANSAKCJA COLLECT; ID IPH: XX000002052402; Z RACH.:

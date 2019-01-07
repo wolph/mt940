@@ -303,14 +303,28 @@ class Statement(Tag):
         data.setdefault('currency', transactions.currency)
 
         data['amount'] = models.Amount(**data)
-        data['date'] = models.Date(**data)
+        date = data['date'] = models.Date(**data)
 
         if data.get('entry_day') and data.get('entry_month'):
-            data['entry_date'] = models.Date(
+            entry_date = data['entry_date'] = models.Date(
                 day=data.get('entry_day'),
                 month=data.get('entry_month'),
                 year=str(data['date'].year),
             )
+
+            if date > entry_date and (date - entry_date).days >= 330:
+                year = 1
+            elif entry_date > date and (entry_date - date).days >= 330:
+                year = -1
+            else:
+                year = 0
+
+            data['guessed_entry_date'] = models.Date(
+                day=entry_date.day,
+                month=entry_date.month,
+                year=entry_date.year + year,
+            )
+
         return data
 
 

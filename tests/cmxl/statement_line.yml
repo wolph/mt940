@@ -119,6 +119,9 @@ transactions:
       B94JAg==
     extra_details: ''
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B94JAg==
     id: NTRF
     status: D
   transactions: *id003

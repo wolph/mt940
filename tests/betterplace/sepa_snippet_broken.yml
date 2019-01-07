@@ -147,6 +147,9 @@ transactions:
       B9cJBA==
     extra_details: '33343453'
     funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9cJBA==
     id: NTRF
     status: C
   transactions: *id003

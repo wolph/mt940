@@ -155,6 +155,9 @@ transactions:
       B9sFGA==
     extra_details: ''
     funds_code: null
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFGA==
     id: N192
     status: D
     transaction_details: 'GIRO   428428 KPN - DIGITENNE    BETALINGSKENM.  000000042188659
@@ -179,6 +182,9 @@ transactions:
       B9sFFw==
     extra_details: ''
     funds_code: null
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFw==
     id: N426
     status: D
     transaction_details: BEA   NR:XXX1234   21.05.11/12.54 DIRCKIII FIL2500 KATWIJK,PAS999
@@ -199,6 +205,9 @@ transactions:
       B9sFFw==
     extra_details: ''
     funds_code: null
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFw==
     id: N426
     status: D
     transaction_details: BEA   NR:XXX1234   23.05.11/09.08 DIGROS FIL1015 KATWIJK
@@ -220,6 +229,9 @@ transactions:
       B9sFFw==
     extra_details: ''
     funds_code: null
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFw==
     id: N426
     status: D
     transaction_details: BEA   NR:XXX1234   22.05.11/14.25 MC DONALDS A44 LEIDEN,PAS999
@@ -240,6 +252,9 @@ transactions:
       B9sFFw==
     extra_details: ''
     funds_code: null
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFw==
     id: N426
     status: D
     transaction_details: BEA   NR:XXX1234   21.05.11/12.09 PRINCE FIL. 55 KATWIJK
@@ -261,6 +276,9 @@ transactions:
       B9sFFw==
     extra_details: ''
     funds_code: null
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFw==
     id: N426
     status: D
     transaction_details: BEA   NR:XXX1234   21.05.11/12.55 DIRX FIL6017 KATWIJK ZH
@@ -282,6 +300,9 @@ transactions:
       B9sFFw==
     extra_details: ''
     funds_code: null
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFw==
     id: N426
     status: D
     transaction_details: BEA   NR:XXX1234   21.05.11/12.04 HANS ANDERS OPT./056 KAT,PAS999
@@ -302,6 +323,9 @@ transactions:
       B9sFFw==
     extra_details: ''
     funds_code: null
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFFw==
     id: N426
     status: D
     transaction_details: BEA   NR:XXX1234   22.05.11/13.45 MYCOM DEN HAAG  S-GRAVEN,PAS999
@@ -322,6 +346,9 @@ transactions:
       B9sFGA==
     extra_details: ''
     funds_code: null
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFGA==
     id: N426
     status: D
     transaction_details: BEA   NR:XXX1234   24.05.11/09.18 PETS PLACE KATWIJK KATWI,PAS999
@@ -342,6 +369,9 @@ transactions:
       B9sFGA==
     extra_details: ''
     funds_code: null
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9sFGA==
     id: N426
     status: D
     transaction_details: 52.89.39.882                    MYCOM DEN HAAG
