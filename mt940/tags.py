@@ -306,11 +306,18 @@ class Statement(Tag):
         data['date'] = models.Date(**data)
 
         if data.get('entry_day') and data.get('entry_month'):
-            data['entry_date'] = models.Date(
+            entry_date = models.Date(
                 day=data.get('entry_day'),
                 month=data.get('entry_month'),
                 year=str(data['date'].year),
             )
+            if entry_date.month == 1 and data['date'].month == 12:
+                entry_date = models.Date(
+                    day=str(entry_date.day),
+                    month=str(entry_date.month),
+                    year=str(entry_date.year + 1),
+                )
+            data['entry_date'] = entry_date
         return data
 
 
