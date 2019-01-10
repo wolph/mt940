@@ -91,14 +91,15 @@ class DateTime(datetime.datetime, Model):
                 microsecond='0', )
 
             # The list makes sure this works in both Python 2 and 3
-
             for key, default in list(values.items()):
                 # Fetch the value or the default
                 value = kwargs.get(key, default)
+                assert value is not None, '%s should not be None' % key
                 # Convert the value to integer and force base 10 to make sure
                 # it doesn't get recognized as octal
                 if not isinstance(value, int):
                     value = int(value, 10)
+
                 # Save the values again
                 values[key] = value
 
