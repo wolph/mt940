@@ -50,7 +50,7 @@ def mBank_set_transaction_code(transactions, tag, tag_dict, *args):
     return tag_dict
 
 
-iph_id_re = re.compile(' ID IPH: X*(?P<iph_id>\d{0,14});')
+iph_id_re = re.compile(r' ID IPH: X*(?P<iph_id>\d{0,14});')
 
 
 def mBank_set_iph_id(transactions, tag, tag_dict, *args):
@@ -66,7 +66,7 @@ def mBank_set_iph_id(transactions, tag, tag_dict, *args):
     return tag_dict
 
 
-tnr_re = re.compile('TNR:[ \n](?P<tnr>\d+\.\d+)',
+tnr_re = re.compile(r'TNR:[ \n](?P<tnr>\d+\.\d+)',
                     flags=re.MULTILINE | re.UNICODE)
 
 

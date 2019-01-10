@@ -19,7 +19,7 @@ except NameError:
 
 
 def get_sta_files():
-    base_path = os.path.abspath(os.path.dirname(__file__))
+    base_path = os.path.relpath(os.path.dirname(__file__))
     for path, dirs, files in os.walk(base_path):
         for file in files:
             _, ext = os.path.splitext(file)

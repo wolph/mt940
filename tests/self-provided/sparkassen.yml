@@ -1,25 +1,5 @@
 &id003 !!python/object:mt940.models.Transactions
-data:
-  account_identification: 12345678/1020304050
-  final_closing_balance: !!python/object:mt940.models.Balance
-    amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['1194.00']
-      currency: EUR
-    date: !!python/object/apply:mt940.models.Date
-    - !!binary |
-      B+ADAQ==
-    status: C
-  final_opening_balance: !!python/object:mt940.models.Balance
-    amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['1200.00']
-      currency: EUR
-    date: !!python/object/apply:mt940.models.Date
-    - !!binary |
-      B+ACHQ==
-    status: C
-  sequence_number: '001'
-  statement_number: '00000'
-  transaction_reference: STARTUMSE
+data: {}
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -127,48 +107,47 @@ transactions:
   data:
     FRST_ONE_OFF_RECC: null
     additional_position_date: null
-    additional_position_reference: '000000'
+    additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-6.00']
-      currency: EUR
+      amount: !!python/object/apply:decimal.Decimal ['30.00']
+      currency: null
     applicant_bin: null
-    applicant_creditor_id: XX0000000000000000ABCDEFGHIJKLMNOPQRSTUVW/PL 12-09-2014T16:26:37
-      Folgenr. 007
+    applicant_creditor_id: null
     applicant_iban: null
     applicant_name: null
     bank_reference: null
     compensation_amount: null
-    currency: EUR
+    currency: null
     customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
-      B+ACHQ==
+      B+ILGg==
     debitor_identifier: null
     deviate_applicant: null
     deviate_recipient: null
-    end_to_end_reference: VZ0000000000000000
+    end_to_end_reference: null
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
-      B+ADAQ==
+      B+ILGg==
     extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
-      B+ADAQ==
+      B+ILGg==
     gvc_applicant_bin: null
     gvc_applicant_iban: null
-    id: N024
+    id: N062
     old_SEPA_CI: null
     old_SEPA_additional_position_reference: null
     original_amount: null
-    posting_text: 0000/661
+    posting_text: GUTSCHR. UEBERWEISUNG
     prima_nota: null
-    purpose: null
+    purpose: Test
     purpose_code: null
     recipient_name: null
     return_debit_notes: null
     settlement_tag: null
-    status: D
-    transaction_code: '106'
+    status: C
+    transaction_code: '166'
   transactions: *id003

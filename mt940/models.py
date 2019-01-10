@@ -1,7 +1,12 @@
 import re
 import decimal
 import datetime
-import collections
+
+# python 3.8+ compatibility
+try:  # pragma: no cover
+    from collections import abc
+except ImportError:  # pragma: no cover
+    import collections as abc
 
 import mt940
 
@@ -18,8 +23,8 @@ class FixedOffset(datetime.tzinfo):
     Source: https://docs.python.org/2/library/datetime.html#tzinfo-objects
 
     >>> offset = FixedOffset(60)
-    >>> offset.utcoffset(None)
-    datetime.timedelta(0, 3600)
+    >>> offset.utcoffset(None).total_seconds()
+    3600.0
     >>> offset.dst(None)
     datetime.timedelta(0)
     >>> offset.tzname(None)
@@ -86,13 +91,15 @@ class DateTime(datetime.datetime, Model):
                 microsecond='0', )
 
             # The list makes sure this works in both Python 2 and 3
-
             for key, default in list(values.items()):
                 # Fetch the value or the default
                 value = kwargs.get(key, default)
+                assert value is not None, '%s should not be None' % key
                 # Convert the value to integer and force base 10 to make sure
                 # it doesn't get recognized as octal
-                value = int(value, 10)
+                if not isinstance(value, int):
+                    value = int(value, 10)
+
                 # Save the values again
                 values[key] = value
 
@@ -214,7 +221,7 @@ class Balance(Model):
             self.date, )
 
 
-class Transactions(collections.Sequence):
+class Transactions(abc.Sequence):
     '''
     Collection of :py:class:`Transaction` objects with global properties such
     as begin and end balance
@@ -380,7 +387,7 @@ class Transactions(collections.Sequence):
         # match it's difficult to get both the beginning and the end so we're
         # working around it in a safer way to get everything.
         tag_re = re.compile(
-            r'^:(?P<full_tag>(?P<tag>[0-9]{2}|NS)(?P<sub_tag>[A-Z])?):',
+            r'^:\n?(?P<full_tag>(?P<tag>[0-9]{2}|NS)(?P<sub_tag>[A-Z])?):',
             re.MULTILINE)
         matches = list(tag_re.finditer(data))
 
