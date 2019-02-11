@@ -40,9 +40,15 @@ def parse(src, encoding=None):
     :rtype: Transactions
     '''
 
+    def safe_is_file(filename):
+        try:
+            return os.path.isfile(src)
+        except ValueError:  # pragma: no cover
+            return False
+
     if hasattr(src, 'read'):  # pragma: no branch
         data = src.read()
-    elif os.path.isfile(src):
+    elif safe_is_file(src):
         return parse(open(src, 'rb').read())
     elif hasattr(src, 'decode'):
         exception = None
