@@ -58,7 +58,7 @@ def parse(src, encoding=None):
         exception = None
         encodings = [encoding, 'utf-8', 'cp852', 'iso8859-15', 'latin1']
 
-        for encoding in encodings:  # pragma: no branch
+        for encoding in encodings:  # pragma: no cover
             if not encoding:
                 continue
 
@@ -67,9 +67,9 @@ def parse(src, encoding=None):
                 break
             except UnicodeDecodeError as e:
                 exception = e
-            except UnicodeEncodeError as e:
+            except UnicodeEncodeError:
                 break
-        else:  # pragma: no branch
+        else:
             raise exception  # pragma: no cover
 
     transactions = mt940.models.Transactions()

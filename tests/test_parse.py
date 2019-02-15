@@ -17,6 +17,5 @@ def test_non_ascii_parse(filename, encoding):
     # Read as text
     with open(filename, 'r') as fh:
         data = fh.read()
-        data = data.decode(encoding)
         mt940.parse(data)
 
