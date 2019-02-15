@@ -59,28 +59,28 @@ class Tag(object):
         match = self.re.match(value)
         if match:  # pragma: no branch
             self.logger.debug(
-                'matched (%d) "%s" against "%s", got: %s',
+                'matched (%d) %r against %r, got: %s',
                 len(value), value, self.pattern,
                 pprint.pformat(match.groupdict()))
         else:  # pragma: no cover
             self.logger.error(
-                'matching (%d) "%s" against "%s"', len(value), value,
+                'matching (%d) %r against %r', len(value), value,
                 self.pattern)
 
             part_value = value
             for pattern in self.pattern.split('\n'):
                 match = re.match(pattern, part_value, self.RE_FLAGS)
                 if match:
-                    self.logger.info('matched "%s" against "%s", got: %s',
+                    self.logger.info('matched %r against %r, got: %s',
                                      pattern, match.group(0),
                                      pprint.pformat(match.groupdict()))
                     part_value = part_value[len(match.group(0)):]
                 else:
-                    self.logger.error('no match for "%s" against "%s"',
+                    self.logger.error('no match for %r against %r',
                                       pattern, part_value)
 
             raise RuntimeError(
-                'Unable to parse "%s" from "%s"' % (self, value),
+                'Unable to parse %r from %r' % (self, value),
                 self, value)
         return match.groupdict()
 
