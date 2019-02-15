@@ -25,6 +25,7 @@ Sources:
     c = Code list value
     n = Numeric
 '''
+from __future__ import print_function
 import re
 import pprint
 import logging
@@ -33,7 +34,7 @@ try:
     import enum
 except ImportError:  # pragma: no cover
     import sys
-    print >> sys.stderr, 'MT940 requires the `enum34` package'
+    print('MT940 requires the `enum34` package', file=sys.stderr)
 
     class enum(object):
         @staticmethod
