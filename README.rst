@@ -16,8 +16,6 @@ MT940
     :target: https://coveralls.io/r/WoLpH/mt940?branch=master
 
 .. image:: https://img.shields.io/pypi/pyversions/mt-940.svg
-    :alt: Supported Python versions
-    :target: https://crate.io/packages/mt-940?version=latest
 
 ``mt940`` - A library to parse MT940 files and returns smart Python collections
 for statistics and manipulation.

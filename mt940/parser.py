@@ -49,24 +49,28 @@ def parse(src, encoding=None):
     if hasattr(src, 'read'):  # pragma: no branch
         data = src.read()
     elif safe_is_file(src):
-        return parse(open(src, 'rb').read())
-    elif hasattr(src, 'decode'):
+        with open(src, 'rb') as fh:
+            data = fh.read()
+    else:  # pragma: no cover
+        data = src
+
+    if hasattr(data, 'decode'):  # pragma: no branch
         exception = None
         encodings = [encoding, 'utf-8', 'cp852', 'iso8859-15', 'latin1']
 
-        for encoding in encodings:  # pragma: no branch
+        for encoding in encodings:  # pragma: no cover
             if not encoding:
                 continue
 
             try:
-                data = src.decode(encoding)
+                data = data.decode(encoding)
                 break
             except UnicodeDecodeError as e:
                 exception = e
-        else:  # pragma: no cover
-            raise exception
-    else:  # pragma: no cover
-        data = src
+            except UnicodeEncodeError:
+                break
+        else:
+            raise exception  # pragma: no cover
 
     transactions = mt940.models.Transactions()
     transactions.parse(data)
