@@ -1,4 +1,5 @@
 import os
+import json
 import yaml
 import mt940
 import pytest
@@ -111,3 +112,8 @@ def test_parse(sta_file):
     # Compare actual transactions
     compare(transactions[:], expected[:])
 
+
+@pytest.mark.parametrize('sta_file', get_sta_files())
+def test_json_dump(sta_file):
+    transactions = mt940.parse(sta_file)
+    json.dumps(transactions, cls=mt940.JSONEncoder)
