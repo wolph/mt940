@@ -113,41 +113,12 @@ Simple json encoding:
 .. code-block:: python
 
     import json
-    import decimal
-
     import mt940
 
 
     transactions = mt940.parse('tests/jejik/abnamro.sta')
 
-
-    def default(value):
-        # Handle decimal values so we get the transaction amounts
-        if isinstance(value, decimal.Decimal):
-            return str(value)
-
-        # Handling of the Transaction objects to include the actual transactions
-        if isinstance(value, mt940.models.Transactions):
-            data = value.data.copy()
-            data['transactions'] = value.transactions
-            return data
-
-        # If an object has a `data` attribute, return that instead of the
-        # `__dict__` ro prevent loops
-        elif hasattr(value, 'data'):
-            return value.data
-
-        # The rest of the models should work just fine by returning the `__dict__`
-        elif isinstance(value, mt940.models.Model):
-            return value.__dict__
-
-        # Actually raise an error if unknown types are found. Better than silently
-        # ignoring ;)
-        else:
-            raise TypeError('Unknown type %s: %r' % (type(value), value))
-
-
-    print(json.dumps(transactions, default=default, indent=4))
+    print(json.dumps(transactions, indent=4, cls=mt940.JSONEncoder))
 
 Contributing
 ------------
