@@ -278,7 +278,7 @@ class Statement(Tag):
 
     '''Statement
 
-    Pattern: 6!n[4!n]2a[1!a]15d1!a3!c16x[//16x]
+    Pattern: 6!n[4!n]2a[1!a]15d1!a3!c23x[//16x]
     '''
     id = 61
     scope = models.Transaction
@@ -295,7 +295,7 @@ class Statement(Tag):
     (?P<amount>[\d,]{1,15})  # 15d Amount
     (?P<id>[A-Z][A-Z0-9 ]{3})?  # 1!a3!c Transaction Type Identification Code
     (?P<customer_reference>.{0,16})  # 16x Customer Reference
-    (//(?P<bank_reference>.{0,16}))?  # [//16x] Bank Reference
+    (//(?P<bank_reference>.{0,23}))?  # [//23x] Bank Reference
     (\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary Details
     $'''
 
