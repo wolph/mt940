@@ -417,7 +417,12 @@ class Transactions(abc.Sequence):
 
             for processor in self.processors.get('pre_%s' % tag.slug, []):
                 tag_dict = processor(self, tag, tag_dict)
-
+            
+            # ignore empty/incomplete tags i.e. :NS:\n
+            
+            if len(tag_data) < 2:
+                continue
+                
             result = tag(self, tag_dict)
 
             # Postprocess the object
