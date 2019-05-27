@@ -200,10 +200,12 @@ class NonSwift(Tag):
 
     '''Non-swift extension for MT940 containing extra information. The
     actual definition is not consistent between banks so the current
-    implementation is a tad limited. Feel free to extend the implmentation
+    implementation is a tad limited. Feel free to extend the implementation
     and create a pull request with a better version :)
 
-    Pattern: 2!n35x
+    It seems this could be anything so we'll have to be flexible about it.
+
+    Pattern: `2!n35x | *x`
     '''
 
     class scope(models.Transaction, models.Transactions):
@@ -212,8 +214,12 @@ class NonSwift(Tag):
 
     pattern = r'''
     (?P<non_swift>
-        (\d{2}.{0,})
-        (\n\d{2}.{0,})*
+        (
+            (\d{2}.{0,})
+            (\n\d{2}.{0,})*
+        )|(
+            [^\n]*
+        )
     )
     $'''
     sub_pattern = r'''
@@ -233,6 +239,8 @@ class NonSwift(Tag):
                 text.append(ns['ns_data'])
             elif len(text) and text[-1]:
                 text.append('')
+            elif line.strip():
+                text.append(line.strip())
         value['non_swift_text'] = '\n'.join(text)
         value['non_swift'] = data
         return value
@@ -278,7 +286,7 @@ class Statement(Tag):
 
     '''Statement
 
-    Pattern: 6!n[4!n]2a[1!a]15d1!a3!c16x[//16x]
+    Pattern: 6!n[4!n]2a[1!a]15d1!a3!c23x[//16x]
     '''
     id = 61
     scope = models.Transaction
@@ -295,7 +303,7 @@ class Statement(Tag):
     (?P<amount>[\d,]{1,15})  # 15d Amount
     (?P<id>[A-Z][A-Z0-9 ]{3})?  # 1!a3!c Transaction Type Identification Code
     (?P<customer_reference>.{0,16})  # 16x Customer Reference
-    (//(?P<bank_reference>.{0,16}))?  # [//16x] Bank Reference
+    (//(?P<bank_reference>.{0,23}))?  # [//23x] Bank Reference
     (\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary Details
     $'''
 
