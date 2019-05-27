@@ -205,7 +205,7 @@ class NonSwift(Tag):
 
     It seems this could be anything so we'll have to be flexible about it.
 
-    Pattern: 2!n35x | *x
+    Pattern: `2!n35x | *x`
     '''
 
     class scope(models.Transaction, models.Transactions):
