@@ -146,7 +146,7 @@ tags:
         \    \\n? # apparently some banks (sparkassen) incorporate newlines here\n\
         \    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    (?P<id>[A-Z][A-Z0-9 ]{3})?\
         \  # 1!a3!c Transaction Type Identification Code\n    (?P<customer_reference>.{0,16})\
-        \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,16}))?  # [//16x]\
+        \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,23}))?  # [//23x]\
         \ Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary\
         \ Details\n    $", 98]
   62: !!python/object:mt940.tags.ClosingBalance
