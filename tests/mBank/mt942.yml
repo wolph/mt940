@@ -118,8 +118,9 @@ tags:
         \    (?P<status>[DC ]?)  # 2a Debit/Credit Mark\n    (?P<amount>[0-9,]{0,16})\
         \  # 15d Amount (includes decimal sign, so 16)\n    $", 98]
   NS: !!python/object:mt940.tags.NonSwift
-    re: !!python/object/apply:re._compile ["\n    (?P<non_swift>\n        (\\d{2}.{0,})\n\
-        \        (\\n\\d{2}.{0,})*\n    )\n    $", 98]
+    re: !!python/object/apply:re._compile ["\n    (?P<non_swift>\n        (\n    \
+        \        (\\d{2}.{0,})\n            (\\n\\d{2}.{0,})*\n        )|(\n     \
+        \       [^\\n]*\n        )\n    )\n    $", 98]
   90: !!python/object:mt940.tags.SumEntries
     re: &id002 !!python/object/apply:re._compile ["^\n    (?P<number>\\d*)\n    (?P<currency>.{3})\
         \  # 3!a Currency\n    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    ", 98]

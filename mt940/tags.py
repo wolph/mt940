@@ -200,10 +200,12 @@ class NonSwift(Tag):
 
     '''Non-swift extension for MT940 containing extra information. The
     actual definition is not consistent between banks so the current
-    implementation is a tad limited. Feel free to extend the implmentation
+    implementation is a tad limited. Feel free to extend the implementation
     and create a pull request with a better version :)
 
-    Pattern: 2!n35x
+    It seems this could be anything so we'll have to be flexible about it.
+
+    Pattern: 2!n35x | *x
     '''
 
     class scope(models.Transaction, models.Transactions):
@@ -212,8 +214,12 @@ class NonSwift(Tag):
 
     pattern = r'''
     (?P<non_swift>
-        (\d{2}.{0,})
-        (\n\d{2}.{0,})*
+        (
+            (\d{2}.{0,})
+            (\n\d{2}.{0,})*
+        )|(
+            [^\n]*
+        )
     )
     $'''
     sub_pattern = r'''
@@ -233,6 +239,8 @@ class NonSwift(Tag):
                 text.append(ns['ns_data'])
             elif len(text) and text[-1]:
                 text.append('')
+            elif line.strip():
+                text.append(line.strip())
         value['non_swift_text'] = '\n'.join(text)
         value['non_swift'] = data
         return value
