@@ -157,12 +157,13 @@ class StatementNumber(Tag):
 
     '''Statement number / sequence number
 
-    Pattern: 5n[/5n]
+    Pattern: 5n[/5n][/a]
     '''
     id = 28
     pattern = r'''
     (?P<statement_number>\d{1,5})  # 5n
-    (?:/?(?P<sequence_number>\d{1,5}))?  # [/5n]
+    (?:\/?(?P<sequence_number>\d{1,5}))  # [/5n]
+    (?:\/?(?P<suffix>(...)))?  # [/a]
     $'''
 
 
