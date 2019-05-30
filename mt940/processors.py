@@ -135,8 +135,11 @@ def _parse_mt940_details(detail_str):
     for index, char in enumerate(detail_str):
         if char != '?':
             segment += char
-
             continue
+
+        if index + 2 >= len(detail_str):
+            break
+
         tmp[segment_type] = segment if not segment_type else segment[2:]
         segment_type = detail_str[index + 1] + detail_str[index + 2]
         segment = ''
