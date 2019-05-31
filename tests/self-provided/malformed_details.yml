@@ -1,0 +1,169 @@
+&id003 !!python/object:mt940.models.Transactions
+data:
+  account_identification: 12345678/1020304050
+  final_closing_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['12345.98']
+      currency: EUR
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+EJDg==
+    status: C
+  final_opening_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['12345.12']
+      currency: EUR
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+EJDg==
+    status: C
+  sequence_number: null
+  statement_number: '0'
+  transaction_reference: STARTUMS
+processors:
+  post_account_identification: []
+  post_available_balance: []
+  post_closing_balance: []
+  post_date_time_indication: []
+  post_final_closing_balance: []
+  post_final_opening_balance: []
+  post_floor_limit_indicator: []
+  post_forward_available_balance: []
+  post_intermediate_closing_balance: []
+  post_intermediate_opening_balance: []
+  post_non_swift: []
+  post_opening_balance: []
+  post_related_reference: []
+  post_statement: [!!python/name:mt940.processors.date_cleanup_post_processor '']
+  post_statement_number: []
+  post_sum_credit_entries: []
+  post_sum_debit_entries: []
+  post_transaction_details: [!!python/name:mt940.processors.transaction_details_post_processor '']
+  post_transaction_reference_number: []
+  pre_account_identification: []
+  pre_available_balance: []
+  pre_closing_balance: []
+  pre_date_time_indication: []
+  pre_final_closing_balance: []
+  pre_final_opening_balance: []
+  pre_floor_limit_indicator: []
+  pre_forward_available_balance: []
+  pre_intermediate_closing_balance: []
+  pre_intermediate_opening_balance: []
+  pre_non_swift: []
+  pre_opening_balance: []
+  pre_related_reference: []
+  pre_statement: [!!python/name:mt940.processors.date_fixup_pre_processor '']
+  pre_statement_number: []
+  pre_sum_credit_entries: []
+  pre_sum_debit_entries: []
+  pre_transaction_details: []
+  pre_transaction_reference_number: []
+tags:
+  13: !!python/object:mt940.tags.DateTimeIndication
+    re: !!python/object/apply:re._compile ["^\n    (?P<year>\\d{2})\n    (?P<month>\\\
+        d{2})\n    (?P<day>\\d{2})\n    (?P<hour>\\d{2})\n    (?P<minute>\\d{2})\n\
+        \    (\\+(?P<offset>\\d{4})|)\n    ", 98]
+  20: !!python/object:mt940.tags.TransactionReferenceNumber
+    re: !!python/object/apply:re._compile ['(?P<transaction_reference>.{0,16})', 98]
+  21: !!python/object:mt940.tags.RelatedReference
+    re: !!python/object/apply:re._compile ['(?P<related_reference>.{0,16})', 98]
+  25: !!python/object:mt940.tags.AccountIdentification
+    re: !!python/object/apply:re._compile ['(?P<account_identification>.{0,35})',
+      98]
+  28: !!python/object:mt940.tags.StatementNumber
+    re: !!python/object/apply:re._compile ["\n    (?P<statement_number>\\d{1,5}) \
+        \ # 5n\n    (?:/?(?P<sequence_number>\\d{1,5}))?  # [/5n]\n    $", 98]
+  60: !!python/object:mt940.tags.OpeningBalance
+    re: &id001 !!python/object/apply:re._compile ["^\n    (?P<status>[DC])  # 1!a\
+        \ Debit/Credit\n    (?P<year>\\d{2})  # 6!n Value Date (YYMMDD)\n    (?P<month>\\\
+        d{2})\n    (?P<day>\\d{2})\n    (?P<currency>.{3})  # 3!a Currency\n    (?P<amount>[0-9,]{0,16})\
+        \  # 15d Amount (includes decimal sign, so 16)\n    ", 98]
+  60M: !!python/object:mt940.tags.IntermediateOpeningBalance
+    re: *id001
+  60F: !!python/object:mt940.tags.FinalOpeningBalance
+    re: *id001
+  61: !!python/object:mt940.tags.Statement
+    re: !!python/object/apply:re._compile ["^\n    (?P<year>\\d{2})  # 6!n Value Date\
+        \ (YYMMDD)\n    (?P<month>\\d{2})\n    (?P<day>\\d{2})\n    (?P<entry_month>\\\
+        d{2})?  # [4!n] Entry Date (MMDD)\n    (?P<entry_day>\\d{2})?\n    (?P<status>[A-Z]?[DC])\
+        \  # 2a Debit/Credit Mark\n    (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd\
+        \ character of the currency\n                            # code, if needed)\n\
+        \    \\n? # apparently some banks (sparkassen) incorporate newlines here\n\
+        \    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    (?P<id>[A-Z][A-Z0-9 ]{3})?\
+        \  # 1!a3!c Transaction Type Identification Code\n    (?P<customer_reference>.{0,16})\
+        \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,16}))?  # [//16x]\
+        \ Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary\
+        \ Details\n    $", 98]
+  62: !!python/object:mt940.tags.ClosingBalance
+    re: *id001
+  62M: !!python/object:mt940.tags.IntermediateClosingBalance
+    re: *id001
+  62F: !!python/object:mt940.tags.FinalClosingBalance
+    re: *id001
+  64: !!python/object:mt940.tags.AvailableBalance
+    re: *id001
+  65: !!python/object:mt940.tags.ForwardAvailableBalance
+    re: *id001
+  86: !!python/object:mt940.tags.TransactionDetails
+    re: !!python/object/apply:re._compile ["\n    (?P<transaction_details>(([\\s\\\
+        S]{0,65}\\r?\\n?){0,8}[\\s\\S]{0,65}))\n    ", 98]
+  34: !!python/object:mt940.tags.FloorLimitIndicator
+    re: !!python/object/apply:re._compile ["^\n    (?P<currency>[A-Z]{3})  # 3!a Currency\n\
+        \    (?P<status>[DC ]?)  # 2a Debit/Credit Mark\n    (?P<amount>[0-9,]{0,16})\
+        \  # 15d Amount (includes decimal sign, so 16)\n    $", 98]
+  NS: !!python/object:mt940.tags.NonSwift
+    re: !!python/object/apply:re._compile ["\n    (?P<non_swift>\n        (\\d{2}.{0,})\n\
+        \        (\\n\\d{2}.{0,})*\n    )\n    $", 98]
+  90: !!python/object:mt940.tags.SumEntries
+    re: &id002 !!python/object/apply:re._compile ["^\n    (?P<number>\\d*)\n    (?P<currency>.{3})\
+        \  # 3!a Currency\n    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    ", 98]
+  90D: !!python/object:mt940.tags.SumDebitEntries
+    re: *id002
+  90C: !!python/object:mt940.tags.SumCreditEntries
+    re: *id002
+transactions:
+- !!python/object:mt940.models.Transaction
+  data:
+    FRST_ONE_OFF_RECC: null
+    additional_position_date: null
+    additional_position_reference: BYA12345678901
+    additional_purpose: '000000012345 BIC: BYLADEMMABWA: Finanzamt Muenchen ABWA+Finanzamt
+      Sentinel'
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal ['-233.15']
+      currency: EUR
+    applicant_bin: BYLADEMM
+    applicant_creditor_id: 'DE99ZZZ00000012345 '
+    applicant_iban: DE99700500000000012345
+    applicant_name: Finanzamt Muenchen Abteilung Erhebung
+    bank_reference: null
+    compensation_amount: null
+    currency: EUR
+    customer_reference: null
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+EJDg==
+    debitor_identifier: null
+    deviate_applicant: null
+    deviate_recipient: null
+    end_to_end_reference: '123/123/12345-----L1101234567890123 '
+    extra_details: ''
+    funds_code: null
+    gvc_applicant_bin: null
+    gvc_applicant_iban: null
+    id: NMSC
+    old_SEPA_CI: null
+    old_SEPA_additional_position_reference: null
+    original_amount: null
+    posting_text: Basislastschrift
+    prima_nota: '931'
+    purpose: 'STEUERNR 123/123/12345     KOERPST 3VJ.17  233,15EUR EREF: 123/123/12345-----L1112345678912345
+      MREF: BYA12345678901 CRED: DE99ZZZ00000012345 IBAN: DE00700500'
+    purpose_code: null
+    recipient_name: null
+    return_debit_notes: '992'
+    settlement_tag: null
+    status: D
+    transaction_code: '105'
+  transactions: *id003
