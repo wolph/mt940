@@ -71,6 +71,7 @@ class Tag(object):
             part_value = value
             for pattern in self.pattern.split('\n'):
                 match = re.match(pattern, part_value, self.RE_FLAGS)
+
                 if match:
                     self.logger.info('matched %r against %r, got: %s',
                                      pattern, match.group(0),
@@ -157,15 +158,19 @@ class StatementNumber(Tag):
 
     '''Statement number / sequence number
 
-    Pattern: 5n[/5n][/a]
+    Pattern: 5n[/5n][/*x]
     '''
     id = 28
     pattern = r'''
     (?P<statement_number>\d{1,5})  # 5n
-    (?:\/?(?P<sequence_number>\d{1,5}))  # [/5n]
-    (?:\/?(?P<suffix>(...)))?  # [/a]
+    (?:/?(?P<sequence_number>\d{1,5}))?  # [/5n]
+    (?:/?(?P<suffix>[0-9A-Z_a-z]*))?
     $'''
 
+#    pattern = r'''
+#    (?P<statement_number>\d{1,5})  # 5n
+#    (?:\/?(?P<sequence_number>\d{1,5}))?  # [/5n]
+#    $'''
 
 class FloorLimitIndicator(Tag):
     '''Floor limit indicator
@@ -213,10 +218,15 @@ class NonSwift(Tag):
 
     pattern = r'''
     (?P<non_swift>
-        (\d{2}.{0,})
-        (\n\d{2}.{0,})*
+        (
+            (\d{2}.{0,})
+            (\n\d{2}.{0,})*
+        )|(
+            [^\n]*
+        )
     )
     $'''
+
     sub_pattern = r'''
     (?P<ns_id>\d{2})(?P<ns_data>.{0,})
     '''
@@ -279,7 +289,7 @@ class Statement(Tag):
 
     '''Statement
 
-    Pattern: 6!n[4!n]2a[1!a]15d1!a3!c16x[//16x]
+    Pattern: 6!n[4!n]2a[1!a]15d1!a3!c23x[//16x]
     '''
     id = 61
     scope = models.Transaction
@@ -296,7 +306,7 @@ class Statement(Tag):
     (?P<amount>[\d,]{1,15})  # 15d Amount
     (?P<id>[A-Z][A-Z0-9 ]{3})?  # 1!a3!c Transaction Type Identification Code
     (?P<customer_reference>.{0,16})  # 16x Customer Reference
-    (//(?P<bank_reference>.{0,16}))?  # [//16x] Bank Reference
+    (//(?P<bank_reference>.{0,35}))?  # [//35x] Bank Reference
     (\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary Details
     $'''
 
@@ -419,6 +429,5 @@ class Tags(enum.Enum):
 
 
 TAG_BY_ID = {t.value.id: t.value for t in Tags}
-
 
 
