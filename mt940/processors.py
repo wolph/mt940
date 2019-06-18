@@ -86,19 +86,65 @@ def mBank_set_tnr(transactions, tag, tag_dict, *args):
 
     return tag_dict
 
+# TEST OK: Credit Agricole weak :86: structure, https://firmabank.credit-agricole.pl/mt-front/help/en/10527.html
+# TEST OK: Millenium, https://www.bankmillennium.pl/documents/10184/112009/Opis__formatu__pliku_wyciagow__MT940v20120309_1216885.pdf
+# TEST OK: BNP PariBas, https://www.bgzbnpparibas.pl/_fileserver/item/1504995 (PL) https://www.bgzbnpparibas.pl/_fileserver/item/1504996 (EN)
+# TEST OK: PKO BP, http://www.pkobp.pl/media_files/26455bd3-6edb-417f-9c03-647e27cdc9c5.pdf/ http://www.pkobp.pl/media_files/9ee49e34-754d-451d-83fc-b8a8051f7e33.pdf
+# TEST OK: PEKAO SA, ftp://ftp.kamsoft.pl/pub/KS-FKW/Pomoce/MT940/PekaoBIZNES24.pdf
+# TEST OK FORTIS, ftp://ftp.kamsoft.pl/pub/KS-FKW/Pomoce/MT940/Fortis.pdf
+# TEST OK Santander (encoding!), (transaction_code 4n) https://static3.santander.pl/asset/P/r/z/Przewodnik-iBiznes24---Formaty-Plikow_91267.pdf
+# OK, NOT TESTED: Alior,  ftp://ftp.kamsoft.pl/pub/KS-FKW/Pomoce/MT940/Alior.pdf
+# OK, NOT TESTED: BPH, ftp://ftp.kamsoft.pl/pub/KS-FKW/Pomoce/MT940/BPH_SAM2.pdf
+# OK, NOT TESTED: BPH, ftp://ftp.kamsoft.pl/pub/KS-FKW/Pomoce/MT940/BPH_SAT.pdf
+# OK, NOT TESTED: BPS (Bank Polskiej Spółdzielczości) ftp://ftp.kamsoft.pl/pub/KS-FKW/Pomoce/MT940/BPS_MC.pdf
+# OK, NOT TESTED: ING, ftp://ftp.kamsoft.pl/pub/KS-FKW/Pomoce/MT940/ING.pdf
+# OK, NOT TESTED: Krakowski Bank Spółdzielczy, ftp://ftp.kamsoft.pl/pub/KS-FKW/Pomoce/MT940/KBS.pdf
+# OK, NOT TESTED: https://www.mbank.pl/pdf/firmy/inne/mt940-wyciagi-dzienne-i-miesieczne-w-czesci-detalicznej-mbanku.pdf
+
+# NOT TESTED: DeutscheBank weak :86: structure ftp://ftp.kamsoft.pl/pub/KS-FKW/Pomoce/MT940/DeutscheBank.pdf
+# NOT TESTED: weak :86: structure ftp://ftp.kamsoft.pl/pub/KS-FKW/Pomoce/MT940/GetinNobleBank.PDF
+# NOT TESTED: weak :86: structure ftp://ftp.kamsoft.pl/pub/KS-FKW/Pomoce/MT940/BG%C5%BB.pdf
 
 # https://www.db-bankline.deutsche-bank.com/download/MT940_Deutschland_Structure2002.pdf
+# DETAIL_KEYS_OLD = {
+#     '': 'transaction_code',
+#     '00': 'posting_text',
+#     '10': 'prima_nota',
+#     '20': 'purpose',
+#     '30': 'applicant_bin',
+#     '31': 'applicant_iban',
+#     '32': 'applicant_name',
+#     '34': 'return_debit_notes',
+#     '35': 'recipient_name',
+#     '60': 'additional_purpose',
+# }
+
 DETAIL_KEYS = {
     '': 'transaction_code',
     '00': 'posting_text',
     '10': 'prima_nota',
     '20': 'purpose',
+    '21': 'purpose',
+    '22': 'purpose',
+    '23': 'purpose',
+    '24': 'purpose',
+    '25': 'purpose',
+    '26': 'purpose',
+    '27': 'applicant',
+    '28': 'applicant',
+    '29': 'applicant',
     '30': 'applicant_bin',
     '31': 'applicant_iban',
     '32': 'applicant_name',
+    '33': 'applicant_name',
     '34': 'return_debit_notes',
     '35': 'recipient_name',
-    '60': 'additional_purpose',
+    '38': 'applicant_iban_full',
+    '60': 'applicant',
+    '61': 'additional_purpose',
+    '62': 'additional_purpose',
+    '63': 'bank_reference',
+    '64': 'additional_purpose',
 }
 
 # https://www.hettwer-beratung.de/sepa-spezialwissen/sepa-technische-anforderungen/sepa-gesch%C3%A4ftsvorfallcodes-gvc-mt-940/
@@ -125,7 +171,7 @@ GVC_KEYS = {
 }
 
 
-def _parse_mt940_details(detail_str):
+def _parse_mt940_details(detail_str, details_separator):
     result = dict.fromkeys(DETAIL_KEYS.values())
 
     tmp = collections.OrderedDict()
@@ -133,29 +179,25 @@ def _parse_mt940_details(detail_str):
     segment_type = ''
 
     for index, char in enumerate(detail_str):
-        if char != '?':
+        if char != details_separator:
             segment += char
 
             continue
         tmp[segment_type] = segment if not segment_type else segment[2:]
-        segment_type = detail_str[index + 1] + detail_str[index + 2]
-        segment = ''
+        try:
+            segment_type = detail_str[index + 1] + detail_str[index + 2]
+        except:
+            segment_type = ''
+        finally:
+            segment = ''
 
-    if segment_type:  # pragma: no branch
+    if segment_type:
         tmp[segment_type] = segment if not segment_type else segment[2:]
 
     for key, value in tmp.items():
         if key in DETAIL_KEYS:
-            result[DETAIL_KEYS[key]] = value
-        elif key == '33':
-            key32 = DETAIL_KEYS['32']
-            result[key32] = (result[key32] or '') + value
-        elif key.startswith('2'):
-            key20 = DETAIL_KEYS['20']
-            result[key20] = (result[key20] or '') + value
-        elif key in ('61', '62', '63'):
-            key60 = DETAIL_KEYS['60']
-            result[key60] = (result[key60] or '') + value
+            result[DETAIL_KEYS[key]] = (result[DETAIL_KEYS[key]] or '') + value.replace('\n', '')
+
 
     return result
 
@@ -195,10 +237,23 @@ def _parse_mt940_gvcodes(purpose):
 def transaction_details_post_processor(transactions, tag, tag_dict, result):
     details = tag_dict['transaction_details']
     details = ''.join(detail.strip('\n\r') for detail in details.splitlines())
+    details_separator = ''
+    if re.match(r'^\d{4}[\?<>~^]\d{2}', details):
+    # check for e.g. 103?00... or 103<00
+        details_separator = details[4]
+    elif re.match(r'^\d{3}[\?<>~^]\d{2}', details):
+    # check for e.g. 103?00... or 103<00
+        details_separator = details[3]
+    elif re.match(r'^[\?<>~^]\d{2}', details):
+    # no operation code;check for e.g. ?00... or <00
+        details_separator = details[0]
+    else:
+    # no details separator/unknown separator - only purpose assigned, preserve \n for further analysis as <BR>
+        result = dict.fromkeys(DETAIL_KEYS.values())
+        result['purpose'] = '<BR>'.join(detail.strip('\n\r') for detail in tag_dict['transaction_details'].splitlines())
 
-    # check for e.g. 103?00...
-    if re.match(r'^\d{3}\?\d{2}', details):
-        result.update(_parse_mt940_details(details))
+    if details_separator != '':
+        result.update(_parse_mt940_details(details, details_separator))
 
         purpose = result.get('purpose')
 
