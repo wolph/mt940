@@ -289,7 +289,7 @@ class Statement(Tag):
 
     '''Statement
 
-    Pattern: 6!n[4!n]2a[1!a]15d1!a3!c23x[//16x]
+    Pattern: 6!n[4!n]2a[1!a]15d1!a3!c16x[//35x][//34x]
     '''
     id = 61
     scope = models.Transaction
