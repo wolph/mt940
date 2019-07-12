@@ -447,17 +447,15 @@ class Transactions(abc.Sequence):
                 # multiple :86: tags for a single transaction
 
                 for k, v in _compat.iteritems(result):
-                    if k in transaction.data:
-                        try:
-                            if v != None:
-                                if transaction.data[k] != None and hasattr(v, 'strip'):
-                                    transaction.data[k] += '\n%s' % v.strip()
-                                else:
-                                    transaction.data[k] = v.strip()
-                        except:
-                            print('models - 454:', transaction.data[k], v.strip())
-                    else:
-                        transaction.data[k] = v
+                    try:
+                        if hasattr(v, 'strip'):
+                            if transaction.data.get(k) is not None:
+                                transaction.data[k] += '\n%s' % v.strip()
+                            else:
+                                transaction.data[k] = v
+                    except:
+                        import logging
+                        logging.exception('Unable to handle: %r', v)
 
             elif issubclass(tag.scope, Transactions):  # pragma: no branch
                 self.data.update(result)

@@ -52,6 +52,8 @@ class Tag(object):
     id = 0
     RE_FLAGS = re.IGNORECASE | re.VERBOSE | re.UNICODE
     scope = models.Transactions
+    # Dummy regex pattern for editor autocomplete, overridden in the subclasses
+    pattern = re.compile('^$')
 
     def __init__(self):
         self.re = re.compile(self.pattern, self.RE_FLAGS)
@@ -60,12 +62,12 @@ class Tag(object):
         match = self.re.match(value)
         if match:  # pragma: no branch
             self.logger.debug(
-                'matched (%d) %r against %r, got: %s',
+                'matched (%d) %r\nagainst %r\ngot: %s',
                 len(value), value, self.pattern,
                 pprint.pformat(match.groupdict()))
         else:  # pragma: no cover
             self.logger.error(
-                'matching (%d) %r against %r', len(value), value,
+                'no match (%d) %r\nagainst %r', len(value), value,
                 self.pattern)
 
             part_value = value
@@ -206,10 +208,12 @@ class NonSwift(Tag):
 
     '''Non-swift extension for MT940 containing extra information. The
     actual definition is not consistent between banks so the current
-    implementation is a tad limited. Feel free to extend the implmentation
+    implementation is a tad limited. Feel free to extend the implementation
     and create a pull request with a better version :)
 
-    Pattern: 2!n35x
+    It seems this could be anything so we'll have to be flexible about it.
+
+    Pattern: `2!n35x | *x`
     '''
 
     class scope(models.Transaction, models.Transactions):
@@ -244,6 +248,8 @@ class NonSwift(Tag):
                 text.append(ns['ns_data'])
             elif len(text) and text[-1]:
                 text.append('')
+            elif line.strip():
+                text.append(line.strip())
         value['non_swift_text'] = '\n'.join(text)
         value['non_swift'] = data
         return value
