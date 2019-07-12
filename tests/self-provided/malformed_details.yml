@@ -19,7 +19,6 @@ data:
     status: C
   sequence_number: null
   statement_number: '0'
-  suffix: ''
   transaction_reference: STARTUMS
 processors:
   post_account_identification: []
@@ -74,8 +73,7 @@ tags:
       98]
   28: !!python/object:mt940.tags.StatementNumber
     re: !!python/object/apply:re._compile ["\n    (?P<statement_number>\\d{1,5}) \
-        \ # 5n\n    (?:/?(?P<sequence_number>\\d{1,5}))?  # [/5n]\n    (?:/?(?P<suffix>[0-9A-Z_a-z]*))?\n\
-        \    $", 98]
+        \ # 5n\n    (?:/?(?P<sequence_number>\\d{1,5}))?  # [/5n]\n    $", 98]
   60: !!python/object:mt940.tags.OpeningBalance
     re: &id001 !!python/object/apply:re._compile ["^\n    (?P<status>[DC])  # 1!a\
         \ Debit/Credit\n    (?P<year>\\d{2})  # 6!n Value Date (YYMMDD)\n    (?P<month>\\\
@@ -94,7 +92,7 @@ tags:
         \    \\n? # apparently some banks (sparkassen) incorporate newlines here\n\
         \    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    (?P<id>[A-Z][A-Z0-9 ]{3})?\
         \  # 1!a3!c Transaction Type Identification Code\n    (?P<customer_reference>.{0,16})\
-        \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,35}))?  # [//35x]\
+        \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,16}))?  # [//16x]\
         \ Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary\
         \ Details\n    $", 98]
   62: !!python/object:mt940.tags.ClosingBalance
@@ -115,9 +113,8 @@ tags:
         \    (?P<status>[DC ]?)  # 2a Debit/Credit Mark\n    (?P<amount>[0-9,]{0,16})\
         \  # 15d Amount (includes decimal sign, so 16)\n    $", 98]
   NS: !!python/object:mt940.tags.NonSwift
-    re: !!python/object/apply:re._compile ["\n    (?P<non_swift>\n        (\n    \
-        \        (\\d{2}.{0,})\n            (\\n\\d{2}.{0,})*\n        )|(\n     \
-        \       [^\\n]*\n        )\n    )\n    $", 98]
+    re: !!python/object/apply:re._compile ["\n    (?P<non_swift>\n        (\\d{2}.{0,})\n\
+        \        (\\n\\d{2}.{0,})*\n    )\n    $", 98]
   90: !!python/object:mt940.tags.SumEntries
     re: &id002 !!python/object/apply:re._compile ["^\n    (?P<number>\\d*)\n    (?P<currency>.{3})\
         \  # 3!a Currency\n    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    ", 98]
@@ -128,31 +125,45 @@ tags:
 transactions:
 - !!python/object:mt940.models.Transaction
   data:
+    FRST_ONE_OFF_RECC: null
+    additional_position_date: null
     additional_position_reference: BYA12345678901
-    additional_purpose: 'ABWA: Finanzamt Muenchen ABWA+Finanzamt Sentinel'
+    additional_purpose: '000000012345 BIC: BYLADEMMABWA: Finanzamt Muenchen ABWA+Finanzamt
+      Sentinel'
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['-233.15']
       currency: EUR
-    applicant: '-L1112345678912345 MREF: BYA12345678901 CRED: DE99ZZZ00000012345 IBAN:
-      DE00700500000000012345 BIC: BYLADEMM'
     applicant_bin: BYLADEMM
     applicant_creditor_id: 'DE99ZZZ00000012345 '
     applicant_iban: DE99700500000000012345
     applicant_name: Finanzamt Muenchen Abteilung Erhebung
     bank_reference: null
+    compensation_amount: null
     currency: EUR
-    customer_reference: ''
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B+EJDg==
+    debitor_identifier: null
+    deviate_applicant: null
+    deviate_recipient: null
     end_to_end_reference: '123/123/12345-----L1101234567890123 '
     extra_details: ''
     funds_code: null
+    gvc_applicant_bin: null
+    gvc_applicant_iban: null
     id: NMSC
+    old_SEPA_CI: null
+    old_SEPA_additional_position_reference: null
+    original_amount: null
     posting_text: Basislastschrift
     prima_nota: '931'
-    purpose: 'STEUERNR 123/123/12345     KOERPST 3VJ.17  233,15EUR EREF: 123/123/12345----'
+    purpose: 'STEUERNR 123/123/12345     KOERPST 3VJ.17  233,15EUR EREF: 123/123/12345-----L1112345678912345
+      MREF: BYA12345678901 CRED: DE99ZZZ00000012345 IBAN: DE00700500'
+    purpose_code: null
+    recipient_name: null
     return_debit_notes: '992'
+    settlement_tag: null
     status: D
     transaction_code: '105'
   transactions: *id003

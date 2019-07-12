@@ -19,7 +19,6 @@ data:
     status: C
   sequence_number: '00001'
   statement_number: '00053'
-  suffix: ''
   transaction_reference: "STAR1\xDCTUMS"
 processors:
   post_account_identification: []
@@ -74,8 +73,7 @@ tags:
       98]
   28: !!python/object:mt940.tags.StatementNumber
     re: !!python/object/apply:re._compile ["\n    (?P<statement_number>\\d{1,5}) \
-        \ # 5n\n    (?:/?(?P<sequence_number>\\d{1,5}))?  # [/5n]\n    (?:/?(?P<suffix>[0-9A-Z_a-z]*))?\n\
-        \    $", 98]
+        \ # 5n\n    (?:/?(?P<sequence_number>\\d{1,5}))?  # [/5n]\n    $", 98]
   60: !!python/object:mt940.tags.OpeningBalance
     re: &id001 !!python/object/apply:re._compile ["^\n    (?P<status>[DC])  # 1!a\
         \ Debit/Credit\n    (?P<year>\\d{2})  # 6!n Value Date (YYMMDD)\n    (?P<month>\\\
@@ -94,7 +92,7 @@ tags:
         \    \\n? # apparently some banks (sparkassen) incorporate newlines here\n\
         \    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    (?P<id>[A-Z][A-Z0-9 ]{3})?\
         \  # 1!a3!c Transaction Type Identification Code\n    (?P<customer_reference>.{0,16})\
-        \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,35}))?  # [//35x]\
+        \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,23}))?  # [//23x]\
         \ Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary\
         \ Details\n    $", 98]
   62: !!python/object:mt940.tags.ClosingBalance
@@ -128,6 +126,7 @@ tags:
 transactions:
 - !!python/object:mt940.models.Transaction
   data:
+    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['27.00']
       currency: EUR
@@ -152,12 +151,14 @@ transactions:
     posting_text: Bank Transfer Credit
     prima_nota: '930226'
     purpose: QQW53T2245ZGY46J ABBUCHUNGVOM PAYPAL-KONTO100318P3TX1433EV
+    recipient_name: null
     return_debit_notes: '000'
     status: C
     transaction_code: '051'
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
+    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['13068.30']
       currency: EUR
@@ -182,15 +183,20 @@ transactions:
     posting_text: Bank Transfer Credit
     prima_nota: '991118'
     purpose: BETTERPLACE WDB E08.03.10-14.03.10
+    recipient_name: null
     return_debit_notes: '000'
     status: C
     transaction_code: '051'
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
+    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['-193282.05']
       currency: EUR
+    applicant_bin: null
+    applicant_iban: null
+    applicant_name: null
     bank_reference: null
     currency: EUR
     customer_reference: NONREF
@@ -210,15 +216,20 @@ transactions:
     prima_nota: '991132'
     purpose: 'Belegloser ZahlungsauftragErstellungsdatum:19.03.2010Anzahl Posten :      94Anw-Nr.:
       69725563000'
+    recipient_name: null
     return_debit_notes: '540'
     status: D
     transaction_code: '035'
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
+    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['1120.00']
       currency: EUR
+    applicant_bin: null
+    applicant_iban: null
+    applicant_name: null
     bank_reference: null
     currency: EUR
     customer_reference: NONREF
@@ -238,6 +249,7 @@ transactions:
     prima_nota: '991135'
     purpose: "Belegloser Zahlungsauftrag\xDCberweisung:19.03.2010Anzahl Posten :7Anw-Nr.:\
       \ 69725663086"
+    recipient_name: null
     return_debit_notes: '540'
     status: C
     transaction_code: 085
