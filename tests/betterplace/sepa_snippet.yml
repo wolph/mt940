@@ -27,6 +27,7 @@ data:
     status: D
   sequence_number: '00001'
   statement_number: '00004'
+  suffix: ''
   transaction_reference: T089414096000001
 processors:
   post_account_identification: []
@@ -81,7 +82,8 @@ tags:
       98]
   28: !!python/object:mt940.tags.StatementNumber
     re: !!python/object/apply:re._compile ["\n    (?P<statement_number>\\d{1,5}) \
-        \ # 5n\n    (?:/?(?P<sequence_number>\\d{1,5}))?  # [/5n]\n    $", 98]
+        \ # 5n\n    (?:/?(?P<sequence_number>\\d{1,5}))?  # [/5n]\n    (?:/?(?P<suffix>[0-9A-Z_a-z]*))?\n\
+        \    $", 98]
   60: !!python/object:mt940.tags.OpeningBalance
     re: &id001 !!python/object/apply:re._compile ["^\n    (?P<status>[DC])  # 1!a\
         \ Debit/Credit\n    (?P<year>\\d{2})  # 6!n Value Date (YYMMDD)\n    (?P<month>\\\
@@ -100,7 +102,7 @@ tags:
         \    \\n? # apparently some banks (sparkassen) incorporate newlines here\n\
         \    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    (?P<id>[A-Z][A-Z0-9 ]{3})?\
         \  # 1!a3!c Transaction Type Identification Code\n    (?P<customer_reference>.{0,16})\
-        \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,16}))?  # [//16x]\
+        \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,35}))?  # [//35x]\
         \ Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary\
         \ Details\n    $", 98]
   62: !!python/object:mt940.tags.ClosingBalance
@@ -121,8 +123,9 @@ tags:
         \    (?P<status>[DC ]?)  # 2a Debit/Credit Mark\n    (?P<amount>[0-9,]{0,16})\
         \  # 15d Amount (includes decimal sign, so 16)\n    $", 98]
   NS: !!python/object:mt940.tags.NonSwift
-    re: !!python/object/apply:re._compile ["\n    (?P<non_swift>\n        (\\d{2}.{0,})\n\
-        \        (\\n\\d{2}.{0,})*\n    )\n    $", 98]
+    re: !!python/object/apply:re._compile ["\n    (?P<non_swift>\n        (\n    \
+        \        (\\d{2}.{0,})\n            (\\n\\d{2}.{0,})*\n        )|(\n     \
+        \       [^\\n]*\n        )\n    )\n    $", 98]
   90: !!python/object:mt940.tags.SumEntries
     re: &id002 !!python/object/apply:re._compile ["^\n    (?P<number>\\d*)\n    (?P<currency>.{3})\
         \  # 3!a Currency\n    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    ", 98]
@@ -133,27 +136,18 @@ tags:
 transactions:
 - !!python/object:mt940.models.Transaction
   data:
-    FRST_ONE_OFF_RECC: null
-    additional_position_date: null
-    additional_position_reference: null
-    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['50990.05']
       currency: EUR
     applicant_bin: DRESDEFF508
-    applicant_creditor_id: null
     applicant_iban: DE14508800500194785000
     applicant_name: KARL        KAUFMANN
     bank_reference: null
-    compensation_amount: null
     currency: EUR
-    customer_reference: null
+    customer_reference: NONREF//07247103
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBw==
-    debitor_identifier: null
-    deviate_applicant: null
-    deviate_recipient: null
     end_to_end_reference: EndToEndId TFNR 22 004 00001
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -163,45 +157,27 @@ transactions:
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    gvc_applicant_bin: null
-    gvc_applicant_iban: null
     id: NTRF
-    old_SEPA_CI: null
-    old_SEPA_additional_position_reference: null
-    original_amount: null
     posting_text: GUTSCHRIFT
     prima_nota: 0399
     purpose: Verw CTSc-01 BC-PPP TFNr 22 004
-    purpose_code: null
-    recipient_name: null
-    return_debit_notes: null
-    settlement_tag: null
     status: C
     transaction_code: '166'
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
-    FRST_ONE_OFF_RECC: null
-    additional_position_date: null
-    additional_position_reference: null
-    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['154551.93']
       currency: EUR
     applicant_bin: DRESDEFF508
-    applicant_creditor_id: null
     applicant_iban: DE03508800500194791600
     applicant_name: Quentin Quast
     bank_reference: null
-    compensation_amount: null
     currency: EUR
-    customer_reference: null
+    customer_reference: NONREF//07247103
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBw==
-    debitor_identifier: null
-    deviate_applicant: null
-    deviate_recipient: null
     end_to_end_reference: TFNR 0300300004
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -211,45 +187,27 @@ transactions:
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    gvc_applicant_bin: null
-    gvc_applicant_iban: null
     id: NTRF
-    old_SEPA_CI: null
-    old_SEPA_additional_position_reference: null
-    original_amount: null
     posting_text: GUTSCHRIFT
     prima_nota: 0399
     purpose: Strukturierter Verwendungszweck 30030004 DE
-    purpose_code: null
-    recipient_name: null
-    return_debit_notes: null
-    settlement_tag: null
     status: C
     transaction_code: '166'
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
-    FRST_ONE_OFF_RECC: null
-    additional_position_date: null
-    additional_position_reference: null
-    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['154551.93']
       currency: EUR
     applicant_bin: DRESDEFF508
-    applicant_creditor_id: null
     applicant_iban: DE14508800500194785000
     applicant_name: Karl Kaufmann
     bank_reference: null
-    compensation_amount: null
     currency: EUR
-    customer_reference: null
+    customer_reference: NONREF//07247103
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBw==
-    debitor_identifier: null
-    deviate_applicant: null
-    deviate_recipient: null
     end_to_end_reference: TFNR 0500500004
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -259,37 +217,19 @@ transactions:
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    gvc_applicant_bin: null
-    gvc_applicant_iban: null
     id: NTRF
-    old_SEPA_CI: null
-    old_SEPA_additional_position_reference: null
-    original_amount: null
     posting_text: GUTSCHRIFT
     prima_nota: 0399
     purpose: Strukturierter Verwendungszweck 50050004 DE
-    purpose_code: null
-    recipient_name: null
-    return_debit_notes: null
-    settlement_tag: null
     status: C
     transaction_code: '166'
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
-    FRST_ONE_OFF_RECC: null
-    additional_position_date: null
-    additional_position_reference: null
-    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['-1500.00']
       currency: EUR
-    applicant_bin: null
-    applicant_creditor_id: null
-    applicant_iban: null
-    applicant_name: null
     bank_reference: null
-    compensation_amount: null
     currency: EUR
     customer_reference: 'KREF+//536D80EFE
 
@@ -298,10 +238,6 @@ transactions:
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    debitor_identifier: null
-    deviate_applicant: null
-    deviate_recipient: null
-    end_to_end_reference: null
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -310,45 +246,23 @@ transactions:
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    gvc_applicant_bin: null
-    gvc_applicant_iban: null
     id: NTRF
-    old_SEPA_CI: null
-    old_SEPA_additional_position_reference: null
-    original_amount: null
     posting_text: SEPA-UEBERW
     prima_nota: 0399
-    purpose: null
-    purpose_code: null
-    recipient_name: null
-    return_debit_notes: null
-    settlement_tag: null
     status: D
     transaction_code: '191'
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
-    FRST_ONE_OFF_RECC: null
-    additional_position_date: null
-    additional_position_reference: null
-    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['-0.08']
       currency: EUR
-    applicant_bin: null
-    applicant_creditor_id: null
-    applicant_iban: null
-    applicant_name: null
     bank_reference: '0724710345316116'
-    compensation_amount: null
     currency: EUR
-    customer_reference: null
+    customer_reference: TFNr 40001 MSGID
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    debitor_identifier: null
-    deviate_applicant: null
-    deviate_recipient: null
     end_to_end_reference: TFNR 40001 00005MTLG:Grund nicht spezifiziert Reject aus
       SEPA-Ueberweisungsauftrag
     entry_date: !!python/object/apply:mt940.models.Date
@@ -359,45 +273,24 @@ transactions:
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    gvc_applicant_bin: null
-    gvc_applicant_iban: null
     id: NTRF
-    old_SEPA_CI: null
-    old_SEPA_additional_position_reference: null
-    original_amount: null
     posting_text: RETOURE
     prima_nota: 0399
-    purpose: null
-    purpose_code: null
-    recipient_name: null
     return_debit_notes: '914'
-    settlement_tag: null
     status: D
     transaction_code: '159'
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
-    FRST_ONE_OFF_RECC: null
-    additional_position_date: null
-    additional_position_reference: null
-    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['335.33']
       currency: EUR
-    applicant_bin: null
-    applicant_creditor_id: null
-    applicant_iban: null
-    applicant_name: null
     bank_reference: '0724710351063401'
-    compensation_amount: null
     currency: EUR
-    customer_reference: null
+    customer_reference: TFNr 44001 MSGID
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    debitor_identifier: null
-    deviate_applicant: null
-    deviate_recipient: null
     end_to_end_reference: TFNR 44001 00001MTLG:Grund nicht spezifiziert Reject aus
       SEPA-Ueberweisungsauftrag
     entry_date: !!python/object/apply:mt940.models.Date
@@ -408,45 +301,24 @@ transactions:
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    gvc_applicant_bin: null
-    gvc_applicant_iban: null
     id: NTRF
-    old_SEPA_CI: null
-    old_SEPA_additional_position_reference: null
-    original_amount: null
     posting_text: RETOURE
     prima_nota: 0399
-    purpose: null
-    purpose_code: null
-    recipient_name: null
     return_debit_notes: '914'
-    settlement_tag: null
     status: C
     transaction_code: '159'
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
-    FRST_ONE_OFF_RECC: null
-    additional_position_date: null
-    additional_position_reference: null
-    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['15000']
       currency: EUR
-    applicant_bin: null
-    applicant_creditor_id: null
-    applicant_iban: null
-    applicant_name: null
     bank_reference: '0724710345316110'
-    compensation_amount: null
     currency: EUR
-    customer_reference: null
+    customer_reference: TFNr 40001 MSGID
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    debitor_identifier: null
-    deviate_applicant: null
-    deviate_recipient: null
     end_to_end_reference: TFNR 40001 00002MTLG:Grund nicht spezifiziert Reject aus
       SEPA-Ueberweisungsauftrag
     entry_date: !!python/object/apply:mt940.models.Date
@@ -457,45 +329,28 @@ transactions:
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    gvc_applicant_bin: null
-    gvc_applicant_iban: null
     id: NTRF
-    old_SEPA_CI: null
-    old_SEPA_additional_position_reference: null
-    original_amount: null
     posting_text: RETOURE
     prima_nota: 0399
-    purpose: null
-    purpose_code: null
-    recipient_name: null
     return_debit_notes: '914'
-    settlement_tag: null
     status: C
     transaction_code: '159'
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
-    FRST_ONE_OFF_RECC: null
-    additional_position_date: null
-    additional_position_reference: null
-    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['15000.05']
       currency: EUR
+    applicant: xxxxxxxxxx
     applicant_bin: PBNKDEFF100
-    applicant_creditor_id: null
     applicant_iban: DE42100100100043921105
     applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
     bank_reference: null
-    compensation_amount: null
     currency: EUR
-    customer_reference: null
+    customer_reference: NONREF//07247102
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    debitor_identifier: null
-    deviate_applicant: null
-    deviate_recipient: null
     end_to_end_reference: EndToEndIdTFNR2000100001
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -505,47 +360,28 @@ transactions:
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    gvc_applicant_bin: null
-    gvc_applicant_iban: null
     id: NTRF
-    old_SEPA_CI: null
-    old_SEPA_additional_position_reference: null
-    original_amount: null
     posting_text: GUTSCHRIFT
     prima_nota: 0399
     purpose: TO 13 TFNr 20001 Eingangskanal Mint Unstrukturierter Verwendungszweck
-      140 Zeichen Beginn Fuellzeichen xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-    purpose_code: null
-    recipient_name: null
-    return_debit_notes: null
-    settlement_tag: null
+      140 Zeichen Beginn Fuellzeichen xxxxxxxxxxxxxxxxxxxxxxxxxxxx
     status: C
     transaction_code: '166'
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
-    FRST_ONE_OFF_RECC: null
-    additional_position_date: null
-    additional_position_reference: null
-    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['125004.88']
       currency: EUR
     applicant_bin: PBNKDEFF100
-    applicant_creditor_id: null
     applicant_iban: DE42100100100043921105
     applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
     bank_reference: null
-    compensation_amount: null
     currency: EUR
-    customer_reference: null
+    customer_reference: NONREF//07247102
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    debitor_identifier: null
-    deviate_applicant: null
-    deviate_recipient: null
-    end_to_end_reference: null
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -554,45 +390,24 @@ transactions:
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    gvc_applicant_bin: null
-    gvc_applicant_iban: null
     id: NTRF
-    old_SEPA_CI: null
-    old_SEPA_additional_position_reference: null
-    original_amount: null
     posting_text: GUTSCHRIFT
     prima_nota: 0399
     purpose: TO13 TF20005 MINT
-    purpose_code: null
-    recipient_name: null
-    return_debit_notes: null
-    settlement_tag: null
     status: C
     transaction_code: '166'
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
-    FRST_ONE_OFF_RECC: null
-    additional_position_date: null
-    additional_position_reference: null
-    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['915311.55']
       currency: EUR
-    applicant_bin: null
-    applicant_creditor_id: null
-    applicant_iban: null
-    applicant_name: null
     bank_reference: R724710351063405
-    compensation_amount: null
     currency: EUR
-    customer_reference: null
+    customer_reference: TFNr 44001 MSGID
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    debitor_identifier: null
-    deviate_applicant: null
-    deviate_recipient: null
     end_to_end_reference: TFNR 44001 00002MTLG:IBAN ungueltig Rueckueberweisung aus
       SEPA-Ueberweisungsauftrag
     entry_date: !!python/object/apply:mt940.models.Date
@@ -603,31 +418,18 @@ transactions:
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    gvc_applicant_bin: null
-    gvc_applicant_iban: null
     id: NTRF
-    old_SEPA_CI: null
-    old_SEPA_additional_position_reference: null
-    original_amount: null
     posting_text: RETOURE
     prima_nota: 0399
-    purpose: null
-    purpose_code: null
-    recipient_name: null
     return_debit_notes: '901'
-    settlement_tag: null
     status: C
     transaction_code: '159'
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
-    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['-3572569.03']
       currency: EUR
-    applicant_bin: null
-    applicant_iban: null
-    applicant_name: null
     bank_reference: null
     currency: EUR
     customer_reference: NONREF
@@ -646,8 +448,6 @@ transactions:
     posting_text: SAMMLER
     prima_nota: '9800'
     purpose: 0904059001
-    recipient_name: null
-    return_debit_notes: null
     status: D
     transaction_code: 079
   transactions: *id003

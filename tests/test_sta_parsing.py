@@ -84,9 +84,12 @@ def compare(a, b, key=''):
 @pytest.mark.parametrize('sta_file', get_sta_files())
 def test_parse(sta_file):
     transactions = mt940.parse(sta_file)
-    # To update the yaml files after changing the code, uncomment the following
-    # Only for development purposes
-    # write_yaml_data(sta_file, transactions)
+    # To update the yaml files after changing the code use the following
+    # environment variable.
+    # NOTE: Only for development purposes
+    if os.environ.get('WRITE_YAML_FILES'):
+        assert not os.environ.get('TRAVIS')
+        write_yaml_data(sta_file, transactions)
     expected = get_yaml_data(sta_file)
 
     assert len(transactions) >= 0
@@ -108,9 +111,9 @@ def test_parse(sta_file):
             repr(v)
 
     # Compare transaction data
-    compare(transactions, expected)
+    compare(expected, transactions)
     # Compare actual transactions
-    compare(transactions[:], expected[:])
+    compare(expected[:], transactions[:])
 
 
 @pytest.mark.parametrize('sta_file', get_sta_files())

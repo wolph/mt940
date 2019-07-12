@@ -53,7 +53,8 @@ tags:
       98]
   28: !!python/object:mt940.tags.StatementNumber
     re: !!python/object/apply:re._compile ["\n    (?P<statement_number>\\d{1,5}) \
-        \ # 5n\n    (?:/?(?P<sequence_number>\\d{1,5}))?  # [/5n]\n    $", 98]
+        \ # 5n\n    (?:/?(?P<sequence_number>\\d{1,5}))?  # [/5n]\n    (?:/?(?P<suffix>[0-9A-Z_a-z]*))?\n\
+        \    $", 98]
   60: !!python/object:mt940.tags.OpeningBalance
     re: &id001 !!python/object/apply:re._compile ["^\n    (?P<status>[DC])  # 1!a\
         \ Debit/Credit\n    (?P<year>\\d{2})  # 6!n Value Date (YYMMDD)\n    (?P<month>\\\
@@ -72,7 +73,7 @@ tags:
         \    \\n? # apparently some banks (sparkassen) incorporate newlines here\n\
         \    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    (?P<id>[A-Z][A-Z0-9 ]{3})?\
         \  # 1!a3!c Transaction Type Identification Code\n    (?P<customer_reference>.{0,16})\
-        \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,16}))?  # [//16x]\
+        \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,35}))?  # [//35x]\
         \ Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary\
         \ Details\n    $", 98]
   62: !!python/object:mt940.tags.ClosingBalance
@@ -93,8 +94,9 @@ tags:
         \    (?P<status>[DC ]?)  # 2a Debit/Credit Mark\n    (?P<amount>[0-9,]{0,16})\
         \  # 15d Amount (includes decimal sign, so 16)\n    $", 98]
   NS: !!python/object:mt940.tags.NonSwift
-    re: !!python/object/apply:re._compile ["\n    (?P<non_swift>\n        (\\d{2}.{0,})\n\
-        \        (\\n\\d{2}.{0,})*\n    )\n    $", 98]
+    re: !!python/object/apply:re._compile ["\n    (?P<non_swift>\n        (\n    \
+        \        (\\d{2}.{0,})\n            (\\n\\d{2}.{0,})*\n        )|(\n     \
+        \       [^\\n]*\n        )\n    )\n    $", 98]
   90: !!python/object:mt940.tags.SumEntries
     re: &id002 !!python/object/apply:re._compile ["^\n    (?P<number>\\d*)\n    (?P<currency>.{3})\
         \  # 3!a Currency\n    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    ", 98]
@@ -105,10 +107,7 @@ tags:
 transactions:
 - !!python/object:mt940.models.Transaction
   data:
-    FRST_ONE_OFF_RECC: null
-    additional_position_date: null
     additional_position_reference: CAC97D2144174318AC18D9BF815BD4FB
-    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['-1.62']
       currency: null
@@ -117,15 +116,11 @@ transactions:
     applicant_iban: HUkkbbbsssskcccccccccccccccx
     applicant_name: Peter Pan
     bank_reference: 025498557/000001
-    compensation_amount: null
     currency: null
-    customer_reference: null
+    customer_reference: 0000549855700010
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B94JAQ==
-    debitor_identifier: null
-    deviate_applicant: null
-    deviate_recipient: null
     end_to_end_reference: TRX-0A4A47C3-F846-4729-8A1B-5DF620F
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -135,19 +130,11 @@ transactions:
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B94JAg==
-    gvc_applicant_bin: null
-    gvc_applicant_iban: null
     id: NTRF
-    old_SEPA_CI: null
-    old_SEPA_additional_position_reference: null
-    original_amount: null
     posting_text: SEPA LASTSCHRIFT KUNDE
     prima_nota: '281'
     purpose: FOO TRX-0A4A47C3-F846-4729-8A1B-5DF620F
-    purpose_code: null
-    recipient_name: null
     return_debit_notes: '171'
-    settlement_tag: null
     status: D
     transaction_code: '171'
   transactions: *id003

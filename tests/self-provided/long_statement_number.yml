@@ -19,6 +19,7 @@ data:
     status: C
   sequence_number: '18101'
   statement_number: '18101'
+  suffix: ''
   transaction_reference: '12345678'
 processors:
   post_account_identification: []
@@ -73,7 +74,8 @@ tags:
       98]
   28: !!python/object:mt940.tags.StatementNumber
     re: !!python/object/apply:re._compile ["\n    (?P<statement_number>\\d{1,5}) \
-        \ # 5n\n    (?:/?(?P<sequence_number>\\d{1,5}))?  # [/5n]\n    $", 98]
+        \ # 5n\n    (?:/?(?P<sequence_number>\\d{1,5}))?  # [/5n]\n    (?:/?(?P<suffix>[0-9A-Z_a-z]*))?\n\
+        \    $", 98]
   60: !!python/object:mt940.tags.OpeningBalance
     re: &id001 !!python/object/apply:re._compile ["^\n    (?P<status>[DC])  # 1!a\
         \ Debit/Credit\n    (?P<year>\\d{2})  # 6!n Value Date (YYMMDD)\n    (?P<month>\\\
@@ -92,7 +94,7 @@ tags:
         \    \\n? # apparently some banks (sparkassen) incorporate newlines here\n\
         \    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    (?P<id>[A-Z][A-Z0-9 ]{3})?\
         \  # 1!a3!c Transaction Type Identification Code\n    (?P<customer_reference>.{0,16})\
-        \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,16}))?  # [//16x]\
+        \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,35}))?  # [//35x]\
         \ Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary\
         \ Details\n    $", 98]
   62: !!python/object:mt940.tags.ClosingBalance
@@ -113,8 +115,9 @@ tags:
         \    (?P<status>[DC ]?)  # 2a Debit/Credit Mark\n    (?P<amount>[0-9,]{0,16})\
         \  # 15d Amount (includes decimal sign, so 16)\n    $", 98]
   NS: !!python/object:mt940.tags.NonSwift
-    re: !!python/object/apply:re._compile ["\n    (?P<non_swift>\n        (\\d{2}.{0,})\n\
-        \        (\\n\\d{2}.{0,})*\n    )\n    $", 98]
+    re: !!python/object/apply:re._compile ["\n    (?P<non_swift>\n        (\n    \
+        \        (\\d{2}.{0,})\n            (\\n\\d{2}.{0,})*\n        )|(\n     \
+        \       [^\\n]*\n        )\n    )\n    $", 98]
   90: !!python/object:mt940.tags.SumEntries
     re: &id002 !!python/object/apply:re._compile ["^\n    (?P<number>\\d*)\n    (?P<currency>.{3})\
         \  # 3!a Currency\n    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    ", 98]

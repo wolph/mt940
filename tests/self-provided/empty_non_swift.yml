@@ -1,5 +1,5 @@
 !!python/object:mt940.models.Transactions
-data: {account_identification: 70011110/4005287001EUR}
+data: {non_swift: '', non_swift_text: ''}
 processors:
   post_account_identification: []
   post_available_balance: []

@@ -19,6 +19,7 @@ data:
     status: C
   sequence_number: '1'
   statement_number: '999'
+  suffix: ''
   transaction_reference: B4G30MS9D00A003D
 processors:
   post_account_identification: []
@@ -73,7 +74,8 @@ tags:
       98]
   28: !!python/object:mt940.tags.StatementNumber
     re: !!python/object/apply:re._compile ["\n    (?P<statement_number>\\d{1,5}) \
-        \ # 5n\n    (?:/?(?P<sequence_number>\\d{1,5}))?  # [/5n]\n    $", 98]
+        \ # 5n\n    (?:/?(?P<sequence_number>\\d{1,5}))?  # [/5n]\n    (?:/?(?P<suffix>[0-9A-Z_a-z]*))?\n\
+        \    $", 98]
   60: !!python/object:mt940.tags.OpeningBalance
     re: &id001 !!python/object/apply:re._compile ["^\n    (?P<status>[DC])  # 1!a\
         \ Debit/Credit\n    (?P<year>\\d{2})  # 6!n Value Date (YYMMDD)\n    (?P<month>\\\
@@ -92,7 +94,7 @@ tags:
         \    \\n? # apparently some banks (sparkassen) incorporate newlines here\n\
         \    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    (?P<id>[A-Z][A-Z0-9 ]{3})?\
         \  # 1!a3!c Transaction Type Identification Code\n    (?P<customer_reference>.{0,16})\
-        \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,16}))?  # [//16x]\
+        \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,35}))?  # [//35x]\
         \ Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary\
         \ Details\n    $", 98]
   62: !!python/object:mt940.tags.ClosingBalance
@@ -113,8 +115,9 @@ tags:
         \    (?P<status>[DC ]?)  # 2a Debit/Credit Mark\n    (?P<amount>[0-9,]{0,16})\
         \  # 15d Amount (includes decimal sign, so 16)\n    $", 98]
   NS: !!python/object:mt940.tags.NonSwift
-    re: !!python/object/apply:re._compile ["\n    (?P<non_swift>\n        (\\d{2}.{0,})\n\
-        \        (\\n\\d{2}.{0,})*\n    )\n    $", 98]
+    re: !!python/object/apply:re._compile ["\n    (?P<non_swift>\n        (\n    \
+        \        (\\d{2}.{0,})\n            (\\n\\d{2}.{0,})*\n        )|(\n     \
+        \       [^\\n]*\n        )\n    )\n    $", 98]
   90: !!python/object:mt940.tags.SumEntries
     re: &id002 !!python/object/apply:re._compile ["^\n    (?P<number>\\d*)\n    (?P<currency>.{3})\
         \  # 3!a Currency\n    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    ", 98]
@@ -143,10 +146,9 @@ transactions:
     - !!binary |
       B94FBw==
     id: NTRF
+    purpose: HIER EEN MOOIE OMSCHRIJVING IN HOOFDLETTERS<BR>WANT DAT IS ZOALS DE NEDERLANDSE
+      BANKEN COMMUNICEREN
     status: C
-    transaction_details: 'HIER EEN MOOIE OMSCHRIJVING IN HOOFDLETTERS
-
-      WANT DAT IS ZOALS DE NEDERLANDSE BANKEN COMMUNICEREN'
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -168,10 +170,8 @@ transactions:
     - !!binary |
       B94HHQ==
     id: NTRF
+    purpose: 'FACTUUR 201403110, 201403113<BR>REK: NL65INGB0123456789/NAAM: PICQER'
     status: D
-    transaction_details: 'FACTUUR 201403110, 201403113
-
-      REK: NL65INGB0123456789/NAAM: PICQER'
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -193,9 +193,7 @@ transactions:
     - !!binary |
       B94HHQ==
     id: NTRF
+    purpose: '12160475 0050001631430920 ORDERID: 264267 MEDIA MARKT ONLINE NE<BR>REK:
+      NL84INGB0234561789/NAAM: MMS ONLINE NEDERLAND B.V.'
     status: C
-    transaction_details: '12160475 0050001631430920 ORDERID: 264267 MEDIA MARKT ONLINE
-      NE
-
-      REK: NL84INGB0234561789/NAAM: MMS ONLINE NEDERLAND B.V.'
   transactions: *id003

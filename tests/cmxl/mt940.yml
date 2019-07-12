@@ -20,6 +20,7 @@ data:
   related_reference: '9876543210'
   sequence_number: '001'
   statement_number: 00084
+  suffix: ''
   transaction_reference: TELEWIZORY S.A.
 processors:
   post_account_identification: []
@@ -74,7 +75,8 @@ tags:
       98]
   28: !!python/object:mt940.tags.StatementNumber
     re: !!python/object/apply:re._compile ["\n    (?P<statement_number>\\d{1,5}) \
-        \ # 5n\n    (?:/?(?P<sequence_number>\\d{1,5}))?  # [/5n]\n    $", 98]
+        \ # 5n\n    (?:/?(?P<sequence_number>\\d{1,5}))?  # [/5n]\n    (?:/?(?P<suffix>[0-9A-Z_a-z]*))?\n\
+        \    $", 98]
   60: !!python/object:mt940.tags.OpeningBalance
     re: &id001 !!python/object/apply:re._compile ["^\n    (?P<status>[DC])  # 1!a\
         \ Debit/Credit\n    (?P<year>\\d{2})  # 6!n Value Date (YYMMDD)\n    (?P<month>\\\
@@ -93,7 +95,7 @@ tags:
         \    \\n? # apparently some banks (sparkassen) incorporate newlines here\n\
         \    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    (?P<id>[A-Z][A-Z0-9 ]{3})?\
         \  # 1!a3!c Transaction Type Identification Code\n    (?P<customer_reference>.{0,16})\
-        \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,16}))?  # [//16x]\
+        \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,35}))?  # [//35x]\
         \ Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary\
         \ Details\n    $", 98]
   62: !!python/object:mt940.tags.ClosingBalance
@@ -114,8 +116,9 @@ tags:
         \    (?P<status>[DC ]?)  # 2a Debit/Credit Mark\n    (?P<amount>[0-9,]{0,16})\
         \  # 15d Amount (includes decimal sign, so 16)\n    $", 98]
   NS: !!python/object:mt940.tags.NonSwift
-    re: !!python/object/apply:re._compile ["\n    (?P<non_swift>\n        (\\d{2}.{0,})\n\
-        \        (\\n\\d{2}.{0,})*\n    )\n    $", 98]
+    re: !!python/object/apply:re._compile ["\n    (?P<non_swift>\n        (\n    \
+        \        (\\d{2}.{0,})\n            (\\n\\d{2}.{0,})*\n        )|(\n     \
+        \       [^\\n]*\n        )\n    )\n    $", 98]
   90: !!python/object:mt940.tags.SumEntries
     re: &id002 !!python/object/apply:re._compile ["^\n    (?P<number>\\d*)\n    (?P<currency>.{3})\
         \  # 3!a Currency\n    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    ", 98]
@@ -138,8 +141,8 @@ transactions:
     extra_details: ''
     funds_code: null
     id: NCHK
+    purpose: 999PN5477SCHECK-NR. 0000016703074
     status: D
-    transaction_details: 999PN5477SCHECK-NR. 0000016703074
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -155,8 +158,8 @@ transactions:
     extra_details: ''
     funds_code: null
     id: NSTO
+    purpose: 999PN0911DAUERAUFTR.NR. 14
     status: D
-    transaction_details: 999PN0911DAUERAUFTR.NR. 14
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -172,8 +175,8 @@ transactions:
     extra_details: ''
     funds_code: null
     id: NCLR
+    purpose: 999PN2406SCHECK
     status: C
-    transaction_details: 999PN2406SCHECK
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -189,8 +192,8 @@ transactions:
     extra_details: ''
     funds_code: null
     id: NBOE
+    purpose: 999PN0920WECHSEL
     status: D
-    transaction_details: 999PN0920WECHSEL
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -206,8 +209,8 @@ transactions:
     extra_details: ''
     funds_code: null
     id: NTRF
+    purpose: 999PN0920SCHNELLUEB
     status: D
-    transaction_details: 999PN0920SCHNELLUEB
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -223,8 +226,8 @@ transactions:
     extra_details: ''
     funds_code: null
     id: NMSC
+    purpose: 999PN2506AUSSENH. NR. 1
     status: C
-    transaction_details: 999PN2506AUSSENH. NR. 1
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -240,8 +243,8 @@ transactions:
     extra_details: ''
     funds_code: null
     id: NTRF
+    purpose: 999PN0907UEBERTRAG
     status: D
-    transaction_details: 999PN0907UEBERTRAG
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -257,8 +260,8 @@ transactions:
     extra_details: ''
     funds_code: null
     id: NTRF
+    purpose: 999PN0891BTX
     status: D
-    transaction_details: 999PN0891BTX
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -274,8 +277,8 @@ transactions:
     extra_details: ''
     funds_code: null
     id: NMSC
+    purpose: 999PN0850EINZAHLG.N
     status: C
-    transaction_details: 999PN0850EINZAHLG.N
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -291,8 +294,8 @@ transactions:
     extra_details: ''
     funds_code: null
     id: NMSC
+    purpose: 999PN0812LT.ANLAGE
     status: C
-    transaction_details: 999PN0812LT.ANLAGE
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -308,12 +311,11 @@ transactions:
     extra_details: ''
     funds_code: null
     id: NCHK
+    purpose: 999PN5329AUSLSCHECK
     status: D
-    transaction_details: 999PN5329AUSLSCHECK
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
-    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['-800']
       currency: EUR
@@ -338,14 +340,12 @@ transactions:
     posting_text: DAUERAUFTRAG
     prima_nota: 0599
     purpose: Miete November
-    recipient_name: null
     return_debit_notes: '339'
     status: D
     transaction_code: 008
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
-    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['3000']
       currency: EUR
@@ -370,19 +370,19 @@ transactions:
     posting_text: UEBERWEISUNG
     prima_nota: 0599
     purpose: Gehalt OktoberFirmaMustermannGmbH
-    recipient_name: null
     return_debit_notes: '339'
     status: C
     transaction_code: '051'
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
-    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['20000.00']
       currency: PLN
+    applicant: 00 SZT GTX847 FAKTURA 333/2003.
     applicant_bin: '10600076'
     applicant_iban: '0000777777777777'
+    applicant_iban_full: PL08106000760000777777777777
     applicant_name: HUTA SZKLA TOPIC ULPRZEMYSLOWA 67 32-669 WROCLAW
     bank_reference: '8327000090031789'
     currency: PLN
@@ -400,24 +400,21 @@ transactions:
       B9MKFA==
     id: FMSC
     posting_text: Wyplata-(dysp/przel)
-    prima_nota: null
     purpose: 0810600076000077777777777715617INFO INFO INFO INFO INFO INFO 1 ENDINFO
       INFO INFO INFO INFOINFO 2 ENDZAPLATA ZA FABRYKATY DO TUB - 200 S ZTUK, TRANZYSTORY-300
-      SZT GR544 I OPORNIKI-500 SZT GTX847 FAKTURA 333/2003.
-    recipient_name: null
-    return_debit_notes: null
+      SZT GR544 I OPORNIKI-5
     status: C
     transaction_code: '020'
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
-    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['-10000.00']
       currency: PLN
+    applicant: 00 SZT GTX847 FAKTURA 333/2003.
     applicant_bin: '10600076'
     applicant_iban: '0000777777777777'
-    applicant_name: null
+    applicant_iban_full: PL08106000760000777777777777
     bank_reference: '8327000090031790'
     currency: PLN
     customer_reference: REF 25611247
@@ -434,24 +431,17 @@ transactions:
       B9MKFA==
     id: FTRF
     posting_text: Wyplata-(dysp/przel)
-    prima_nota: null
     purpose: 0810600076000077777777777715617INFO INFO INFO INFO INFO INFO 1 ENDINFO
       INFO INFO INFO INFOINFO 2 ENDZAPLATA ZA FABRYKATY DO TUB - 200 S ZTUK, TRANZYSTORY-300
-      SZT GR544 I OPORNIKI-500 SZT GTX847 FAKTURA 333/2003.
-    recipient_name: null
-    return_debit_notes: null
+      SZT GR544 I OPORNIKI-5
     status: D
     transaction_code: '020'
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
-    additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal ['40.00']
       currency: PLN
-    applicant_bin: null
-    applicant_iban: null
-    applicant_name: null
     bank_reference: '8327000090031791'
     currency: PLN
     customer_reference: NONREF
@@ -468,10 +458,7 @@ transactions:
       B9MKFA==
     id: FTRF
     posting_text: "Uznanie kwot\u0105 odsetek"
-    prima_nota: null
     purpose: Odsetki od lokaty nr 101000022086
-    recipient_name: null
-    return_debit_notes: null
     status: C
     transaction_code: '844'
   transactions: *id003

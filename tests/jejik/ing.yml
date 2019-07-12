@@ -19,6 +19,7 @@ data:
     status: C
   sequence_number: null
   statement_number: '000'
+  suffix: ''
   transaction_reference: MPBZ
 processors:
   post_account_identification: []
@@ -73,7 +74,8 @@ tags:
       98]
   28: !!python/object:mt940.tags.StatementNumber
     re: !!python/object/apply:re._compile ["\n    (?P<statement_number>\\d{1,5}) \
-        \ # 5n\n    (?:/?(?P<sequence_number>\\d{1,5}))?  # [/5n]\n    $", 98]
+        \ # 5n\n    (?:/?(?P<sequence_number>\\d{1,5}))?  # [/5n]\n    (?:/?(?P<suffix>[0-9A-Z_a-z]*))?\n\
+        \    $", 98]
   60: !!python/object:mt940.tags.OpeningBalance
     re: &id001 !!python/object/apply:re._compile ["^\n    (?P<status>[DC])  # 1!a\
         \ Debit/Credit\n    (?P<year>\\d{2})  # 6!n Value Date (YYMMDD)\n    (?P<month>\\\
@@ -92,7 +94,7 @@ tags:
         \    \\n? # apparently some banks (sparkassen) incorporate newlines here\n\
         \    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    (?P<id>[A-Z][A-Z0-9 ]{3})?\
         \  # 1!a3!c Transaction Type Identification Code\n    (?P<customer_reference>.{0,16})\
-        \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,16}))?  # [//16x]\
+        \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,35}))?  # [//35x]\
         \ Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary\
         \ Details\n    $", 98]
   62: !!python/object:mt940.tags.ClosingBalance
@@ -113,8 +115,9 @@ tags:
         \    (?P<status>[DC ]?)  # 2a Debit/Credit Mark\n    (?P<amount>[0-9,]{0,16})\
         \  # 15d Amount (includes decimal sign, so 16)\n    $", 98]
   NS: !!python/object:mt940.tags.NonSwift
-    re: !!python/object/apply:re._compile ["\n    (?P<non_swift>\n        (\\d{2}.{0,})\n\
-        \        (\\n\\d{2}.{0,})*\n    )\n    $", 98]
+    re: !!python/object/apply:re._compile ["\n    (?P<non_swift>\n        (\n    \
+        \        (\\d{2}.{0,})\n            (\\n\\d{2}.{0,})*\n        )|(\n     \
+        \       [^\\n]*\n        )\n    )\n    $", 98]
   90: !!python/object:mt940.tags.SumEntries
     re: &id002 !!python/object/apply:re._compile ["^\n    (?P<number>\\d*)\n    (?P<currency>.{3})\
         \  # 3!a Currency\n    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    ", 98]
@@ -137,12 +140,9 @@ transactions:
     extra_details: ''
     funds_code: null
     id: NTRF
+    purpose: 'RC AFREKENING BETALINGSVERKEER<BR>BETREFT REKENING 4715589 PERIODE:
+      01-10-2010 / 31-12-2010<BR>ING Bank N.V. tarifering ING'
     status: D
-    transaction_details: 'RC AFREKENING BETALINGSVERKEER
-
-      BETREFT REKENING 4715589 PERIODE: 01-10-2010 / 31-12-2010
-
-      ING Bank N.V. tarifering ING'
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -158,8 +158,8 @@ transactions:
     extra_details: ''
     funds_code: null
     id: NTRF
+    purpose: "0111111111 GPSEOUL SPOEDBETALING\tMPBZS1016000047 GPSEOUL"
     status: D
-    transaction_details: "0111111111 GPSEOUL SPOEDBETALING\tMPBZS1016000047 GPSEOUL"
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -175,9 +175,9 @@ transactions:
     extra_details: ''
     funds_code: null
     id: NTRF
+    purpose: "0111111111 ING iDEAL KN: TMG TANGO TRANSACTIENR 0050000534527978 10\xAD\
+      06\xAD2010 15:32 TMG TANGO ING Bank inzake GPKyoto"
     status: D
-    transaction_details: "0111111111 ING iDEAL KN: TMG TANGO TRANSACTIENR 0050000534527978\
-      \ 10\xAD06\xAD2010 15:32 TMG TANGO ING Bank inzake GPKyoto"
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -193,8 +193,8 @@ transactions:
     extra_details: ''
     funds_code: null
     id: NTRF
+    purpose: "ABN AMRO BANK>AMSTERDAM 22\xAD07\xAD2010 09:57 002\t5595781"
     status: D
-    transaction_details: "ABN AMRO BANK>AMSTERDAM 22\xAD07\xAD2010 09:57 002\t5595781"
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -210,8 +210,8 @@ transactions:
     extra_details: ''
     funds_code: null
     id: NTRF
+    purpose: 0111111111 GPPeking 170000001AC
     status: D
-    transaction_details: 0111111111 GPPeking 170000001AC
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -227,8 +227,8 @@ transactions:
     extra_details: ''
     funds_code: null
     id: NTRF
+    purpose: 0123456789 EJ46GREENP100610T1456 CLIEOP TMG GPHONGKONG AMSTERDAM
     status: C
-    transaction_details: 0123456789 EJ46GREENP100610T1456 CLIEOP TMG GPHONGKONG AMSTERDAM
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -244,14 +244,9 @@ transactions:
     extra_details: ''
     funds_code: null
     id: NTRF
+    purpose: '0111111111 Hr S Marechal<BR>ROSMALEN Hr S Marechal ROSMALEN<BR>Betaling
+      transactiedatum: 22-07-2010
+
+      D000004C000002D25,24C28,71<BR>-XXX'
     status: C
-    transaction_details: '0111111111 Hr S Marechal
-
-      ROSMALEN Hr S Marechal ROSMALEN
-
-      Betaling transactiedatum: 22-07-2010
-
-      D000004C000002D25,24C28,71
-
-      -XXX'
   transactions: *id003
