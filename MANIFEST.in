@@ -4,4 +4,4 @@ include CHANGES
 include LICENSE
 include README.rst
 include requirements.txt
-recursive-include tests *.py *.sta *.yml LICENSE
+recursive-include mt940_tests *.py *.sta *.yml LICENSE

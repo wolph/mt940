@@ -80,13 +80,13 @@ Ready to contribute? Here's how to set up `mt940` for local development.
 
 5. When you're done making changes, check that your changes pass flake8 and the tests, including testing other Python versions with tox::
 
-    $ flake8 mt940 tests
+    $ flake8 mt940 mt940_tests
     $ py.test
     $ tox
 
    To get flake8 and tox, just pip install them into your virtualenv using the requirements file.
    
-    $ pip install -r tests/requirements.txt
+    $ pip install -r mt940_tests/requirements.txt
 
 6. Commit your changes and push your branch to GitHub with `git-flow-avh`_::
 
@@ -111,16 +111,18 @@ Before you submit a pull request, check that it meets these guidelines:
 2. If the pull request adds functionality, the docs should be updated. Put
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
-3. The pull request should work for Python 2.7, 3.3, and for PyPy. Check 
+3. The pull request should work for Python 2.7, 3.4+, and for PyPy. Check 
    https://travis-ci.org/WoLpH/mt940/pull_requests
-   and make sure that the tests pass for all supported Python versions.
+   and make sure that the tests pass for all supported Python versions. To
+   test locally you can use `tox` which will run on all installed Python
+   versions.
 
 Tips
 ----
 
 To run a subset of tests::
 
-	$ py.test tests/some_test.py
+	$ py.test mt940_tests/some_test.py
 
 .. _git-flow-avh: https://github.com/petervanderdoes/gitflow
 

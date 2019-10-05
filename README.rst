@@ -72,7 +72,7 @@ Basic parsing:
    import mt940
    import pprint
 
-   transactions = mt940.parse('tests/jejik/abnamro.sta')
+   transactions = mt940.parse('mt940_tests/jejik/abnamro.sta')
 
    print 'Transactions:'
    print transactions
@@ -99,7 +99,7 @@ Set opening / closing balance information on each transaction:
        ],
    ))
 
-   with open('tests/jejik/abnamro.sta') as f:
+   with open('mt940_tests/jejik/abnamro.sta') as f:
        data = f.read()
 
    transactions.parse(data)
@@ -116,7 +116,7 @@ Simple json encoding:
     import mt940
 
 
-    transactions = mt940.parse('tests/jejik/abnamro.sta')
+    transactions = mt940.parse('mt940_tests/jejik/abnamro.sta')
 
     print(json.dumps(transactions, indent=4, cls=mt940.JSONEncoder))
 
@@ -135,7 +135,7 @@ To run the tests:
 
 .. code-block:: shell
 
-    pip install -r tests/requirements.txt
+    pip install -r mt940_tests/requirements.txt
     py.test
     
 Or to run the tests on all available Python versions:

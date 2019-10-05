@@ -4,13 +4,13 @@ import mt940
 
 @pytest.fixture
 def sta_data():
-    with open('tests/jejik/abnamro.sta') as fh:
+    with open('mt940_tests/jejik/abnamro.sta') as fh:
         return fh.read()
 
 
 @pytest.fixture
 def february_30_data():
-    with open('tests/self-provided/february_30.sta') as fh:
+    with open('mt940_tests/self-provided/february_30.sta') as fh:
         return fh.read()
 
 
@@ -25,17 +25,17 @@ def test_date_fixup_pre_processor(february_30_data):
 
 
 def test_parse_data():
-    with open('tests/jejik/abnamro.sta') as fh:
+    with open('mt940_tests/jejik/abnamro.sta') as fh:
         mt940.parse(fh.read())
 
 
 def test_parse_fh():
-    with open('tests/jejik/abnamro.sta') as fh:
+    with open('mt940_tests/jejik/abnamro.sta') as fh:
         mt940.parse(fh)
 
 
 def test_parse_filename():
-    mt940.parse('tests/jejik/abnamro.sta')
+    mt940.parse('mt940_tests/jejik/abnamro.sta')
 
 
 def test_pre_processor(sta_data):
@@ -66,7 +66,7 @@ def test_post_processor(sta_data):
 
 @pytest.fixture
 def mBank_mt942_data():
-    with open('tests/mBank/mt942.sta') as fh:
+    with open('mt940_tests/mBank/mt942.sta') as fh:
         return fh.read()
 
 
@@ -87,7 +87,7 @@ def test_mBank_processors(mBank_mt942_data):
 
 @pytest.fixture
 def mBank_with_newline_in_tnr():
-    with open('tests/mBank/with_newline_in_tnr.sta') as fh:
+    with open('mt940_tests/mBank/with_newline_in_tnr.sta') as fh:
         return fh.read()
 
 

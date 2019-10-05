@@ -5,7 +5,7 @@ from mt940.tags import Tag
 
 @pytest.fixture
 def long_statement_number():
-    with open('tests/self-provided/long_statement_number.sta') as fh:
+    with open('mt940_tests/self-provided/long_statement_number.sta') as fh:
         return fh.read()
 
 
