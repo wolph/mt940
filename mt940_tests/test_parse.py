@@ -3,9 +3,9 @@ import mt940
 
 
 @pytest.mark.parametrize('filename,encoding', [
-    # ('tests/jejik/ing.sta', 'utf-8'),
-    # ('tests/self-provided/raphaelm.sta', 'utf-8'),
-    ('tests/betterplace/with_binary_character.sta', 'utf-8'),
+    ('mt940_tests/jejik/ing.sta', 'utf-8'),
+    ('mt940_tests/self-provided/raphaelm.sta', 'utf-8'),
+    ('mt940_tests/betterplace/with_binary_character.sta', 'utf-8'),
 ])
 def test_non_ascii_parse(filename, encoding):
     # Read as binary

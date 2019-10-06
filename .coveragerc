@@ -2,7 +2,7 @@
 branch = True
 source = 
     mt940
-    tests
+    mt940_tests
 
 omit =
     */mock/*
