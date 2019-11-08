@@ -205,7 +205,8 @@ def transaction_details_post_processor(transactions, tag, tag_dict, result):
 
         purpose = result.get('purpose')
 
-        if purpose and purpose[:4] in GVC_KEYS:  # pragma: no branch
+        if purpose and any(gvk in purpose for gvk in GVC_KEYS
+                           if gvk != ''):  # pragma: no branch
             result.update(_parse_mt940_gvcodes(result['purpose']))
 
         del result['transaction_details']
