@@ -337,6 +337,45 @@ class Statement(Tag):
         return data
 
 
+class StatementASNB(Statement):
+    '''StatementASNB
+
+    From: https://www.sepaforcorporates.com/swift-for-corporates
+
+    Pattern: 6!n[4!n]2a[1!a]15d1!a3!c16x[//16x]
+[34x]
+
+    But ASN bank puts the IBAN in the customer reference, which is acording to
+    Wikipedia at most 34 characters.
+
+    So this is the new pattern:
+
+    Pattern: 6!n[4!n]2a[1!a]15d1!a3!c34x[//16x]
+[34x]
+
+
+    '''
+    pattern = r'''^
+    (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
+    (?P<month>\d{2})
+    (?P<day>\d{2})
+    (?P<entry_month>\d{2})?  # [4!n] Entry Date (MMDD)
+    (?P<entry_day>\d{2})?
+    (?P<status>[A-Z]?[DC])  # 2a Debit/Credit Mark
+    (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd character of the currency
+                            # code, if needed)
+    \n? # apparently some banks (sparkassen) incorporate newlines here
+    (?P<amount>[\d,]{1,15})  # 15d Amount
+    (?P<id>[A-Z][A-Z0-9 ]{3})?  # 1!a3!c Transaction Type Identification Code
+    (?P<customer_reference>.{0,34})  # 34x Customer Reference
+    (//(?P<bank_reference>.{0,16}))?  # [//16x] Bank Reference
+    (\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary Details
+    $'''
+
+    def __call__(self, transactions, value):
+        return super(StatementASNB, self).__call__(transactions, value)
+
+
 class ClosingBalance(BalanceBase):
     id = 62
 

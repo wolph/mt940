@@ -3,10 +3,7 @@
 
 import os
 import sys
-import sys
-
 from setuptools.command.test import test as TestCommand
-
 
 try:
     from setuptools import setup, find_packages
