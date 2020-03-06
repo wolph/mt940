@@ -120,6 +120,24 @@ Simple json encoding:
 
     print(json.dumps(transactions, indent=4, cls=mt940.JSONEncoder))
 
+Parsing statements from the Dutch bank ASN where tag 61 does not follow the Swift specifications:
+
+.. code-block:: python
+
+    def ASNB_mt940_data():
+        with open('mt940_tests/ASNB/0708271685_09022020_164516.940.txt') as fh:
+            return fh.read()
+
+    def test_ASNB_tags(ASNB_mt940_data):
+        tag_parser = mt940.tags.StatementASNB()
+        trs = mt940.models.Transactions(tags={
+            tag_parser.id: tag_parser
+        })
+
+    trs.parse(ASNB_mt940_data)
+    trs_data = pprint.pformat(trs.data, sort_dicts=False)
+    print(trs_data)
+
 Contributing
 ------------
 
@@ -137,7 +155,7 @@ To run the tests:
 
     pip install -r mt940_tests/requirements.txt
     py.test
-    
+
 Or to run the tests on all available Python versions:
 
 .. code-block:: shell
