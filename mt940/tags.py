@@ -343,7 +343,7 @@ class StatementASNB(Statement):
     From: https://www.sepaforcorporates.com/swift-for-corporates
 
     Pattern: 6!n[4!n]2a[1!a]15d1!a3!c16x[//16x]
-[34x]
+    [34x]
 
     But ASN bank puts the IBAN in the customer reference, which is acording to
     Wikipedia at most 34 characters.
@@ -351,9 +351,7 @@ class StatementASNB(Statement):
     So this is the new pattern:
 
     Pattern: 6!n[4!n]2a[1!a]15d1!a3!c34x[//16x]
-[34x]
-
-
+    [34x]
     '''
     pattern = r'''^
     (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
