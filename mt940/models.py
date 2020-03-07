@@ -15,7 +15,9 @@ from . import processors
 
 
 class Model(object):
-    pass
+
+    def __repr__(self):
+        return '<%s>' % self.__class__.__name__
 
 
 class FixedOffset(datetime.tzinfo):
@@ -166,10 +168,14 @@ class Amount(Model):
         if status == 'D':
             self.amount = -self.amount
 
+    def __eq__(self, other):
+        return self.amount == other.amount and self.currency == other.currency
+
+    def __str__(self):
+        return '%s %s' % (self.amount, self.currency)
+
     def __repr__(self):
-        return '<%s %s>' % (
-            self.amount,
-            self.currency, )
+        return '<%s>' % self
 
 
 class SumAmount(Amount):
@@ -211,6 +217,9 @@ class Balance(Model):
         self.status = status
         self.amount = amount
         self.date = date
+
+    def __eq__(self, other):
+        return self.amount == other.amount and self.status == other.status
 
     def __repr__(self):
         return '<%s>' % self
