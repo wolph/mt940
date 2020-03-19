@@ -6,7 +6,7 @@ A library to parse MT940 files and returns smart Python collections for
 statistics and manipulation.
 '''.strip().split())
 __email__ = 'wolph@wol.ph'
-__version__ = '4.20.0'
+__version__ = '4.21.0'
 __license__ = 'BSD'
 __copyright__ = 'Copyright 2015 Rick van Hattem (wolph)'
 __url__ = 'https://github.com/WoLpH/mt940'
