@@ -74,14 +74,15 @@ Basic parsing:
 
    transactions = mt940.parse('mt940_tests/jejik/abnamro.sta')
 
-   print 'Transactions:'
-   print transactions
+   print('Transactions:')
+   print(transactions)
    pprint.pprint(transactions.data)
 
-   print
+   print()
    for transaction in transactions:
-       print 'Transaction: ', transaction
+       print('Transaction: ', transaction)
        pprint.pprint(transaction.data)
+
 
 Set opening / closing balance information on each transaction:
 
@@ -105,7 +106,7 @@ Set opening / closing balance information on each transaction:
    transactions.parse(data)
 
    for transaction in transactions:
-       print 'Transaction: ', transaction
+       print('Transaction: ', transaction)
        pprint.pprint(transaction.data)
 
 Simple json encoding:

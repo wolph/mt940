@@ -346,7 +346,7 @@ class Transactions(abc.Sequence):
 
         return tag_id
 
-    def sanatize_tag_id_matches(self, matches):
+    def sanitize_tag_id_matches(self, matches):
         i_next = 0
         for i, match in enumerate(matches):
             # match was rejected
@@ -401,7 +401,7 @@ class Transactions(abc.Sequence):
         matches = list(tag_re.finditer(data))
 
         # identify valid matches
-        valid_matches = list(self.sanatize_tag_id_matches(matches))
+        valid_matches = list(self.sanitize_tag_id_matches(matches))
 
         for i, match in enumerate(valid_matches):
             tag_id = self.normalize_tag_id(match.group('tag'))
@@ -414,7 +414,7 @@ class Transactions(abc.Sequence):
             # regex matches have a `end()` and `start()` to indicate the start
             # and end index of the match.
 
-            if valid_matches[i + 1:]:
+            if valid_matches[i + 1:i + 2]:
                 tag_data = \
                     data[match.end():valid_matches[i + 1].start()].strip()
             else:
