@@ -62,7 +62,7 @@ class Tag(object):
             self.logger.debug(
                 'matched (%d) %r against %r, got: %s',
                 len(value), value, self.pattern,
-                pprint.pformat(match.groupdict()))
+                match.groupdict())
         else:  # pragma: no cover
             self.logger.error(
                 'matching (%d) %r against %r', len(value), value,
@@ -74,7 +74,7 @@ class Tag(object):
                 if match:
                     self.logger.info('matched %r against %r, got: %s',
                                      pattern, match.group(0),
-                                     pprint.pformat(match.groupdict()))
+                                     match.groupdict())
                     part_value = part_value[len(match.group(0)):]
                 else:
                     self.logger.error('no match for %r against %r',
