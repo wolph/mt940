@@ -1,5 +1,6 @@
 # encoding=utf-8
 import re
+import functools
 import calendar
 import collections
 
@@ -125,8 +126,8 @@ GVC_KEYS = {
 }
 
 
-def _parse_mt940_details(detail_str):
-    result = dict.fromkeys(DETAIL_KEYS.values())
+def _parse_mt940_details(detail_str, space=False):
+    result = collections.defaultdict(list)
 
     tmp = collections.OrderedDict()
     segment = ''
@@ -149,18 +150,27 @@ def _parse_mt940_details(detail_str):
 
     for key, value in tmp.items():
         if key in DETAIL_KEYS:
-            result[DETAIL_KEYS[key]] = value
+            result[DETAIL_KEYS[key]].append(value)
         elif key == '33':
             key32 = DETAIL_KEYS['32']
-            result[key32] = (result[key32] or '') + value
+            result[key32].append(value)
         elif key.startswith('2'):
             key20 = DETAIL_KEYS['20']
-            result[key20] = (result[key20] or '') + value
+            result[key20].append(value)
         elif key in {'60', '61', '62', '63', '64', '65'}:
             key60 = DETAIL_KEYS['60']
-            result[key60] = (result[key60] or '') + value
+            result[key60].append(value)
 
-    return result
+    joined_result = dict()
+    for key in DETAIL_KEYS.values():
+        if space:
+            value = ' '.join(result[key])
+        else:
+            value = ''.join(result[key])
+
+        joined_result[key] = value or None
+
+    return joined_result
 
 
 def _parse_mt940_gvcodes(purpose):
@@ -195,13 +205,24 @@ def _parse_mt940_gvcodes(purpose):
     return result
 
 
-def transaction_details_post_processor(transactions, tag, tag_dict, result):
+def transaction_details_post_processor(transactions, tag, tag_dict, result,
+                                       space=False):
+    '''Parse the extra details in some transaction formats such as the 60-65
+    keys.
+
+    Args:
+        transactions (mt940.models.Transactions): list of transactions
+        tag (mt940.tags.Tag): tag
+        tag_dict (dict): dict with the raw tag details
+        result (dict): the resulting tag dict
+        space (bool): include spaces between lines in the mt940 details
+    '''
     details = tag_dict['transaction_details']
     details = ''.join(detail.strip('\n\r') for detail in details.splitlines())
 
     # check for e.g. 103?00...
     if re.match(r'^\d{3}\?\d{2}', details):
-        result.update(_parse_mt940_details(details))
+        result.update(_parse_mt940_details(details, space=space))
 
         purpose = result.get('purpose')
 
@@ -212,3 +233,7 @@ def transaction_details_post_processor(transactions, tag, tag_dict, result):
         del result['transaction_details']
 
     return result
+
+
+transaction_details_post_processor_with_space = functools.partial(
+    transaction_details_post_processor, space=True)

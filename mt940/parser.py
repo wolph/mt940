@@ -31,7 +31,7 @@ import os
 import mt940
 
 
-def parse(src, encoding=None):
+def parse(src, encoding=None, processors=None, tags=None):
     '''
     Parses mt940 data and returns transactions object
 
@@ -72,7 +72,7 @@ def parse(src, encoding=None):
         else:
             raise exception  # pragma: no cover
 
-    transactions = mt940.models.Transactions()
+    transactions = mt940.models.Transactions(processors, tags)
     transactions.parse(data)
 
     return transactions
