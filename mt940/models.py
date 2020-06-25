@@ -269,6 +269,7 @@ class Transactions(abc.Sequence):
         pre_transaction_details=[],
         post_transaction_details=[
             processors.transaction_details_post_processor
+            # processors.transaction_details_post_processor_with_space
         ],
         pre_transaction_reference_number=[],
         post_transaction_reference_number=[],

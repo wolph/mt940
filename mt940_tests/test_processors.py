@@ -85,6 +85,23 @@ def test_mBank_processors(mBank_mt942_data):
     assert transaction['tnr'] == '179171073864111.010001'
 
 
+def test_transaction_details_post_processor_with_space():
+    filename = 'mt940_tests/betterplace/sepa_mt9401.sta'
+    transactions = mt940.parse(filename)
+    transaction2 = transactions[0].data
+
+    transactions = mt940.parse(filename, processors=dict(
+        post_transaction_details=[
+            mt940.processors.transaction_details_post_processor_with_space,
+        ],
+    ))
+
+    transaction = transactions[0].data
+
+    assert transaction2['end_to_end_reference'] != \
+        transaction['end_to_end_reference']
+
+
 @pytest.fixture
 def mBank_with_newline_in_tnr():
     with open('mt940_tests/mBank/with_newline_in_tnr.sta') as fh:
