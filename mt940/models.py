@@ -50,23 +50,24 @@ class FixedOffset(datetime.tzinfo):
         return self._name
 
 
-class DateTime(datetime.datetime, Model):
-    '''Just a regular datetime object which supports dates given as strings
+def DateTime(*args, **kwargs):
+    '''Just a regular datetime factory which supports dates given as strings
 
     >>> DateTime(year='2000', month='1', day='2', hour='3', minute='4',
     ...          second='5', microsecond='6')
-    DateTime(2000, 1, 2, 3, 4, 5, 6)
+    datetime.datetime(2000, 1, 2, 3, 4, 5, 6)
 
     >>> DateTime(year='123', month='1', day='2', hour='3', minute='4',
     ...          second='5', microsecond='6')
-    DateTime(2123, 1, 2, 3, 4, 5, 6)
+    datetime.datetime(2123, 1, 2, 3, 4, 5, 6)
 
     >>> DateTime(2000, 1, 2, 3, 4, 5, 6)
-    DateTime(2000, 1, 2, 3, 4, 5, 6)
+    datetime.datetime(2000, 1, 2, 3, 4, 5, 6)
 
     >>> DateTime(year='123', month='1', day='2', hour='3', minute='4',
     ...          second='5', microsecond='6', tzinfo=FixedOffset('60'))
-    DateTime(2123, 1, 2, 3, 4, 5, 6, tzinfo=<mt940.models.FixedOffset ...>)
+    datetime.datetime(2123, 1, 2, 3, 4, 5, 6,
+                      tzinfo=<mt940.models.FixedOffset ...>)
 
     Args:
         year (str): Year (0-100), will automatically add 2000 when needed
@@ -81,54 +82,53 @@ class DateTime(datetime.datetime, Model):
                       with the given offset if no tzinfo is available.
     '''
 
-    def __new__(cls, *args, **kwargs):
-        if kwargs:
-            values = dict(
-                year=None,
-                month=None,
-                day=None,
-                hour='0',
-                minute='0',
-                second='0',
-                microsecond='0', )
+    if kwargs:
+        values = dict(
+            year=None,
+            month=None,
+            day=None,
+            hour='0',
+            minute='0',
+            second='0',
+            microsecond='0', )
 
-            # The list makes sure this works in both Python 2 and 3
-            for key, default in list(values.items()):
-                # Fetch the value or the default
-                value = kwargs.get(key, default)
-                assert value is not None, '%s should not be None' % key
-                # Convert the value to integer and force base 10 to make sure
-                # it doesn't get recognized as octal
-                if not isinstance(value, int):
-                    value = int(value, 10)
+        # The list makes sure this works in both Python 2 and 3
+        for key, default in list(values.items()):
+            # Fetch the value or the default
+            value = kwargs.get(key, default)
+            assert value is not None, '%s should not be None' % key
+            # Convert the value to integer and force base 10 to make sure
+            # it doesn't get recognized as octal
+            if not isinstance(value, int):
+                value = int(value, 10)
 
-                # Save the values again
-                values[key] = value
+            # Save the values again
+            values[key] = value
 
-            if values['year'] < 1000:
-                values['year'] += 2000
+        if values['year'] < 1000:
+            values['year'] += 2000
 
-            values['tzinfo'] = None
+        values['tzinfo'] = None
 
-            if kwargs.get('tzinfo'):
-                values['tzinfo'] = kwargs['tzinfo']
+        if kwargs.get('tzinfo'):
+            values['tzinfo'] = kwargs['tzinfo']
 
-            if kwargs.get('offset'):
-                values['tzinfo'] = FixedOffset(kwargs['offset'])
+        if kwargs.get('offset'):
+            values['tzinfo'] = FixedOffset(kwargs['offset'])
 
-            return datetime.datetime.__new__(cls, **values)
-        else:
-            return datetime.datetime.__new__(cls, *args, **kwargs)
+        return datetime.datetime(**values)
+    else:
+        return datetime.datetime(*args, **kwargs)
 
 
-class Date(datetime.date, Model):
-    '''Just a regular date object which supports dates given as strings
+def Date(*args, **kwargs):
+    '''Just a regular date factory which supports dates given as strings
 
     >>> Date(year='2000', month='1', day='2')
-    Date(2000, 1, 2)
+    datetime.date(2000, 1, 2)
 
     >>> Date(year='123', month='1', day='2')
-    Date(2123, 1, 2)
+    datetime.date(2123, 1, 2)
 
     Args:
         year (str): Year (0-100), will automatically add 2000 when needed
@@ -136,13 +136,12 @@ class Date(datetime.date, Model):
         day (str): Day
     '''
 
-    def __new__(cls, *args, **kwargs):
-        if kwargs:
-            dt = DateTime(*args, **kwargs).date()
+    if kwargs:
+        dt = DateTime(*args, **kwargs).date()
 
-            return datetime.date.__new__(cls, dt.year, dt.month, dt.day)
-        else:
-            return datetime.date.__new__(cls, *args, **kwargs)
+        return datetime.date(dt.year, dt.month, dt.day)
+    else:
+        return datetime.date(*args, **kwargs)
 
 
 class Amount(Model):
@@ -202,7 +201,7 @@ class Balance(Model):
     'C'
     >>> balance.amount.amount
     Decimal('0.00')
-    >>> isinstance(balance.date, Date)
+    >>> isinstance(balance.date, datetime.date)
     True
     >>> balance.date.year, balance.date.month, balance.date.day
     (2010, 7, 22)
