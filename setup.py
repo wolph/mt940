@@ -26,7 +26,7 @@ class PyTest(TestCommand):
 
     def run_tests(self):
         import shlex
-        #import here, cause outside the eggs aren't loaded
+        # import here, cause outside the eggs aren't loaded
         import pytest
         errno = pytest.main(shlex.split(self.pytest_args))
         sys.exit(errno)
@@ -37,8 +37,7 @@ tests_require = [
     'pytest',
     'pytest-cache',
     'pytest-cover',
-    'pytest-flakes',
-    'pytest-pep8',
+    'pytest-flake8',
     'flake8',
 ]
 
