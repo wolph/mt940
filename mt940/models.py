@@ -137,9 +137,7 @@ def Date(*args, **kwargs):
     '''
 
     if kwargs:
-        dt = DateTime(*args, **kwargs).date()
-
-        return datetime.date(dt.year, dt.month, dt.day)
+        return DateTime(*args, **kwargs).date()
     else:
         return datetime.date(*args, **kwargs)
 
