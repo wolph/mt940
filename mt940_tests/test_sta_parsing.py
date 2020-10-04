@@ -47,6 +47,7 @@ def compare(a, b, key=''):
         keys = []
 
     simple_types = (
+        datetime.date,
         datetime.datetime,
         decimal.Decimal,
     ) + _compat.integer_types
