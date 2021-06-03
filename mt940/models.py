@@ -1,5 +1,5 @@
 import re
-import decimal
+from decimal import Decimal
 import datetime
 
 # python 3.8+ compatibility
@@ -160,7 +160,7 @@ class Amount(Model):
     '''
 
     def __init__(self, amount, status, currency=None, **kwargs):
-        self.amount = decimal.Decimal(amount.replace(',', '.'))
+        self.amount = Decimal(amount.replace(',', '.'))
         self.currency = currency
 
         # C = credit, D = debit
