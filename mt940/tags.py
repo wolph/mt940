@@ -42,7 +42,8 @@ except ImportError:  # pragma: no cover
 
         Enum = object
 
-from . import models
+from .models import (Amount, Balance, Date, DateTime, SumAmount,
+                     Transaction, Transactions)
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +51,7 @@ logger = logging.getLogger(__name__)
 class Tag(object):
     id = 0
     RE_FLAGS = re.IGNORECASE | re.VERBOSE | re.UNICODE
-    scope = models.Transactions
+    scope = Transactions
 
     def __init__(self):
         self.re = re.compile(self.pattern, self.RE_FLAGS)
@@ -118,7 +119,7 @@ class DateTimeIndication(Tag):
     def __call__(self, transactions, value):
         data = super(DateTimeIndication, self).__call__(transactions, value)
         return {
-            'date': models.DateTime(**data)
+            'date': DateTime(**data)
         }
 
 
@@ -182,7 +183,7 @@ class FloorLimitIndicator(Tag):
         data = super(FloorLimitIndicator, self).__call__(transactions, value)
         if data['status']:
             return {
-                data['status'].lower() + '_floor_limit': models.Amount(**data)
+                data['status'].lower() + '_floor_limit': Amount(**data)
             }
 
         data_d = data.copy()
@@ -190,8 +191,8 @@ class FloorLimitIndicator(Tag):
         data_d.update({'status': 'D'})
         data_c.update({'status': 'C'})
         return {
-            'd_floor_limit': models.Amount(**data_d),
-            'c_floor_limit': models.Amount(**data_c)
+            'd_floor_limit': Amount(**data_d),
+            'c_floor_limit': Amount(**data_c)
         }
 
 
@@ -207,7 +208,7 @@ class NonSwift(Tag):
     Pattern: `2!n35x | *x`
     '''
 
-    class scope(models.Transaction, models.Transactions):
+    class scope(Transaction, Transactions):
         pass
     id = 'NS'
 
@@ -262,10 +263,10 @@ class BalanceBase(Tag):
 
     def __call__(self, transactions, value):
         data = super(BalanceBase, self).__call__(transactions, value)
-        data['amount'] = models.Amount(**data)
-        data['date'] = models.Date(**data)
+        data['amount'] = Amount(**data)
+        data['date'] = Date(**data)
         return {
-            self.slug: models.Balance(**data)
+            self.slug: Balance(**data)
         }
 
 
@@ -288,7 +289,7 @@ class Statement(Tag):
     Pattern: 6!n[4!n]2a[1!a]15d1!a3!c23x[//16x]
     '''
     id = 61
-    scope = models.Transaction
+    scope = Transaction
     pattern = r'''^
     (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
     (?P<month>\d{2})
@@ -310,11 +311,11 @@ class Statement(Tag):
         data = super(Statement, self).__call__(transactions, value)
         data.setdefault('currency', transactions.currency)
 
-        data['amount'] = models.Amount(**data)
-        date = data['date'] = models.Date(**data)
+        data['amount'] = Amount(**data)
+        date = data['date'] = Date(**data)
 
         if data.get('entry_day') and data.get('entry_month'):
-            entry_date = data['entry_date'] = models.Date(
+            entry_date = data['entry_date'] = Date(
                 day=data.get('entry_day'),
                 month=data.get('entry_month'),
                 year=str(data['date'].year),
@@ -327,7 +328,7 @@ class Statement(Tag):
             else:
                 year = 0
 
-            data['guessed_entry_date'] = models.Date(
+            data['guessed_entry_date'] = Date(
                 day=entry_date.day,
                 month=entry_date.month,
                 year=entry_date.year + year,
@@ -400,7 +401,7 @@ class TransactionDetails(Tag):
     Pattern: 6x65x
     '''
     id = 86
-    scope = models.Transaction
+    scope = Transaction
     pattern = r'''
     (?P<transaction_details>(([\s\S]{0,65}\r?\n?){0,8}[\s\S]{0,65}))
     '''
@@ -423,7 +424,7 @@ class SumEntries(Tag):
 
         data['status'] = self.status
         return {
-            self.slug: models.SumAmount(**data)
+            self.slug: SumAmount(**data)
         }
 
 
