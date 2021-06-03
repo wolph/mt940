@@ -1,6 +1,6 @@
 import re
 from decimal import Decimal
-import datetime
+from datetime import date, datetime, timedelta, tzinfo
 
 # python 3.8+ compatibility
 try:  # pragma: no cover
@@ -20,7 +20,7 @@ class Model(object):
         return '<%s>' % self.__class__.__name__
 
 
-class FixedOffset(datetime.tzinfo):
+class FixedOffset(tzinfo):
     '''Fixed time offset based on the Python docs
     Source: https://docs.python.org/2/library/datetime.html#tzinfo-objects
 
@@ -38,19 +38,19 @@ class FixedOffset(datetime.tzinfo):
 
         if not isinstance(offset, int):
             offset = int(offset)
-        self._offset = datetime.timedelta(minutes=offset)
+        self._offset = timedelta(minutes=offset)
 
     def utcoffset(self, dt):
         return self._offset
 
     def dst(self, dt):
-        return datetime.timedelta(0)
+        return timedelta(0)
 
     def tzname(self, dt):
         return self._name
 
 
-class DateTime(datetime.datetime, Model):
+class DateTime(datetime, Model):
     '''Just a regular datetime object which supports dates given as strings
 
     >>> DateTime(year='2000', month='1', day='2', hour='3', minute='4',
@@ -116,12 +116,12 @@ class DateTime(datetime.datetime, Model):
             if kwargs.get('offset'):
                 values['tzinfo'] = FixedOffset(kwargs['offset'])
 
-            return datetime.datetime.__new__(cls, **values)
+            return datetime.__new__(cls, **values)
         else:
-            return datetime.datetime.__new__(cls, *args, **kwargs)
+            return datetime.__new__(cls, *args, **kwargs)
 
 
-class Date(datetime.date, Model):
+class Date(date, Model):
     '''Just a regular date object which supports dates given as strings
 
     >>> Date(year='2000', month='1', day='2')
@@ -140,9 +140,9 @@ class Date(datetime.date, Model):
         if kwargs:
             dt = DateTime(*args, **kwargs).date()
 
-            return datetime.date.__new__(cls, dt.year, dt.month, dt.day)
+            return date.__new__(cls, dt.year, dt.month, dt.day)
         else:
-            return datetime.date.__new__(cls, *args, **kwargs)
+            return date.__new__(cls, *args, **kwargs)
 
 
 class Amount(Model):
