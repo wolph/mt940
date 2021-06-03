@@ -230,6 +230,15 @@ class Balance(Model):
             self.date, )
 
 
+# The pattern is a bit annoying to match by regex, even with a greedy
+# match it's difficult to get both the beginning and the end so we're
+# working around it in a safer way to get everything.
+tag_re = re.compile(
+    r'^:\n?(?P<full_tag>(?P<tag>[0-9]{2}|NS)(?P<sub_tag>[A-Z])?):',
+    re.MULTILINE
+)
+
+
 class Transactions(abc.Sequence):
     '''
     Collection of :py:class:`Transaction` objects with global properties such
@@ -393,12 +402,6 @@ class Transactions(abc.Sequence):
         # Remove extraneous whitespace and such
         data = '\n'.join(self.strip(data.split('\n')))
 
-        # The pattern is a bit annoying to match by regex, even with a greedy
-        # match it's difficult to get both the beginning and the end so we're
-        # working around it in a safer way to get everything.
-        tag_re = re.compile(
-            r'^:\n?(?P<full_tag>(?P<tag>[0-9]{2}|NS)(?P<sub_tag>[A-Z])?):',
-            re.MULTILINE)
         matches = list(tag_re.finditer(data))
 
         # identify valid matches
