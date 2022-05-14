@@ -98,9 +98,6 @@ if __name__ == '__main__':
         packages=find_packages(exclude=['docs']),
         long_description=readme + changes,
         include_package_data=True,
-        install_requires=[
-            'enum34>=1.1.6; python_version <= "2.7"',
-        ],
         tests_require=tests_require,
         setup_requires=[
             'setuptools>=39.1.0',
@@ -120,14 +117,11 @@ if __name__ == '__main__':
             'Intended Audience :: Developers',
             'License :: OSI Approved :: BSD License',
             'Natural Language :: English',
-            "Programming Language :: Python :: 2",
-            'Programming Language :: Python :: 2.7',
             'Programming Language :: Python :: 3',
-            'Programming Language :: Python :: 3.3',
-            'Programming Language :: Python :: 3.4',
-            'Programming Language :: Python :: 3.5',
-            'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7',
+            'Programming Language :: Python :: 3.8',
+            'Programming Language :: Python :: 3.9',
+            'Programming Language :: Python :: 3.10',
             'Programming Language :: Python :: Implementation :: PyPy',
         ],
     )
