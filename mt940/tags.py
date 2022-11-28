@@ -295,13 +295,13 @@ class Statement(Tag):
     (?P<day>\d{2})
     (?P<entry_month>\d{2})?  # [4!n] Entry Date (MMDD)
     (?P<entry_day>\d{2})?
-    (?P<status>[A-Z]?[DC])  # 2a Debit/Credit Mark
+    (?P<status>R?[DC])  # 2a Debit/Credit Mark
     (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd character of the currency
                             # code, if needed)
     \n? # apparently some banks (sparkassen) incorporate newlines here
     (?P<amount>[\d,]{1,15})  # 15d Amount
     (?P<id>[A-Z][A-Z0-9 ]{3})?  # 1!a3!c Transaction Type Identification Code
-    (?P<customer_reference>.{0,16})  # 16x Customer Reference
+    (?P<customer_reference>[^/\n]{0,16})  # 16x Customer Reference
     (//(?P<bank_reference>.{0,23}))?  # [//23x] Bank Reference
     (\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary Details
     $'''
@@ -462,6 +462,3 @@ class Tags(enum.Enum):
 
 
 TAG_BY_ID = {t.value.id: t.value for t in Tags}
-
-
-

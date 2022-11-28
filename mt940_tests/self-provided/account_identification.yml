@@ -1,14 +1,7 @@
 !!python/object:mt940.models.Transactions
 data:
-  final_closing_balance: !!python/object:mt940.models.Balance
-    amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal
-      - '42570.04'
-      currency: EUR
-    date: !!python/object/apply:mt940.models.Date
-    - !!binary |
-      B9oDFw==
-    status: C
+  account_identification: ACXXXXXX000000XXXXXX3
+  transaction_reference: 0003478756
 processors:
   post_account_identification: []
   post_available_balance: []

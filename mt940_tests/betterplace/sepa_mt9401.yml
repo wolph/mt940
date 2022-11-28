@@ -129,14 +129,14 @@ tags:
     re: !!python/object/apply:re._compile
     - "^\n    (?P<year>\\d{2})  # 6!n Value Date (YYMMDD)\n    (?P<month>\\d{2})\n\
       \    (?P<day>\\d{2})\n    (?P<entry_month>\\d{2})?  # [4!n] Entry Date (MMDD)\n\
-      \    (?P<entry_day>\\d{2})?\n    (?P<status>[A-Z]?[DC])  # 2a Debit/Credit Mark\n\
+      \    (?P<entry_day>\\d{2})?\n    (?P<status>R?[DC])  # 2a Debit/Credit Mark\n\
       \    (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd character of the currency\n\
       \                            # code, if needed)\n    \\n? # apparently some\
       \ banks (sparkassen) incorporate newlines here\n    (?P<amount>[\\d,]{1,15})\
       \  # 15d Amount\n    (?P<id>[A-Z][A-Z0-9 ]{3})?  # 1!a3!c Transaction Type Identification\
-      \ Code\n    (?P<customer_reference>.{0,16})  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,23}))?\
-      \  # [//23x] Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?  # [34x]\
-      \ Supplementary Details\n    $"
+      \ Code\n    (?P<customer_reference>[^/\\n]{0,16})  # 16x Customer Reference\n\
+      \    (//(?P<bank_reference>.{0,23}))?  # [//23x] Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?\
+      \  # [34x] Supplementary Details\n    $"
     - 98
   62: !!python/object:mt940.tags.ClosingBalance
     re: *id001
@@ -487,7 +487,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE42100100100043921105
     applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
-    bank_reference: null
+    bank_reference: 0724710290621954
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -501,7 +501,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '90621954'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -537,10 +537,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: BD7CFA74485E7E69
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//BD7CFA744
+    customer_reference: 'KREF+
 
       TFNr 01005 PayId CTSc-01 EBBMTLG:SEPA-Ueberweisungsauftrag Datei mit 0000005
       Zahlungen'
@@ -554,7 +554,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: 85E7E69
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -589,7 +589,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE42100100100043921105
     applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichenxxxxxxxx
-    bank_reference: null
+    bank_reference: 0724710290658244
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -603,7 +603,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '90658244'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -638,7 +638,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: CH8500779014054431109
     applicant_name: Cornelia Prochownik 70 Zeichen BeginnFuellzeichen xxx
-    bank_reference: null
+    bank_reference: 0724710290635078
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -652,7 +652,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '90635078'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -687,7 +687,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: CH6500279279C31180700
     applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
-    bank_reference: null
+    bank_reference: 0724710290626371
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -701,7 +701,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '90626371'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -736,10 +736,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: DE85920B84F8E98D
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//DE85920B8
+    customer_reference: 'KREF+
 
       TFNr 01007 PayId CTSc-01 EBBMTLG:SEPA-Ueberweisungsauftrag Datei mit 0000006
       Zahlungen'
@@ -753,7 +753,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: 4F8E98D
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -788,10 +788,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: D1C08A4EB4664146
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//D1C08A4EB
+    customer_reference: 'KREF+
 
       TFNr 01024 PayId CTSc-01 EBBMTLG:SEPA-Ueberweisungsauftrag Datei mit 0000006
       Zahlungen'
@@ -805,7 +805,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '4664146'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -840,7 +840,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE40250100300325207300
     applicant_name: Daniel Severidt 70 ZeichenBeginn Fuellzeichen xxxxxxx
-    bank_reference: null
+    bank_reference: 0724710290628244
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -854,7 +854,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '90628244'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -889,7 +889,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE40100100100000214105
     applicant_name: Cornelia Prochownik 70 Zeichen Beginn Fuellzeichen xxx
-    bank_reference: null
+    bank_reference: 0724710290631813
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -903,7 +903,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '90631813'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -938,7 +938,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE39250100300172064300
     applicant_name: Dirk Leunig 70 Zeichen Beginn Fuellzeichen xxxxxxxxxxx
-    bank_reference: null
+    bank_reference: 0724710290630146
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -952,7 +952,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '90630146'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -1053,10 +1053,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE76508800500194780101
     applicant_name: Empfaenger Florian Frech UK 01
-    bank_reference: null
+    bank_reference: 0724710352954937
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471035
+    customer_reference: 'KREF+
 
       TFNR 21005 Instruction Id 00001'
     date: !!python/object/apply:mt940.models.Date
@@ -1069,7 +1069,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '2954937'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -1104,10 +1104,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: 8AE3169901918BD3
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//8AE316990
+    customer_reference: 'KREF+
 
       TFNr 01009 MSGID CTSc-01 EBBMTLG:SEPA-Ueberweisungsauftrag Datei mit 0000005
       Zahlungen'
@@ -1121,7 +1121,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: 1918BD3
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -1189,7 +1189,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE06508800500194780100
     applicant_name: Florian Frech
-    bank_reference: null
+    bank_reference: 0724710352954937
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -1203,7 +1203,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '52954937'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -1238,7 +1238,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE95508800500194784900
     applicant_name: JOSEF        JAEGER
-    bank_reference: null
+    bank_reference: 0724710333377198
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -1252,7 +1252,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '33377198'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -1288,10 +1288,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 1 mit 70 Zeichen Empfaenger 1 mit 70 Zeiche
-    bank_reference: null
+    bank_reference: 0724710352996674
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471035
+    customer_reference: 'KREF+
 
       TFNR 01011 Instruction Id  00001'
     date: !!python/object/apply:mt940.models.Date
@@ -1304,7 +1304,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '2996674'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -1390,10 +1390,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 2 mit 70 Zeichen Empfaenger 2 mit 70 Zeiche
-    bank_reference: null
+    bank_reference: 0724710352998444
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471035
+    customer_reference: 'KREF+
 
       TFNR 01011 Instruction Id  00002'
     date: !!python/object/apply:mt940.models.Date
@@ -1406,7 +1406,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '2998444'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -1442,10 +1442,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 4 mit 70 Zeichen Empfaenger 4 mit 70 Zeiche
-    bank_reference: null
+    bank_reference: 0724710353002818
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471035
+    customer_reference: 'KREF+
 
       TFNR 01011 Instruction Id  00004'
     date: !!python/object/apply:mt940.models.Date
@@ -1458,7 +1458,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '3002818'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -1494,10 +1494,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 3 mit 70 Zeichen Empfaenger 3 mit 70 Zeiche
-    bank_reference: null
+    bank_reference: 0724710353000284
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471035
+    customer_reference: 'KREF+
 
       TFNR 01011 Instruction Id  00003'
     date: !!python/object/apply:mt940.models.Date
@@ -1510,7 +1510,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '3000284'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -1546,10 +1546,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 5 mit 70 Zeichen Empfaenger 5 mit 70 Zeiche
-    bank_reference: null
+    bank_reference: 0724710353004695
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471035
+    customer_reference: 'KREF+
 
       TFNR 01011 Instruction Id  00005'
     date: !!python/object/apply:mt940.models.Date
@@ -1562,7 +1562,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '3004695'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -1598,10 +1598,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 7 mit 70 Zeichen Empfaenger 7 mit 70 Zeiche
-    bank_reference: null
+    bank_reference: 0724710353008994
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471035
+    customer_reference: 'KREF+
 
       TFNR 01011 Instruction Id  00007'
     date: !!python/object/apply:mt940.models.Date
@@ -1614,7 +1614,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '3008994'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -1800,10 +1800,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: '0724710333347237'
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471033
+    customer_reference: 'KREF+
 
       EndToEndId TFNR 06 004 00002MTLG:Grund nicht spezifiziert Reject aus SEPA-Ueberweisungsauftrag'
     date: !!python/object/apply:mt940.models.Date
@@ -1816,7 +1816,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '3347237'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -1851,10 +1851,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: '0724710333347241'
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471033
+    customer_reference: 'KREF+
 
       EndToEndId TFNR 06 004 00004MTLG:Grund nicht spezifiziert Reject aus SEPA-Ueberweisungsauftrag'
     date: !!python/object/apply:mt940.models.Date
@@ -1867,7 +1867,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '3347241'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -1902,10 +1902,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: 31408CF87AD5901E
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//31408CF87
+    customer_reference: 'KREF+
 
       TFNr 40016 PayId CTSc-02 PPPMTLG:SEPA-Ueberweisungsauftrag Datei mit 0000002
       Zahlungen'
@@ -1919,7 +1919,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: AD5901E
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -1950,16 +1950,16 @@ transactions:
     applicant_bin: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: 4F112D73FF96F4FB
     currency: EUR
-    customer_reference: MCCT07090401//4F
+    customer_reference: MCCT07090401
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: 112D73FF96F4FB
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -1983,16 +1983,16 @@ transactions:
     applicant_bin: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: EC4BA14CEA34BFF3
     currency: EUR
-    customer_reference: MCCT07090402//EC
+    customer_reference: MCCT07090402
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: 4BA14CEA34BFF3
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -2016,16 +2016,16 @@ transactions:
     applicant_bin: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: 92D891C454BC30B5
     currency: EUR
-    customer_reference: NONREF//92D891C4
+    customer_reference: NONREF
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: 54BC30B5
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -2050,16 +2050,16 @@ transactions:
     applicant_bin: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: 57B4197CC644DE8F
     currency: EUR
-    customer_reference: NONREF//57B4197C
+    customer_reference: NONREF
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: C644DE8F
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -2088,10 +2088,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: 06F8672B28B7A92F
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//06F8672B2
+    customer_reference: 'KREF+
 
       TFNr 41003 PayId CTSc-01 EBBMTLG:SEPA-Ueberweisungsauftrag Datei mit 0000004
       Zahlungen'
@@ -2105,7 +2105,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: 8B7A92F
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -2240,10 +2240,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 1 mit 70 Zeichen Empfaenger 1 mit 70 Zeiche
-    bank_reference: null
+    bank_reference: 0724710360914647
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471036
+    customer_reference: 'KREF+
 
       TFNR 01041  Instruction Id 00001'
     date: !!python/object/apply:mt940.models.Date
@@ -2256,7 +2256,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: 0914647
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -2291,10 +2291,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 2 mit 70 Zeichen Empfaenger 2 mit 70 Zeiche
-    bank_reference: null
+    bank_reference: 0724710360912501
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471036
+    customer_reference: 'KREF+
 
       TFNR 01041  Instruction Id 00002'
     date: !!python/object/apply:mt940.models.Date
@@ -2307,7 +2307,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: 0912501
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -2342,10 +2342,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 5 mit 70 Zeichen Empfaenger 5 mit 70 Zeiche
-    bank_reference: null
+    bank_reference: 0724710360923556
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471036
+    customer_reference: 'KREF+
 
       TFNR 01041  Instruction Id 00005'
     date: !!python/object/apply:mt940.models.Date
@@ -2358,7 +2358,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: 0923556
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -2393,10 +2393,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 6 mit 70 Zeichen Empfaenger 6 mit 70 Zeiche
-    bank_reference: null
+    bank_reference: 0724710360910575
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471036
+    customer_reference: 'KREF+
 
       TFNR 01041  Instruction Id 00006'
     date: !!python/object/apply:mt940.models.Date
@@ -2409,7 +2409,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: 0910575
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -2444,10 +2444,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 4 mit 70 Zeichen Empfaenger 4 mit 70 Zeiche
-    bank_reference: null
+    bank_reference: 0724710360918027
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471036
+    customer_reference: 'KREF+
 
       TFNR 01041  Instruction Id 00004'
     date: !!python/object/apply:mt940.models.Date
@@ -2460,7 +2460,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: 0918027
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -2495,10 +2495,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 3 mit 70 Zeichen Empfaenger 3 mit 70 Zeiche
-    bank_reference: null
+    bank_reference: 0724710360916341
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471036
+    customer_reference: 'KREF+
 
       TFNR 01041  Instruction Id 00003'
     date: !!python/object/apply:mt940.models.Date
@@ -2511,7 +2511,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: 0916341
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -2546,10 +2546,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 7 mit 70 Zeichen Empfaenger 7 mit 70 Zeiche
-    bank_reference: null
+    bank_reference: 0724710360908674
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471036
+    customer_reference: 'KREF+
 
       TFNR 01041  Instruction Id 00007'
     date: !!python/object/apply:mt940.models.Date
@@ -2562,7 +2562,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: 0908674
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -2594,16 +2594,16 @@ transactions:
     applicant_bin: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: 649D24F7C6EDAC53
     currency: EUR
-    customer_reference: NONREF//649D24F7
+    customer_reference: NONREF
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: C6EDAC53
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -2632,10 +2632,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: AC59892B266252EC
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//AC59892B2
+    customer_reference: 'KREF+
 
       TFNr 05003 MSGID CTSc-01  BC PPPMTLG:SEPA-Ueberweisungsauftrag Datei mit 0000003
       Zahlungen'
@@ -2649,7 +2649,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: 66252EC
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -2684,10 +2684,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: CDB988231C851A5B
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//CDB988231
+    customer_reference: 'KREF+
 
       TFNr 44005 MSGID CTSc-02 EBBMTLG:SEPA-Ueberweisungsauftrag Datei mit 0000002
       Zahlungen'
@@ -2701,7 +2701,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: C851A5B
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -2836,10 +2836,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE68508800500194784901
     applicant_name: Empfaenger Josef Jaeger UK01
-    bank_reference: null
+    bank_reference: 0724710333354911
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471033
+    customer_reference: 'KREF+
 
       EndToEndId TFNR 21 003 00001'
     date: !!python/object/apply:mt940.models.Date
@@ -2852,7 +2852,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '3354911'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -2888,10 +2888,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE04508800500194781300
     applicant_name: Empfaenger Gustav Gans
-    bank_reference: null
+    bank_reference: 0724710333377198
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471033
+    customer_reference: 'KREF+
 
       EndToEndId TFNR 22 001 00001'
     date: !!python/object/apply:mt940.models.Date
@@ -2904,7 +2904,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '3377198'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -2940,10 +2940,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE96508800500194774600
     applicant_name: Empfaenger Anton Ackermann
-    bank_reference: null
+    bank_reference: '0724710324651156'
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471032
+    customer_reference: 'KREF+
 
       TFNR 22003 Instruction Id 00001'
     date: !!python/object/apply:mt940.models.Date
@@ -2956,7 +2956,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '4651156'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -2987,16 +2987,16 @@ transactions:
     applicant_bin: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: 9A4616CC6128D651
     currency: EUR
-    customer_reference: TFNr 01008 MEBB/
+    customer_reference: TFNr 01008 MEBB
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: /9A4616CC6128D651
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -3024,10 +3024,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: A26B6D6B5E821EA9
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//A26B6D6B5
+    customer_reference: 'KREF+
 
       PayId CTSc-01  BC PPP TFNr 05006MTLG:SEPA-Ueberweisungsauftrag Datei mit 0000004
       Zahlungen'
@@ -3041,7 +3041,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: E821EA9
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -3076,10 +3076,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: 493189D221858097
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//493189D22
+    customer_reference: 'KREF+
 
       TFNr 05009 MSGID CTSc-01 BC-PPPMTLG:SEPA-Ueberweisungsauftrag Datei mit 0000004
       Zahlungen'
@@ -3093,7 +3093,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '1858097'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -3124,16 +3124,16 @@ transactions:
     applicant_bin: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: 75C62EC25E19D187
     currency: EUR
-    customer_reference: NONREF//75C62EC2
+    customer_reference: NONREF
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: 5E19D187
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -3162,7 +3162,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE95508800500194784900
     applicant_name: JOSEF        JAEGER
-    bank_reference: null
+    bank_reference: 0724710333354911
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -3176,7 +3176,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '33354911'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -3211,10 +3211,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 1 mit 70 Zeichen Empfaenger 1 mit 70 Zeiche
-    bank_reference: null
+    bank_reference: 0724710352971787
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471035
+    customer_reference: 'KREF+
 
       TFNR 01015  Instruction Id 00001'
     date: !!python/object/apply:mt940.models.Date
@@ -3227,7 +3227,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '2971787'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -3262,10 +3262,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 3 mit 70 Zeichen Empfaenger 3 mit 70 Zeiche
-    bank_reference: null
+    bank_reference: 0724710352975390
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471035
+    customer_reference: 'KREF+
 
       TFNR 01015  Instruction Id 00003'
     date: !!python/object/apply:mt940.models.Date
@@ -3278,7 +3278,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '2975390'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -3313,10 +3313,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 6 mit 70 Zeichen Empfaenger 6 mit 70 Zeiche
-    bank_reference: null
+    bank_reference: 0724710352980804
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471035
+    customer_reference: 'KREF+
 
       TFNR 01015  Instruction Id 00006'
     date: !!python/object/apply:mt940.models.Date
@@ -3329,7 +3329,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '2980804'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -3364,10 +3364,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 5 mit 70 Zeichen Empfaenger 5 mit 70 Zeiche
-    bank_reference: null
+    bank_reference: 0724710352979070
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471035
+    customer_reference: 'KREF+
 
       TFNR 01015  Instruction Id 00005'
     date: !!python/object/apply:mt940.models.Date
@@ -3380,7 +3380,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '2979070'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -3415,10 +3415,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 2 mit 70 Zeichen Empfaenger 2 mit 70 Zeiche
-    bank_reference: null
+    bank_reference: 0724710352973502
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471035
+    customer_reference: 'KREF+
 
       TFNR 01015  Instruction Id 00002'
     date: !!python/object/apply:mt940.models.Date
@@ -3431,7 +3431,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '2973502'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -3466,10 +3466,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 4 mit 70 Zeichen Empfaenger 4 mit 70 Zeiche
-    bank_reference: null
+    bank_reference: 0724710352977271
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471035
+    customer_reference: 'KREF+
 
       TFNR 01015  Instruction Id 00004'
     date: !!python/object/apply:mt940.models.Date
@@ -3482,7 +3482,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '2977271'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -3517,10 +3517,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE12508800500194786200
     applicant_name: Empfaenger Ludwig Loewe
-    bank_reference: null
+    bank_reference: '0724710333360224'
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471033
+    customer_reference: 'KREF+
 
       EndToEndId TFNR 22 002 00001'
     date: !!python/object/apply:mt940.models.Date
@@ -3533,7 +3533,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '3360224'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -3569,10 +3569,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE84508800500194785001
     applicant_name: Empfanger Karl Kaufmann UK01
-    bank_reference: null
+    bank_reference: 0724710352952868
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471035
+    customer_reference: 'KREF+
 
       TFNR 21007 Instruction Id 00001'
     date: !!python/object/apply:mt940.models.Date
@@ -3585,7 +3585,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '2952868'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -3620,10 +3620,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE10508800500194787400
     applicant_name: Empfaenger Marta Metzger
-    bank_reference: null
+    bank_reference: '0724710333343453'
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471033
+    customer_reference: 'KREF+
 
       EndToEndId TFNR 22 004 00001'
     date: !!python/object/apply:mt940.models.Date
@@ -3636,7 +3636,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '3343453'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -3672,10 +3672,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 7 mit 70 Zeichen Empfaenger 7 mit 70 Zeiche
-    bank_reference: null
+    bank_reference: 0724710352982472
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471035
+    customer_reference: 'KREF+
 
       TFNR 01015  Instruction Id 00007'
     date: !!python/object/apply:mt940.models.Date
@@ -3688,7 +3688,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '2982472'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -3724,10 +3724,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: D4AF9E363A92E76F
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//D4AF9E363
+    customer_reference: 'KREF+
 
       TFNr 05005 PayId CTSc-01  BC PPPMTLG:SEPA-Ueberweisungsauftrag Datei mit 0000004
       Zahlungen'
@@ -3741,7 +3741,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: A92E76F
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -3777,10 +3777,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: FR1420041010050500013M02606
     applicant_name: Empfaenger 1
-    bank_reference: null
+    bank_reference: '0724710333366624'
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//072471033
+    customer_reference: 'KREF+
 
       EndToEndId TFNR 06 003 00001'
     date: !!python/object/apply:mt940.models.Date
@@ -3793,7 +3793,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '3366624'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -3829,7 +3829,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE14508800500194785000
     applicant_name: Karl Kaufmann
-    bank_reference: null
+    bank_reference: 0724710352952868
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -3843,7 +3843,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '52952868'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -3878,7 +3878,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE14508800500194785000
     applicant_name: Karl Kaufmann
-    bank_reference: null
+    bank_reference: 0724710324661086
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -3892,7 +3892,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '24661086'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -3927,7 +3927,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE14508800500194785000
     applicant_name: KARL        KAUFMANN
-    bank_reference: null
+    bank_reference: '0724710333360224'
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -3941,7 +3941,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '33360224'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -3976,7 +3976,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE03508800500194791600
     applicant_name: Quentin Quast
-    bank_reference: null
+    bank_reference: '0724710324647446'
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -3990,7 +3990,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '24647446'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -4025,7 +4025,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE14508800500194785000
     applicant_name: KARL        KAUFMANN
-    bank_reference: null
+    bank_reference: '0724710333343453'
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -4039,7 +4039,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '33343453'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -4074,7 +4074,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE03508800500194791600
     applicant_name: Quentin Quast
-    bank_reference: null
+    bank_reference: '0724710324647450'
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -4088,7 +4088,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '24647450'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -4123,7 +4123,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE14508800500194785000
     applicant_name: Karl Kaufmann
-    bank_reference: null
+    bank_reference: 0724710324661090
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -4137,7 +4137,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '24661090'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -4172,10 +4172,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: 536D80EFEC56ACF8
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//536D80EFE
+    customer_reference: 'KREF+
 
       TFNr 01022 MSGID CTSc-01 EBBMTLG:SEPA-Ueberweisungsauftrag Datei mit 0000001
       Zahlungen'
@@ -4189,7 +4189,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: C56ACF8
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -4374,7 +4374,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE42100100100043921105
     applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
-    bank_reference: null
+    bank_reference: 0724710290659857
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -4388,7 +4388,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '90659857'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -4424,7 +4424,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE42100100100043921105
     applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
-    bank_reference: null
+    bank_reference: 0724710290624796
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -4438,7 +4438,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '90624796'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -4556,7 +4556,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE03508800500194791600
     applicant_name: QUENTIN        QUAST
-    bank_reference: null
+    bank_reference: 0724710333345079
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -4570,7 +4570,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '33345079'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -4605,7 +4605,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE03508800500194791600
     applicant_name: Quentin Quast
-    bank_reference: null
+    bank_reference: 0724710352956584
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -4619,7 +4619,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '52956584'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -4654,10 +4654,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: F2CA963F5C750549
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//F2CA963F5
+    customer_reference: 'KREF+
 
       TFNr 03005 MSGID CTSc-01 FFPMTLG:SEPA-Ueberweisungsauftrag Datei mit 0000001
       Zahlungen'
@@ -4671,7 +4671,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: C750549
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -4706,10 +4706,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: FFCD94B7601B6E06
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//FFCD94B76
+    customer_reference: 'KREF+
 
       TFNr 01031 PayId CTSc-01 EBBMTLG:SEPA-Ueberweisungsauftrag Datei mit 0000001
       Zahlungen'
@@ -4723,7 +4723,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: 01B6E06
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -4758,10 +4758,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: DED4A9D0CA11033B
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//DED4A9D0C
+    customer_reference: 'KREF+
 
       TFNr 01032 PayId CTSc-01 EBBMTLG:SEPA-Ueberweisungsauftrag Datei mit 0000001
       Zahlungen'
@@ -4775,7 +4775,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: A11033B
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -4810,7 +4810,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE51508800500190038900
     applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
-    bank_reference: null
+    bank_reference: 0724710290648274
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -4824,7 +4824,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '90648274'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
