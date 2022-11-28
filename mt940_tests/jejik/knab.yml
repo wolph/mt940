@@ -102,14 +102,14 @@ tags:
     re: !!python/object/apply:re._compile
     - "^\n    (?P<year>\\d{2})  # 6!n Value Date (YYMMDD)\n    (?P<month>\\d{2})\n\
       \    (?P<day>\\d{2})\n    (?P<entry_month>\\d{2})?  # [4!n] Entry Date (MMDD)\n\
-      \    (?P<entry_day>\\d{2})?\n    (?P<status>[A-Z]?[DC])  # 2a Debit/Credit Mark\n\
+      \    (?P<entry_day>\\d{2})?\n    (?P<status>R?[DC])  # 2a Debit/Credit Mark\n\
       \    (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd character of the currency\n\
       \                            # code, if needed)\n    \\n? # apparently some\
       \ banks (sparkassen) incorporate newlines here\n    (?P<amount>[\\d,]{1,15})\
       \  # 15d Amount\n    (?P<id>[A-Z][A-Z0-9 ]{3})?  # 1!a3!c Transaction Type Identification\
-      \ Code\n    (?P<customer_reference>.{0,16})  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,23}))?\
-      \  # [//23x] Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?  # [34x]\
-      \ Supplementary Details\n    $"
+      \ Code\n    (?P<customer_reference>[^/\\n]{0,16})  # 16x Customer Reference\n\
+      \    (//(?P<bank_reference>.{0,23}))?  # [//23x] Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?\
+      \  # [34x] Supplementary Details\n    $"
     - 98
   62: !!python/object:mt940.tags.ClosingBalance
     re: *id001
@@ -153,16 +153,16 @@ transactions:
       amount: !!python/object/apply:decimal.Decimal
       - '500'
       currency: EUR
-    bank_reference: null
+    bank_reference: B4E07XM00J000023
     currency: EUR
-    customer_reference: NONREF//B4E07XM0
+    customer_reference: NONREF
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B94FBw==
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B94FBw==
-    extra_details: 0J000023
+    extra_details: ''
     funds_code: null
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -179,16 +179,16 @@ transactions:
       amount: !!python/object/apply:decimal.Decimal
       - '-7260'
       currency: EUR
-    bank_reference: null
+    bank_reference: B4G29PGCVO7Q06US
     currency: EUR
-    customer_reference: NONREF//B4G29PGC
+    customer_reference: NONREF
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B94HHQ==
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B94HHQ==
-    extra_details: VO7Q06US
+    extra_details: ''
     funds_code: null
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |

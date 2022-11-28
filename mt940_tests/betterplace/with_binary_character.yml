@@ -102,14 +102,14 @@ tags:
     re: !!python/object/apply:re._compile
     - "^\n    (?P<year>\\d{2})  # 6!n Value Date (YYMMDD)\n    (?P<month>\\d{2})\n\
       \    (?P<day>\\d{2})\n    (?P<entry_month>\\d{2})?  # [4!n] Entry Date (MMDD)\n\
-      \    (?P<entry_day>\\d{2})?\n    (?P<status>[A-Z]?[DC])  # 2a Debit/Credit Mark\n\
+      \    (?P<entry_day>\\d{2})?\n    (?P<status>R?[DC])  # 2a Debit/Credit Mark\n\
       \    (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd character of the currency\n\
       \                            # code, if needed)\n    \\n? # apparently some\
       \ banks (sparkassen) incorporate newlines here\n    (?P<amount>[\\d,]{1,15})\
       \  # 15d Amount\n    (?P<id>[A-Z][A-Z0-9 ]{3})?  # 1!a3!c Transaction Type Identification\
-      \ Code\n    (?P<customer_reference>.{0,16})  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,23}))?\
-      \  # [//23x] Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?  # [34x]\
-      \ Supplementary Details\n    $"
+      \ Code\n    (?P<customer_reference>[^/\\n]{0,16})  # 16x Customer Reference\n\
+      \    (//(?P<bank_reference>.{0,23}))?  # [//23x] Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?\
+      \  # [34x] Supplementary Details\n    $"
     - 98
   62: !!python/object:mt940.tags.ClosingBalance
     re: *id001

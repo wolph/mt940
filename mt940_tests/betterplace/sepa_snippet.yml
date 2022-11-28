@@ -111,14 +111,14 @@ tags:
     re: !!python/object/apply:re._compile
     - "^\n    (?P<year>\\d{2})  # 6!n Value Date (YYMMDD)\n    (?P<month>\\d{2})\n\
       \    (?P<day>\\d{2})\n    (?P<entry_month>\\d{2})?  # [4!n] Entry Date (MMDD)\n\
-      \    (?P<entry_day>\\d{2})?\n    (?P<status>[A-Z]?[DC])  # 2a Debit/Credit Mark\n\
+      \    (?P<entry_day>\\d{2})?\n    (?P<status>R?[DC])  # 2a Debit/Credit Mark\n\
       \    (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd character of the currency\n\
       \                            # code, if needed)\n    \\n? # apparently some\
       \ banks (sparkassen) incorporate newlines here\n    (?P<amount>[\\d,]{1,15})\
       \  # 15d Amount\n    (?P<id>[A-Z][A-Z0-9 ]{3})?  # 1!a3!c Transaction Type Identification\
-      \ Code\n    (?P<customer_reference>.{0,16})  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,23}))?\
-      \  # [//23x] Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?  # [34x]\
-      \ Supplementary Details\n    $"
+      \ Code\n    (?P<customer_reference>[^/\\n]{0,16})  # 16x Customer Reference\n\
+      \    (//(?P<bank_reference>.{0,23}))?  # [//23x] Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?\
+      \  # [34x] Supplementary Details\n    $"
     - 98
   62: !!python/object:mt940.tags.ClosingBalance
     re: *id001
@@ -170,7 +170,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE14508800500194785000
     applicant_name: KARL        KAUFMANN
-    bank_reference: null
+    bank_reference: '0724710333343453'
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -184,7 +184,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '33343453'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -219,7 +219,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE03508800500194791600
     applicant_name: Quentin Quast
-    bank_reference: null
+    bank_reference: '0724710324647450'
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -233,7 +233,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '24647450'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -268,7 +268,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE14508800500194785000
     applicant_name: Karl Kaufmann
-    bank_reference: null
+    bank_reference: 0724710324661090
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -282,7 +282,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '24661090'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -317,10 +317,10 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: null
     applicant_name: null
-    bank_reference: null
+    bank_reference: 536D80EFEC56ACF8
     compensation_amount: null
     currency: EUR
-    customer_reference: 'KREF+//536D80EFE
+    customer_reference: 'KREF+
 
       TFNr 01022 MSGID CTSc-01 EBBMTLG:SEPA-Ueberweisungsauftrag Datei mit 0000001
       Zahlungen'
@@ -334,7 +334,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: C56ACF8
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -519,7 +519,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE42100100100043921105
     applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
-    bank_reference: null
+    bank_reference: 0724710290659857
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -533,7 +533,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '90659857'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -569,7 +569,7 @@ transactions:
     applicant_creditor_id: null
     applicant_iban: DE42100100100043921105
     applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
-    bank_reference: null
+    bank_reference: 0724710290624796
     compensation_amount: null
     currency: EUR
     customer_reference: null
@@ -583,7 +583,7 @@ transactions:
     entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
-    extra_details: '90624796'
+    extra_details: ''
     funds_code: R
     guessed_entry_date: !!python/object/apply:mt940.models.Date
     - !!binary |
