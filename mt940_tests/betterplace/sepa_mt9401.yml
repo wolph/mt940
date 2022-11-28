@@ -3,7 +3,8 @@ data:
   account_identification: 50880050/0194804000888
   available_balance: !!python/object:mt940.models.Balance
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['50.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '50.05'
       currency: EUR
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -11,7 +12,8 @@ data:
     status: C
   final_closing_balance: !!python/object:mt940.models.Balance
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['50.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '50.05'
       currency: EUR
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -19,7 +21,8 @@ data:
     status: C
   final_opening_balance: !!python/object:mt940.models.Balance
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['0']
+      amount: !!python/object/apply:decimal.Decimal
+      - '0'
       currency: EUR
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -27,7 +30,8 @@ data:
     status: C
   intermediate_closing_balance: !!python/object:mt940.models.Balance
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-3814901.47']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-3814901.47'
       currency: EUR
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -35,7 +39,8 @@ data:
     status: D
   intermediate_opening_balance: !!python/object:mt940.models.Balance
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-3814901.47']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-3814901.47'
       currency: EUR
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
@@ -58,11 +63,13 @@ processors:
   post_non_swift: []
   post_opening_balance: []
   post_related_reference: []
-  post_statement: [!!python/name:mt940.processors.date_cleanup_post_processor '']
+  post_statement:
+  - !!python/name:mt940.processors.date_cleanup_post_processor ''
   post_statement_number: []
   post_sum_credit_entries: []
   post_sum_debit_entries: []
-  post_transaction_details: [!!python/name:mt940.processors.transaction_details_post_processor '']
+  post_transaction_details:
+  - !!python/name:mt940.processors.transaction_details_post_processor ''
   post_transaction_reference_number: []
   pre_account_identification: []
   pre_available_balance: []
@@ -77,7 +84,8 @@ processors:
   pre_non_swift: []
   pre_opening_balance: []
   pre_related_reference: []
-  pre_statement: [!!python/name:mt940.processors.date_fixup_pre_processor '']
+  pre_statement:
+  - !!python/name:mt940.processors.date_fixup_pre_processor ''
   pre_statement_number: []
   pre_sum_credit_entries: []
   pre_sum_debit_entries: []
@@ -85,40 +93,51 @@ processors:
   pre_transaction_reference_number: []
 tags:
   13: !!python/object:mt940.tags.DateTimeIndication
-    re: !!python/object/apply:re._compile ["^\n    (?P<year>\\d{2})\n    (?P<month>\\\
-        d{2})\n    (?P<day>\\d{2})\n    (?P<hour>\\d{2})\n    (?P<minute>\\d{2})\n\
-        \    (\\+(?P<offset>\\d{4})|)\n    ", 98]
+    re: !!python/object/apply:re._compile
+    - "^\n    (?P<year>\\d{2})\n    (?P<month>\\d{2})\n    (?P<day>\\d{2})\n    (?P<hour>\\\
+      d{2})\n    (?P<minute>\\d{2})\n    (\\+(?P<offset>\\d{4})|)\n    "
+    - 98
   20: !!python/object:mt940.tags.TransactionReferenceNumber
-    re: !!python/object/apply:re._compile ['(?P<transaction_reference>.{0,16})', 98]
+    re: !!python/object/apply:re._compile
+    - (?P<transaction_reference>.{0,16})
+    - 98
   21: !!python/object:mt940.tags.RelatedReference
-    re: !!python/object/apply:re._compile ['(?P<related_reference>.{0,16})', 98]
+    re: !!python/object/apply:re._compile
+    - (?P<related_reference>.{0,16})
+    - 98
   25: !!python/object:mt940.tags.AccountIdentification
-    re: !!python/object/apply:re._compile ['(?P<account_identification>.{0,35})',
-      98]
+    re: !!python/object/apply:re._compile
+    - (?P<account_identification>.{0,35})
+    - 98
   28: !!python/object:mt940.tags.StatementNumber
-    re: !!python/object/apply:re._compile ["\n    (?P<statement_number>\\d{1,5}) \
-        \ # 5n\n    (?:/?(?P<sequence_number>\\d{1,5}))?  # [/5n]\n    $", 98]
+    re: !!python/object/apply:re._compile
+    - "\n    (?P<statement_number>\\d{1,5})  # 5n\n    (?:/?(?P<sequence_number>\\\
+      d{1,5}))?  # [/5n]\n    $"
+    - 98
   60: !!python/object:mt940.tags.OpeningBalance
-    re: &id001 !!python/object/apply:re._compile ["^\n    (?P<status>[DC])  # 1!a\
-        \ Debit/Credit\n    (?P<year>\\d{2})  # 6!n Value Date (YYMMDD)\n    (?P<month>\\\
-        d{2})\n    (?P<day>\\d{2})\n    (?P<currency>.{3})  # 3!a Currency\n    (?P<amount>[0-9,]{0,16})\
-        \  # 15d Amount (includes decimal sign, so 16)\n    ", 98]
+    re: &id001 !!python/object/apply:re._compile
+    - "^\n    (?P<status>[DC])  # 1!a Debit/Credit\n    (?P<year>\\d{2})  # 6!n Value\
+      \ Date (YYMMDD)\n    (?P<month>\\d{2})\n    (?P<day>\\d{2})\n    (?P<currency>.{3})\
+      \  # 3!a Currency\n    (?P<amount>[0-9,]{0,16})  # 15d Amount (includes decimal\
+      \ sign, so 16)\n    "
+    - 98
   60M: !!python/object:mt940.tags.IntermediateOpeningBalance
     re: *id001
   60F: !!python/object:mt940.tags.FinalOpeningBalance
     re: *id001
   61: !!python/object:mt940.tags.Statement
-    re: !!python/object/apply:re._compile ["^\n    (?P<year>\\d{2})  # 6!n Value Date\
-        \ (YYMMDD)\n    (?P<month>\\d{2})\n    (?P<day>\\d{2})\n    (?P<entry_month>\\\
-        d{2})?  # [4!n] Entry Date (MMDD)\n    (?P<entry_day>\\d{2})?\n    (?P<status>[A-Z]?[DC])\
-        \  # 2a Debit/Credit Mark\n    (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd\
-        \ character of the currency\n                            # code, if needed)\n\
-        \    \\n? # apparently some banks (sparkassen) incorporate newlines here\n\
-        \    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    (?P<id>[A-Z][A-Z0-9 ]{3})?\
-        \  # 1!a3!c Transaction Type Identification Code\n    (?P<customer_reference>.{0,16})\
-        \  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,23}))?  # [//23x]\
-        \ Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary\
-        \ Details\n    $", 98]
+    re: !!python/object/apply:re._compile
+    - "^\n    (?P<year>\\d{2})  # 6!n Value Date (YYMMDD)\n    (?P<month>\\d{2})\n\
+      \    (?P<day>\\d{2})\n    (?P<entry_month>\\d{2})?  # [4!n] Entry Date (MMDD)\n\
+      \    (?P<entry_day>\\d{2})?\n    (?P<status>[A-Z]?[DC])  # 2a Debit/Credit Mark\n\
+      \    (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd character of the currency\n\
+      \                            # code, if needed)\n    \\n? # apparently some\
+      \ banks (sparkassen) incorporate newlines here\n    (?P<amount>[\\d,]{1,15})\
+      \  # 15d Amount\n    (?P<id>[A-Z][A-Z0-9 ]{3})?  # 1!a3!c Transaction Type Identification\
+      \ Code\n    (?P<customer_reference>.{0,16})  # 16x Customer Reference\n    (//(?P<bank_reference>.{0,23}))?\
+      \  # [//23x] Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?  # [34x]\
+      \ Supplementary Details\n    $"
+    - 98
   62: !!python/object:mt940.tags.ClosingBalance
     re: *id001
   62M: !!python/object:mt940.tags.IntermediateClosingBalance
@@ -130,19 +149,26 @@ tags:
   65: !!python/object:mt940.tags.ForwardAvailableBalance
     re: *id001
   86: !!python/object:mt940.tags.TransactionDetails
-    re: !!python/object/apply:re._compile ["\n    (?P<transaction_details>(([\\s\\\
-        S]{0,65}\\r?\\n?){0,8}[\\s\\S]{0,65}))\n    ", 98]
+    re: !!python/object/apply:re._compile
+    - "\n    (?P<transaction_details>(([\\s\\S]{0,65}\\r?\\n?){0,8}[\\s\\S]{0,65}))\n\
+      \    "
+    - 98
   34: !!python/object:mt940.tags.FloorLimitIndicator
-    re: !!python/object/apply:re._compile ["^\n    (?P<currency>[A-Z]{3})  # 3!a Currency\n\
-        \    (?P<status>[DC ]?)  # 2a Debit/Credit Mark\n    (?P<amount>[0-9,]{0,16})\
-        \  # 15d Amount (includes decimal sign, so 16)\n    $", 98]
+    re: !!python/object/apply:re._compile
+    - "^\n    (?P<currency>[A-Z]{3})  # 3!a Currency\n    (?P<status>[DC ]?)  # 2a\
+      \ Debit/Credit Mark\n    (?P<amount>[0-9,]{0,16})  # 15d Amount (includes decimal\
+      \ sign, so 16)\n    $"
+    - 98
   NS: !!python/object:mt940.tags.NonSwift
-    re: !!python/object/apply:re._compile ["\n    (?P<non_swift>\n        (\n    \
-        \        (\\d{2}.{0,})\n            (\\n\\d{2}.{0,})*\n        )|(\n     \
-        \       [^\\n]*\n        )\n    )\n    $", 98]
+    re: !!python/object/apply:re._compile
+    - "\n    (?P<non_swift>\n        (\n            (\\d{2}.{0,})\n            (\\\
+      n\\d{2}.{0,})*\n        )|(\n            [^\\n]*\n        )\n    )\n    $"
+    - 98
   90: !!python/object:mt940.tags.SumEntries
-    re: &id002 !!python/object/apply:re._compile ["^\n    (?P<number>\\d*)\n    (?P<currency>.{3})\
-        \  # 3!a Currency\n    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    ", 98]
+    re: &id002 !!python/object/apply:re._compile
+    - "^\n    (?P<number>\\d*)\n    (?P<currency>.{3})  # 3!a Currency\n    (?P<amount>[\\\
+      d,]{1,15})  # 15d Amount\n    "
+    - 98
   90D: !!python/object:mt940.tags.SumDebitEntries
     re: *id002
   90C: !!python/object:mt940.tags.SumCreditEntries
@@ -155,7 +181,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['300']
+      amount: !!python/object/apply:decimal.Decimal
+      - '300'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -204,7 +231,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['335.33']
+      amount: !!python/object/apply:decimal.Decimal
+      - '335.33'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -253,7 +281,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['15000']
+      amount: !!python/object/apply:decimal.Decimal
+      - '15000'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -299,7 +328,8 @@ transactions:
   data:
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['66295.08']
+      amount: !!python/object/apply:decimal.Decimal
+      - '66295.08'
       currency: EUR
     applicant_bin: null
     applicant_iban: null
@@ -334,7 +364,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['915311.55']
+      amount: !!python/object/apply:decimal.Decimal
+      - '915311.55'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -380,7 +411,8 @@ transactions:
   data:
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['204.88']
+      amount: !!python/object/apply:decimal.Decimal
+      - '204.88'
       currency: EUR
     applicant_bin: null
     applicant_iban: null
@@ -412,7 +444,8 @@ transactions:
   data:
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-999946.95']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-999946.95'
       currency: EUR
     applicant_bin: null
     applicant_iban: null
@@ -447,7 +480,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: enat
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['15000.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '15000.05'
       currency: EUR
     applicant_bin: PBNKDEFF100
     applicant_creditor_id: null
@@ -496,7 +530,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-500250']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-500250'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -547,7 +582,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['50.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '50.05'
       currency: EUR
     applicant_bin: PBNKDEFF100
     applicant_creditor_id: null
@@ -595,7 +631,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['125.88']
+      amount: !!python/object/apply:decimal.Decimal
+      - '125.88'
       currency: EUR
     applicant_bin: NIKACH22XXX
     applicant_creditor_id: null
@@ -643,7 +680,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['125004.88']
+      amount: !!python/object/apply:decimal.Decimal
+      - '125004.88'
       currency: EUR
     applicant_bin: UBSWCHZH80A
     applicant_creditor_id: null
@@ -691,7 +729,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-326609.66']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-326609.66'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -742,7 +781,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-326609.66']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-326609.66'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -793,7 +833,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['250000']
+      amount: !!python/object/apply:decimal.Decimal
+      - '250000'
       currency: EUR
     applicant_bin: PBNKDEFF250
     applicant_creditor_id: null
@@ -841,7 +882,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['300000']
+      amount: !!python/object/apply:decimal.Decimal
+      - '300000'
       currency: EUR
     applicant_bin: PBNKDEFF100
     applicant_creditor_id: null
@@ -889,7 +931,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['500000']
+      amount: !!python/object/apply:decimal.Decimal
+      - '500000'
       currency: EUR
     applicant_bin: PBNKDEFF250
     applicant_creditor_id: null
@@ -934,7 +977,8 @@ transactions:
   data:
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['204.88']
+      amount: !!python/object/apply:decimal.Decimal
+      - '204.88'
       currency: EUR
     applicant_bin: null
     applicant_iban: null
@@ -966,7 +1010,8 @@ transactions:
   data:
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['204.88']
+      amount: !!python/object/apply:decimal.Decimal
+      - '204.88'
       currency: EUR
     applicant_bin: null
     applicant_iban: null
@@ -1001,7 +1046,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-50990.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-50990.05'
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
@@ -1051,7 +1097,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-175454.22']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-175454.22'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -1099,7 +1146,8 @@ transactions:
   data:
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-500250']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-500250'
       currency: EUR
     applicant_bin: null
     applicant_iban: null
@@ -1134,7 +1182,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['50990.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '50990.05'
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
@@ -1182,7 +1231,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['19990.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '19990.05'
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
@@ -1231,7 +1281,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-57.34']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-57.34'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -1282,7 +1333,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-5002.17']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-5002.17'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -1331,7 +1383,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-5002.17']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-5002.17'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -1382,7 +1435,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-5002.17']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-5002.17'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -1433,7 +1487,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-5002.17']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-5002.17'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -1484,7 +1539,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-5002.17']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-5002.17'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -1535,7 +1591,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: beachten
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-55344.11']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-55344.11'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -1586,7 +1643,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['50']
+      amount: !!python/object/apply:decimal.Decimal
+      - '50'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -1635,7 +1693,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['50.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '50.05'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -1684,7 +1743,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['50.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '50.05'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -1733,7 +1793,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['46500.07']
+      amount: !!python/object/apply:decimal.Decimal
+      - '46500.07'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -1783,7 +1844,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['154551.93']
+      amount: !!python/object/apply:decimal.Decimal
+      - '154551.93'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -1833,7 +1895,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-2550']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-2550'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -1881,7 +1944,8 @@ transactions:
   data:
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-2550.12']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-2550.12'
       currency: EUR
     applicant_bin: null
     applicant_iban: null
@@ -1913,7 +1977,8 @@ transactions:
   data:
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-2550.12']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-2550.12'
       currency: EUR
     applicant_bin: null
     applicant_iban: null
@@ -1945,7 +2010,8 @@ transactions:
   data:
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-65500.15']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-65500.15'
       currency: EUR
     applicant_bin: null
     applicant_iban: null
@@ -1978,7 +2044,8 @@ transactions:
   data:
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-402104']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-402104'
       currency: EUR
     applicant_bin: null
     applicant_iban: null
@@ -2014,7 +2081,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-476921.44']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-476921.44'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -2065,7 +2133,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['335.33']
+      amount: !!python/object/apply:decimal.Decimal
+      - '335.33'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -2114,7 +2183,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['915311.55']
+      amount: !!python/object/apply:decimal.Decimal
+      - '915311.55'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -2163,7 +2233,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-157.34']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-157.34'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -2213,7 +2284,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-6002.17']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-6002.17'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -2263,7 +2335,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-6002.17']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-6002.17'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -2313,7 +2386,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-6002.17']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-6002.17'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -2363,7 +2437,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-6002.17']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-6002.17'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -2413,7 +2488,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-6002.17']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-6002.17'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -2463,7 +2539,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-155344.11']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-155344.11'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -2511,7 +2588,8 @@ transactions:
   data:
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-415603.93']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-415603.93'
       currency: EUR
     applicant_bin: null
     applicant_iban: null
@@ -2547,7 +2625,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-589103.86']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-589103.86'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -2598,7 +2677,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-915646.88']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-915646.88'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -2649,7 +2729,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['16500.07']
+      amount: !!python/object/apply:decimal.Decimal
+      - '16500.07'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -2698,7 +2779,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['154551.93']
+      amount: !!python/object/apply:decimal.Decimal
+      - '154551.93'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -2747,7 +2829,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-13990.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-13990.05'
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
@@ -2798,7 +2881,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-19990.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-19990.05'
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
@@ -2849,7 +2933,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-50990.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-50990.05'
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
@@ -2896,7 +2981,8 @@ transactions:
   data:
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-326609.66']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-326609.66'
       currency: EUR
     applicant_bin: null
     applicant_iban: null
@@ -2931,7 +3017,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-342104']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-342104'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -2982,7 +3069,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-962104']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-962104'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -3030,7 +3118,8 @@ transactions:
   data:
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-1522104']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-1522104'
       currency: EUR
     applicant_bin: null
     applicant_iban: null
@@ -3066,7 +3155,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['13990.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '13990.05'
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
@@ -3114,7 +3204,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-57.34']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-57.34'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -3164,7 +3255,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-5002.17']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-5002.17'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -3214,7 +3306,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-5002.17']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-5002.17'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -3264,7 +3357,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-5002.17']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-5002.17'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -3314,7 +3408,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-5002.17']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-5002.17'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -3364,7 +3459,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-5002.17']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-5002.17'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -3414,7 +3510,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-19990.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-19990.05'
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
@@ -3465,7 +3562,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-50990.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-50990.05'
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
@@ -3515,7 +3613,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-50990.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-50990.05'
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
@@ -3566,7 +3665,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-55344.11']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-55344.11'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -3617,7 +3717,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-342104']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-342104'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -3669,7 +3770,8 @@ transactions:
     additional_purpose: 'MTLG:SBI-SEPA-UEB.FR142004101005 Referenz: 1930467117Ggf.Meldevorschriften
       beachten'
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-956588.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-956588.05'
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
@@ -3720,7 +3822,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['50990.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '50990.05'
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
@@ -3768,7 +3871,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['16500.07']
+      amount: !!python/object/apply:decimal.Decimal
+      - '16500.07'
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
@@ -3816,7 +3920,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['19990.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '19990.05'
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
@@ -3864,7 +3969,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['56500.07']
+      amount: !!python/object/apply:decimal.Decimal
+      - '56500.07'
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
@@ -3912,7 +4018,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['50990.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '50990.05'
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
@@ -3960,7 +4067,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['154551.93']
+      amount: !!python/object/apply:decimal.Decimal
+      - '154551.93'
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
@@ -4008,7 +4116,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['154551.93']
+      amount: !!python/object/apply:decimal.Decimal
+      - '154551.93'
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
@@ -4056,7 +4165,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-1500']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-1500'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -4107,7 +4217,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['300']
+      amount: !!python/object/apply:decimal.Decimal
+      - '300'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -4156,7 +4267,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['335.33']
+      amount: !!python/object/apply:decimal.Decimal
+      - '335.33'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -4205,7 +4317,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['15000']
+      amount: !!python/object/apply:decimal.Decimal
+      - '15000'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -4254,7 +4367,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['15000.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '15000.05'
       currency: EUR
     applicant_bin: PBNKDEFF100
     applicant_creditor_id: null
@@ -4303,7 +4417,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['125004.88']
+      amount: !!python/object/apply:decimal.Decimal
+      - '125004.88'
       currency: EUR
     applicant_bin: PBNKDEFF100
     applicant_creditor_id: null
@@ -4351,7 +4466,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['915311.55']
+      amount: !!python/object/apply:decimal.Decimal
+      - '915311.55'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -4397,7 +4513,8 @@ transactions:
   data:
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-3572569.03']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-3572569.03'
       currency: EUR
     applicant_bin: null
     applicant_iban: null
@@ -4432,7 +4549,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['1910.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '1910.05'
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
@@ -4480,7 +4598,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['50990.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '50990.05'
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
@@ -4528,7 +4647,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-125300.1']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-125300.1'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -4579,7 +4699,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-150']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-150'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -4630,7 +4751,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['-150']
+      amount: !!python/object/apply:decimal.Decimal
+      - '-150'
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
@@ -4681,7 +4803,8 @@ transactions:
     additional_position_reference: null
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
-      amount: !!python/object/apply:decimal.Decimal ['50.05']
+      amount: !!python/object/apply:decimal.Decimal
+      - '50.05'
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
