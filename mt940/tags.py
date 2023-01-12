@@ -64,7 +64,10 @@ class Tag(object):
                 match.groupdict())
         else:  # pragma: no cover
             self.logger.error(
-                'matching (%d) %r against %r', len(value), value,
+                'matching id=%s (len=%d) "%s" against\n    %s',
+                self.id,
+                len(value),
+                value,
                 self.pattern)
 
             part_value = value
@@ -301,7 +304,9 @@ class Statement(Tag):
     \n? # apparently some banks (sparkassen) incorporate newlines here
     (?P<amount>[\d,]{1,15})  # 15d Amount
     (?P<id>[A-Z][A-Z0-9 ]{3})?  # 1!a3!c Transaction Type Identification Code
-    (?P<customer_reference>[^/\n]{0,16})  # 16x Customer Reference
+    # We need the (slow) repeating negative lookahead to search for // so we
+    # don't acciddntly include the bank reference in the customer reference.
+    (?P<customer_reference>((?!//)[^\n]){0,16})  # 16x Customer Reference
     (//(?P<bank_reference>.{0,23}))?  # [//23x] Bank Reference
     (\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary Details
     $'''

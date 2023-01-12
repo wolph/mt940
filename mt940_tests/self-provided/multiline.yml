@@ -1,14 +1,36 @@
-!!python/object:mt940.models.Transactions
+&id003 !!python/object:mt940.models.Transactions
 data:
-  final_closing_balance: !!python/object:mt940.models.Balance
+  account_identification: 'BILLLULLXXX/"NUMERO DE COMPTE IBAN '
+  available_balance: !!python/object:mt940.models.Balance
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal
-      - '137.00'
+      - '11.40'
       currency: EUR
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
-      B94JAQ==
+      B9QIBA==
     status: C
+  final_closing_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal
+      - '11.40'
+      currency: EUR
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9QIBA==
+    status: C
+  final_opening_balance: !!python/object:mt940.models.Balance
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal
+      - '16.40'
+      currency: EUR
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9QIAg==
+    status: C
+  sequence_number: '001'
+  statement_number: '00115'
+  transaction_reference: BILMT940
 processors:
   post_account_identification: []
   post_available_balance: []
@@ -135,4 +157,71 @@ tags:
     re: *id002
   90C: !!python/object:mt940.tags.SumCreditEntries
     re: *id002
-transactions: []
+transactions:
+- !!python/object:mt940.models.Transaction
+  data:
+    additional_purpose: NOM ET ADRESSE DO / BENEF 112345678
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal
+      - '-5'
+      currency: EUR
+    applicant_bin: BILLLULL1234
+    applicant_iban: NUMERO DE COMPTE01234567
+    applicant_name: NOM DU DO / BENEFICIAIRE 11NOM DU DO / BENEFICIAIRE 22
+    bank_reference: MUL0408041114005
+    currency: EUR
+    customer_reference: REFERENCE DO 111
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9QIBA==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9QIBA==
+    extra_details: /OCMT/EUR4,5//IACC/D3/
+    funds_code: R
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B9QIBA==
+    id: NTRF
+    posting_text: VIREMENT111111111111111111X
+    prima_nota: null
+    purpose: LIGNE111111111111111111111X12345678LIGNE222222222222222222222X12345678LIGNE333333333333333333333X12345678LIGNE444444444444444444444X12345678LIGNE555555555555555555555X12345678/CHGS/EUR0,5/LIGNE777777777777777777777X12345678LIGNE888888888888888888888X12345678LIGNE999999999999999999999X12345678LIGNE101010101010101010101X12345678
+    recipient_name: null
+    return_debit_notes: null
+    status: D
+    transaction_code: '020'
+    transaction_details: 'FREE TEXT
+
+      FREE TEXT
+
+      FREE TEXT
+
+      FREE TEXT
+
+      FREE TEXT
+
+      FREE TEXT'
+  transactions: *id003
+- !!python/object:mt940.models.Transaction
+  data:
+    amount: !!python/object:mt940.models.Amount
+      amount: !!python/object/apply:decimal.Decimal
+      - '119'
+      currency: EUR
+    bank_reference: O/341241774
+    currency: EUR
+    customer_reference: 341241773/1XXXXX
+    date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+YMEw==
+    entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+YMFA==
+    extra_details: Paiement
+    funds_code: null
+    guessed_entry_date: !!python/object/apply:mt940.models.Date
+    - !!binary |
+      B+YMFA==
+    id: NMSC
+    status: C
+  transactions: *id003
