@@ -2,10 +2,9 @@
 MT940
 =====
 
-
-.. image:: https://travis-ci.org/WoLpH/mt940.svg?branch=master
+.. image:: https://github.com/wolph/mt940/actions/workflows/main.yml/badge.svg?branch=master
     :alt: MT940 test status
-    :target: https://travis-ci.org/WoLpH/mt940
+    :target: https://github.com/wolph/mt940/actions/workflows/main.yml
 
 .. image:: https://badge.fury.io/py/mt-940.svg
     :alt: MT940 Pypi version
