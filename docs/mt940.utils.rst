@@ -1,0 +1,7 @@
+mt940.utils module
+==================
+
+.. automodule:: mt940.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

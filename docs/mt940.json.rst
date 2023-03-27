@@ -1,0 +1,7 @@
+mt940.json module
+=================
+
+.. automodule:: mt940.json
+   :members:
+   :undoc-members:
+   :show-inheritance:

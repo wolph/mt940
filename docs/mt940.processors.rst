@@ -1,0 +1,7 @@
+mt940.processors module
+=======================
+
+.. automodule:: mt940.processors
+   :members:
+   :undoc-members:
+   :show-inheritance:
