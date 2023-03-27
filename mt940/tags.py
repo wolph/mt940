@@ -301,7 +301,8 @@ class Statement(Tag):
     (?P<status>R?[DC])  # 2a Debit/Credit Mark
     (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd character of the currency
                             # code, if needed)
-    \n? # apparently some banks (sparkassen) incorporate newlines here
+    [\n ]? # apparently some banks (sparkassen) incorporate newlines here
+    # cuscal can also send a space here as well
     (?P<amount>[\d,]{1,15})  # 15d Amount
     (?P<id>[A-Z][A-Z0-9 ]{3})?  # 1!a3!c Transaction Type Identification Code
     # We need the (slow) repeating negative lookahead to search for // so we
