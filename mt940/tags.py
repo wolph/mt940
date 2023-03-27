@@ -1,6 +1,51 @@
 # vim: fileencoding=utf-8:
 '''
 
+The MT940 format is a standard for bank account statements. It is used by
+many banks in Europe and is based on the SWIFT MT940 format.
+
+The MT940 tags are:
+
++---------+-----------------------------------------------------------------+
+| Tag     | Description                                                     |
++=========+=================================================================+
+| `:13:`  | Date/Time indication at which the report was created            |
++---------+-----------------------------------------------------------------+
+| `:20:`  | Transaction Reference Number                                    |
++---------+-----------------------------------------------------------------+
+| `:21:`  | Related Reference Number                                        |
++---------+-----------------------------------------------------------------+
+| `:25:`  | Account Identification                                          |
++---------+-----------------------------------------------------------------+
+| `:28:`  | Statement Number                                                |
++---------+-----------------------------------------------------------------+
+| `:34:`  | The floor limit for debit and credit                            |
++---------+-----------------------------------------------------------------+
+| `:60F:` | Opening Balance                                                 |
++---------+-----------------------------------------------------------------+
+| `:60M:` | Intermediate Balance                                            |
++---------+-----------------------------------------------------------------+
+| `:60E:` | Closing Balance                                                 |
++---------+-----------------------------------------------------------------+
+| `:61:`  | Statement Line                                                  |
++---------+-----------------------------------------------------------------+
+| `:62:`  | Closing Balance                                                 |
++---------+-----------------------------------------------------------------+
+| `:62M:` | Intermediate Closing Balance                                    |
++---------+-----------------------------------------------------------------+
+| `:62F:` | Final Closing Balance                                           |
++---------+-----------------------------------------------------------------+
+| `:64:`  | Available Balance                                               |
++---------+-----------------------------------------------------------------+
+| `:65:`  | Forward Available Balance                                       |
++---------+-----------------------------------------------------------------+
+| `:86:`  | Transaction Information                                         |
++---------+-----------------------------------------------------------------+
+| `:90:`  | Total number and amount of debit entries                        |
++---------+-----------------------------------------------------------------+
+| `:NS:`  | Bank specific Non-swift extensions containing extra information |
++---------+-----------------------------------------------------------------+
+
 Format
 ---------------------
 
@@ -14,6 +59,8 @@ Sources:
  - `Swift for corporates`_
  - `Rabobank MT940`_
 
+The pattern for the tags use the following syntax:
+
 ::
 
     [] = optional
@@ -26,14 +73,17 @@ Sources:
     n = Numeric
 '''
 from __future__ import print_function
-import re
+
 import logging
+import re
 
 try:
     import enum
 except ImportError:  # pragma: no cover
     import sys
+
     print('MT940 requires the `enum34` package', file=sys.stderr)
+
 
     class enum(object):
         @staticmethod
@@ -61,30 +111,37 @@ class Tag(object):
             self.logger.debug(
                 'matched (%d) %r against %r, got: %s',
                 len(value), value, self.pattern,
-                match.groupdict())
+                match.groupdict()
+            )
         else:  # pragma: no cover
             self.logger.error(
                 'matching id=%s (len=%d) "%s" against\n    %s',
                 self.id,
                 len(value),
                 value,
-                self.pattern)
+                self.pattern
+            )
 
             part_value = value
             for pattern in self.pattern.split('\n'):
                 match = re.match(pattern, part_value, self.RE_FLAGS)
                 if match:
-                    self.logger.info('matched %r against %r, got: %s',
-                                     pattern, match.group(0),
-                                     match.groupdict())
+                    self.logger.info(
+                        'matched %r against %r, got: %s',
+                        pattern, match.group(0),
+                        match.groupdict()
+                    )
                     part_value = part_value[len(match.group(0)):]
                 else:
-                    self.logger.error('no match for %r against %r',
-                                      pattern, part_value)
+                    self.logger.error(
+                        'no match for %r against %r',
+                        pattern, part_value
+                    )
 
             raise RuntimeError(
                 'Unable to parse %r from %r' % (self, value),
-                self, value)
+                self, value
+            )
         return match.groupdict()
 
     def __call__(self, transactions, value):
@@ -212,6 +269,7 @@ class NonSwift(Tag):
 
     class scope(models.Transaction, models.Transactions):
         pass
+
     id = 'NS'
 
     pattern = r'''
@@ -227,8 +285,10 @@ class NonSwift(Tag):
     sub_pattern = r'''
     (?P<ns_id>\d{2})(?P<ns_data>.{0,})
     '''
-    sub_pattern_m = re.compile(sub_pattern,
-                               re.IGNORECASE | re.VERBOSE | re.UNICODE)
+    sub_pattern_m = re.compile(
+        sub_pattern,
+        re.IGNORECASE | re.VERBOSE | re.UNICODE
+    )
 
     def __call__(self, transactions, value):
         text = []
@@ -286,9 +346,37 @@ class IntermediateOpeningBalance(BalanceBase):
 
 class Statement(Tag):
 
-    '''Statement
+    '''
+
+    The MT940 Tag 61 provides information about a single transaction that
+    has taken place on the account. Each transaction is identified by a
+    unique transaction reference number (Tag 20) and is described in the
+    Statement Line (Tag 61).
 
     Pattern: 6!n[4!n]2a[1!a]15d1!a3!c23x[//16x]
+
+    The fields are:
+
+     - `value_date`: transaction date (YYMMDD)
+     - `entry_date`: Optional 4-digit month value and 2-digit day value of
+       the entry date (MMDD)
+     - `funds_code`: Optional 1-character code indicating the funds type (
+       the third character of the currency code if needed)
+     - `amount`: 15-digit value of the transaction amount, including commas
+       for decimal separation
+     - `transaction_type`: Optional 4-character transaction type
+       identification code starting with a letter followed by alphanumeric
+       characters and spaces
+     - `customer_reference`: Optional 16-character customer reference,
+       excluding any bank reference
+     - `bank_reference`: Optional 23-character bank reference starting with
+       "//"
+     - `supplementary_details`: Optional 34-character supplementary details
+       about the transaction.
+
+    The Tag 61 can occur multiple times within an MT940 file, with each
+    occurrence representing a different transaction.
+
     '''
     id = 61
     scope = models.Transaction
@@ -383,12 +471,12 @@ class ClosingBalance(BalanceBase):
     id = 62
 
 
-class FinalClosingBalance(ClosingBalance):
-    id = '62F'
-
-
 class IntermediateClosingBalance(ClosingBalance):
     id = '62M'
+
+
+class FinalClosingBalance(ClosingBalance):
+    id = '62F'
 
 
 class AvailableBalance(BalanceBase):

@@ -1,62 +1,20 @@
 mt940 package
 =============
 
-Submodules
-----------
-
-mt940.json module
------------------
-
-.. automodule:: mt940.json
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-mt940.models module
--------------------
-
-.. automodule:: mt940.models
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-mt940.parser module
--------------------
-
-.. automodule:: mt940.parser
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-mt940.processors module
------------------------
-
-.. automodule:: mt940.processors
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-mt940.tags module
------------------
-
-.. automodule:: mt940.tags
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-mt940.utils module
-------------------
-
-.. automodule:: mt940.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-Module contents
----------------
-
 .. automodule:: mt940
    :members:
    :undoc-members:
    :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   mt940.json
+   mt940.models
+   mt940.parser
+   mt940.processors
+   mt940.tags
+   mt940.utils
