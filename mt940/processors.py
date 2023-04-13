@@ -209,9 +209,7 @@ def _parse_mt940_gvcodes(purpose):
 
 
 def transaction_details_post_processor(
-    transactions, tag, tag_dict, result,
-    space=False
-    ):
+        transactions, tag, tag_dict, result, space=False):
     '''Parse the extra details in some transaction formats such as the 60-65
     keys.
 

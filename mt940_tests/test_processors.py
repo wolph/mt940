@@ -6,6 +6,7 @@ import mt940
 
 _tests_path = pathlib.Path(__file__).parent
 
+
 @pytest.fixture
 def sta_data():
     with (_tests_path / 'jejik' / 'abnamro.sta').open() as fh:

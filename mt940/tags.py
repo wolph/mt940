@@ -84,7 +84,6 @@ except ImportError:  # pragma: no cover
 
     print('MT940 requires the `enum34` package', file=sys.stderr)
 
-
     class enum(object):
         @staticmethod
         def unique(*args, **kwargs):

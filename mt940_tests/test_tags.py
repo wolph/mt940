@@ -13,7 +13,7 @@ _tests_path = pathlib.Path(__file__).parent
 def long_statement_number():
     with (
         _tests_path / 'self-provided' / 'long_statement_number.sta').open() \
-        as fh:
+            as fh:
         return fh.read()
 
 
@@ -44,7 +44,7 @@ def test_specify_different_tag_classes(long_statement_number):
 def ASNB_mt940_data():
     with (
         _tests_path / 'ASNB' / '0708271685_09022020_164516.940.txt').open() \
-        as fh:
+            as fh:
         return fh.read()
 
 
