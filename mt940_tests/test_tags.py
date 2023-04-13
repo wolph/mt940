@@ -1,13 +1,19 @@
+import pathlib
+
 import pytest
 import mt940
 from mt940 import tags
 from mt940 import models
 import pprint
 
+_tests_path = pathlib.Path(__file__).parent
+
 
 @pytest.fixture
 def long_statement_number():
-    with open('mt940_tests/self-provided/long_statement_number.sta') as fh:
+    with (
+        _tests_path / 'self-provided' / 'long_statement_number.sta').open() \
+        as fh:
         return fh.read()
 
 
@@ -25,24 +31,30 @@ class MyStatementNumber(tags.Tag):
 
 def test_specify_different_tag_classes(long_statement_number):
     tag_parser = MyStatementNumber()
-    transactions = mt940.models.Transactions(tags={
-        tag_parser.id: tag_parser
-    })
+    transactions = mt940.models.Transactions(
+        tags={
+            tag_parser.id: tag_parser
+        }
+    )
     transactions.parse(long_statement_number)
     assert transactions.data.get('statement_number') == '1810118101'
 
 
 @pytest.fixture
 def ASNB_mt940_data():
-    with open('mt940_tests/ASNB/0708271685_09022020_164516.940.txt') as fh:
+    with (
+        _tests_path / 'ASNB' / '0708271685_09022020_164516.940.txt').open() \
+        as fh:
         return fh.read()
 
 
 def test_ASNB_tags(ASNB_mt940_data):
     tag_parser = tags.StatementASNB()
-    trs = mt940.models.Transactions(tags={
-        tag_parser.id: tag_parser
-    })
+    trs = mt940.models.Transactions(
+        tags={
+            tag_parser.id: tag_parser
+        }
+    )
 
     trs.parse(ASNB_mt940_data)
 
@@ -83,21 +95,28 @@ def test_ASNB_tags(ASNB_mt940_data):
         'date': models.Date(2020, 1, 1),
         'entry_date': models.Date(2020, 1, 1),
         'guessed_entry_date': models.Date(2020, 1, 1),
+        'transaction_reference': '0000000000',
     }
 
     assert td == 'NL47INGB9999999999 hr gjlm paulissen\nBetaling sieraden'
     assert trs.transactions[1].data['amount'] == models.Amount(
-        '1000.00', 'C', 'EUR')
+        '1000.00', 'C', 'EUR'
+    )
     assert trs.transactions[2].data['amount'] == models.Amount(
-        '801.55', 'D', 'EUR')
+        '801.55', 'D', 'EUR'
+    )
     assert trs.transactions[3].data['amount'] == models.Amount(
-        '1.65', 'D', 'EUR')
+        '1.65', 'D', 'EUR'
+    )
     assert trs.transactions[4].data['amount'] == models.Amount(
-        '828.72', 'C', 'EUR')
+        '828.72', 'C', 'EUR'
+    )
     assert trs.transactions[5].data['amount'] == models.Amount(
-        '1000.00', 'D', 'EUR')
+        '1000.00', 'D', 'EUR'
+    )
     assert trs.transactions[6].data['amount'] == models.Amount(
-        '1000.18', 'C', 'EUR')
+        '1000.18', 'C', 'EUR'
+    )
 
     td = trs.transactions[7].data.pop('transaction_details')
     assert trs.transactions[7].data == {
@@ -112,10 +131,10 @@ def test_ASNB_tags(ASNB_mt940_data):
         'date': models.Date(2020, 1, 31),
         'entry_date': models.Date(2020, 1, 31),
         'guessed_entry_date': models.Date(2020, 1, 31),
+        'transaction_reference': '0000000000',
     }
     assert td[0:46] == 'NL08ABNA9999999999 international card services'
     assert td[47:112] == \
-        '000000000000000000000000000000000 0000000000000000 Betaling aan I'
+           '000000000000000000000000000000000 0000000000000000 Betaling aan I'
     assert td[113:176] == \
-        'CS 99999999999 ICS Referentie: 2020-01-31 21:27 000000000000000'
-
+           'CS 99999999999 ICS Referentie: 2020-01-31 21:27 000000000000000'
