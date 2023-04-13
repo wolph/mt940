@@ -285,6 +285,12 @@ class Transactions(abc.Sequence):
         pre_sum_debit_entries=[],
         post_sum_debit_entries=[])
 
+    def __getstate__(self):  # pragma: no cover
+        # Processors are not always safe to dump so ignore them entirely
+        state = self.__dict__.copy()
+        del state['processors']
+        return state
+
     def __init__(self, processors=None, tags=None):
         self.processors = self.DEFAULT_PROCESSORS.copy()
         self.tags = Transactions.defaultTags().copy()
