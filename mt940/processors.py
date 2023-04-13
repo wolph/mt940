@@ -46,7 +46,8 @@ def mBank_set_transaction_code(transactions, tag, tag_dict, *args):
     processing
     """
     tag_dict['transaction_code'] = int(
-        tag_dict[tag.slug].split(';')[0].split(' ', 1)[0])
+        tag_dict[tag.slug].split(';')[0].split(' ', 1)[0]
+    )
 
     return tag_dict
 
@@ -67,8 +68,10 @@ def mBank_set_iph_id(transactions, tag, tag_dict, *args):
     return tag_dict
 
 
-tnr_re = re.compile(r'TNR:[ \n](?P<tnr>\d+\.\d+)',
-                    flags=re.MULTILINE | re.UNICODE)
+tnr_re = re.compile(
+    r'TNR:[ \n](?P<tnr>\d+\.\d+)',
+    flags=re.MULTILINE | re.UNICODE
+)
 
 
 def mBank_set_tnr(transactions, tag, tag_dict, *args):
@@ -205,8 +208,10 @@ def _parse_mt940_gvcodes(purpose):
     return result
 
 
-def transaction_details_post_processor(transactions, tag, tag_dict, result,
-                                       space=False):
+def transaction_details_post_processor(
+    transactions, tag, tag_dict, result,
+    space=False
+    ):
     '''Parse the extra details in some transaction formats such as the 60-65
     keys.
 
@@ -226,8 +231,10 @@ def transaction_details_post_processor(transactions, tag, tag_dict, result,
 
         purpose = result.get('purpose')
 
-        if purpose and any(gvk in purpose for gvk in GVC_KEYS
-                           if gvk != ''):  # pragma: no branch
+        if purpose and any(
+            gvk in purpose for gvk in GVC_KEYS
+            if gvk != ''
+        ):  # pragma: no branch
             result.update(_parse_mt940_gvcodes(result['purpose']))
 
         del result['transaction_details']
@@ -236,4 +243,29 @@ def transaction_details_post_processor(transactions, tag, tag_dict, result,
 
 
 transaction_details_post_processor_with_space = functools.partial(
-    transaction_details_post_processor, space=True)
+    transaction_details_post_processor, space=True
+)
+
+
+def transactions_to_transaction(*keys):
+    '''Copy the global transactions details to the transaction.
+
+    Args:
+        *keys (str): the keys to copy to the transaction
+    '''
+    def _transactions_to_transaction(transactions, tag, tag_dict, result):
+        '''Copy the global transactions details to the transaction.
+
+        Args:
+            transactions (mt940.models.Transactions): list of transactions
+            tag (mt940.tags.Tag): tag
+            tag_dict (dict): dict with the raw tag details
+            result (dict): the resulting tag dict
+        '''
+        for key in keys:
+            if key in transactions.data:
+                result[key] = transactions.data[key]
+
+        return result
+
+    return _transactions_to_transaction

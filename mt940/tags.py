@@ -109,7 +109,7 @@ class Tag(object):
         match = self.re.match(value)
         if match:  # pragma: no branch
             self.logger.debug(
-                'matched (%d) %r against %r, got: %s',
+                'matched (%d) %r against "%s", got: %s',
                 len(value), value, self.pattern,
                 match.groupdict()
             )

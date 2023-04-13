@@ -261,7 +261,10 @@ class Transactions(abc.Sequence):
         pre_related_reference=[],
         post_related_reference=[],
         pre_statement=[processors.date_fixup_pre_processor],
-        post_statement=[processors.date_cleanup_post_processor],
+        post_statement=[
+            processors.date_cleanup_post_processor,
+            processors.transactions_to_transaction('transaction_reference'),
+        ],
         pre_statement_number=[],
         post_statement_number=[],
         pre_non_swift=[],
