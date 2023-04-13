@@ -3,33 +3,13 @@
 
 import os
 import sys
-from setuptools.command.test import test as TestCommand
-
-try:
-    from setuptools import setup, find_packages
-except ImportError:
-    from distutils.core import setup, find_packages
+from setuptools import setup, find_packages
 
 # To prevent importing about and thereby breaking the coverage info we use this
 # exec hack
 about = {}
 with open('mt940/__about__.py') as fp:
     exec(fp.read(), about)
-
-
-class PyTest(TestCommand):
-    user_options = [('pytest-args=', 'a', 'Arguments to pass to pytest')]
-
-    def initialize_options(self):
-        TestCommand.initialize_options(self)
-        self.pytest_args = ''
-
-    def run_tests(self):
-        import shlex
-        # import here, cause outside the eggs aren't loaded
-        import pytest
-        errno = pytest.main(shlex.split(self.pytest_args))
-        sys.exit(errno)
 
 
 tests_require = [
@@ -103,7 +83,6 @@ if __name__ == '__main__':
             'setuptools>=39.1.0',
         ],
         zip_safe=False,
-        cmdclass={'test': PyTest},
         extras_require={
             'docs': [
                 'sphinx>=1.7.2',

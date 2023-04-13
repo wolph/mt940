@@ -9,6 +9,11 @@ import datetime
 
 from mt940 import _compat
 
+try:
+    from yaml import CLoader as Loader, CDumper as Dumper
+except ImportError:
+    from yaml import Loader, Dumper
+
 
 logger = logging.getLogger(__name__)
 
@@ -31,13 +36,13 @@ def get_sta_files():
 def get_yaml_data(sta_file):
     yml_file = sta_file.replace('.sta', '.yml')
     with open(yml_file) as fh:
-        return yaml.load(fh, Loader=yaml.Loader)
+        return yaml.load(fh, Loader=Loader)
 
 
 def write_yaml_data(sta_file, data):
     yml_file = sta_file.replace('.sta', '.yml')
     with open(yml_file, 'w') as fh:
-        fh.write(yaml.dump(data, Dumper=yaml.Dumper))
+        fh.write(yaml.dump(data, Dumper=Dumper))
 
 
 def compare(a, b, key=''):

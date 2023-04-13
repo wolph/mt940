@@ -49,53 +49,11 @@ data:
   sequence_number: '00001'
   statement_number: '00001'
   transaction_reference: T089414136000001
-processors:
-  post_account_identification: []
-  post_available_balance: []
-  post_closing_balance: []
-  post_date_time_indication: []
-  post_final_closing_balance: []
-  post_final_opening_balance: []
-  post_floor_limit_indicator: []
-  post_forward_available_balance: []
-  post_intermediate_closing_balance: []
-  post_intermediate_opening_balance: []
-  post_non_swift: []
-  post_opening_balance: []
-  post_related_reference: []
-  post_statement:
-  - !!python/name:mt940.processors.date_cleanup_post_processor ''
-  post_statement_number: []
-  post_sum_credit_entries: []
-  post_sum_debit_entries: []
-  post_transaction_details:
-  - !!python/name:mt940.processors.transaction_details_post_processor ''
-  post_transaction_reference_number: []
-  pre_account_identification: []
-  pre_available_balance: []
-  pre_closing_balance: []
-  pre_date_time_indication: []
-  pre_final_closing_balance: []
-  pre_final_opening_balance: []
-  pre_floor_limit_indicator: []
-  pre_forward_available_balance: []
-  pre_intermediate_closing_balance: []
-  pre_intermediate_opening_balance: []
-  pre_non_swift: []
-  pre_opening_balance: []
-  pre_related_reference: []
-  pre_statement:
-  - !!python/name:mt940.processors.date_fixup_pre_processor ''
-  pre_statement_number: []
-  pre_sum_credit_entries: []
-  pre_sum_debit_entries: []
-  pre_transaction_details: []
-  pre_transaction_reference_number: []
 tags:
   13: !!python/object:mt940.tags.DateTimeIndication
     re: !!python/object/apply:re._compile
-    - "^\n    (?P<year>\\d{2})\n    (?P<month>\\d{2})\n    (?P<day>\\d{2})\n    (?P<hour>\\\
-      d{2})\n    (?P<minute>\\d{2})\n    (\\+(?P<offset>\\d{4})|)\n    "
+    - "^\n    (?P<year>\\d{2})\n    (?P<month>\\d{2})\n    (?P<day>\\d{2})\n    (?P<hour>\\d{2})\n
+      \   (?P<minute>\\d{2})\n    (\\+(?P<offset>\\d{4})|)\n    "
     - 98
   20: !!python/object:mt940.tags.TransactionReferenceNumber
     re: !!python/object/apply:re._compile
@@ -111,15 +69,15 @@ tags:
     - 98
   28: !!python/object:mt940.tags.StatementNumber
     re: !!python/object/apply:re._compile
-    - "\n    (?P<statement_number>\\d{1,5})  # 5n\n    (?:/?(?P<sequence_number>\\\
-      d{1,5}))?  # [/5n]\n    $"
+    - "\n    (?P<statement_number>\\d{1,5})  # 5n\n    (?:/?(?P<sequence_number>\\d{1,5}))?
+      \ # [/5n]\n    $"
     - 98
   60: !!python/object:mt940.tags.OpeningBalance
     re: &id001 !!python/object/apply:re._compile
-    - "^\n    (?P<status>[DC])  # 1!a Debit/Credit\n    (?P<year>\\d{2})  # 6!n Value\
-      \ Date (YYMMDD)\n    (?P<month>\\d{2})\n    (?P<day>\\d{2})\n    (?P<currency>.{3})\
-      \  # 3!a Currency\n    (?P<amount>[0-9,]{0,16})  # 15d Amount (includes decimal\
-      \ sign, so 16)\n    "
+    - "^\n    (?P<status>[DC])  # 1!a Debit/Credit\n    (?P<year>\\d{2})  # 6!n Value
+      Date (YYMMDD)\n    (?P<month>\\d{2})\n    (?P<day>\\d{2})\n    (?P<currency>.{3})
+      \ # 3!a Currency\n    (?P<amount>[0-9,]{0,16})  # 15d Amount (includes decimal
+      sign, so 16)\n    "
     - 98
   60M: !!python/object:mt940.tags.IntermediateOpeningBalance
     re: *id001
@@ -127,18 +85,19 @@ tags:
     re: *id001
   61: !!python/object:mt940.tags.Statement
     re: !!python/object/apply:re._compile
-    - "^\n    (?P<year>\\d{2})  # 6!n Value Date (YYMMDD)\n    (?P<month>\\d{2})\n\
-      \    (?P<day>\\d{2})\n    (?P<entry_month>\\d{2})?  # [4!n] Entry Date (MMDD)\n\
-      \    (?P<entry_day>\\d{2})?\n    (?P<status>R?[DC])  # 2a Debit/Credit Mark\n\
-      \    (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd character of the currency\n\
-      \                            # code, if needed)\n    \\n? # apparently some\
-      \ banks (sparkassen) incorporate newlines here\n    (?P<amount>[\\d,]{1,15})\
-      \  # 15d Amount\n    (?P<id>[A-Z][A-Z0-9 ]{3})?  # 1!a3!c Transaction Type Identification\
-      \ Code\n    # We need the (slow) repeating negative lookahead to search for\
-      \ // so we\n    # don't acciddntly include the bank reference in the customer\
-      \ reference.\n    (?P<customer_reference>((?!//)[^\\n]){0,16})  # 16x Customer\
-      \ Reference\n    (//(?P<bank_reference>.{0,23}))?  # [//23x] Bank Reference\n\
-      \    (\\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary Details\n    $"
+    - "^\n    (?P<year>\\d{2})  # 6!n Value Date (YYMMDD)\n    (?P<month>\\d{2})\n
+      \   (?P<day>\\d{2})\n    (?P<entry_month>\\d{2})?  # [4!n] Entry Date (MMDD)\n
+      \   (?P<entry_day>\\d{2})?\n    (?P<status>R?[DC])  # 2a Debit/Credit Mark\n
+      \   (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd character of the currency\n
+      \                           # code, if needed)\n    [\\n ]? # apparently some
+      banks (sparkassen) incorporate newlines here\n    # cuscal can also send a space
+      here as well\n    (?P<amount>[\\d,]{1,15})  # 15d Amount\n    (?P<id>[A-Z][A-Z0-9
+      ]{3})?  # 1!a3!c Transaction Type Identification Code\n    # We need the (slow)
+      repeating negative lookahead to search for // so we\n    # don't acciddntly
+      include the bank reference in the customer reference.\n    (?P<customer_reference>((?!//)[^\\n]){0,16})
+      \ # 16x Customer Reference\n    (//(?P<bank_reference>.{0,23}))?  # [//23x]
+      Bank Reference\n    (\\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary
+      Details\n    $"
     - 98
   62: !!python/object:mt940.tags.ClosingBalance
     re: *id001
@@ -152,24 +111,24 @@ tags:
     re: *id001
   86: !!python/object:mt940.tags.TransactionDetails
     re: !!python/object/apply:re._compile
-    - "\n    (?P<transaction_details>(([\\s\\S]{0,65}\\r?\\n?){0,8}[\\s\\S]{0,65}))\n\
-      \    "
+    - "\n    (?P<transaction_details>(([\\s\\S]{0,65}\\r?\\n?){0,8}[\\s\\S]{0,65}))\n
+      \   "
     - 98
   34: !!python/object:mt940.tags.FloorLimitIndicator
     re: !!python/object/apply:re._compile
-    - "^\n    (?P<currency>[A-Z]{3})  # 3!a Currency\n    (?P<status>[DC ]?)  # 2a\
-      \ Debit/Credit Mark\n    (?P<amount>[0-9,]{0,16})  # 15d Amount (includes decimal\
-      \ sign, so 16)\n    $"
+    - "^\n    (?P<currency>[A-Z]{3})  # 3!a Currency\n    (?P<status>[DC ]?)  # 2a
+      Debit/Credit Mark\n    (?P<amount>[0-9,]{0,16})  # 15d Amount (includes decimal
+      sign, so 16)\n    $"
     - 98
   NS: !!python/object:mt940.tags.NonSwift
     re: !!python/object/apply:re._compile
-    - "\n    (?P<non_swift>\n        (\n            (\\d{2}.{0,})\n            (\\\
-      n\\d{2}.{0,})*\n        )|(\n            [^\\n]*\n        )\n    )\n    $"
+    - "\n    (?P<non_swift>\n        (\n            (\\d{2}.{0,})\n            (\\n\\d{2}.{0,})*\n
+      \       )|(\n            [^\\n]*\n        )\n    )\n    $"
     - 98
   90: !!python/object:mt940.tags.SumEntries
     re: &id002 !!python/object/apply:re._compile
-    - "^\n    (?P<number>\\d*)\n    (?P<currency>.{3})  # 3!a Currency\n    (?P<amount>[\\\
-      d,]{1,15})  # 15d Amount\n    "
+    - "^\n    (?P<number>\\d*)\n    (?P<currency>.{3})  # 3!a Currency\n    (?P<amount>[\\d,]{1,15})
+      \ # 15d Amount\n    "
     - 98
   90D: !!python/object:mt940.tags.SumDebitEntries
     re: *id002
@@ -225,6 +184,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '159'
+    transaction_reference: T089413946000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -275,6 +235,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '159'
+    transaction_reference: T089413946000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -325,6 +286,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '159'
+    transaction_reference: T089413946000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -358,6 +320,7 @@ transactions:
     return_debit_notes: null
     status: C
     transaction_code: 079
+    transaction_reference: T089413946000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -408,6 +371,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '159'
+    transaction_reference: T089413946000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -441,6 +405,7 @@ transactions:
     return_debit_notes: null
     status: RC
     transaction_code: 079
+    transaction_reference: T089413946000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -474,6 +439,7 @@ transactions:
     return_debit_notes: null
     status: D
     transaction_code: 079
+    transaction_reference: T089413946000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -524,6 +490,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089413956000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -576,6 +543,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089413956000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -625,6 +593,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089413966000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -674,6 +643,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089413966000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -723,6 +693,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089413966000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -775,6 +746,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089413966000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -827,6 +799,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089413966000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -876,6 +849,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089413976000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -925,6 +899,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089413976000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -974,6 +949,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089413976000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1007,6 +983,7 @@ transactions:
     return_debit_notes: null
     status: C
     transaction_code: 079
+    transaction_reference: T089413986000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1040,6 +1017,7 @@ transactions:
     return_debit_notes: null
     status: RC
     transaction_code: '116'
+    transaction_reference: T089413986000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1091,6 +1069,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089413986000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1143,6 +1122,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089413986000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1176,6 +1156,7 @@ transactions:
     return_debit_notes: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089413986000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1225,6 +1206,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089413996000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1275,6 +1257,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089414006000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1327,6 +1310,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414006000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1377,6 +1361,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414006000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1429,6 +1414,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414006000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1481,6 +1467,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414006000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1533,6 +1520,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414006000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1585,6 +1573,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414006000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1637,6 +1626,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414006000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1687,6 +1677,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '159'
+    transaction_reference: T089414016000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1737,6 +1728,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '159'
+    transaction_reference: T089414016000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1787,6 +1779,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '159'
+    transaction_reference: T089414016000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1838,6 +1831,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '159'
+    transaction_reference: T089414016000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1889,6 +1883,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '159'
+    transaction_reference: T089414016000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1941,6 +1936,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089414016000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -1974,6 +1970,7 @@ transactions:
     return_debit_notes: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089414016000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2007,6 +2004,7 @@ transactions:
     return_debit_notes: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089414016000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2041,6 +2039,7 @@ transactions:
     return_debit_notes: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089414016000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2075,6 +2074,7 @@ transactions:
     return_debit_notes: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089414016000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2127,6 +2127,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089414016000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2177,6 +2178,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '159'
+    transaction_reference: T089414026000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2227,6 +2229,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '159'
+    transaction_reference: T089414026000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2278,6 +2281,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414026000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2329,6 +2333,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414026000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2380,6 +2385,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414026000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2431,6 +2437,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414026000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2482,6 +2489,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414026000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2533,6 +2541,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414026000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2585,6 +2594,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414026000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2619,6 +2629,7 @@ transactions:
     return_debit_notes: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089414026000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2671,6 +2682,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089414026000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2723,6 +2735,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089414026000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2773,6 +2786,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '159'
+    transaction_reference: T089414036000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2823,6 +2837,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '159'
+    transaction_reference: T089414036000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2875,6 +2890,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414036000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2927,6 +2943,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414036000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -2978,6 +2995,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414036000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -3011,6 +3029,7 @@ transactions:
     return_debit_notes: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089414036000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -3063,6 +3082,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089414036000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -3115,6 +3135,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089414036000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -3149,6 +3170,7 @@ transactions:
     return_debit_notes: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089414036000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -3198,6 +3220,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089414046000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -3249,6 +3272,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414056000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -3300,6 +3324,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414056000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -3351,6 +3376,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414056000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -3402,6 +3428,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414056000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -3453,6 +3480,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414056000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -3504,6 +3532,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414056000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -3556,6 +3585,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414056000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -3607,6 +3637,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414056000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -3659,6 +3690,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414056000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -3711,6 +3743,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414056000002
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -3763,6 +3796,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089414056000003
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -3816,6 +3850,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '116'
+    transaction_reference: T089414056000003
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -3865,6 +3900,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089414066000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -3914,6 +3950,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089414076000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -3963,6 +4000,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089414076000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -4012,6 +4050,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089414076000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -4061,6 +4100,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089414086000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -4110,6 +4150,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089414086000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -4159,6 +4200,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089414086000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -4211,6 +4253,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089414086000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -4261,6 +4304,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '159'
+    transaction_reference: T089414096000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -4311,6 +4355,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '159'
+    transaction_reference: T089414096000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -4361,6 +4406,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '159'
+    transaction_reference: T089414096000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -4411,6 +4457,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089414096000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -4460,6 +4507,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089414096000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -4510,6 +4558,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '159'
+    transaction_reference: T089414096000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -4543,6 +4592,7 @@ transactions:
     return_debit_notes: null
     status: D
     transaction_code: 079
+    transaction_reference: T089414096000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -4592,6 +4642,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089414106000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -4641,6 +4692,7 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089414106000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -4693,6 +4745,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089414106000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -4745,6 +4798,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089414116000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -4797,6 +4851,7 @@ transactions:
     settlement_tag: null
     status: D
     transaction_code: '191'
+    transaction_reference: T089414126000001
   transactions: *id003
 - !!python/object:mt940.models.Transaction
   data:
@@ -4847,4 +4902,5 @@ transactions:
     settlement_tag: null
     status: C
     transaction_code: '166'
+    transaction_reference: T089414136000001
   transactions: *id003

@@ -84,7 +84,6 @@ except ImportError:  # pragma: no cover
 
     print('MT940 requires the `enum34` package', file=sys.stderr)
 
-
     class enum(object):
         @staticmethod
         def unique(*args, **kwargs):
@@ -109,7 +108,7 @@ class Tag(object):
         match = self.re.match(value)
         if match:  # pragma: no branch
             self.logger.debug(
-                'matched (%d) %r against %r, got: %s',
+                'matched (%d) %r against "%s", got: %s',
                 len(value), value, self.pattern,
                 match.groupdict()
             )

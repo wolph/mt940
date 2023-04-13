@@ -1,16 +1,21 @@
+import os
+import pathlib
+
 import pytest
 import mt940
+
+_tests_path = pathlib.Path(__file__).parent
 
 
 @pytest.fixture
 def sta_data():
-    with open('mt940_tests/jejik/abnamro.sta') as fh:
+    with (_tests_path / 'jejik' / 'abnamro.sta').open() as fh:
         return fh.read()
 
 
 @pytest.fixture
 def february_30_data():
-    with open('mt940_tests/self-provided/february_30.sta') as fh:
+    with (_tests_path / 'self-provided' / 'february_30.sta').open() as fh:
         return fh.read()
 
 
@@ -25,17 +30,19 @@ def test_date_fixup_pre_processor(february_30_data):
 
 
 def test_parse_data():
-    with open('mt940_tests/jejik/abnamro.sta') as fh:
+    with (_tests_path / 'jejik' / 'abnamro.sta').open() as fh:
         mt940.parse(fh.read())
 
 
 def test_parse_fh():
-    with open('mt940_tests/jejik/abnamro.sta') as fh:
+    with (_tests_path / 'jejik' / 'abnamro.sta').open() as fh:
         mt940.parse(fh)
 
 
 def test_parse_filename():
-    mt940.parse('mt940_tests/jejik/abnamro.sta')
+    path = 'mt940_tests/jejik/abnamro.sta'
+    path = path.replace('/', os.pathsep)
+    mt940.parse(path)
 
 
 def test_pre_processor(sta_data):
@@ -66,7 +73,7 @@ def test_post_processor(sta_data):
 
 @pytest.fixture
 def mBank_mt942_data():
-    with open('mt940_tests/mBank/mt942.sta') as fh:
+    with (_tests_path / 'mBank' / 'mt942.sta').open() as fh:
         return fh.read()
 
 
@@ -86,7 +93,7 @@ def test_mBank_processors(mBank_mt942_data):
 
 
 def test_transaction_details_post_processor_with_space():
-    filename = 'mt940_tests/betterplace/sepa_mt9401.sta'
+    filename = _tests_path / 'betterplace' / 'sepa_mt9401.sta'
     transactions = mt940.parse(filename)
     transaction2 = transactions[0].data
 
@@ -104,7 +111,7 @@ def test_transaction_details_post_processor_with_space():
 
 @pytest.fixture
 def mBank_with_newline_in_tnr():
-    with open('mt940_tests/mBank/with_newline_in_tnr.sta') as fh:
+    with (_tests_path / 'mBank' / 'with_newline_in_tnr.sta').open() as fh:
         return fh.read()
 
 

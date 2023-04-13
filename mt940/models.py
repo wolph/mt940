@@ -261,7 +261,10 @@ class Transactions(abc.Sequence):
         pre_related_reference=[],
         post_related_reference=[],
         pre_statement=[processors.date_fixup_pre_processor],
-        post_statement=[processors.date_cleanup_post_processor],
+        post_statement=[
+            processors.date_cleanup_post_processor,
+            processors.transactions_to_transaction('transaction_reference'),
+        ],
         pre_statement_number=[],
         post_statement_number=[],
         pre_non_swift=[],
@@ -281,6 +284,12 @@ class Transactions(abc.Sequence):
         post_sum_credit_entries=[],
         pre_sum_debit_entries=[],
         post_sum_debit_entries=[])
+
+    def __getstate__(self):  # pragma: no cover
+        # Processors are not always safe to dump so ignore them entirely
+        state = self.__dict__.copy()
+        del state['processors']
+        return state
 
     def __init__(self, processors=None, tags=None):
         self.processors = self.DEFAULT_PROCESSORS.copy()

@@ -1,21 +1,25 @@
+import pathlib
 import pytest
 import mt940
 
+_tests_path = pathlib.Path(__file__).parent
 
-@pytest.mark.parametrize('filename,encoding', [
-    ('mt940_tests/jejik/ing.sta', 'utf-8'),
-    ('mt940_tests/self-provided/raphaelm.sta', 'utf-8'),
-    ('mt940_tests/betterplace/with_binary_character.sta', 'utf-8'),
-])
-def test_non_ascii_parse(filename, encoding):
+
+@pytest.mark.parametrize(
+    'path,encoding', [
+        (_tests_path / 'jejik' / 'ing.sta', 'utf-8'),
+        (_tests_path / 'self-provided' / 'raphaelm.sta', 'utf-8'),
+        (_tests_path / 'betterplace' / 'with_binary_character.sta', 'utf-8'),
+    ]
+)
+def test_non_ascii_parse(path, encoding):
     # Read as binary
-    with open(filename, 'rb') as fh:
+    with path.open('rb') as fh:
         data = fh.read()
         data = data.decode(encoding)
         mt940.parse(data)
 
     # Read as text
-    with open(filename, 'r') as fh:
+    with path.open('r') as fh:
         data = fh.read()
         mt940.parse(data)
-
