@@ -358,7 +358,8 @@ class Statement(Tag):
 
      - `value_date`: transaction date (YYMMDD)
      - `entry_date`: Optional 4-digit month value and 2-digit day value of
-       the entry date (MMDD)
+       the entry date (MMDD) or 4 whitespace characters (some banks insert
+        spaces here)
      - `funds_code`: Optional 1-character code indicating the funds type (
        the third character of the currency code if needed)
      - `amount`: 15-digit value of the transaction amount, including commas
@@ -383,8 +384,8 @@ class Statement(Tag):
     (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
     (?P<month>\d{2})
     (?P<day>\d{2})
-    (?P<entry_month>\d{2})?  # [4!n] Entry Date (MMDD)
-    (?P<entry_day>\d{2})?
+    (?P<entry_month>\d{2}|\s{2})?  # [4!n] Entry Date (MMDD)
+    (?P<entry_day>\d{2}|\s{2})?
     (?P<status>R?[DC])  # 2a Debit/Credit Mark
     (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd character of the currency
                             # code, if needed)
@@ -406,10 +407,16 @@ class Statement(Tag):
         data['amount'] = models.Amount(**data)
         date = data['date'] = models.Date(**data)
 
-        if data.get('entry_day') and data.get('entry_month'):
+        # extracting a guessed entry date and normalizing it to string
+        # to support given integers, strings and Nones
+        entry_day = str(data.get('entry_day') or '')
+        entry_month = str(data.get('entry_month') or '')
+
+        # verifying that the entry day and month are digits
+        if entry_day.isdigit() and entry_month.isdigit():
             entry_date = data['entry_date'] = models.Date(
-                day=data.get('entry_day'),
-                month=data.get('entry_month'),
+                day=entry_day,
+                month=entry_month,
                 year=str(data['date'].year),
             )
 
@@ -437,7 +444,7 @@ class StatementASNB(Statement):
     Pattern: 6!n[4!n]2a[1!a]15d1!a3!c16x[//16x]
     [34x]
 
-    But ASN bank puts the IBAN in the customer reference, which is acording to
+    But ASN bank puts the IBAN in the customer reference, which is according to
     Wikipedia at most 34 characters.
 
     So this is the new pattern:
@@ -449,8 +456,8 @@ class StatementASNB(Statement):
     (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
     (?P<month>\d{2})
     (?P<day>\d{2})
-    (?P<entry_month>\d{2})?  # [4!n] Entry Date (MMDD)
-    (?P<entry_day>\d{2})?
+    (?P<entry_month>\d{2}|\s{2})?  # [4!n] Entry Date (MMDD)
+    (?P<entry_day>\d{2}|\s{2})?
     (?P<status>[A-Z]?[DC])  # 2a Debit/Credit Mark
     (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd character of the currency
                             # code, if needed)
