@@ -126,3 +126,21 @@ def test_mBank_set_tnr_parses_tnr_with_newlines(mBank_with_newline_in_tnr):
     assert transactions_[0].data['tnr'] == '179301073837502.000001'
     assert transactions_[1].data['tnr'] == '179301073844398.000001'
 
+
+def test_citi_bank_processors():
+    with (_tests_path / 'citi' / 'mt940.txt').open() as fh:
+        data = fh.read()
+        transactions = mt940.parse(data)
+        data = transactions.data
+        assert data['account_identification'] == '123456789'
+        assert data['statement_number'] == '1'
+        assert data['sequence_number'] == '1'
+        assert str(data['final_opening_balance'].amount.amount) == '17376.67'
+        assert data['final_opening_balance'].amount.currency == 'USD'
+        assert str(data['final_closing_balance'].amount.amount) == '16233.92'
+        assert data['final_closing_balance'].amount.currency == 'USD'
+        assert len(transactions) == 5
+        expected_date = mt940.models.Date(2024, 3, 12)
+        assert transactions[0].data['date'] == expected_date
+
+
