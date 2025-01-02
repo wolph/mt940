@@ -1,8 +1,7 @@
-# encoding=utf-8
-import re
-import functools
 import calendar
 import collections
+import functools
+import re
 
 
 def add_currency_pre_processor(currency, overwrite=True):
@@ -69,8 +68,7 @@ def mBank_set_iph_id(transactions, tag, tag_dict, *args):
 
 
 tnr_re = re.compile(
-    r'TNR:[ \n](?P<tnr>\d+\.\d+)',
-    flags=re.MULTILINE | re.UNICODE
+    r'TNR:[ \n](?P<tnr>\d+\.\d+)', flags=re.MULTILINE | re.UNICODE
 )
 
 
@@ -179,7 +177,7 @@ def _parse_mt940_details(detail_str, space=False):
 def _parse_mt940_gvcodes(purpose):
     result = {}
 
-    for key, value in GVC_KEYS.items():
+    for value in GVC_KEYS.values():
         result[value] = None
 
     tmp = {}
@@ -187,13 +185,13 @@ def _parse_mt940_gvcodes(purpose):
     text = ''
 
     for index, char in enumerate(purpose):
-        if char == '+' and purpose[index - 4:index] in GVC_KEYS:
+        if char == '+' and purpose[index - 4 : index] in GVC_KEYS:
             if segment_type:
                 tmp[segment_type] = text[:-4]
                 text = ''
             else:
                 text = ''
-            segment_type = purpose[index - 4:index]
+            segment_type = purpose[index - 4 : index]
         else:
             text += char
 
@@ -209,8 +207,9 @@ def _parse_mt940_gvcodes(purpose):
 
 
 def transaction_details_post_processor(
-        transactions, tag, tag_dict, result, space=False):
-    '''Parse the extra details in some transaction formats such as the 60-65
+    transactions, tag, tag_dict, result, space=False
+):
+    """Parse the extra details in some transaction formats such as the 60-65
     keys.
 
     Args:
@@ -219,7 +218,7 @@ def transaction_details_post_processor(
         tag_dict (dict): dict with the raw tag details
         result (dict): the resulting tag dict
         space (bool): include spaces between lines in the mt940 details
-    '''
+    """
     details = tag_dict['transaction_details']
     details = ''.join(detail.strip('\n\r') for detail in details.splitlines())
 
@@ -230,8 +229,7 @@ def transaction_details_post_processor(
         purpose = result.get('purpose')
 
         if purpose and any(
-            gvk in purpose for gvk in GVC_KEYS
-            if gvk != ''
+            gvk in purpose for gvk in GVC_KEYS if gvk != ''
         ):  # pragma: no branch
             result.update(_parse_mt940_gvcodes(result['purpose']))
 
@@ -246,20 +244,21 @@ transaction_details_post_processor_with_space = functools.partial(
 
 
 def transactions_to_transaction(*keys):
-    '''Copy the global transactions details to the transaction.
+    """Copy the global transactions details to the transaction.
 
     Args:
         *keys (str): the keys to copy to the transaction
-    '''
+    """
+
     def _transactions_to_transaction(transactions, tag, tag_dict, result):
-        '''Copy the global transactions details to the transaction.
+        """Copy the global transactions details to the transaction.
 
         Args:
             transactions (mt940.models.Transactions): list of transactions
             tag (mt940.tags.Tag): tag
             tag_dict (dict): dict with the raw tag details
             result (dict): the resulting tag dict
-        '''
+        """
         for key in keys:
             if key in transactions.data:
                 result[key] = transactions.data[key]

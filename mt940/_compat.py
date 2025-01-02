@@ -8,9 +8,10 @@ def _identity(x):  # pragma: no cover
 
 
 __all__ = [
-    'BytesIO',
     'PY2',
+    'BytesIO',
     'StringIO',
+    '_identity',
     'ascii_lowercase',
     'cmp',
     'configparser',
@@ -34,7 +35,6 @@ __all__ = [
     'urlparse',
     'urlparse',
     'urlretrieve',
-    '_identity',
 ]
 
 if PY2:  # pragma: no cover
@@ -56,18 +56,20 @@ if PY2:  # pragma: no cover
     def iteritems(d):
         return d.iteritems()
 
-    from cStringIO import StringIO as BytesIO
-    from StringIO import StringIO
-    import cPickle as pickle
-    import ConfigParser as configparser
+    from itertools import imap, izip
 
-    from itertools import izip, imap
+    import ConfigParser as configparser
+    import cPickle as pickle
+    from StringIO import StringIO
+    from cStringIO import StringIO as BytesIO
+
     range_type = xrange
 
     cmp = cmp
 
     input = raw_input
     from string import lower as ascii_lowercase
+
     import urlparse
 
     def console_to_str(s):
@@ -78,8 +80,8 @@ if PY2:  # pragma: no cover
 else:  # pragma: no cover
     unichr = chr
     text_type = str
-    string_types = (str, )
-    integer_types = (int, )
+    string_types = (str,)
+    integer_types = (int,)
 
     def text_to_native(s, enc):
         return s
@@ -93,10 +95,9 @@ else:  # pragma: no cover
     def iteritems(d):
         return iter(d.items())
 
-    from io import StringIO
-    from io import BytesIO
-    import pickle
     import configparser
+    import pickle
+    from io import BytesIO, StringIO
 
     izip = zip
     imap = map
@@ -106,9 +107,9 @@ else:  # pragma: no cover
         return (a > b) - (a < b)
 
     input = input
-    from string import ascii_lowercase
     import urllib.parse as urllib
     import urllib.parse as urlparse
+    from string import ascii_lowercase
     from urllib.request import urlretrieve
 
     if getattr(sys, '__stdout__', None):
@@ -117,7 +118,7 @@ else:  # pragma: no cover
         console_encoding = sys.stdout.encoding
 
     def console_to_str(s):
-        ''' From pypa/pip project, pip.backwardwardcompat. License MIT. '''
+        """From pypa/pip project, pip.backwardwardcompat. License MIT."""
         try:
             return s.decode(console_encoding)
         except UnicodeDecodeError:
@@ -129,4 +130,4 @@ else:  # pragma: no cover
         raise value
 
 
-number_types = integer_types + (float, )
+number_types = (*integer_types, float)

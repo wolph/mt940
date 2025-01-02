@@ -1,0 +1,95 @@
+[build-system]
+build-backend = 'setuptools.build_meta'
+requires = ['setuptools', 'setuptools-scm']
+
+[project]
+name = 'mt-940'
+version = '4.30.0'
+description = 'A library to parse MT940 files and returns smart Python collections for statistics and manipulation.'
+authors = [
+    { name = 'Rick van Hattem', email = 'Wolph@wol.ph' },
+    { name = 'Rick van Hattem (wolph)', email = 'wolph@wol.ph' },
+]
+dependencies = ['setuptools>=75.6.0']
+requires-python = '>=3.9'
+readme = 'README.rst'
+license = { text = 'BSD' }
+keywords = ['MT940']
+classifiers = [
+    'Development Status :: 6 - Mature',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: BSD License',
+    'Natural Language :: English',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: Implementation :: PyPy',
+]
+
+[project.urls]
+Homepage = 'https://github.com/WoLpH/mt940'
+
+[project.optional-dependencies]
+docs = ['GitPython>=2.1.9', 'sphinx2rst', 'sphinx>=1.7.2']
+tests = [
+    'flake8',
+    'pytest',
+    'pytest-cache',
+    'pytest-cover',
+    'pytest-flake8',
+    'pyyaml',
+]
+
+
+[tool.setuptools]
+platforms = ['any']
+include-package-data = false
+
+[tool.setuptools.dynamic]
+version = { attr = 'mt940.__about__.__version__' }
+
+[tool.setuptools.packages.find]
+include = ['mt940']
+
+[tool.setuptools.package-data]
+mt940 = ['py.typed']
+
+[dependency-groups]
+dev = ['mt-940[docs,tests]']
+
+[tool.ruff]
+src = ['mt940', 'mt940_tests']
+
+[tool.repo-review]
+ignore = [
+    'PY004', # no /docs
+    'PY007', # tox configured in tox.toml
+    'PP301', # pytest is irrelevant
+    'PC111', # no blacken-docs because markdown has no code
+    'PC140', # manual typecheck pre-commit hooks
+    'PC170', # no pygrep-hooks because no rST
+    'RTD',   # no RTD
+]
+
+[tool.codespell]
+skip = '*/htmlcov,./docs/_build,*.asc,*.yml,*.sta,*.txt,*.html'
+
+[tool.pyright]
+include = ['mt940', 'mt940_tests']
+exclude = ['dist/*']
+strict = ['mt940']
+
+[tool.mypy]
+python_version = '3.9'
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+warn_unused_ignores = false
+packages = ['mt940', 'mt940_tests']
+ignore_missing_imports = true
+check_untyped_defs = true
+exclude = ['dist', 'docs', '.venv', 'venv']
+enable_error_code = ['ignore-without-code', 'truthy-bool', 'redundant-expr']
+warn_unreachable = true

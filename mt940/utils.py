@@ -2,7 +2,7 @@ import enum
 
 
 def coalesce(*args):
-    '''
+    """
     Return the first non-None argument
 
     >>> coalesce()
@@ -11,11 +11,12 @@ def coalesce(*args):
     0
     >>> coalesce(None, 0)
     0
-    '''
+    """
 
     for arg in args:
         if arg is not None:
             return arg
+    return None
 
 
 class Strip(enum.IntEnum):
@@ -26,9 +27,9 @@ class Strip(enum.IntEnum):
 
 
 def join_lines(string, strip=Strip.BOTH):
-    '''
+    """
     Join strings together and strip whitespace in between if needed
-    '''
+    """
     lines = []
 
     for line in string.splitlines():

@@ -1,8 +1,9 @@
+
 import os
 import pathlib
 
-import pytest
 import mt940
+import pytest
 
 _tests_path = pathlib.Path(__file__).parent
 
@@ -20,11 +21,13 @@ def february_30_data():
 
 
 def test_date_fixup_pre_processor(february_30_data):
-    transactions = mt940.models.Transactions(processors=dict(
-        pre_statement=[
-            mt940.processors.date_fixup_pre_processor,
-        ],
-    ))
+    transactions = mt940.models.Transactions(
+        processors=dict(
+            pre_statement=[
+                mt940.processors.date_fixup_pre_processor,
+            ],
+        )
+    )
     transactions.parse(february_30_data)
     assert transactions[0].data['date'] == mt940.models.Date(2016, 2, 29)
 
@@ -46,14 +49,16 @@ def test_parse_filename():
 
 
 def test_pre_processor(sta_data):
-    transactions = mt940.models.Transactions(processors=dict(
-        pre_final_closing_balance=[
-            mt940.processors.add_currency_pre_processor('USD'),
-        ],
-        pre_final_opening_balance=[
-            mt940.processors.add_currency_pre_processor('EUR'),
-        ],
-    ))
+    transactions = mt940.models.Transactions(
+        processors=dict(
+            pre_final_closing_balance=[
+                mt940.processors.add_currency_pre_processor('USD'),
+            ],
+            pre_final_opening_balance=[
+                mt940.processors.add_currency_pre_processor('EUR'),
+            ],
+        )
+    )
 
     transactions.parse(sta_data)
     assert transactions.data['final_closing_balance'].amount.currency == 'USD'
@@ -61,11 +66,13 @@ def test_pre_processor(sta_data):
 
 
 def test_post_processor(sta_data):
-    transactions = mt940.models.Transactions(processors=dict(
-        post_closing_balance=[
-            mt940.processors.date_cleanup_post_processor,
-        ],
-    ))
+    transactions = mt940.models.Transactions(
+        processors=dict(
+            post_closing_balance=[
+                mt940.processors.date_cleanup_post_processor,
+            ],
+        )
+    )
 
     transactions.parse(sta_data)
     assert 'closing_balance_day' not in transactions.data
@@ -78,13 +85,15 @@ def mBank_mt942_data():
 
 
 def test_mBank_processors(mBank_mt942_data):
-    transactions = mt940.models.Transactions(processors=dict(
-        post_transaction_details=[
-            mt940.processors.mBank_set_transaction_code,
-            mt940.processors.mBank_set_iph_id,
-            mt940.processors.mBank_set_tnr,
-        ],
-    ))
+    transactions = mt940.models.Transactions(
+        processors=dict(
+            post_transaction_details=[
+                mt940.processors.mBank_set_transaction_code,
+                mt940.processors.mBank_set_iph_id,
+                mt940.processors.mBank_set_tnr,
+            ],
+        )
+    )
 
     transaction = transactions.parse(mBank_mt942_data)[0].data
     assert transaction['transaction_code'] == 911
@@ -97,16 +106,21 @@ def test_transaction_details_post_processor_with_space():
     transactions = mt940.parse(filename)
     transaction2 = transactions[0].data
 
-    transactions = mt940.parse(filename, processors=dict(
-        post_transaction_details=[
-            mt940.processors.transaction_details_post_processor_with_space,
-        ],
-    ))
+    transactions = mt940.parse(
+        filename,
+        processors=dict(
+            post_transaction_details=[
+                mt940.processors.transaction_details_post_processor_with_space,
+            ],
+        ),
+    )
 
     transaction = transactions[0].data
 
-    assert transaction2['end_to_end_reference'] != \
-        transaction['end_to_end_reference']
+    assert (
+        transaction2['end_to_end_reference']
+        != transaction['end_to_end_reference']
+    )
 
 
 @pytest.fixture
@@ -116,11 +130,13 @@ def mBank_with_newline_in_tnr():
 
 
 def test_mBank_set_tnr_parses_tnr_with_newlines(mBank_with_newline_in_tnr):
-    transactions = mt940.models.Transactions(processors=dict(
-        post_transaction_details=[
-            mt940.processors.mBank_set_tnr,
-        ],
-    ))
+    transactions = mt940.models.Transactions(
+        processors=dict(
+            post_transaction_details=[
+                mt940.processors.mBank_set_tnr,
+            ],
+        )
+    )
 
     transactions_ = transactions.parse(mBank_with_newline_in_tnr)
     assert transactions_[0].data['tnr'] == '179301073837502.000001'
@@ -142,5 +158,3 @@ def test_citi_bank_processors():
         assert len(transactions) == 5
         expected_date = mt940.models.Date(2024, 3, 12)
         assert transactions[0].data['date'] == expected_date
-
-

@@ -1,5 +1,4 @@
-# vim: fileencoding=utf-8:
-'''
+"""
 
 The MT940 format is a standard for bank account statements. It is used by
 many banks in Europe and is based on the SWIFT MT940 format.
@@ -71,32 +70,18 @@ The pattern for the tags use the following syntax:
     d = Numeric separated by decimal (usually comma)
     c = Code list value
     n = Numeric
-'''
-from __future__ import print_function
+"""
 
+import enum
 import logging
 import re
-
-try:
-    import enum
-except ImportError:  # pragma: no cover
-    import sys
-
-    print('MT940 requires the `enum34` package', file=sys.stderr)
-
-    class enum(object):
-        @staticmethod
-        def unique(*args, **kwargs):
-            return []
-
-        Enum = object
 
 from . import models
 
 logger = logging.getLogger(__name__)
 
 
-class Tag(object):
+class Tag:
     id = 0
     RE_FLAGS = re.IGNORECASE | re.VERBOSE | re.UNICODE
     scope = models.Transactions
@@ -109,8 +94,10 @@ class Tag(object):
         if match:  # pragma: no branch
             self.logger.debug(
                 'matched (%d) %r against "%s", got: %s',
-                len(value), value, self.pattern,
-                match.groupdict()
+                len(value),
+                value,
+                self.pattern,
+                match.groupdict(),
             )
         else:  # pragma: no cover
             self.logger.error(
@@ -118,7 +105,7 @@ class Tag(object):
                 self.id,
                 len(value),
                 value,
-                self.pattern
+                self.pattern,
             )
 
             part_value = value
@@ -127,19 +114,18 @@ class Tag(object):
                 if match:
                     self.logger.info(
                         'matched %r against %r, got: %s',
-                        pattern, match.group(0),
-                        match.groupdict()
+                        pattern,
+                        match.group(0),
+                        match.groupdict(),
                     )
-                    part_value = part_value[len(match.group(0)):]
+                    part_value = part_value[len(match.group(0)) :]
                 else:
                     self.logger.error(
-                        'no match for %r against %r',
-                        pattern, part_value
+                        'no match for %r against %r', pattern, part_value
                     )
 
             raise RuntimeError(
-                'Unable to parse %r from %r' % (self, value),
-                self, value
+                f'Unable to parse {self!r} from {value!r}', self, value
             )
         return match.groupdict()
 
@@ -160,85 +146,85 @@ class Tag(object):
 
 
 class DateTimeIndication(Tag):
-    '''Date/Time indication at which the report was created
+    """Date/Time indication at which the report was created
 
     Pattern: 6!n4!n1! x4!n
-    '''
+    """
+
     id = 13
-    pattern = r'''^
+    pattern = r"""^
     (?P<year>\d{2})
     (?P<month>\d{2})
     (?P<day>\d{2})
     (?P<hour>\d{2})
     (?P<minute>\d{2})
     (\+(?P<offset>\d{4})|)
-    '''
+    """
 
     def __call__(self, transactions, value):
-        data = super(DateTimeIndication, self).__call__(transactions, value)
-        return {
-            'date': models.DateTime(**data)
-        }
+        data = super().__call__(transactions, value)
+        return {'date': models.DateTime(**data)}
 
 
 class TransactionReferenceNumber(Tag):
-
-    '''Transaction reference number
+    """Transaction reference number
 
     Pattern: 16x
-    '''
+    """
+
     id = 20
     pattern = r'(?P<transaction_reference>.{0,16})'
 
 
 class RelatedReference(Tag):
-
-    '''Related reference
+    """Related reference
 
     Pattern: 16x
-    '''
+    """
+
     id = 21
     pattern = r'(?P<related_reference>.{0,16})'
 
 
 class AccountIdentification(Tag):
-
-    '''Account identification
+    """Account identification
 
     Pattern: 35x
-    '''
+    """
+
     id = 25
     pattern = r'(?P<account_identification>.{0,35})'
 
 
 class StatementNumber(Tag):
-
-    '''Statement number / sequence number
+    """Statement number / sequence number
 
     Pattern: 5n[/5n]
-    '''
+    """
+
     id = 28
-    pattern = r'''
+    pattern = r"""
     (?P<statement_number>\d{1,5})  # 5n
     (?:/?(?P<sequence_number>\d{1,5}))?  # [/5n]
-    $'''
+    $"""
 
 
 class FloorLimitIndicator(Tag):
-    '''Floor limit indicator
+    """Floor limit indicator
     indicates the minimum value reported for debit and credit amounts
 
     Pattern: :34F:GHSC0,00
-    '''
+    """
+
     id = 34
-    pattern = r'''^
+    pattern = r"""^
     (?P<currency>[A-Z]{3})  # 3!a Currency
     (?P<status>[DC ]?)  # 2a Debit/Credit Mark
     (?P<amount>[0-9,]{0,16})  # 15d Amount (includes decimal sign, so 16)
-    $'''
+    $"""
 
     def __call__(self, transactions, value):
-        data = super(FloorLimitIndicator, self).__call__(transactions, value)
+        data = super().__call__(transactions, value)
         if data['status']:
             return {
                 data['status'].lower() + '_floor_limit': models.Amount(**data)
@@ -250,13 +236,15 @@ class FloorLimitIndicator(Tag):
         data_c.update({'status': 'C'})
         return {
             'd_floor_limit': models.Amount(**data_d),
-            'c_floor_limit': models.Amount(**data_c)
+            'c_floor_limit': models.Amount(**data_c),
         }
 
 
-class NonSwift(Tag):
+class MultiScope(models.Transaction, models.Transactions):
+    pass
 
-    '''Non-swift extension for MT940 containing extra information. The
+class NonSwift(Tag):
+    """Non-swift extension for MT940 containing extra information. The
     actual definition is not consistent between banks so the current
     implementation is a tad limited. Feel free to extend the implementation
     and create a pull request with a better version :)
@@ -264,14 +252,12 @@ class NonSwift(Tag):
     It seems this could be anything so we'll have to be flexible about it.
 
     Pattern: `2!n35x | *x`
-    '''
-
-    class scope(models.Transaction, models.Transactions):
-        pass
+    """
 
     id = 'NS'
+    scope = MultiScope
 
-    pattern = r'''
+    pattern = r"""
     (?P<non_swift>
         (
             (\d{2}.{0,})
@@ -280,13 +266,12 @@ class NonSwift(Tag):
             [^\n]*
         )
     )
-    $'''
-    sub_pattern = r'''
+    $"""
+    sub_pattern = r"""
     (?P<ns_id>\d{2})(?P<ns_data>.{0,})
-    '''
+    """
     sub_pattern_m = re.compile(
-        sub_pattern,
-        re.IGNORECASE | re.VERBOSE | re.UNICODE
+        sub_pattern, re.IGNORECASE | re.VERBOSE | re.UNICODE
     )
 
     def __call__(self, transactions, value):
@@ -308,27 +293,25 @@ class NonSwift(Tag):
 
 
 class BalanceBase(Tag):
-
-    '''Balance base
+    """Balance base
 
     Pattern: 1!a6!n3!a15d
-    '''
-    pattern = r'''^
+    """
+
+    pattern = r"""^
     (?P<status>[DC])  # 1!a Debit/Credit
     (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
     (?P<month>\d{2})
     (?P<day>\d{2})
     (?P<currency>.{3})  # 3!a Currency
     (?P<amount>[0-9,]{0,16})  # 15d Amount (includes decimal sign, so 16)
-    '''
+    """
 
     def __call__(self, transactions, value):
-        data = super(BalanceBase, self).__call__(transactions, value)
+        data = super().__call__(transactions, value)
         data['amount'] = models.Amount(**data)
         data['date'] = models.Date(**data)
-        return {
-            self.slug: models.Balance(**data)
-        }
+        return {self.slug: models.Balance(**data)}
 
 
 class OpeningBalance(BalanceBase):
@@ -344,8 +327,7 @@ class IntermediateOpeningBalance(BalanceBase):
 
 
 class Statement(Tag):
-
-    '''
+    """
 
     The MT940 Tag 61 provides information about a single transaction that
     has taken place on the account. Each transaction is identified by a
@@ -377,10 +359,11 @@ class Statement(Tag):
     The Tag 61 can occur multiple times within an MT940 file, with each
     occurrence representing a different transaction.
 
-    '''
+    """
+
     id = 61
     scope = models.Transaction
-    pattern = r'''^
+    pattern = r"""^
     (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
     (?P<month>\d{2})
     (?P<day>\d{2})
@@ -398,10 +381,10 @@ class Statement(Tag):
     (?P<customer_reference>((?!//)[^\n]){0,16})  # 16x Customer Reference
     (//(?P<bank_reference>.{0,23}))?  # [//23x] Bank Reference
     (\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary Details
-    $'''
+    $"""
 
     def __call__(self, transactions, value):
-        data = super(Statement, self).__call__(transactions, value)
+        data = super().__call__(transactions, value)
         data.setdefault('currency', transactions.currency)
 
         data['amount'] = models.Amount(**data)
@@ -437,7 +420,7 @@ class Statement(Tag):
 
 
 class StatementASNB(Statement):
-    '''StatementASNB
+    """StatementASNB
 
     From: https://www.sepaforcorporates.com/swift-for-corporates
 
@@ -451,8 +434,9 @@ class StatementASNB(Statement):
 
     Pattern: 6!n[4!n]2a[1!a]15d1!a3!c34x[//16x]
     [34x]
-    '''
-    pattern = r'''^
+    """
+
+    pattern = r"""^
     (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
     (?P<month>\d{2})
     (?P<day>\d{2})
@@ -467,10 +451,10 @@ class StatementASNB(Statement):
     (?P<customer_reference>.{0,34})  # 34x Customer Reference
     (//(?P<bank_reference>.{0,16}))?  # [//16x] Bank Reference
     (\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary Details
-    $'''
+    $"""
 
     def __call__(self, transactions, value):
-        return super(StatementASNB, self).__call__(transactions, value)
+        return super().__call__(transactions, value)
 
 
 class ClosingBalance(BalanceBase):
@@ -494,37 +478,33 @@ class ForwardAvailableBalance(BalanceBase):
 
 
 class TransactionDetails(Tag):
-
-    '''Transaction details
+    """Transaction details
 
     Pattern: 6x65x
-    '''
+    """
+
     id = 86
     scope = models.Transaction
-    pattern = r'''
+    pattern = r"""
     (?P<transaction_details>(([\s\S]{0,65}\r?\n?){0,8}[\s\S]{0,65}))
-    '''
+    """
 
 
 class SumEntries(Tag):
-    '''Number and Sum of debit Entries
-
-    '''
+    """Number and Sum of debit Entries"""
 
     id = 90
-    pattern = r'''^
+    pattern = r"""^
     (?P<number>\d*)
     (?P<currency>.{3})  # 3!a Currency
     (?P<amount>[\d,]{1,15})  # 15d Amount
-    '''
+    """
 
     def __call__(self, transactions, value):
-        data = super(SumEntries, self).__call__(transactions, value)
+        data = super().__call__(transactions, value)
 
         data['status'] = self.status
-        return {
-            self.slug: models.SumAmount(**data)
-        }
+        return {self.slug: models.SumAmount(**data)}
 
 
 class SumDebitEntries(SumEntries):

@@ -1,21 +1,16 @@
-from __future__ import absolute_import
 
+from . import models, parser, processors, tags, utils
 from .json import JSONEncoder
-from . import tags
-from . import utils
-from . import models
-from . import parser
-from . import processors
 
 parse = parser.parse
 
 __all__ = [
     'JSONEncoder',
-    'processors',
-    'parser',
-    'models',
-    'utils',
-    'parse',
-    'tags',
     'json',
+    'models',
+    'parse',
+    'parser',
+    'processors',
+    'tags',
+    'utils',
 ]

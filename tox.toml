@@ -1,0 +1,106 @@
+env_list = [
+    'py39',
+    'py310',
+    'py311',
+    'py312',
+    'pypy3',
+    'docs',
+    'mypy',
+    'pyright',
+    'ruff',
+    'repo-review',
+    'codespell',
+]
+skip_missing_interpreters = true
+
+[env_run_base]
+pass_env = ['FORCE_COLOR']
+commands = [['pytest', '{posargs}']]
+extras = ['tests', 'redis']
+
+[env.mypy]
+commands = [['mypy']]
+
+[env.pyright]
+deps = ['pyright']
+commands = [['pyright']]
+
+[env.ruff]
+deps = ['ruff']
+commands = [['ruff', 'check'], ['ruff', 'format', '--check']]
+
+[env.docs]
+extras = ['docs']
+allowlist_externals = ['rm', 'cd', 'mkdir']
+commands = [
+    [
+        'rm',
+        '-vf',
+        'docs/mt940.json.rst',
+    ],
+    [
+        'rm',
+        '-vf',
+        'docs/mt940.models.rst',
+    ],
+    [
+        'rm',
+        '-vf',
+        'docs/mt940.parser.rst',
+    ],
+    [
+        'rm',
+        '-vf',
+        'docs/mt940.processors.rst',
+    ],
+    [
+        'rm',
+        '-vf',
+        'docs/mt940.rst',
+    ],
+    [
+        'rm',
+        '-vf',
+        'docs/mt940.tags.rst',
+    ],
+    [
+        'rm',
+        '-vf',
+        'docs/mt940.utils.rst',
+    ],
+    [
+        'mkdir',
+        '-p',
+        'docs/_static',
+    ],
+    [
+        'sphinx-apidoc',
+        '--separate',
+        '--module-first',
+        '--output-dir',
+        'docs/',
+        'mt940',
+    ],
+    [
+        'sphinx-build',
+        '-W',
+        '-b',
+        'html',
+        '-d',
+        'docs/doctrees',
+        'docs',
+        'docs/html',
+        '{posargs}',
+    ],
+]
+
+[env.repo-review]
+basepython = ['py312']
+deps = ['sp-repo-review[cli]', 'validate-pyproject']
+commands = [['repo-review']]
+
+[env.codespell]
+commands = [['codespell']]
+deps = ['codespell', 'tomli']
+skip_install = true
+command = 'codespell'

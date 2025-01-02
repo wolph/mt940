@@ -1,18 +1,23 @@
-import os
+from __future__ import annotations
+
+import datetime
+import decimal
 import json
-import yaml
+import logging
+import os
+from typing import Any
+
 import mt940
 import pytest
-import decimal
-import logging
-import datetime
-
-from mt940 import _compat
+import yaml
 
 try:
-    from yaml import CLoader as Loader, CDumper as Dumper
+    from yaml import (
+        CDumper as Dumper,
+        CLoader as Loader,
+    )
 except ImportError:
-    from yaml import Loader, Dumper
+    from yaml import Dumper, Loader
 
 
 logger = logging.getLogger(__name__)
@@ -26,7 +31,7 @@ except NameError:
 
 def get_sta_files():
     base_path = os.path.relpath(os.path.dirname(__file__))
-    for path, dirs, files in os.walk(base_path):
+    for path, _dirs, files in os.walk(base_path):
         for file in files:
             _, ext = os.path.splitext(file)
             if ext.lower() == '.sta':
@@ -45,45 +50,167 @@ def write_yaml_data(sta_file, data):
         fh.write(yaml.dump(data, Dumper=Dumper))
 
 
-def compare(a, b, key=''):
-    if key:
-        keys = [key]
-    else:
+def compare(a: Any, b: Any, keys: list[str] | None = None) -> None:
+    """
+    Recursively compares two objects `a` and `b`, asserting their equality.
+
+    Args:
+        a: The first object to compare.
+        b: The second object to compare.
+        keys: A list of strings representing the nested key path being
+        compared.
+
+    Raises:
+        AssertionError: If `a` and `b` are not equal.
+        TypeError: If the type of `a` is not supported for comparison.
+    """
+    if keys is None:
         keys = []
 
-    simple_types = (
-        datetime.datetime,
-        decimal.Decimal,
-    ) + _compat.integer_types
-    if isinstance(a, simple_types):
-        assert a == b
-    elif isinstance(a, _compat.string_types):
-        if _compat.PY2:
-            if not isinstance(a, _compat.text_type):
-                a = a.decode('utf-8', 'replace')
-
-            if not isinstance(b, _compat.text_type):
-                b = b.decode('utf-8', 'replace')
-
-        assert a == b
-
+    if isinstance(a, (datetime.datetime, decimal.Decimal, int)):
+        compare_simple_types(a, b, keys)
+    elif isinstance(a, str):
+        compare_strings(a, b, keys)
     elif a is None:
-        assert a is b
+        compare_none(a, b, keys)
     elif isinstance(a, dict):
-        for k in a:
-            assert k in b
-            compare(a[k], b[k], '.'.join(keys + [k]))
-
+        compare_dicts(a, b, keys)
     elif isinstance(a, (list, tuple)):
-        for av, bv in zip(a, b):
-            compare(av, bv, key)
-
+        compare_iterables(a, b, keys)
     elif hasattr(a, 'data'):
-        compare(a.data, b.data, '.'.join(keys + ['data']))
-    elif isinstance(a, mt940.models.Model):
-        compare(a.__dict__, b.__dict__)
+        compare_data_attributes(a, b, keys)
+    elif mt940 is not None and isinstance(a, mt940.models.Model):
+        compare_model_instances(a, b, keys)
     else:
-        raise TypeError('Unsupported type %s' % type(a))
+        path = '.'.join(keys)
+        raise TypeError(f'Unsupported type {type(a)} at {path}')
+
+
+def compare_simple_types(a: Any, b: Any, keys: list[str]) -> None:
+    """
+    Compare simple types like datetime, Decimal, and int.
+
+    Args:
+        a: The first simple type to compare.
+        b: The second simple type to compare.
+        keys: The key path being compared.
+
+    Raises:
+        AssertionError: If `a` and `b` are not equal.
+    """
+    if a != b:
+        path = '.'.join(keys)
+        raise AssertionError(f'Difference at {path}: {a} != {b}')
+
+
+def compare_strings(a: str, b: str, keys: list[str]) -> None:
+    """
+    Compare string types.
+
+    Args:
+        a: The first string to compare.
+        b: The second string to compare.
+        keys: The key path being compared.
+
+    Raises:
+        AssertionError: If `a` and `b` are not equal.
+    """
+    if a != b:
+        path = '.'.join(keys)
+        raise AssertionError(f"Difference at {path}: '{a}' != '{b}'")
+
+
+def compare_none(a: None, b: None, keys: list[str]) -> None:
+    """
+    Compare None types.
+
+    Args:
+        a: The first None value.
+        b: The second None value.
+        keys: The key path being compared.
+
+    Raises:
+        AssertionError: If `a` is not `b`.
+    """
+    if a is not b:
+        path = '.'.join(keys)
+        raise AssertionError(f'Difference at {path}: {a} is not {b}')
+
+
+def compare_dicts(
+    a: dict[Any, Any], b: dict[Any, Any], keys: list[str]
+) -> None:
+    """
+    Compare dictionaries recursively.
+
+    Args:
+        a: The first dictionary to compare.
+        b: The second dictionary to compare.
+        keys: The key path being compared.
+
+    Raises:
+        AssertionError: If there are differences in keys or values.
+    """
+    for k in a:
+        if k not in b:
+            path = '.'.join([*keys, str(k)])
+            raise AssertionError(f"Key '{k}' missing in second dict at {path}")
+        compare(a[k], b[k], [*keys, str(k)])
+    for k in b:
+        if k not in a:
+            path = '.'.join([*keys, str(k)])
+            raise AssertionError(
+                f"Unexpected key '{k}' in second dict at {path}"
+            )
+
+
+def compare_iterables(
+    a: list[Any] | tuple[Any, ...],
+    b: list[Any] | tuple[Any, ...],
+    keys: list[str],
+) -> None:
+    """
+    Compare lists or tuples recursively.
+
+    Args:
+        a: The first iterable to compare.
+        b: The second iterable to compare.
+        keys: The key path being compared.
+
+    Raises:
+        AssertionError: If there are differences in lengths or elements.
+    """
+    if len(a) != len(b):
+        path = '.'.join(keys)
+        raise AssertionError(
+            f'Difference in length at {path}: {len(a)} != {len(b)}'
+        )
+    for index, (av, bv) in enumerate(zip(a, b)):
+        compare(av, bv, [*keys, f'[{index}]'])
+
+
+def compare_data_attributes(a: Any, b: Any, keys: list[str]) -> None:
+    """
+    Compare objects that have a 'data' attribute.
+
+    Args:
+        a: The first object to compare.
+        b: The second object to compare.
+        keys: The key path being compared.
+    """
+    compare(a.data, b.data, [*keys, 'data'])
+
+
+def compare_model_instances(a: Any, b: Any, keys: list[str]) -> None:
+    """
+    Compare model instances by comparing their __dict__ attributes.
+
+    Args:
+        a: The first model instance to compare.
+        b: The second model instance to compare.
+        keys: The key path being compared.
+    """
+    compare(a.__dict__, b.__dict__, keys)
 
 
 @pytest.mark.parametrize('sta_file', get_sta_files())
@@ -102,7 +229,7 @@ def test_parse(sta_file):
     str(transactions)
 
     # Test string and representation methods
-    for k, v in transactions.data.items():
+    for v in transactions.data.values():
         string_type(v)
         repr(v)
 
@@ -111,7 +238,7 @@ def test_parse(sta_file):
         repr(transaction)
         string_type(transaction)
 
-        for k, v in transaction.data.items():
+        for v in transaction.data.values():
             string_type(v)
             repr(v)
 

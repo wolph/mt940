@@ -1,14 +1,11 @@
-from __future__ import absolute_import
-import json
-import decimal
 import datetime
-
+import decimal
+import json
 
 from . import models
 
 
 class JSONEncoder(json.JSONEncoder):
-
     def default(self, value):
         # The following types should simply be cast to strings
         str_types = (

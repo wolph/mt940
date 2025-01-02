@@ -1,5 +1,4 @@
-# vim: fileencoding=utf-8:
-'''
+"""
 
 Format
 ---------------------
@@ -24,7 +23,7 @@ Sources:
     d = Numeric separated by decimal (usually comma)
     c = Code list value
     n = Numeric
-'''
+"""
 
 import os
 
@@ -32,13 +31,13 @@ import mt940
 
 
 def parse(src, encoding=None, processors=None, tags=None):
-    '''
+    """
     Parses mt940 data and returns transactions object
 
     :param src: file handler to read, filename to read or raw data as string
     :return: Collection of transactions
     :rtype: Transactions
-    '''
+    """
 
     def safe_is_file(filename):
         try:

@@ -11,25 +11,34 @@ def test_entry_dates_wrapping_years():
     )
 
     # Regular statement
-    statement(transactions, dict(
-        data.items(),
-        month=1,
-        day=1,
-    ))
+    statement(
+        transactions,
+        dict(
+            data.items(),
+            month=1,
+            day=1,
+        ),
+    )
 
     # Statement which wraps to the future
-    statement(transactions, dict(
-        data.items(),
-        month=12,
-        day=31,
-        entry_day=1,
-        entry_month=1,
-    ))
+    statement(
+        transactions,
+        dict(
+            data.items(),
+            month=12,
+            day=31,
+            entry_day=1,
+            entry_month=1,
+        ),
+    )
     # Statement which wraps the past year
-    statement(transactions, dict(
-        data.items(),
-        month=1,
-        day=1,
-        entry_day=31,
-        entry_month=12,
-    ))
+    statement(
+        transactions,
+        dict(
+            data.items(),
+            month=1,
+            day=1,
+            entry_day=31,
+            entry_month=12,
+        ),
+    )
