@@ -57,7 +57,13 @@ include = ['mt940']
 mt940 = ['py.typed']
 
 [dependency-groups]
-dev = ['mt-940[docs,tests]']
+dev = [
+    "basedpyright>=1.23.1",
+    'mt-940[docs,tests]',
+    "mypy>=1.14.1",
+    "pyright>=1.1.391",
+    "ruff>=0.8.4",
+]
 
 [tool.ruff]
 src = ['mt940', 'mt940_tests']

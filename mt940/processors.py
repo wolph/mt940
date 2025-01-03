@@ -177,7 +177,7 @@ def _parse_mt940_details(detail_str, space=False):
 def _parse_mt940_gvcodes(purpose):
     result = {}
 
-    for value in GVC_KEYS.values():
+    for key, value in GVC_KEYS.items():
         result[value] = None
 
     tmp = {}

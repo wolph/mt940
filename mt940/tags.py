@@ -72,9 +72,22 @@ The pattern for the tags use the following syntax:
     n = Numeric
 """
 
-import enum
+
 import logging
 import re
+
+try:
+    import enum
+except ImportError:  # pragma: no cover
+
+
+    class enum:
+        @staticmethod
+        def unique(*args, **kwargs):
+            return []
+
+        Enum = object
+
 
 from . import models
 
@@ -240,9 +253,6 @@ class FloorLimitIndicator(Tag):
         }
 
 
-class MultiScope(models.Transaction, models.Transactions):
-    pass
-
 class NonSwift(Tag):
     """Non-swift extension for MT940 containing extra information. The
     actual definition is not consistent between banks so the current
@@ -254,8 +264,10 @@ class NonSwift(Tag):
     Pattern: `2!n35x | *x`
     """
 
+    class scope(models.Transaction, models.Transactions):
+        pass
+
     id = 'NS'
-    scope = MultiScope
 
     pattern = r"""
     (?P<non_swift>

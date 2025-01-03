@@ -1,7 +1,6 @@
 import datetime
 import decimal
 import re
-import warnings
 
 # python 3.8+ compatibility
 try:  # pragma: no cover
@@ -313,7 +312,7 @@ class Transactions(abc.Sequence):
 
     def __init__(self, processors=None, tags=None):
         self.processors = self.DEFAULT_PROCESSORS.copy()
-        self.tags = Transactions.default_tags().copy()
+        self.tags = Transactions.defaultTags().copy()
 
         if processors:
             self.processors.update(processors)
@@ -346,17 +345,8 @@ class Transactions(abc.Sequence):
         return None
 
     @staticmethod
-    def default_tags():
+    def defaultTags():
         return mt940.tags.TAG_BY_ID
-
-    @classmethod
-    def defaultTags(cls):  # pragma: no cover
-        warnings.warn(
-            'Please use default_tags instead of defaultTags',
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        return cls.default_tags()
 
     @classmethod
     def strip(cls, lines):
@@ -401,9 +391,7 @@ class Transactions(abc.Sequence):
             tag_id = self.normalize_tag_id(match.group('tag'))
 
             # tag should be known
-            assert tag_id in self.tags, (
-                f'Unknown tag {tag_id!r} ' f'in line: {match.group(0)!r}'
-            )
+            assert tag_id in self.tags, f'Unknown tag {tag_id!r} ' f'in line: {match.group(0)!r}'
 
             # special treatment for long tag content with possible
             # bad line wrap which produces tag_id like line beginnings
