@@ -23,12 +23,6 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
-try:  # pragma: no cover
-    string_type = unicode
-except NameError:
-    string_type = str
-
-
 def get_sta_files():
     base_path = os.path.relpath(os.path.dirname(__file__))
     for path, _dirs, files in os.walk(base_path):
@@ -230,16 +224,16 @@ def test_parse(sta_file):
 
     # Test string and representation methods
     for v in transactions.data.values():
-        string_type(v)
+        str(v)
         repr(v)
 
     # Test string and representation methods
     for transaction in transactions:
         repr(transaction)
-        string_type(transaction)
+        str(transaction)
 
         for v in transaction.data.values():
-            string_type(v)
+            str(v)
             repr(v)
 
     # Compare transaction data

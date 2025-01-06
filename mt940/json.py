@@ -1,12 +1,13 @@
 import datetime
 import decimal
 import json
+from typing import Any
 
 from . import models
 
 
 class JSONEncoder(json.JSONEncoder):
-    def default(self, value):
+    def default(self, o: Any) -> Any:
         # The following types should simply be cast to strings
         str_types = (
             datetime.date,
@@ -22,25 +23,25 @@ class JSONEncoder(json.JSONEncoder):
         )
 
         # Handle native types that should be converted to strings
-        if isinstance(value, str_types):
-            return str(value)
+        if isinstance(o, str_types):
+            return str(o)
 
         # Handling of the Transaction objects to include the actual
         # transactions
-        elif isinstance(value, models.Transactions):
-            data = value.data.copy()
-            data['transactions'] = value.transactions
+        elif isinstance(o, models.Transactions):
+            data = o.data.copy()
+            data['transactions'] = o.transactions
             return data
 
         # If an object has a `data` attribute, return that instead of the
         # `__dict__` ro prevent loops
-        elif hasattr(value, 'data'):
-            return value.data
+        elif hasattr(o, 'data'):
+            return o.data
 
         # Handle types that have a `__dict__` containing the data (doesn't work
         # for classes using `__slots__` such as `datetime`)
-        elif isinstance(value, dict_types):
-            return value.__dict__
+        elif isinstance(o, dict_types):
+            return o.__dict__
 
         else:  # pragma: no cover
-            return json.JSONEncoder.default(self, value)
+            return super().default(o)

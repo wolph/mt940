@@ -1,7 +1,8 @@
 import enum
+from typing import Any, Optional
 
 
-def coalesce(*args):
+def coalesce(*args: Any) -> Optional[Any]:
     """
     Return the first non-None argument
 
@@ -26,11 +27,11 @@ class Strip(enum.IntEnum):
     BOTH = 3
 
 
-def join_lines(string, strip=Strip.BOTH):
+def join_lines(string: str, strip: Strip = Strip.BOTH) -> str:
     """
     Join strings together and strip whitespace in between if needed
     """
-    lines = []
+    lines: list[str] = []
 
     for line in string.splitlines():
         if strip & Strip.RIGHT:

@@ -72,22 +72,9 @@ The pattern for the tags use the following syntax:
     n = Numeric
 """
 
-
+import enum
 import logging
 import re
-
-try:
-    import enum
-except ImportError:  # pragma: no cover
-
-
-    class enum:
-        @staticmethod
-        def unique(*args, **kwargs):
-            return []
-
-        Enum = object
-
 
 from . import models
 
@@ -264,9 +251,7 @@ class NonSwift(Tag):
     Pattern: `2!n35x | *x`
     """
 
-    class scope(models.Transaction, models.Transactions):
-        pass
-
+    scope = models.TransactionsAndTransaction
     id = 'NS'
 
     pattern = r"""

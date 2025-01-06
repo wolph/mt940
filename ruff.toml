@@ -76,6 +76,7 @@ select = [
 
 [lint.per-file-ignores]
 'mt940_tests/*' = ['N802', 'N803']
+'mt940/processors.py' = ['N802', 'N803']
 
 [lint.pydocstyle]
 convention = 'google'

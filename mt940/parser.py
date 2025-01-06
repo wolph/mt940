@@ -1,5 +1,4 @@
 """
-
 Format
 ---------------------
 
@@ -14,7 +13,6 @@ Sources:
  - `Rabobank MT940`_
 
 ::
-
     [] = optional
     ! = fixed length
     a = Text
@@ -25,12 +23,20 @@ Sources:
     n = Numeric
 """
 
+from __future__ import annotations
+
 import os
+from typing import Any
 
 import mt940
 
 
-def parse(src, encoding=None, processors=None, tags=None):
+def parse(
+    src: Any,
+    encoding: str | None = None,
+    processors: dict[str, list[Any]] | None = None,
+    tags: dict[Any, Any] | None = None,
+) -> mt940.models.Transactions:
     """
     Parses mt940 data and returns transactions object
 
@@ -39,9 +45,9 @@ def parse(src, encoding=None, processors=None, tags=None):
     :rtype: Transactions
     """
 
-    def safe_is_file(filename):
+    def safe_is_file(filename: Any) -> bool:
         try:
-            return os.path.isfile(src)
+            return os.path.isfile(filename)
         except ValueError:  # pragma: no cover
             return False
 

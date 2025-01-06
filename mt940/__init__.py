@@ -1,5 +1,4 @@
-
-from . import models, parser, processors, tags, utils
+from . import json, models, parser, processors, tags, utils
 from .json import JSONEncoder
 
 parse = parser.parse

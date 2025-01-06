@@ -10,7 +10,7 @@ except ImportError:  # pragma: no cover
 
 import mt940
 
-from . import _compat, processors
+from . import processors
 
 
 class Model:
@@ -391,7 +391,9 @@ class Transactions(abc.Sequence):
             tag_id = self.normalize_tag_id(match.group('tag'))
 
             # tag should be known
-            assert tag_id in self.tags, f'Unknown tag {tag_id!r} ' f'in line: {match.group(0)!r}'
+            assert tag_id in self.tags, (
+                f'Unknown tag {tag_id!r} ' f'in line: {match.group(0)!r}'
+            )
 
             # special treatment for long tag content with possible
             # bad line wrap which produces tag_id like line beginnings
@@ -487,7 +489,7 @@ class Transactions(abc.Sequence):
                 # Combine multiple results together as one string, Rabobank has
                 # multiple :86: tags for a single transaction
 
-                for k, v in _compat.iteritems(result):
+                for k, v in result.items():
                     if k in transaction.data and hasattr(v, 'strip'):
                         transaction.data[k] += f'\n{v.strip()}'
                     else:
@@ -509,7 +511,7 @@ class Transactions(abc.Sequence):
             self.__class__.__name__,
             ']['.join(
                 '{}: {}'.format(k.replace('_balance', ''), v)
-                for k, v in _compat.iteritems(self.data)
+                for k, v in self.data.items()
                 if k.endswith('balance')
             ),
         )
@@ -531,3 +533,12 @@ class Transaction(Model):
             self.data.get('date'),
             self.data.get('amount'),
         )
+
+
+class TransactionsAndTransaction(Transactions, Transaction):
+    """
+    Subclass of both Transactions and Transaction for scope definitions.
+
+    This is useful for the non-swift data for example which can function both
+    as details for a transaction and for a collection of transactions.
+    """
