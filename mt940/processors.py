@@ -1,11 +1,24 @@
+from __future__ import annotations
+
 import calendar
 import collections
 import functools
 import re
+import typing
+
+if typing.TYPE_CHECKING:
+    from . import models, tags
 
 
-def add_currency_pre_processor(currency, overwrite=True):
-    def _add_currency_pre_processor(transactions, tag, tag_dict, *args):
+def add_currency_pre_processor(
+    currency: str, overwrite: bool = True
+) -> typing.Callable[..., typing.Any]:
+    def _add_currency_pre_processor(
+        transactions: models.Transactions,
+        tag: tags.Tag,
+        tag_dict: dict[str, typing.Any],
+        *args: typing.Any,
+    ) -> dict[str, typing.Any]:
         if 'currency' not in tag_dict or overwrite:  # pragma: no branch
             tag_dict['currency'] = currency
 
@@ -14,14 +27,12 @@ def add_currency_pre_processor(currency, overwrite=True):
     return _add_currency_pre_processor
 
 
-def date_fixup_pre_processor(transactions, tag, tag_dict, *args):
-    """
-    Replace illegal February 29, 30 dates with the last day of February.
-
-    German banks use a variant of the 30/360 interest rate calculation,
-    where each month has always 30 days even February. Python's datetime
-    module won't accept such dates.
-    """
+def date_fixup_pre_processor(
+    transactions: models.Transactions,
+    tag: tags.Tag,
+    tag_dict: dict[str, typing.Any],
+    *args: typing.Any,
+) -> dict[str, typing.Any]:
     if tag_dict['month'] == '02':
         year = int(tag_dict['year'], 10)
         _, max_month_day = calendar.monthrange(year, 2)
@@ -31,21 +42,32 @@ def date_fixup_pre_processor(transactions, tag, tag_dict, *args):
     return tag_dict
 
 
-def date_cleanup_post_processor(transactions, tag, tag_dict, result):
+def date_cleanup_post_processor(
+    transactions: models.Transactions,
+    tag: tags.Tag,
+    tag_dict: dict[str, typing.Any],
+    result: typing.Any,
+) -> typing.Any:
     for k in ('day', 'month', 'year', 'entry_day', 'entry_month'):
         result.pop(k, None)
 
     return result
 
 
-def mBank_set_transaction_code(transactions, tag, tag_dict, *args):
+def mBank_set_transaction_code(
+    transactions: models.Transactions,
+    tag: tags.Tag,
+    tag_dict: dict[str, typing.Any],
+    *args: typing.Any,
+) -> dict[str, typing.Any]:
     """
-    mBank Collect uses transaction code 911 to distinguish icoming mass
+    mBank Collect uses transaction code 911 to distinguish incoming mass
     payments transactions, adding transaction_code may be helpful in further
     processing
     """
+    tag_value = tag_dict[tag.slug]
     tag_dict['transaction_code'] = int(
-        tag_dict[tag.slug].split(';')[0].split(' ', 1)[0]
+        tag_value.split(';')[0].split(' ', 1)[0]
     )
 
     return tag_dict
@@ -54,14 +76,19 @@ def mBank_set_transaction_code(transactions, tag, tag_dict, *args):
 iph_id_re = re.compile(r' ID IPH: X*(?P<iph_id>\d{0,14});')
 
 
-def mBank_set_iph_id(transactions, tag, tag_dict, *args):
+def mBank_set_iph_id(
+    transactions: models.Transactions,
+    tag: tags.Tag,
+    tag_dict: dict[str, typing.Any],
+    *args: typing.Any,
+) -> dict[str, typing.Any]:
     """
     mBank Collect uses ID IPH to distinguish between virtual accounts,
     adding iph_id may be helpful in further processing
     """
     matches = iph_id_re.search(tag_dict[tag.slug])
 
-    if matches:  # pragma no branch
+    if matches:  # pragma: no branch
         tag_dict['iph_id'] = matches.groupdict()['iph_id']
 
     return tag_dict
@@ -72,7 +99,12 @@ tnr_re = re.compile(
 )
 
 
-def mBank_set_tnr(transactions, tag, tag_dict, *args):
+def mBank_set_tnr(
+    transactions: models.Transactions,
+    tag: tags.Tag,
+    tag_dict: dict[str, typing.Any],
+    *args: typing.Any,
+) -> dict[str, typing.Any]:
     """
     mBank Collect states TNR in transaction details as unique id for
     transactions, that may be used to identify the same transactions in
@@ -83,7 +115,7 @@ def mBank_set_tnr(transactions, tag, tag_dict, *args):
 
     matches = tnr_re.search(tag_dict[tag.slug])
 
-    if matches:  # pragma no branch
+    if matches:  # pragma: no branch
         tag_dict['tnr'] = matches.groupdict()['tnr']
 
     return tag_dict
@@ -127,9 +159,15 @@ GVC_KEYS = {
 }
 
 
-def _parse_mt940_details(detail_str, space=False):
-    result = collections.defaultdict(list)
+def _parse_mt940_details(
+    detail_str: str, space: bool = False
+) -> dict[str, typing.Any]:
+    tmp = _parse_segments(detail_str)
+    result = _process_segments(tmp)
+    return _join_result(result, space)
 
+
+def _parse_segments(detail_str: str) -> collections.OrderedDict[str, str]:
     tmp = collections.OrderedDict()
     segment = ''
     segment_type = ''
@@ -149,6 +187,13 @@ def _parse_mt940_details(detail_str, space=False):
     if segment_type:  # pragma: no branch
         tmp[segment_type] = segment if not segment_type else segment[2:]
 
+    return tmp
+
+
+def _process_segments(
+    tmp: collections.OrderedDict[str, str],
+) -> dict[str, list[str]]:
+    result: dict[str, list[str]] = collections.defaultdict(list)
     for key, value in tmp.items():
         if key in DETAIL_KEYS:
             result[DETAIL_KEYS[key]].append(value)
@@ -161,8 +206,13 @@ def _parse_mt940_details(detail_str, space=False):
         elif key in {'60', '61', '62', '63', '64', '65'}:
             key60 = DETAIL_KEYS['60']
             result[key60].append(value)
+    return result
 
-    joined_result = dict()
+
+def _join_result(
+    result: dict[str, list[str]], space: bool
+) -> dict[str, typing.Any]:
+    joined_result = {}
     for key in DETAIL_KEYS.values():
         if space:
             value = ' '.join(result[key])
@@ -170,18 +220,17 @@ def _parse_mt940_details(detail_str, space=False):
             value = ''.join(result[key])
 
         joined_result[key] = value or None
-
     return joined_result
 
 
-def _parse_mt940_gvcodes(purpose):
-    result = {}
+def _parse_mt940_gvcodes(purpose: str) -> dict[str, typing.Any]:
+    result: dict[str, typing.Any] = {}
 
     for value in GVC_KEYS.values():
         result[value] = None
 
-    tmp = {}
-    segment_type = None
+    tmp: dict[str, str] = {}
+    segment_type: str | None = None
     text = ''
 
     for index, char in enumerate(purpose):
@@ -207,17 +256,21 @@ def _parse_mt940_gvcodes(purpose):
 
 
 def transaction_details_post_processor(
-    transactions, tag, tag_dict, result, space=False
-):
+    transactions: models.Transactions,
+    tag: tags.Tag,
+    tag_dict: dict[str, typing.Any],
+    result: dict[str, typing.Any],
+    space: bool = False,
+) -> dict[str, typing.Any]:
     """Parse the extra details in some transaction formats such as the 60-65
     keys.
 
     Args:
-        transactions (mt940.models.Transactions): list of transactions
-        tag (mt940.tags.Tag): tag
-        tag_dict (dict): dict with the raw tag details
-        result (dict): the resulting tag dict
-        space (bool): include spaces between lines in the mt940 details
+        transactions: list of transactions
+        tag: tag
+        tag_dict: dict with the raw tag details
+        result: the resulting tag dict
+        space: include spaces between lines in the mt940 details
     """
     details = tag_dict['transaction_details']
     details = ''.join(detail.strip('\n\r') for detail in details.splitlines())
@@ -243,14 +296,19 @@ transaction_details_post_processor_with_space = functools.partial(
 )
 
 
-def transactions_to_transaction(*keys):
+def transactions_to_transaction(*keys: str):
     """Copy the global transactions details to the transaction.
 
     Args:
         *keys (str): the keys to copy to the transaction
     """
 
-    def _transactions_to_transaction(transactions, tag, tag_dict, result):
+    def _transactions_to_transaction(
+        transactions: models.Transactions,
+        tag: tags.Tag,
+        tag_dict: dict[str, typing.Any],
+        result: dict[str, typing.Any],
+    ) -> dict[str, typing.Any]:
         """Copy the global transactions details to the transaction.
 
         Args:

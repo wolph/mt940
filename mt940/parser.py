@@ -26,9 +26,12 @@ Sources:
 from __future__ import annotations
 
 import os
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import mt940
+
+if TYPE_CHECKING:
+    from .models import Transactions
 
 
 def parse(
@@ -36,7 +39,7 @@ def parse(
     encoding: str | None = None,
     processors: dict[str, list[Any]] | None = None,
     tags: dict[Any, Any] | None = None,
-) -> mt940.models.Transactions:
+) -> Transactions:
     """
     Parses mt940 data and returns transactions object
 
@@ -63,12 +66,12 @@ def parse(
         exception = None
         encodings = [encoding, 'utf-8', 'cp852', 'iso8859-15', 'latin1']
 
-        for encoding in encodings:  # pragma: no cover
-            if not encoding:
+        for enc in encodings:  # pragma: no cover
+            if not enc:
                 continue
 
             try:
-                data = data.decode(encoding)
+                data = data.decode(enc)
                 break
             except UnicodeDecodeError as e:
                 exception = e

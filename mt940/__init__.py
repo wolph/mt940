@@ -1,7 +1,6 @@
 from . import json, models, parser, processors, tags, utils
 from .json import JSONEncoder
-
-parse = parser.parse
+from .parser import parse
 
 __all__ = [
     'JSONEncoder',

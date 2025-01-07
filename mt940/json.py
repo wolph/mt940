@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 import decimal
 import json
@@ -8,6 +10,15 @@ from . import models
 
 class JSONEncoder(json.JSONEncoder):
     def default(self, o: Any) -> Any:
+        """
+        Custom JSON encoder for MT940 models.
+
+        Args:
+            o: The object to serialize.
+
+        Returns:
+            The serialized form of the object.
+        """
         # The following types should simply be cast to strings
         str_types = (
             datetime.date,
@@ -17,24 +28,21 @@ class JSONEncoder(json.JSONEncoder):
             decimal.Decimal,
         )
 
-        dict_types = (
-            models.Balance,
-            models.Amount,
-        )
+        dict_types = (models.Balance, models.Amount)
 
         # Handle native types that should be converted to strings
         if isinstance(o, str_types):
             return str(o)
 
-        # Handling of the Transaction objects to include the actual
-        # transactions
+        # Handling of the Transaction objects to include the
+        # actual transactions
         elif isinstance(o, models.Transactions):
-            data = o.data.copy()
+            data: dict[str, Any] = o.data.copy()
             data['transactions'] = o.transactions
             return data
 
         # If an object has a `data` attribute, return that instead of the
-        # `__dict__` ro prevent loops
+        # `__dict__` to prevent loops
         elif hasattr(o, 'data'):
             return o.data
 

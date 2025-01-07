@@ -76,7 +76,7 @@ ignore = [
     'PC111', # no blacken-docs because markdown has no code
     'PC140', # manual typecheck pre-commit hooks
     'PC170', # no pygrep-hooks because no rST
-    'RTD',   # no RTD
+    'RTD', # no RTD
 ]
 
 [tool.codespell]
@@ -84,7 +84,7 @@ skip = '*/htmlcov,./docs/_build,*.asc,*.yml,*.sta,*.txt,*.html'
 
 [tool.pyright]
 include = ['mt940', 'mt940_tests']
-exclude = ['dist/*']
+exclude = ['dist/*', 'mt940_tests/*']
 strict = ['mt940']
 
 [tool.mypy]
@@ -99,3 +99,34 @@ check_untyped_defs = true
 exclude = ['dist', 'docs', '.venv', 'venv']
 enable_error_code = ['ignore-without-code', 'truthy-bool', 'redundant-expr']
 warn_unreachable = true
+
+[tool.coverage.run]
+branch = true
+source = [
+    'mt940',
+    'mt940_tests',
+]
+omit = [
+    '*/mock/*',
+    '*/nose/*',
+]
+
+[tool.coverage.report]
+fail_under = 100
+
+# Regexes for lines to exclude from consideration
+exclude_also = [
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self\\.debug",
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+    'if (typing\.|)TYPE_CHECKING',
+    # Don't complain about abstract methods, they aren't run:
+    "@(abc\\.)?abstractmethod",
+    'def __repr__',
+]

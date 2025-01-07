@@ -1,5 +1,4 @@
 """
-
 The MT940 format is a standard for bank account statements. It is used by
 many banks in Europe and is based on the SWIFT MT940 format.
 
