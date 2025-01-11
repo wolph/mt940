@@ -26,7 +26,7 @@ Links
     - http://mt940.readthedocs.org/en/latest/
 * Source
     - https://github.com/WoLpH/mt940
-* Bug reports 
+* Bug reports
     - https://github.com/WoLpH/mt940/issues
 * Package homepage
     - https://pypi.python.org/pypi/mt-940
@@ -43,11 +43,11 @@ To install the latest release:
     pip install mt-940
 
 Or if `pip` is not available:
-    
+
 .. code-block:: bash
 
     easy_install mt-940
-   
+
 To install the latest development release:
 
 .. code-block:: bash

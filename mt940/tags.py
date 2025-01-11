@@ -338,7 +338,7 @@ class Statement(Tag):
      - `value_date`: transaction date (YYMMDD)
      - `entry_date`: Optional 4-digit month value and 2-digit day value of
        the entry date (MMDD) or 4 whitespace characters (some banks insert
-        spaces here)
+       spaces here)
      - `funds_code`: Optional 1-character code indicating the funds type (
        the third character of the currency code if needed)
      - `amount`: 15-digit value of the transaction amount, including commas

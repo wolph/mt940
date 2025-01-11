@@ -1,0 +1,15 @@
+ci:
+  autoupdate_branch: "master"
+  autoupdate_commit_msg: "⬆️ update pre-commit hooks"
+
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.1
+    hooks:
+      - id: ruff
+        args: [--fix, --show-fixes]
+        types_or: [python, pyi]
+
+      - id: ruff-format
+        types_or: [python, pyi]
+

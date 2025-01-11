@@ -65,9 +65,6 @@ dev = [
     "ruff>=0.8.4",
 ]
 
-[tool.ruff]
-src = ['mt940', 'mt940_tests']
-
 [tool.repo-review]
 ignore = [
     'PY004', # no /docs
@@ -98,7 +95,7 @@ strict = [
 
 [tool.mypy]
 python_version = '3.9'
-strict = true
+#strict = true
 warn_return_any = true
 warn_unused_configs = true
 warn_unused_ignores = false

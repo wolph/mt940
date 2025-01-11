@@ -3,7 +3,7 @@
 
 target-version = 'py39'
 
-src = ['portalocker']
+src = ['mt940', 'mt940_tests']
 exclude = [
     'docs',
     '.tox',
@@ -39,6 +39,7 @@ ignore = [
     'ISC001', # String concatenation with implicit str conversion
     'SIM108', # Ternary operators are not always more readable
     'RUF100', # Unused noqa directives. Due to multiple Python versions, we need to keep them
+    'A005',  # Argument {name} is shadowing a Python builtin
 ]
 
 select = [

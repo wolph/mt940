@@ -24,20 +24,19 @@ def coalesce(*args: T | None) -> T | None:
 
 
 class Strip(enum.IntFlag):
-    """
-    Enumeration of options for stripping whitespace in strings.
-
-    Attributes:
-        NONE: Do not strip any whitespace.
-        LEFT: Strip leading whitespace.
-        RIGHT: Strip trailing whitespace.
-        BOTH: Strip both leading and trailing whitespace.
-    """
+    """Enumeration of options for stripping whitespace in strings."""
 
     NONE = 0
+    """Do not strip any whitespace."""
+
     LEFT = 1
+    """Strip leading whitespace."""
+
     RIGHT = 2
+    """Strip trailing whitespace."""
+
     BOTH = LEFT | RIGHT
+    """Strip both leading and trailing whitespace."""
 
 
 def join_lines(string: str, strip: Strip = Strip.BOTH) -> str:

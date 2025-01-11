@@ -13,6 +13,7 @@ Sources:
  - `Rabobank MT940`_
 
 ::
+
     [] = optional
     ! = fixed length
     a = Text

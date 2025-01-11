@@ -482,7 +482,9 @@ class Transactions(Sequence[Transaction]):
             self._process_statement_tag(result)
         elif issubclass(tag.scope, Transaction) and self.transactions:
             self._update_transaction(result)
-        elif issubclass(tag.scope, Transactions):  # pragma: no branch  # pyright: ignore [reportUnnecessaryIsInstance]
+        elif issubclass(  # pragma: no branch
+            tag.scope, Transactions
+        ):  # pyright: ignore [reportUnnecessaryIsInstance]
             self.data.update(result)
 
     def _process_statement_tag(self, result: dict[str, Any]) -> None:

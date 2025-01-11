@@ -38,7 +38,7 @@ with open(os.path.join(project_root, 'mt940/__about__.py')) as fp:
 
 import mt940
 
-assert mt940
+assert mt940 is not None
 
 # -- General configuration ----------------------------------------------------
 
