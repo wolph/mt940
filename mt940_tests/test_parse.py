@@ -1,4 +1,5 @@
 import pathlib
+import pickle
 
 import mt940
 import pytest
@@ -19,9 +20,9 @@ def test_non_ascii_parse(path, encoding):
     with path.open('rb') as fh:
         data = fh.read()
         data = data.decode(encoding)
-        mt940.parse(data)
+        pickle.dumps(mt940.parse(data))
 
     # Read as text
     with path.open('r') as fh:
         data = fh.read()
-        mt940.parse(data)
+        pickle.dumps(mt940.parse(data))

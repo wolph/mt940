@@ -84,11 +84,12 @@ class Tag:
     id = 0
     RE_FLAGS = re.IGNORECASE | re.VERBOSE | re.UNICODE
     scope = models.Transactions
+    pattern: str
 
     def __init__(self):
         self.re = re.compile(self.pattern, self.RE_FLAGS)
 
-    def parse(self, transactions, value):
+    def parse(self, transactions: models.Transactions, value: str):
         match = self.re.match(value)
         if match:  # pragma: no branch
             self.logger.debug(
@@ -495,6 +496,7 @@ class SumEntries(Tag):
     (?P<currency>.{3})  # 3!a Currency
     (?P<amount>[\d,]{1,15})  # 15d Amount
     """
+    status: str
 
     def __call__(self, transactions, value):
         data = super().__call__(transactions, value)

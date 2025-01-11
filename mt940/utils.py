@@ -66,13 +66,13 @@ def join_lines(string: str, strip: Strip = Strip.BOTH) -> str:
 
     strip_func: typing.Callable[[str], str]
     if strip_left and strip_right:
-        strip_func = lambda s: s.strip()
+        strip_func = lambda s: s.strip()  # noqa: E731
     elif strip_left:
-        strip_func = lambda s: s.lstrip()
+        strip_func = lambda s: s.lstrip()  # noqa: E731
     elif strip_right:
-        strip_func = lambda s: s.rstrip()
+        strip_func = lambda s: s.rstrip()  # noqa: E731
     else:
-        strip_func = lambda s: s
+        strip_func = lambda s: s  # noqa: E731
 
     lines = [strip_func(line) for line in string.splitlines()]
     return ''.join(lines)

@@ -85,7 +85,16 @@ skip = '*/htmlcov,./docs/_build,*.asc,*.yml,*.sta,*.txt,*.html'
 [tool.pyright]
 include = ['mt940', 'mt940_tests']
 exclude = ['dist/*', 'mt940_tests/*']
-strict = ['mt940']
+strict = [
+    'mt940/__about__.py',
+    'mt940/__init__.py',
+    'mt940/json.py',
+    'mt940/models.py',
+    'mt940/parser.py',
+    'mt940/processors.py',
+#    'mt940/tags.py',
+    'mt940/utils.py',
+]
 
 [tool.mypy]
 python_version = '3.9'
@@ -129,4 +138,5 @@ exclude_also = [
     # Don't complain about abstract methods, they aren't run:
     "@(abc\\.)?abstractmethod",
     'def __repr__',
+    '@overload',
 ]

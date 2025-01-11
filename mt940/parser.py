@@ -78,8 +78,10 @@ def parse(
             except UnicodeEncodeError:
                 break
         else:
+            assert exception is not None
             raise exception  # pragma: no cover
 
+    assert isinstance(data, str)
     transactions = mt940.models.Transactions(processors, tags)
     transactions.parse(data)
 

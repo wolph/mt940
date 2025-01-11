@@ -4,6 +4,7 @@ import datetime
 import decimal
 import re
 import typing
+import warnings
 from collections.abc import Mapping, MutableMapping, Sequence
 from typing import Any, Callable, ClassVar, overload
 
@@ -12,7 +13,7 @@ import mt940
 from . import processors, utils
 
 if typing.TYPE_CHECKING:
-    from . import tags
+    pass
 
 
 class Model:
@@ -367,7 +368,7 @@ class Transactions(Sequence[Transaction]):
             self.DEFAULT_PROCESSORS.copy()
         )
         self.tags: MutableMapping[int | str, mt940.tags.Tag] = dict(
-            self.defaultTags()
+            self.default_tags()
         )
 
         if processors:
@@ -400,8 +401,17 @@ class Transactions(Sequence[Transaction]):
             return balance.amount.currency
         return None
 
+    @classmethod
+    def defaultTags(cls) -> Mapping[int | str, mt940.tags.Tag]:  # noqa: N802 # pragma: no cover
+        warnings.warn(
+            'defaultTags is deprecated, use default_tags instead',
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return cls.default_tags()
+
     @staticmethod
-    def defaultTags() -> Mapping[int | str, mt940.tags.Tag]:
+    def default_tags() -> Mapping[int | str, mt940.tags.Tag]:
         return mt940.tags.TAG_BY_ID
 
     def parse(self, data: str) -> list[Transaction]:
@@ -472,7 +482,7 @@ class Transactions(Sequence[Transaction]):
             self._process_statement_tag(result)
         elif issubclass(tag.scope, Transaction) and self.transactions:
             self._update_transaction(result)
-        elif issubclass(tag.scope, Transactions):  # pragma: no branch
+        elif issubclass(tag.scope, Transactions):  # pragma: no branch  # pyright: ignore [reportUnnecessaryIsInstance]
             self.data.update(result)
 
     def _process_statement_tag(self, result: dict[str, Any]) -> None:
@@ -530,7 +540,7 @@ class Transactions(Sequence[Transaction]):
         Returns:
             list[str]: List of cleaned lines.
         """
-        stripped_lines = []
+        stripped_lines: list[str] = []
         for line in lines:
             line = line.replace('\r', '')
             line = line.rstrip()
@@ -575,8 +585,9 @@ class Transactions(Sequence[Transaction]):
                 continue
             i_next = i + 1
             tag_id = self.normalize_tag_id(match.group('tag'))
-            if tag_id not in self.tags:
+            if tag_id not in self.tags:  # pragma: no cover
                 continue
+
             if tag_id == mt940.tags.Tags.TRANSACTION_DETAILS.value.id:
                 for j in range(i_next, len(matches)):
                     next_tag_id = self.normalize_tag_id(
