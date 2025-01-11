@@ -77,7 +77,7 @@ def parse(
                 exception = e
             except UnicodeEncodeError:
                 break
-        else:
+        else:  # pragma: no cover
             assert exception is not None
             raise exception  # pragma: no cover
 
