@@ -1,3 +1,4 @@
+# pyright: strict
 """
 The MT940 format is a standard for bank account statements. It is used by
 many banks in Europe and is based on the SWIFT MT940 format.
@@ -71,9 +72,12 @@ The pattern for the tags use the following syntax:
     n = Numeric
 """
 
+from __future__ import annotations
+
 import enum
 import logging
 import re
+import typing
 
 from . import models
 
@@ -81,15 +85,31 @@ logger = logging.getLogger(__name__)
 
 
 class Tag:
-    id = 0
-    RE_FLAGS = re.IGNORECASE | re.VERBOSE | re.UNICODE
-    scope = models.Transactions
-    pattern: str
+    """
+    Base Tag class for parsing and handling MT940 tag contents.
+    """
 
-    def __init__(self):
+    id: str | int = 0
+    RE_FLAGS = re.IGNORECASE | re.VERBOSE | re.UNICODE
+    scope: type[models.Transactions | models.Transaction] = models.Transactions
+    pattern: str
+    slug: str
+    logger: logging.Logger
+
+    def __init__(self) -> None:
         self.re = re.compile(self.pattern, self.RE_FLAGS)
 
-    def parse(self, transactions: models.Transactions, value: str):
+    def parse(
+        self, transactions: models.Transactions, value: str
+    ) -> dict[str, str | None]:
+        """
+        Parses the given value using the Tag's pattern.
+
+        :param transactions: The transactions model instance.
+        :param value: The string value to parse.
+        :return: A dictionary of matched group values.
+        :raises RuntimeError: If parsing fails.
+        """
         match = self.re.match(value)
         if match:  # pragma: no branch
             self.logger.debug(
@@ -99,6 +119,7 @@ class Tag:
                 self.pattern,
                 match.groupdict(),
             )
+            return match.groupdict()
         else:  # pragma: no cover
             self.logger.error(
                 'matching id=%s (len=%d) "%s" against\n    %s',
@@ -107,42 +128,60 @@ class Tag:
                 value,
                 self.pattern,
             )
-
-            part_value = value
-            for pattern in self.pattern.split('\n'):
-                match = re.match(pattern, part_value, self.RE_FLAGS)
-                if match:
-                    self.logger.info(
-                        'matched %r against %r, got: %s',
-                        pattern,
-                        match.group(0),
-                        match.groupdict(),
-                    )
-                    part_value = part_value[len(match.group(0)) :]
-                else:
-                    self.logger.error(
-                        'no match for %r against %r', pattern, part_value
-                    )
-
+            self._debug_partial_match(value)
             raise RuntimeError(
                 f'Unable to parse {self!r} from {value!r}', self, value
             )
-        return match.groupdict()
 
-    def __call__(self, transactions, value):
+    def _debug_partial_match(self, value: str) -> None:  # pragma: no cover
+        """
+        Helper function to debug partial matches against the pattern.
+        """
+        part_value = value
+        for pattern in self.pattern.split('\n'):
+            match = re.match(pattern, part_value, self.RE_FLAGS)
+            if match:
+                self.logger.info(
+                    'matched %r against %r, got: %s',
+                    pattern,
+                    match.group(0),
+                    match.groupdict(),
+                )
+                part_value = part_value[len(match.group(0)) :]
+            else:
+                self.logger.error(
+                    'no match for %r against %r', pattern, part_value
+                )
+
+    def __call__(
+        self, transactions: models.Transactions, value: dict[str, typing.Any]
+    ) -> dict[str, typing.Any]:
+        """
+        Processes the tag value and returns parsed content.
+
+        :param transactions: The transactions model instance.
+        :param value: The string value to process.
+        :return: The processed value, which can be a string or dict.
+        """
         return value
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, *args: typing.Any, **kwargs: typing.Any):
+        """
+        Creates a new Tag instance and sets up logging details.
+        """
         cls.name = cls.__name__
-
         words = re.findall('([A-Z][a-z]+)', cls.__name__)
         cls.slug = '_'.join(w.lower() for w in words)
         cls.logger = logger.getChild(cls.name)
+        return object.__new__(cls)
 
-        return object.__new__(cls, *args, **kwargs)
+    def __hash__(self) -> int:
+        """
+        Returns a hash based on the tag's ID.
 
-    def __hash__(self):
-        return self.id
+        :return: The integer hash of the tag.
+        """
+        return hash(self.id) if isinstance(self.id, str) else self.id
 
 
 class DateTimeIndication(Tag):
@@ -161,7 +200,9 @@ class DateTimeIndication(Tag):
     (\+(?P<offset>\d{4})|)
     """
 
-    def __call__(self, transactions, value):
+    def __call__(
+        self, transactions: models.Transactions, value: dict[str, typing.Any]
+    ) -> dict[str, object]:
         data = super().__call__(transactions, value)
         return {'date': models.DateTime(**data)}
 
@@ -223,13 +264,16 @@ class FloorLimitIndicator(Tag):
     (?P<amount>[0-9,]{0,16})  # 15d Amount (includes decimal sign, so 16)
     $"""
 
-    def __call__(self, transactions, value):
-        data = super().__call__(transactions, value)
+    def __call__(
+        self, transactions: models.Transactions, value: dict[str, typing.Any]
+    ) -> dict[str, object]:
+        data = typing.cast(
+            dict[str, str],
+            super().__call__(transactions, value),
+        )
         if data['status']:
-            return {
-                data['status'].lower() + '_floor_limit': models.Amount(**data)
-            }
-
+            key = data['status'].lower() + '_floor_limit'
+            return {key: models.Amount(**data)}
         data_d = data.copy()
         data_c = data.copy()
         data_d.update({'status': 'D'})
@@ -271,8 +315,10 @@ class NonSwift(Tag):
         sub_pattern, re.IGNORECASE | re.VERBOSE | re.UNICODE
     )
 
-    def __call__(self, transactions, value):
-        text = []
+    def __call__(
+        self, transactions: models.Transactions, value: dict[str, typing.Any]
+    ) -> dict[str, object]:
+        text: list[str] = []
         data = value['non_swift']
         for line in data.split('\n'):
             frag = self.sub_pattern_m.match(line)
@@ -304,7 +350,9 @@ class BalanceBase(Tag):
     (?P<amount>[0-9,]{0,16})  # 15d Amount (includes decimal sign, so 16)
     """
 
-    def __call__(self, transactions, value):
+    def __call__(
+        self, transactions: models.Transactions, value: dict[str, typing.Any]
+    ) -> dict[str, object]:
         data = super().__call__(transactions, value)
         data['amount'] = models.Amount(**data)
         data['date'] = models.Date(**data)
@@ -325,7 +373,6 @@ class IntermediateOpeningBalance(BalanceBase):
 
 class Statement(Tag):
     """
-
     The MT940 Tag 61 provides information about a single transaction that
     has taken place on the account. Each transaction is identified by a
     unique transaction reference number (Tag 20) and is described in the
@@ -355,7 +402,6 @@ class Statement(Tag):
 
     The Tag 61 can occur multiple times within an MT940 file, with each
     occurrence representing a different transaction.
-
     """
 
     id = 61
@@ -369,37 +415,29 @@ class Statement(Tag):
     (?P<status>R?[DC])  # 2a Debit/Credit Mark
     (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd character of the currency
                             # code, if needed)
-    [\n ]? # apparently some banks (sparkassen) incorporate newlines here
-    # cuscal can also send a space here as well
+    [\n ]?
     (?P<amount>[\d,]{1,15})  # 15d Amount
-    (?P<id>[A-Z][A-Z0-9 ]{3})?  # 1!a3!c Transaction Type Identification Code
-    # We need the (slow) repeating negative lookahead to search for // so we
-    # don't acciddntly include the bank reference in the customer reference.
-    (?P<customer_reference>((?!//)[^\n]){0,16})  # 16x Customer Reference
-    (//(?P<bank_reference>.{0,23}))?  # [//23x] Bank Reference
-    (\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary Details
+    (?P<id>[A-Z][A-Z0-9 ]{3})?
+    (?P<customer_reference>((?!//)[^\n]){0,16})
+    (//(?P<bank_reference>.{0,23}))?
+    (\n?(?P<extra_details>.{0,34}))?
     $"""
 
-    def __call__(self, transactions, value):
+    def __call__(
+        self, transactions: models.Transactions, value: dict[str, typing.Any]
+    ) -> dict[str, object]:
         data = super().__call__(transactions, value)
         data.setdefault('currency', transactions.currency)
-
         data['amount'] = models.Amount(**data)
         date = data['date'] = models.Date(**data)
 
-        # extracting a guessed entry date and normalizing it to string
-        # to support given integers, strings and Nones
         entry_day = str(data.get('entry_day') or '')
         entry_month = str(data.get('entry_month') or '')
 
-        # verifying that the entry day and month are digits
         if entry_day.isdigit() and entry_month.isdigit():
             entry_date = data['entry_date'] = models.Date(
-                day=entry_day,
-                month=entry_month,
-                year=str(data['date'].year),
+                day=entry_day, month=entry_month, year=str(date.year)
             )
-
             if date > entry_date and (date - entry_date).days >= 330:
                 year = 1
             elif entry_date > date and (entry_date - date).days >= 330:
@@ -421,11 +459,11 @@ class StatementASNB(Statement):
 
     From: https://www.sepaforcorporates.com/swift-for-corporates
 
-    Pattern: 6!n[4!n]2a[1!a]15d1!a3!c16x[//16x]
+    Pattern: 6!n[4!n]2a[1!a]15d1!a3!c34x[//16x]
     [34x]
 
-    But ASN bank puts the IBAN in the customer reference, which is according to
-    Wikipedia at most 34 characters.
+    But ASN bank puts the IBAN in the customer reference, which is according
+    to Wikipedia at most 34 characters.
 
     So this is the new pattern:
 
@@ -437,25 +475,26 @@ class StatementASNB(Statement):
     (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
     (?P<month>\d{2})
     (?P<day>\d{2})
-    (?P<entry_month>\d{2}|\s{2})?  # [4!n] Entry Date (MMDD)
+    (?P<entry_month>\d{2}|\s{2})?
     (?P<entry_day>\d{2}|\s{2})?
-    (?P<status>[A-Z]?[DC])  # 2a Debit/Credit Mark
-    (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd character of the currency
-                            # code, if needed)
-    \n? # apparently some banks (sparkassen) incorporate newlines here
-    (?P<amount>[\d,]{1,15})  # 15d Amount
-    (?P<id>[A-Z][A-Z0-9 ]{3})?  # 1!a3!c Transaction Type Identification Code
-    (?P<customer_reference>.{0,34})  # 34x Customer Reference
-    (//(?P<bank_reference>.{0,16}))?  # [//16x] Bank Reference
-    (\n?(?P<extra_details>.{0,34}))?  # [34x] Supplementary Details
+    (?P<status>[A-Z]?[DC])
+    (?P<funds_code>[A-Z])?
+    \n?
+    (?P<amount>[\d,]{1,15})
+    (?P<id>[A-Z][A-Z0-9 ]{3})?
+    (?P<customer_reference>.{0,34})
+    (//(?P<bank_reference>.{0,16}))?
+    (\n?(?P<extra_details>.{0,34}))?
     $"""
 
-    def __call__(self, transactions, value):
+    def __call__(
+        self, transactions: models.Transactions, value: dict[str, typing.Any]
+    ) -> dict[str, object]:
         return super().__call__(transactions, value)
 
 
 class ClosingBalance(BalanceBase):
-    id = 62
+    id: str | int = 62
 
 
 class IntermediateClosingBalance(ClosingBalance):
@@ -490,7 +529,7 @@ class TransactionDetails(Tag):
 class SumEntries(Tag):
     """Number and Sum of debit Entries"""
 
-    id = 90
+    id: str | int = 90
     pattern = r"""^
     (?P<number>\d*)
     (?P<currency>.{3})  # 3!a Currency
@@ -498,9 +537,10 @@ class SumEntries(Tag):
     """
     status: str
 
-    def __call__(self, transactions, value):
+    def __call__(
+        self, transactions: models.Transactions, value: dict[str, typing.Any]
+    ) -> dict[str, object]:
         data = super().__call__(transactions, value)
-
         data['status'] = self.status
         return {self.slug: models.SumAmount(**data)}
 

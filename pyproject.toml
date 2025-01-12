@@ -89,7 +89,7 @@ strict = [
     'mt940/models.py',
     'mt940/parser.py',
     'mt940/processors.py',
-#    'mt940/tags.py',
+    'mt940/tags.py',
     'mt940/utils.py',
 ]
 
