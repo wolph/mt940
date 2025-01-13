@@ -77,7 +77,7 @@ ignore = [
 ]
 
 [tool.codespell]
-skip = '*/htmlcov,./docs/_build,*.asc,*.yml,*.sta,*.txt,*.html'
+skip = '*/htmlcov,./docs/_build,*.asc,*.yml,*.sta,*.txt,*.html,./docs/html'
 
 [tool.pyright]
 include = ['mt940', 'mt940_tests']
