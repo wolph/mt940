@@ -6,11 +6,11 @@
 :61:2001010101D65,00NOVBNL47INGB9999999999
 hr gjlm paulissen
 :86:NL47INGB9999999999 hr gjlm paulissen
-                                                                 
-Betaling sieraden                                                
-                                                                 
-                                                                 
-                                                                 
+
+Betaling sieraden
+
+
+
 :62F:C200101EUR379,29
 -}{5:}
 {1:F01ASNBNL21XXXX0000000000}{2:O940ASNBNL21XXXXN}{3:}{4:
@@ -42,19 +42,19 @@ Betaling sieraden
 :61:2001050105C1000,00NIOBNL56ASNB9999999999
 paulissen g j l m
 :86:NL56ASNB9999999999 paulissen g j l m
-                                                                 
-INTERNE OVERBOEKING VIA MOBIEL                                   
-                                                                 
-                                                                 
-                                                                 
+
+INTERNE OVERBOEKING VIA MOBIEL
+
+
+
 :61:2001050105D801,55NIDBNL08ABNA9999999999
-international card services 
-:86:NL08ABNA9999999999 international card services 
-                                                                 
+international card services
+:86:NL08ABNA9999999999 international card services
+
 000000000000000000000000000000000 0000000000000000 Betaling aan I
-CS 99999999999 ICS Referentie: 2020-01-05 19:47 000000000000000  
-                                                                 
-                                                                 
+CS 99999999999 ICS Referentie: 2020-01-05 19:47 000000000000000
+
+
 :62F:C200105EUR577,74
 -}{5:}
 {1:F01ASNBNL21XXXX0000000000}{2:O940ASNBNL21XXXXN}{3:}{4:
@@ -196,12 +196,12 @@ CS 99999999999 ICS Referentie: 2020-01-05 19:47 000000000000000
 :28C:25/1
 :60F:C200125EUR577,74
 :61:2001250125D1,65NDIV
-:86: 
-                                                                 
-Kosten gebruik betaalrekening inclusief 1 betaalpas              
-                                                                 
-                                                                 
-                                                                 
+:86:
+
+Kosten gebruik betaalrekening inclusief 1 betaalpas
+
+
+
 :62F:C200125EUR576,09
 -}{5:}
 {1:F01ASNBNL21XXXX0000000000}{2:O940ASNBNL21XXXXN}{3:}{4:
@@ -233,19 +233,19 @@ Kosten gebruik betaalrekening inclusief 1 betaalpas
 :61:2001290129C828,72NOVBNL25INGB9999999999
 transfer solutions bv
 :86:NL25INGB9999999999 transfer solutions bv
-                                                                 
+
 2020-01-28T14:32:46-000000000000089-NL25INGB9999999999-Transfer S
-olutions BV-DIVIDEND 28/01/2020                                  
-                                                                 
-                                                                 
+olutions BV-DIVIDEND 28/01/2020
+
+
 :61:2001290129D1000,00NIDBNL08ABNA9999999999
-international card services 
-:86:NL08ABNA9999999999 international card services 
-                                                                 
+international card services
+:86:NL08ABNA9999999999 international card services
+
 000000000000000000000000000000000 0000000000000000 Betaling aan I
-CS 99999999999 ICS Referentie: 2020-01-29 18:36 000000000000000  
-                                                                 
-                                                                 
+CS 99999999999 ICS Referentie: 2020-01-29 18:36 000000000000000
+
+
 :62F:C200129EUR404,81
 -}{5:}
 {1:F01ASNBNL21XXXX0000000000}{2:O940ASNBNL21XXXXN}{3:}{4:
@@ -263,18 +263,18 @@ CS 99999999999 ICS Referentie: 2020-01-29 18:36 000000000000000
 :61:2001310131C1000,18NIOBNL56ASNB9999999999
 paulissen g j l m
 :86:NL56ASNB9999999999 paulissen g j l m
-                                                                 
-INTERNE OVERBOEKING VIA MOBIEL                                   
-                                                                 
-                                                                 
-                                                                 
+
+INTERNE OVERBOEKING VIA MOBIEL
+
+
+
 :61:2001310131D903,76NIDBNL08ABNA9999999999
-international card services 
-:86:NL08ABNA9999999999 international card services 
-                                                                 
+international card services
+:86:NL08ABNA9999999999 international card services
+
 000000000000000000000000000000000 0000000000000000 Betaling aan I
-CS 99999999999 ICS Referentie: 2020-01-31 21:27 000000000000000  
-                                                                 
-                                                                 
+CS 99999999999 ICS Referentie: 2020-01-31 21:27 000000000000000
+
+
 :62F:C200131EUR501,23
 -}{5:}

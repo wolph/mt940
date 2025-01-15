@@ -4,6 +4,7 @@ import calendar
 import collections
 import functools
 import re
+import typing
 from typing import TYPE_CHECKING, Any, Callable
 
 if TYPE_CHECKING:
@@ -373,7 +374,17 @@ segments.
 """
 
 
-def transactions_to_transaction(*keys: str):
+def transactions_to_transaction(
+    *keys: str,
+) -> typing.Callable[
+    [
+        models.Transactions,
+        tags.Tag,
+        dict[str, Any],
+        dict[str, Any],
+    ],
+    dict[str, Any],
+]:
     """
     Copy the global transactions details to the transaction.
 

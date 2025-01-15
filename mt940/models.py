@@ -394,8 +394,8 @@ class Transactions(Sequence[Transaction]):
             self.data.get('d_floor_limit'),
         )
 
-        if balance:
-            if isinstance(balance, Amount):
+        if balance is not None:
+            if hasattr(balance, 'currency'):  # type: ignore[unreachable]
                 return balance.currency
 
             return balance.amount.currency
@@ -602,7 +602,7 @@ class Transactions(Sequence[Transaction]):
         return valid_matches
 
 
-class TransactionsAndTransaction(Transactions, Transaction):
+class TransactionsAndTransaction(Transactions, Transaction):  # type: ignore[misc]
     """
     Subclass of both Transactions and Transaction for scope definitions.
 

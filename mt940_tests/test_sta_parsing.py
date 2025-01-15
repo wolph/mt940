@@ -17,7 +17,7 @@ try:
         CLoader as Loader,
     )
 except ImportError:
-    from yaml import Dumper, Loader
+    from yaml import Dumper, Loader  # type: ignore[assignment]
 
 
 logger = logging.getLogger(__name__)
@@ -73,7 +73,7 @@ def compare(a: Any, b: Any, keys: list[str] | None = None) -> None:
         compare_iterables(a, b, keys)
     elif hasattr(a, 'data'):
         compare_data_attributes(a, b, keys)
-    elif mt940 is not None and isinstance(a, mt940.models.Model):
+    elif isinstance(a, mt940.models.Model):
         compare_model_instances(a, b, keys)
     else:
         path = '.'.join(keys)
@@ -127,7 +127,7 @@ def compare_none(a: None, b: None, keys: list[str]) -> None:
         AssertionError: If `a` is not `b`.
     """
     if a is not b:
-        path = '.'.join(keys)
+        path = '.'.join(keys)  # type: ignore[unreachable]
         raise AssertionError(f'Difference at {path}: {a} is not {b}')
 
 

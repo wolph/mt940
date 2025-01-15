@@ -165,7 +165,7 @@ class Tag:
         """
         return value
 
-    def __new__(cls, *args: typing.Any, **kwargs: typing.Any):
+    def __new__(cls, *args: typing.Any, **kwargs: typing.Any) -> Tag:
         """
         Creates a new Tag instance and sets up logging details.
         """

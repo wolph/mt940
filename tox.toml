@@ -1,4 +1,6 @@
 env_list = [
+    'fix',
+    'clean',
     'py39',
     'py310',
     'py311',
@@ -16,8 +18,8 @@ skip_missing_interpreters = true
 
 [env_run_base]
 pass_env = ['FORCE_COLOR']
-commands = [['pytest', '{posargs}']]
-extras = ['tests', 'redis']
+commands = [['pytest', '--cov-append', '{posargs}']]
+extras = ['tests', 'docs']
 
 [env.fix]
 description = 'run code formatter and linter (auto-fix)'
@@ -25,11 +27,15 @@ skip_install = true
 deps = 'pre-commit-uv'
 commands = [['pre-commit', 'run', '--all-files', '--show-diff-on-failure']]
 
+[env.clean]
+deps = ['coverage']
+skip_install = true
+commands = [['coverage', 'erase']]
+
 [env.mypy]
 commands = [['mypy']]
 
 [env.pyright]
-deps = ['pyright']
 commands = [['pyright']]
 
 [env.ruff]
@@ -103,7 +109,7 @@ commands = [
 [env.repo-review]
 basepython = ['py312']
 deps = ['sp-repo-review[cli]', 'validate-pyproject']
-commands = [['repo-review']]
+commands = [['repo-review', '--show=err']]
 
 [env.codespell]
 commands = [['codespell']]

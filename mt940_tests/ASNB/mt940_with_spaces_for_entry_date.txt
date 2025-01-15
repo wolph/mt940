@@ -6,11 +6,11 @@
 :61:200101    D65,00NOVBNL47INGB9999999999
 hr gjlm paulissen
 :86:NL47INGB9999999999 hr gjlm paulissen
-                                                                 
-Betaling sieraden                                                
-                                                                 
-                                                                 
-                                                                 
+
+Betaling sieraden
+
+
+
 :62F:C200101EUR379,29
 -}{5:}
 {1:F01ASNBNL21XXXX0000000000}{2:O940ASNBNL21XXXXN}{3:}{4:
@@ -269,12 +269,12 @@ INTERNE OVERBOEKING VIA MOBIEL
 
 
 :61:200131    D903,76NIDBNL08ABNA9999999999
-international card services 
-:86:NL08ABNA9999999999 international card services 
-                                                                 
+international card services
+:86:NL08ABNA9999999999 international card services
+
 000000000000000000000000000000000 0000000000000000 Betaling aan I
-CS 99999999999 ICS Referentie: 2020-01-31 21:27 000000000000000  
-                                                                 
-                                                                 
+CS 99999999999 ICS Referentie: 2020-01-31 21:27 000000000000000
+
+
 :62F:C200131EUR501,23
 -}{5:}

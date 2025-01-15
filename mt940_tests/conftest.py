@@ -8,7 +8,7 @@ LOG_LEVELS = {
 }
 
 
-def pytest_configure(config):
+def pytest_configure(config) -> None:
     # Note: enable DEBUG logging to debug the parsing. But this becomes very
     # verbose very quickly
     logging.basicConfig(

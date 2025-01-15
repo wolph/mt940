@@ -40,6 +40,9 @@ tests = [
     'pytest-cover',
     'pytest-flake8',
     'pyyaml',
+    'pyright',
+    'mypy',
+    'types-pyyaml',
 ]
 
 
@@ -95,7 +98,8 @@ strict = [
 
 [tool.mypy]
 python_version = '3.9'
-#strict = true
+# We're partially mypy strict but mypy is a pain... just use (based)pyright
+strict = false
 warn_return_any = true
 warn_unused_configs = true
 warn_unused_ignores = false
