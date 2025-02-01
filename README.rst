@@ -1,6 +1,4 @@
-=====
-MT940
-=====
+# MT940
 
 .. image:: https://github.com/wolph/mt940/actions/workflows/main.yml/badge.svg?branch=master
     :alt: MT940 test status
@@ -44,9 +42,9 @@ To install the latest release:
 
 Or if `pip` is not available:
 
-.. code-block:: bash
-
-    easy_install mt-940
+```bash
+easy_install mt-940
+```
 
 To install the latest development release:
 
@@ -58,8 +56,7 @@ To install the latest development release:
     source .env/bin/activate
     pip install -e .
 
-To run the tests you can use the `py.test` command or just run `tox` to test
-everything in all supported python versions.
+To run the tests, you can use the `py.test` command or simply run `tox` to test everything in all supported Python versions.
 
 Usage
 -----
