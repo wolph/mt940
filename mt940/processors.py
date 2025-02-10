@@ -160,7 +160,7 @@ DETAIL_KEYS = {
     '10': 'prima_nota',
     '20': 'purpose',
     '30': 'applicant_bin',
-    '31': 'applicant_iban',
+    '31': 'applicant_name',
     '32': 'applicant_name',
     '34': 'return_debit_notes',
     '35': 'recipient_name',
@@ -226,9 +226,7 @@ def _process_segments(
     Returns:
         A dictionary mapping keys to lists of segment contents.
     """
-    result: collections.defaultdict[str, list[str]] = collections.defaultdict(
-        list
-    )
+    result: collections.defaultdict[str, list[str]] = collections.defaultdict(list)
     for key, value in tmp.items():
         if key in DETAIL_KEYS:
             result[DETAIL_KEYS[key]].append(value)
@@ -236,6 +234,8 @@ def _process_segments(
             key32 = DETAIL_KEYS['32']
             result[key32].append(value)
         elif key.startswith('2'):
+            if key == "29" and value.endswith(" BIC"):
+                value = value[:-4].rstrip()
             key20 = DETAIL_KEYS['20']
             result[key20].append(value)
         elif key in {'60', '61', '62', '63', '64', '65'}:
