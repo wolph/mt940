@@ -12,6 +12,17 @@ def test_process_segments_29_bic_removed():
     assert key20 in result
     assert result[key20] == ["DE69280123450012345670"]
 
+def test_process_segments_28d_iban_removed():
+    # Create a pseudo OrderedDict similar to what _parse_segments returns.
+    tmp = collections.OrderedDict()
+    # Segment with key "28D" ending with " IBAN" should have the trailing " IBAN" removed.
+    tmp["28D"] = "DE69280123450012345670 IBAN"
+    result = processors._process_segments(tmp)
+    key20 = processors.DETAIL_KEYS["20"]
+    # After removal, expect "DE69280123450012345670" to be appended.
+    assert key20 in result
+    assert result[key20] == ["DE69280123450012345670"]
+
 def test_process_segments_other_fields():
     # Test normal behavior for other segments.
     tmp = collections.OrderedDict()

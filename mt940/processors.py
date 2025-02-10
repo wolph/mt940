@@ -236,6 +236,8 @@ def _process_segments(
         elif key.startswith('2'):
             if key == "29" and value.endswith(" BIC"):
                 value = value[:-4].rstrip()
+            elif key == "28D" and value.endswith(" IBAN"):
+                value = value[:-5].rstrip()
             key20 = DETAIL_KEYS['20']
             result[key20].append(value)
         elif key in {'60', '61', '62', '63', '64', '65'}:
