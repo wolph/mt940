@@ -503,7 +503,10 @@ class Transactions(Sequence[Transaction]):
         transaction = self.transactions[-1]
         for k, v in result.items():
             if k in transaction.data and hasattr(v, 'strip'):
-                transaction.data[k] += f'\n{v.strip()}'
+                if transaction.data[k] is None:
+                    transaction.data[k] = v.strip()
+                else:
+                    transaction.data[k] += '\n%s' % v.strip()
             else:
                 transaction.data[k] = v
 
