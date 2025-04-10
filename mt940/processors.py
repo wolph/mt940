@@ -362,7 +362,7 @@ def transaction_details_post_processor(
             
         # Clean up the purpose field
         if result.get('purpose'):
-            # Remove trailing "BIC" without the actual BIC value
+            # Remove trailing "BIC" without an actual BIC value
             result['purpose'] = re.sub(r' BIC$', '', result['purpose'])
             
         del result['transaction_details']
