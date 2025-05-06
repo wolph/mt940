@@ -1,4 +1,11 @@
 from __future__ import annotations
+"""
+Module Processors
+
+This module contains pre- and post-processors for modifying tag dictionaries in MT940 processing.
+It provides functions for currency addition, date fix-up, transaction code extraction,
+transaction details parsing, and segment joining for transaction details.
+"""
 
 import calendar
 import collections
@@ -60,6 +67,7 @@ def date_fixup_pre_processor(
     Returns:
         The adjusted tag dictionary.
     """
+    # If the month is February, ensure that the day does not exceed the maximum valid day.
     if tag_dict['month'] == '02':
         year = int(tag_dict['year'], 10)
         _, max_month_day = calendar.monthrange(year, 2)
@@ -89,6 +97,7 @@ def date_cleanup_post_processor(
     Returns:
         The adjusted result dictionary.
     """
+    # Remove all date-related keys from the result dictionary.
     for k in ('day', 'month', 'year', 'entry_day', 'entry_month'):
         result.pop(k, None)
     return result
@@ -105,6 +114,9 @@ def mBank_set_transaction_code(  # noqa: N802
     payments transactions, adding transaction_code may be helpful in further
     processing.
     """
+    # Extract the transaction code from the tag value.
+    # Split the value at ';' and then by the first space to isolate the numeric transaction code,
+    # which is converted to an integer before being assigned.
     tag_value = tag_dict[tag.slug]
     tag_dict['transaction_code'] = int(
         tag_value.split(';')[0].split(' ', 1)[0]
@@ -112,6 +124,7 @@ def mBank_set_transaction_code(  # noqa: N802
     return tag_dict
 
 
+# Regular expression to extract IPH ID from mBank tag values.
 iph_id_re = re.compile(r' ID IPH: X*(?P<iph_id>\d{0,14});')
 
 
@@ -131,6 +144,7 @@ def mBank_set_iph_id(  # noqa: N802
     return tag_dict
 
 
+# Regular expression to extract the Transaction Number (TNR) from tag values, accounting for potential newline characters.
 tnr_re = re.compile(r'TNR:[ \n](?P<tnr>\d+\.\d+)', flags=re.MULTILINE)
 
 
@@ -192,23 +206,41 @@ GVC_KEYS = {
 
 
 def _parse_segments(detail_str: str) -> collections.OrderedDict[str, str]:
+    """
+    Parse segments from a detail string.
+
+    This function splits the provided detail string into segments using the '?' delimiter.
+    Each segment is associated with a two-character segment type that follows the '?' marker.
+
+    Args:
+        detail_str: A string containing the transaction detail segments.
+
+    Returns:
+        An OrderedDict mapping segment identifiers to their extracted content.
+    """
     tmp: collections.OrderedDict[str, str] = collections.OrderedDict()
     segment = ''
     segment_type = ''
 
     for index, char in enumerate(detail_str):
         if char != '?':
+            # Accumulate characters into the current segment until a '?' delimiter is encountered.
             segment += char
             continue
 
+        # If there aren't enough characters left to form a segment type, exit the loop.
         if index + 2 >= len(detail_str):
             break
 
+        # Finalize the current segment. If a segment type exists, skip the first two header characters.
         tmp[segment_type] = segment if not segment_type else segment[2:]
+        # Extract the new segment type from the following two characters.
         segment_type = detail_str[index + 1] + detail_str[index + 2]
+        # Reset the segment accumulator for the next segment.
         segment = ''
 
     if segment_type:  # pragma: no branch
+        # Finalize the last captured segment.
         tmp[segment_type] = segment if not segment_type else segment[2:]
 
     return tmp
@@ -234,6 +266,7 @@ def _process_segments(
             key32 = DETAIL_KEYS['32']
             result[key32].append(value)
         elif key.startswith('2'):
+            # For segment keys beginning with '2', adjust specific segments by trimming trailing identifiers.
             if key == "29" and value.endswith(" BIC"):
                 value = value[:-4].rstrip()
             elif key == "28D" and value.endswith(" IBAN"):
@@ -308,12 +341,15 @@ def _parse_mt940_gvcodes(purpose: str) -> dict[str, str | None]:
     text = ''
 
     for index, char in enumerate(purpose):
+        # Detect the beginning of a GVC segment: if a '+' is encountered and the four characters preceding it form a valid GVC key.
         if char == '+' and purpose[index - 4 : index] in GVC_KEYS:
             if segment_type:
+                # If already processing a segment, finalize it by removing the trailing GVC key and reset the text accumulator.
                 tmp[segment_type] = text[:-4]
                 text = ''
             else:
                 text = ''
+            # Set the new segment type from the four characters preceding the '+'.
             segment_type = purpose[index - 4 : index]
         else:
             text += char
@@ -415,6 +451,7 @@ def transactions_to_transaction(
         Returns:
             The updated result dictionary.
         """
+        # Copy each specified key from the global transactions data to the transaction-specific dictionary.
         for key in keys:
             if key in transactions.data:
                 result[key] = transactions.data[key]
