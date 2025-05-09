@@ -110,7 +110,7 @@ class Tag:
         :return: A dictionary of matched group values.
         :raises RuntimeError: If parsing fails.
         """
-        match = self.re.match(value)
+        match = re.match(self.pattern, value, self.RE_FLAGS)
         if match:  # pragma: no branch
             self.logger.debug(
                 'matched (%d) %r against "%s", got: %s',
