@@ -2,24 +2,39 @@ version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /
-    target-branch: master
     labels:
       - "meta: CI"
     schedule:
       interval: monthly
+    # Limit number of open pull requests for security updates
+    open-pull-requests-limit: 10
+    # Customize commit messages
+    commit-message:
+      prefix: "ci"
+      prefix-development: "ci"
+      include: "scope"
     groups:
-      actions:
+      github-actions-updates:
         patterns:
           - "*"
 
   - package-ecosystem: pip
     directory: /
-    target-branch: master
     labels:
       - "meta: deps"
     schedule:
       interval: monthly
+    # Limit number of open pull requests for version updates
+    open-pull-requests-limit: 10
+    # Only update production dependencies in pyproject.toml
+    # Note: Dependabot will look for requirements files and pyproject.toml
+    versioning-strategy: increase
+    # Customize commit messages
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps"
+      include: "scope"
     groups:
-      actions:
+      python-dependencies:
         patterns:
           - "*"
