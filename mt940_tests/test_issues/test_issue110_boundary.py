@@ -41,3 +41,49 @@ def test_transaction_boundary_opt_in_via_transactions():
     )
     transactions.parse(DATA)
     assert len(transactions) == 2
+
+
+def test_transaction_boundary_accepts_a_bare_string():
+    # A single slug passed as a plain string must not be iterated per-char.
+    transactions = mt940.parse(
+        DATA, transaction_boundary='transaction_reference_number'
+    )
+    refs = [t.data.get('transaction_reference') for t in transactions]
+    assert refs == ['REF1', 'REF2']
+
+
+def test_reference_propagates_to_later_statements_in_block():
+    # A block with one :20: and several :61: tags: every transaction in the
+    # block must carry the block's reference (the global reference is kept in
+    # sync for the transactions_to_transaction post-processor).
+    data = """:20:REF1
+:61:2001010101C5,00NTRFa//b
+:86:116?00p1
+:61:2001020102C6,00NTRFc//d
+:86:116?00p2
+:20:REF2
+:61:2001030103C7,00NTRFe//f
+:62F:C200101EUR18,00
+"""
+    transactions = mt940.parse(
+        data, transaction_boundary={'transaction_reference_number'}
+    )
+    refs = [t.data.get('transaction_reference') for t in transactions]
+    assert refs == ['REF1', 'REF1', 'REF2']
+
+
+def test_transaction_scoped_boundary_tag():
+    # A boundary tag whose scope is Transaction (not Transactions) opens a new
+    # transaction without touching the global statement data.
+    data = """:20:REF
+:25:ACC
+:60F:C200101EUR0,00
+:61:2001010101C5,00NTRFa//b
+:86:116?00detail
+:62F:C200101EUR5,00
+"""
+    transactions = mt940.parse(
+        data, transaction_boundary={'transaction_details'}
+    )
+    # The :86: detail tag now opens its own transaction.
+    assert len(transactions) == 2

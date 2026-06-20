@@ -6,10 +6,11 @@ These tests drive the real segment pipeline (`_parse_segments` ->
 matches what banks actually send (segment keys are always two characters).
 """
 
-from mt940 import processors
+import mt940
 
 
 def _purpose(detail_str: str) -> list[str]:
+    processors = mt940.processors
     segments = processors._parse_segments(detail_str)
     return processors._process_segments(segments)[processors.DETAIL_KEYS['20']]
 
@@ -32,8 +33,6 @@ def test_value_not_ending_in_label_is_unchanged():
 
 
 def test_issue_109_end_to_end():
-    import mt940
-
     data = """:20:STARTUMS
 :25:GENODEF1XXX/1234567890
 :28C:0

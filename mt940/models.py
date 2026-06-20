@@ -388,6 +388,10 @@ class Transactions(Sequence[Transaction]):
         # `:61:` statement tag starts a transaction. Passing e.g.
         # ``{'transaction_reference_number'}`` makes each `:20:` start its own
         # transaction too. Empty (the default) preserves the legacy behaviour.
+        if isinstance(transaction_boundary, str):
+            # A bare string is almost certainly a single slug, not an iterable
+            # of single characters.
+            transaction_boundary = (transaction_boundary,)
         self.transaction_boundary: frozenset[str] = frozenset(
             transaction_boundary or ()
         )
@@ -497,6 +501,10 @@ class Transactions(Sequence[Transaction]):
         if tag.slug in self.transaction_boundary:
             # Opt-in (issue #110): this tag opens a new transaction block.
             self.transactions.append(Transaction(self, result))
+            if issubclass(tag.scope, Transactions):
+                # Keep statement-level data (e.g. the :20: reference) global
+                # too, so later :61: tags in the same block can copy it.
+                self.data.update(result)
         elif isinstance(tag, mt940.tags.Statement):
             self._process_statement_tag(result)
         elif issubclass(tag.scope, Transaction) and self.transactions:
