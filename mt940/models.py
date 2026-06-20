@@ -5,7 +5,13 @@ import decimal
 import re
 import typing
 import warnings
-from collections.abc import Callable, Mapping, MutableMapping, Sequence
+from collections.abc import (
+    Callable,
+    Iterable,
+    Mapping,
+    MutableMapping,
+    Sequence,
+)
 from typing import Any, ClassVar, overload
 
 import mt940
@@ -363,6 +369,7 @@ class Transactions(Sequence[Transaction]):
         self,
         processors: dict[str, list[Callable[..., Any]]] | None = None,
         tags: dict[int | str, mt940.tags.Tag] | None = None,
+        transaction_boundary: Iterable[str] | None = None,
     ) -> None:
         self.processors: dict[str, list[Callable[..., Any]]] = (
             self.DEFAULT_PROCESSORS.copy()
@@ -375,6 +382,15 @@ class Transactions(Sequence[Transaction]):
             self.processors.update(processors)
         if tags:
             self.tags.update(tags)
+
+        # Opt-in (issue #110): tag slugs that each open a new transaction.
+        # Banks differ in how they delimit transactions; by default only the
+        # `:61:` statement tag starts a transaction. Passing e.g.
+        # ``{'transaction_reference_number'}`` makes each `:20:` start its own
+        # transaction too. Empty (the default) preserves the legacy behaviour.
+        self.transaction_boundary: frozenset[str] = frozenset(
+            transaction_boundary or ()
+        )
 
         self.transactions: list[Transaction] = []
         self.data: dict[str, Any] = {}
@@ -478,7 +494,10 @@ class Transactions(Sequence[Transaction]):
         for processor in self.processors.get(f'post_{tag.slug}', []):
             result = processor(self, tag, tag_dict, result)
 
-        if isinstance(tag, mt940.tags.Statement):
+        if tag.slug in self.transaction_boundary:
+            # Opt-in (issue #110): this tag opens a new transaction block.
+            self.transactions.append(Transaction(self, result))
+        elif isinstance(tag, mt940.tags.Statement):
             self._process_statement_tag(result)
         elif issubclass(tag.scope, Transaction) and self.transactions:
             self._update_transaction(result)

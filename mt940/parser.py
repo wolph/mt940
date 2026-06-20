@@ -40,11 +40,19 @@ def parse(
     encoding: str | None = None,
     processors: dict[str, list[Any]] | None = None,
     tags: dict[Any, Any] | None = None,
+    transaction_boundary: Any = None,
 ) -> Transactions:
     """
     Parses mt940 data and returns transactions object
 
     :param src: file handler to read, filename to read or raw data as string
+    :param encoding: optional encoding override for byte input
+    :param processors: optional extra pre/post processors
+    :param tags: optional extra/override tag parsers
+    :param transaction_boundary: optional iterable of tag *slugs* that each
+        start a new transaction (issue #110). By default only ``:61:`` starts a
+        transaction; pass e.g. ``{'transaction_reference_number'}`` to also
+        start one on every ``:20:``. Omitting it keeps the legacy behaviour.
     :return: Collection of transactions
     :rtype: Transactions
     """
@@ -83,7 +91,9 @@ def parse(
             raise exception  # pragma: no cover
 
     assert isinstance(data, str)
-    transactions = mt940.models.Transactions(processors, tags)
+    transactions = mt940.models.Transactions(
+        processors, tags, transaction_boundary=transaction_boundary
+    )
     transactions.parse(data)
 
     return transactions

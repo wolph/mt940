@@ -95,6 +95,26 @@ trs.parse(ASNB_mt940_data())
 print(pprint.pformat(trs.data, sort_dicts=False))
 ```
 
+### Transaction grouping (opt-in)
+
+By default a new transaction is started only on the `:61:` statement tag.
+Some banks delimit transactions differently — for example by repeating the
+`:20:` transaction reference per block. Because changing the default grouping
+would break existing users, this behaviour is **opt-in**: pass
+`transaction_boundary` (an iterable of tag *slugs*) to start a new transaction
+on those tags too. Omitting it preserves the historical behaviour.
+
+```python
+import mt940
+
+# Each `:20:` (transaction_reference_number) starts its own transaction:
+transactions = mt940.parse(
+    data, transaction_boundary={'transaction_reference_number'}
+)
+```
+
+The same option is accepted by `mt940.models.Transactions(transaction_boundary=...)`.
+
 ## Contributing
 
 Help is greatly appreciated. Please clone the **develop** branch and run `tox`
