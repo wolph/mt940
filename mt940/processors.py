@@ -1,18 +1,21 @@
-from __future__ import annotations
 """
 Module Processors
 
-This module contains pre- and post-processors for modifying tag dictionaries in MT940 processing.
-It provides functions for currency addition, date fix-up, transaction code extraction,
-transaction details parsing, and segment joining for transaction details.
+This module contains pre- and post-processors for modifying tag
+dictionaries in MT940 processing. It provides functions for currency
+addition, date fix-up, transaction code extraction, transaction details
+parsing, and segment joining for transaction details.
 """
+
+from __future__ import annotations
 
 import calendar
 import collections
 import functools
 import re
 import typing
-from typing import TYPE_CHECKING, Any, Callable
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from . import models, tags
@@ -67,7 +70,8 @@ def date_fixup_pre_processor(
     Returns:
         The adjusted tag dictionary.
     """
-    # If the month is February, ensure that the day does not exceed the maximum valid day.
+    # If the month is February, ensure that the day does not exceed the
+    # maximum valid day.
     if tag_dict['month'] == '02':
         year = int(tag_dict['year'], 10)
         _, max_month_day = calendar.monthrange(year, 2)
@@ -115,8 +119,9 @@ def mBank_set_transaction_code(  # noqa: N802
     processing.
     """
     # Extract the transaction code from the tag value.
-    # Split the value at ';' and then by the first space to isolate the numeric transaction code,
-    # which is converted to an integer before being assigned.
+    # Split the value at ';' and then by the first space to isolate the
+    # numeric transaction code, which is converted to an integer before
+    # being assigned.
     tag_value = tag_dict[tag.slug]
     tag_dict['transaction_code'] = int(
         tag_value.split(';')[0].split(' ', 1)[0]
@@ -144,7 +149,8 @@ def mBank_set_iph_id(  # noqa: N802
     return tag_dict
 
 
-# Regular expression to extract the Transaction Number (TNR) from tag values, accounting for potential newline characters.
+# Regular expression to extract the Transaction Number (TNR) from tag
+# values, accounting for potential newline characters.
 tnr_re = re.compile(r'TNR:[ \n](?P<tnr>\d+\.\d+)', flags=re.MULTILINE)
 
 
@@ -209,8 +215,9 @@ def _parse_segments(detail_str: str) -> collections.OrderedDict[str, str]:
     """
     Parse segments from a detail string.
 
-    This function splits the provided detail string into segments using the '?' delimiter.
-    Each segment is associated with a two-character segment type that follows the '?' marker.
+    This function splits the provided detail string into segments using
+    the '?' delimiter. Each segment is associated with a two-character
+    segment type that follows the '?' marker.
 
     Args:
         detail_str: A string containing the transaction detail segments.
@@ -224,15 +231,18 @@ def _parse_segments(detail_str: str) -> collections.OrderedDict[str, str]:
 
     for index, char in enumerate(detail_str):
         if char != '?':
-            # Accumulate characters into the current segment until a '?' delimiter is encountered.
+            # Accumulate characters into the current segment until a '?'
+            # delimiter is encountered.
             segment += char
             continue
 
-        # If there aren't enough characters left to form a segment type, exit the loop.
+        # If there aren't enough characters left to form a segment type,
+        # exit the loop.
         if index + 2 >= len(detail_str):
             break
 
-        # Finalize the current segment. If a segment type exists, skip the first two header characters.
+        # Finalize the current segment. If a segment type exists, skip the
+        # first two header characters.
         tmp[segment_type] = segment if not segment_type else segment[2:]
         # Extract the new segment type from the following two characters.
         segment_type = detail_str[index + 1] + detail_str[index + 2]
@@ -258,7 +268,9 @@ def _process_segments(
     Returns:
         A dictionary mapping keys to lists of segment contents.
     """
-    result: collections.defaultdict[str, list[str]] = collections.defaultdict(list)
+    result: collections.defaultdict[str, list[str]] = collections.defaultdict(
+        list
+    )
     for key, value in tmp.items():
         if key in DETAIL_KEYS:
             result[DETAIL_KEYS[key]].append(value)
@@ -266,11 +278,12 @@ def _process_segments(
             key32 = DETAIL_KEYS['32']
             result[key32].append(value)
         elif key.startswith('2'):
-            # For segment keys beginning with '2', adjust specific segments by trimming trailing identifiers.
-            if key == "29" and value.endswith(" BIC"):
-                value = value[:-4].rstrip()
-            elif key == "28D" and value.endswith(" IBAN"):
-                value = value[:-5].rstrip()
+            # For segment keys beginning with '2', adjust specific
+            # segments by trimming trailing identifiers.
+            if key == '29' and value.endswith(' BIC'):
+                value = value.removesuffix(' BIC').rstrip()
+            elif key == '28D' and value.endswith(' IBAN'):
+                value = value.removesuffix(' IBAN').rstrip()
             key20 = DETAIL_KEYS['20']
             result[key20].append(value)
         elif key in {'60', '61', '62', '63', '64', '65'}:
@@ -332,24 +345,25 @@ def _parse_mt940_gvcodes(purpose: str) -> dict[str, str | None]:
     Returns:
         A dictionary of parsed GVC codes.
     """
-    result: dict[str, str | None] = {
-        value: None for value in GVC_KEYS.values()
-    }
+    result: dict[str, str | None] = dict.fromkeys(GVC_KEYS.values())
 
     tmp: dict[str, str] = {}
     segment_type: str | None = None
     text = ''
 
     for index, char in enumerate(purpose):
-        # Detect the beginning of a GVC segment: if a '+' is encountered and the four characters preceding it form a valid GVC key.
+        # Detect the beginning of a GVC segment: if a '+' is encountered
+        # and the four characters preceding it form a valid GVC key.
         if char == '+' and purpose[index - 4 : index] in GVC_KEYS:
             if segment_type:
-                # If already processing a segment, finalize it by removing the trailing GVC key and reset the text accumulator.
+                # If already processing a segment, finalize it by removing
+                # the trailing GVC key and reset the text accumulator.
                 tmp[segment_type] = text[:-4]
                 text = ''
             else:
                 text = ''
-            # Set the new segment type from the four characters preceding the '+'.
+            # Set the new segment type from the four characters preceding
+            # the '+'.
             segment_type = purpose[index - 4 : index]
         else:
             text += char
@@ -397,6 +411,11 @@ def transaction_details_post_processor(
 
         if purpose and any(gvk in purpose for gvk in GVC_KEYS if gvk != ''):
             result.update(_parse_mt940_gvcodes(result['purpose']))
+
+        # Clean up the purpose field
+        if result.get('purpose'):
+            # Remove trailing "BIC" without an actual BIC value
+            result['purpose'] = result['purpose'].removesuffix(' BIC')
 
         del result['transaction_details']
 
@@ -451,7 +470,8 @@ def transactions_to_transaction(
         Returns:
             The updated result dictionary.
         """
-        # Copy each specified key from the global transactions data to the transaction-specific dictionary.
+        # Copy each specified key from the global transactions data to the
+        # transaction-specific dictionary.
         for key in keys:
             if key in transactions.data:
                 result[key] = transactions.data[key]

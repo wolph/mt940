@@ -3,5 +3,5 @@ mt940.parser module
 
 .. automodule:: mt940.parser
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

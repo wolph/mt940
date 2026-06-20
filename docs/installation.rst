@@ -2,11 +2,12 @@
 Installation
 ============
 
-At the command line::
+Install the latest release from PyPI::
 
-    $ easy_install mt940
+    $ pip install mt-940
 
-Or, if you have virtualenvwrapper installed::
+To install the development version::
 
-    $ mkvirtualenv mt940
-    $ pip install mt940
+    $ git clone --branch develop https://github.com/WoLpH/mt940.git
+    $ cd mt940
+    $ uv sync

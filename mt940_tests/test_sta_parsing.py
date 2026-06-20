@@ -23,13 +23,15 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 
-def get_sta_files():
+def get_sta_files() -> list[str]:
     base_path = os.path.relpath(os.path.dirname(__file__))
+    sta_files: list[str] = []
     for path, _dirs, files in os.walk(base_path):
         for file in files:
             _, ext = os.path.splitext(file)
             if ext.lower() == '.sta':
-                yield os.path.join(path, file)
+                sta_files.append(os.path.join(path, file))
+    return sorted(sta_files)
 
 
 def get_yaml_data(sta_file):
@@ -179,7 +181,7 @@ def compare_iterables(
         raise AssertionError(
             f'Difference in length at {path}: {len(a)} != {len(b)}'
         )
-    for index, (av, bv) in enumerate(zip(a, b)):
+    for index, (av, bv) in enumerate(zip(a, b, strict=False)):
         compare(av, bv, [*keys, f'[{index}]'])
 
 
