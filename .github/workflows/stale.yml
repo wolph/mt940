@@ -9,7 +9,7 @@ jobs:
   stale:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/stale@v8
+      - uses: actions/stale@v10
         with:
           days-before-stale: 30
           exempt-issue-labels: in-progress,help-wanted,pinned,security,enhancement
