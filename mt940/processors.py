@@ -278,12 +278,16 @@ def _process_segments(
             key32 = DETAIL_KEYS['32']
             result[key32].append(value)
         elif key.startswith('2'):
-            # For segment keys beginning with '2', adjust specific
-            # segments by trimming trailing identifiers.
-            if key == '29' and value.endswith(' BIC'):
-                value = value.removesuffix(' BIC').rstrip()
-            elif key == '28D' and value.endswith(' IBAN'):
-                value = value.removesuffix(' IBAN').rstrip()
+            # Some banks append a bare ' BIC'/' IBAN' label with no value at
+            # the end of a detail segment (issue #109); strip the dangling
+            # label so it does not pollute the purpose. Segment keys are
+            # always two characters (see _parse_segments), so the historical
+            # '29'/'28D' key checks could never match the IBAN case -- the
+            # label is matched on the value instead.
+            for label in (' BIC', ' IBAN'):
+                if value.endswith(label):
+                    value = value.removesuffix(label).rstrip()
+                    break
             key20 = DETAIL_KEYS['20']
             result[key20].append(value)
         elif key in {'60', '61', '62', '63', '64', '65'}:
