@@ -421,7 +421,10 @@ class Statement(Tag):
     (?P<id>[A-Z][A-Z0-9 ]{3})?
     (?P<customer_reference>((?!//)[^\n]){0,16})
     (//(?P<bank_reference>.{0,23}))?
-    (\n?(?P<extra_details>.{0,34}))?
+    # Supplementary details: the SWIFT spec caps this at 34x, but some banks
+    # (e.g. Wise, issue #117) send more, so the length limit is relaxed. This
+    # only ever turns a previous parse error into a successful parse.
+    (\n?(?P<extra_details>.*))?
     $"""
 
     def __call__(
@@ -436,7 +439,7 @@ class Statement(Tag):
         entry_month = str(data.get('entry_month') or '')
 
         if entry_day.isdigit() and entry_month.isdigit():
-            entry_date = data['entry_date'] = models.Date(
+            entry_date = models.Date(
                 day=entry_day, month=entry_month, year=str(date.year)
             )
             if date > entry_date and (date - entry_date).days >= 330:
@@ -446,11 +449,18 @@ class Statement(Tag):
             else:
                 year = 0
 
-            data['guessed_entry_date'] = models.Date(
-                day=entry_date.day,
-                month=entry_date.month,
-                year=entry_date.year + year,
-            )
+            # Correct the entry date's year when the entry date crosses a
+            # year boundary relative to the value date (issue #121). Both
+            # `entry_date` and `guessed_entry_date` expose the resolved value;
+            # `guessed_entry_date` is kept as a backwards-compatible alias.
+            if year:
+                entry_date = models.Date(
+                    day=entry_date.day,
+                    month=entry_date.month,
+                    year=entry_date.year + year,
+                )
+            data['entry_date'] = entry_date
+            data['guessed_entry_date'] = entry_date
 
         return data
 
@@ -492,6 +502,41 @@ class StatementASNB(Statement):
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, object]:
         return super().__call__(transactions, value)
+
+
+class StatementGLS(Statement):
+    """Statement variant for GLS / Atruvia banks (issue #111).
+
+    These banks send a customer reference longer than the SWIFT 16x cap,
+    followed by the ``//`` bank-reference delimiter (e.g.
+    ``...DR20,NTRFBIPI-dvT1FzfMqvzF5HaU4oetlH7SGRkonU//2022070616391534000``).
+
+    This is an opt-in tag because relaxing the default customer-reference
+    length would change how banks that legitimately pack data after a 16x
+    reference (e.g. Rabobank) are parsed. Enable it explicitly::
+
+        import mt940
+
+        gls = mt940.tags.StatementGLS()
+        mt940.parse(data, tags={gls.id: gls})
+    """
+
+    pattern = r"""^
+    (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
+    (?P<month>\d{2})
+    (?P<day>\d{2})
+    (?P<entry_month>\d{2}|\s{2})?  # [4!n] Entry Date (MMDD)
+    (?P<entry_day>\d{2}|\s{2})?
+    (?P<status>R?[DC])  # 2a Debit/Credit Mark
+    (?P<funds_code>[A-Z])?
+    [\n ]?
+    (?P<amount>[\d,]{1,15})  # 15d Amount
+    (?P<id>[A-Z][A-Z0-9 ]{3})?
+    # Customer reference of any length, up to the // bank reference.
+    (?P<customer_reference>(?:(?!//)[^\n])*)
+    (//(?P<bank_reference>.{0,23}))?
+    (\n?(?P<extra_details>.*))?
+    $"""
 
 
 class ClosingBalance(BalanceBase):

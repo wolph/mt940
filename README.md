@@ -95,6 +95,43 @@ trs.parse(ASNB_mt940_data())
 print(pprint.pformat(trs.data, sort_dicts=False))
 ```
 
+### Transaction grouping (opt-in)
+
+By default a new transaction is started only on the `:61:` statement tag.
+Some banks delimit transactions differently — for example by repeating the
+`:20:` transaction reference per block. Because changing the default grouping
+would break existing users, this behaviour is **opt-in**: pass
+`transaction_boundary` (an iterable of tag *slugs*) to start a new transaction
+on those tags too. Omitting it preserves the historical behaviour.
+
+```python
+import mt940
+
+# Each `:20:` (transaction_reference_number) starts its own transaction:
+transactions = mt940.parse(
+    data, transaction_boundary={'transaction_reference_number'}
+)
+```
+
+The same option is accepted by `mt940.models.Transactions(transaction_boundary=...)`.
+
+### Banks with longer reference fields (opt-in)
+
+Some banks (e.g. GLS / Atruvia) put a customer reference longer than the SWIFT
+16-character cap on the `:61:` line, followed by the `//` bank reference.
+Relaxing the default would change how other banks (e.g. Rabobank) split
+same-line data, so this is handled by an **opt-in** `StatementGLS` tag:
+
+```python
+import mt940
+
+gls = mt940.tags.StatementGLS()
+transactions = mt940.parse(data, tags={gls.id: gls})
+```
+
+(Longer *supplementary details* — issue #117, e.g. Wise — are handled by the
+default parser and need no opt-in.)
+
 ## Contributing
 
 Help is greatly appreciated. Please clone the **develop** branch and run `tox`

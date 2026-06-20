@@ -5,7 +5,13 @@ import decimal
 import re
 import typing
 import warnings
-from collections.abc import Callable, Mapping, MutableMapping, Sequence
+from collections.abc import (
+    Callable,
+    Iterable,
+    Mapping,
+    MutableMapping,
+    Sequence,
+)
 from typing import Any, ClassVar, overload
 
 import mt940
@@ -363,6 +369,7 @@ class Transactions(Sequence[Transaction]):
         self,
         processors: dict[str, list[Callable[..., Any]]] | None = None,
         tags: dict[int | str, mt940.tags.Tag] | None = None,
+        transaction_boundary: Iterable[str] | None = None,
     ) -> None:
         self.processors: dict[str, list[Callable[..., Any]]] = (
             self.DEFAULT_PROCESSORS.copy()
@@ -375,6 +382,19 @@ class Transactions(Sequence[Transaction]):
             self.processors.update(processors)
         if tags:
             self.tags.update(tags)
+
+        # Opt-in (issue #110): tag slugs that each open a new transaction.
+        # Banks differ in how they delimit transactions; by default only the
+        # `:61:` statement tag starts a transaction. Passing e.g.
+        # ``{'transaction_reference_number'}`` makes each `:20:` start its own
+        # transaction too. Empty (the default) preserves the legacy behaviour.
+        if isinstance(transaction_boundary, str):
+            # A bare string is almost certainly a single slug, not an iterable
+            # of single characters.
+            transaction_boundary = (transaction_boundary,)
+        self.transaction_boundary: frozenset[str] = frozenset(
+            transaction_boundary or ()
+        )
 
         self.transactions: list[Transaction] = []
         self.data: dict[str, Any] = {}
@@ -479,7 +499,16 @@ class Transactions(Sequence[Transaction]):
             result = processor(self, tag, tag_dict, result)
 
         if isinstance(tag, mt940.tags.Statement):
+            # Statement (:61:) handling always takes precedence so it cannot
+            # be bypassed by listing its slug in transaction_boundary.
             self._process_statement_tag(result)
+        elif tag.slug in self.transaction_boundary:
+            # Opt-in (issue #110): this tag opens a new transaction block.
+            self.transactions.append(Transaction(self, result))
+            if issubclass(tag.scope, Transactions):
+                # Keep statement-level data (e.g. the :20: reference) global
+                # too, so later :61: tags in the same block can copy it.
+                self.data.update(result)
         elif issubclass(tag.scope, Transaction) and self.transactions:
             self._update_transaction(result)
         elif issubclass(  # pragma: no branch
