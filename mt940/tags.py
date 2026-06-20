@@ -419,9 +419,16 @@ class Statement(Tag):
     [\n ]?
     (?P<amount>[\d,]{1,15})  # 15d Amount
     (?P<id>[A-Z][A-Z0-9 ]{3})?
-    (?P<customer_reference>((?!//)[^\n]){0,16})
+    # Customer reference: the SWIFT spec caps this at 16x. Several banks
+    # (e.g. GLS / Atruvia, issue #111) send longer references followed by the
+    # // bank-reference delimiter, so when a // is present we capture up to it;
+    # otherwise we keep the 16x cap so banks that pack extra data on the same
+    # line (e.g. Rabobank) keep splitting it into extra_details as before.
+    (?P<customer_reference>(?:(?!//)[^\n])*(?=//)|(?:(?!//)[^\n]){0,16})
     (//(?P<bank_reference>.{0,23}))?
-    (\n?(?P<extra_details>.{0,34}))?
+    # Supplementary details: spec caps this at 34x, but some banks (e.g. Wise,
+    # issue #117) send longer, so the length limit is relaxed.
+    (\n?(?P<extra_details>.*))?
     $"""
 
     def __call__(
@@ -436,7 +443,7 @@ class Statement(Tag):
         entry_month = str(data.get('entry_month') or '')
 
         if entry_day.isdigit() and entry_month.isdigit():
-            entry_date = data['entry_date'] = models.Date(
+            entry_date = models.Date(
                 day=entry_day, month=entry_month, year=str(date.year)
             )
             if date > entry_date and (date - entry_date).days >= 330:
@@ -446,11 +453,18 @@ class Statement(Tag):
             else:
                 year = 0
 
-            data['guessed_entry_date'] = models.Date(
-                day=entry_date.day,
-                month=entry_date.month,
-                year=entry_date.year + year,
-            )
+            # Correct the entry date's year when the entry date crosses a
+            # year boundary relative to the value date (issue #121). Both
+            # `entry_date` and `guessed_entry_date` expose the resolved value;
+            # `guessed_entry_date` is kept as a backwards-compatible alias.
+            if year:
+                entry_date = models.Date(
+                    day=entry_date.day,
+                    month=entry_date.month,
+                    year=entry_date.year + year,
+                )
+            data['entry_date'] = entry_date
+            data['guessed_entry_date'] = entry_date
 
         return data
 
