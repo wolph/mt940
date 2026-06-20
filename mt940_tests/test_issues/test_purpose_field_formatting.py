@@ -27,7 +27,7 @@ class TestPurposeFieldFormatting(unittest.TestCase):
         self.assertFalse(purpose.endswith(' BIC'))
 
         # Check that the purpose field contains the IBAN
-        self.assertTrue('DE69280123450012345670' in purpose)
+        self.assertIn('DE69280123450012345670', purpose)
 
 
 if __name__ == '__main__':

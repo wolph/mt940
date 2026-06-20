@@ -281,9 +281,9 @@ def _process_segments(
             # For segment keys beginning with '2', adjust specific
             # segments by trimming trailing identifiers.
             if key == '29' and value.endswith(' BIC'):
-                value = value[:-4].rstrip()
+                value = value.removesuffix(' BIC').rstrip()
             elif key == '28D' and value.endswith(' IBAN'):
-                value = value[:-5].rstrip()
+                value = value.removesuffix(' IBAN').rstrip()
             key20 = DETAIL_KEYS['20']
             result[key20].append(value)
         elif key in {'60', '61', '62', '63', '64', '65'}:
@@ -415,7 +415,7 @@ def transaction_details_post_processor(
         # Clean up the purpose field
         if result.get('purpose'):
             # Remove trailing "BIC" without an actual BIC value
-            result['purpose'] = re.sub(r' BIC$', '', result['purpose'])
+            result['purpose'] = result['purpose'].removesuffix(' BIC')
 
         del result['transaction_details']
 
