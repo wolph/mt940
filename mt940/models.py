@@ -498,15 +498,17 @@ class Transactions(Sequence[Transaction]):
         for processor in self.processors.get(f'post_{tag.slug}', []):
             result = processor(self, tag, tag_dict, result)
 
-        if tag.slug in self.transaction_boundary:
+        if isinstance(tag, mt940.tags.Statement):
+            # Statement (:61:) handling always takes precedence so it cannot
+            # be bypassed by listing its slug in transaction_boundary.
+            self._process_statement_tag(result)
+        elif tag.slug in self.transaction_boundary:
             # Opt-in (issue #110): this tag opens a new transaction block.
             self.transactions.append(Transaction(self, result))
             if issubclass(tag.scope, Transactions):
                 # Keep statement-level data (e.g. the :20: reference) global
                 # too, so later :61: tags in the same block can copy it.
                 self.data.update(result)
-        elif isinstance(tag, mt940.tags.Statement):
-            self._process_statement_tag(result)
         elif issubclass(tag.scope, Transaction) and self.transactions:
             self._update_transaction(result)
         elif issubclass(  # pragma: no branch

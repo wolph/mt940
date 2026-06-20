@@ -9,7 +9,9 @@ import mt940
 
 def test_issue_111_long_customer_reference():
     # GLS / Atruvia sends a 35-char customer reference followed by the //
-    # bank-reference delimiter; the old 16-char cap raised a RuntimeError.
+    # bank-reference delimiter. This is handled by the opt-in StatementGLS tag
+    # (relaxing the default would change Rabobank-style same-line parsing).
+    gls = mt940.tags.StatementGLS()
     data = """:20:STARTUMS
 :25:GENODEF1XXX/1234567890
 :28C:0
@@ -18,13 +20,31 @@ def test_issue_111_long_customer_reference():
 :86:116?00Ueberweisung
 :62F:C220706EUR80,00
 """
-    transaction = mt940.parse(data)[0]
+    transaction = mt940.parse(data, tags={gls.id: gls})[0]
     assert (
         transaction.data['customer_reference']
         == 'BIPI-dvT1FzfMqvzF5HaU4oetlH7SGRkonU'
     )
     assert transaction.data['bank_reference'] == '2022070616391534000'
     assert str(transaction.data['amount']) == '-20 EUR'
+
+
+def test_same_line_details_with_double_slash_preserved():
+    # A // inside same-line details (e.g. a URL) must NOT be treated as the
+    # bank-reference delimiter by the default Statement tag (backwards-compat
+    # guard: the GLS support is opt-in for exactly this reason).
+    data = """:20:STARTUMS
+:25:NL12RABO0123456789
+:28C:0
+:60F:C220706EUR100,00
+:61:2207060706C10,00N654NONREF          HTTP://SHOP EXAMPLE
+:86:116?00Payment
+:62F:C220706EUR110,00
+"""
+    transaction = mt940.parse(data)[0]
+    assert transaction.data['customer_reference'] == 'NONREF          '
+    assert transaction.data['extra_details'] == 'HTTP://SHOP EXAMPLE'
+    assert transaction.data.get('bank_reference') is None
 
 
 def test_issue_117_long_extra_details():

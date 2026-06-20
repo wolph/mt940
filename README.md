@@ -115,6 +115,23 @@ transactions = mt940.parse(
 
 The same option is accepted by `mt940.models.Transactions(transaction_boundary=...)`.
 
+### Banks with longer reference fields (opt-in)
+
+Some banks (e.g. GLS / Atruvia) put a customer reference longer than the SWIFT
+16-character cap on the `:61:` line, followed by the `//` bank reference.
+Relaxing the default would change how other banks (e.g. Rabobank) split
+same-line data, so this is handled by an **opt-in** `StatementGLS` tag:
+
+```python
+import mt940
+
+gls = mt940.tags.StatementGLS()
+transactions = mt940.parse(data, tags={gls.id: gls})
+```
+
+(Longer *supplementary details* — issue #117, e.g. Wise — are handled by the
+default parser and need no opt-in.)
+
 ## Contributing
 
 Help is greatly appreciated. Please clone the **develop** branch and run `tox`

@@ -419,15 +419,11 @@ class Statement(Tag):
     [\n ]?
     (?P<amount>[\d,]{1,15})  # 15d Amount
     (?P<id>[A-Z][A-Z0-9 ]{3})?
-    # Customer reference: the SWIFT spec caps this at 16x. Several banks
-    # (e.g. GLS / Atruvia, issue #111) send longer references followed by the
-    # // bank-reference delimiter, so when a // is present we capture up to it;
-    # otherwise we keep the 16x cap so banks that pack extra data on the same
-    # line (e.g. Rabobank) keep splitting it into extra_details as before.
-    (?P<customer_reference>(?:(?!//)[^\n])*(?=//)|(?:(?!//)[^\n]){0,16})
+    (?P<customer_reference>((?!//)[^\n]){0,16})
     (//(?P<bank_reference>.{0,23}))?
-    # Supplementary details: spec caps this at 34x, but some banks (e.g. Wise,
-    # issue #117) send longer, so the length limit is relaxed.
+    # Supplementary details: the SWIFT spec caps this at 34x, but some banks
+    # (e.g. Wise, issue #117) send more, so the length limit is relaxed. This
+    # only ever turns a previous parse error into a successful parse.
     (\n?(?P<extra_details>.*))?
     $"""
 
@@ -506,6 +502,41 @@ class StatementASNB(Statement):
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, object]:
         return super().__call__(transactions, value)
+
+
+class StatementGLS(Statement):
+    """Statement variant for GLS / Atruvia banks (issue #111).
+
+    These banks send a customer reference longer than the SWIFT 16x cap,
+    followed by the ``//`` bank-reference delimiter (e.g.
+    ``...DR20,NTRFBIPI-dvT1FzfMqvzF5HaU4oetlH7SGRkonU//2022070616391534000``).
+
+    This is an opt-in tag because relaxing the default customer-reference
+    length would change how banks that legitimately pack data after a 16x
+    reference (e.g. Rabobank) are parsed. Enable it explicitly::
+
+        import mt940
+
+        gls = mt940.tags.StatementGLS()
+        mt940.parse(data, tags={gls.id: gls})
+    """
+
+    pattern = r"""^
+    (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
+    (?P<month>\d{2})
+    (?P<day>\d{2})
+    (?P<entry_month>\d{2}|\s{2})?  # [4!n] Entry Date (MMDD)
+    (?P<entry_day>\d{2}|\s{2})?
+    (?P<status>R?[DC])  # 2a Debit/Credit Mark
+    (?P<funds_code>[A-Z])?
+    [\n ]?
+    (?P<amount>[\d,]{1,15})  # 15d Amount
+    (?P<id>[A-Z][A-Z0-9 ]{3})?
+    # Customer reference of any length, up to the // bank reference.
+    (?P<customer_reference>(?:(?!//)[^\n])*)
+    (//(?P<bank_reference>.{0,23}))?
+    (\n?(?P<extra_details>.*))?
+    $"""
 
 
 class ClosingBalance(BalanceBase):
