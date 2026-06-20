@@ -5,8 +5,8 @@ import decimal
 import re
 import typing
 import warnings
-from collections.abc import Mapping, MutableMapping, Sequence
-from typing import Any, Callable, ClassVar, overload
+from collections.abc import Callable, Mapping, MutableMapping, Sequence
+from typing import Any, ClassVar, overload
 
 import mt940
 

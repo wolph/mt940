@@ -1,5 +1,4 @@
 # !/usr/bin/env python
-# -*- coding: utf-8 -*-
 #
 # complexity documentation build configuration file, created by
 # sphinx-quickstart on Tue Jul  9 22:26:36 2013.
@@ -127,7 +126,7 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-# html_theme = 'alabaster'
+html_theme = 'furo'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -296,8 +295,7 @@ texinfo_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    'python': ('http://docs.python.org/', None),
-    'pip': ('http://sphinx.readthedocs.org/en/master/', None),
+    'python': ('https://docs.python.org/3/', None),
 }
 
 # section names - optional

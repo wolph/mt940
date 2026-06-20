@@ -3,5 +3,5 @@ mt940.tags module
 
 .. automodule:: mt940.tags
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

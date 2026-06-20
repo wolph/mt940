@@ -93,6 +93,7 @@ class Tag:
     RE_FLAGS = re.IGNORECASE | re.VERBOSE | re.UNICODE
     scope: type[models.Transactions | models.Transaction] = models.Transactions
     pattern: str
+    name: str
     slug: str
     logger: logging.Logger
 

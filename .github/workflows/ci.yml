@@ -1,0 +1,96 @@
+name: CI
+
+on:
+  push:
+    branches: [develop, master]
+  pull_request:
+  workflow_dispatch:
+  # Lets publish.yml run the full test suite as a release gate.
+  workflow_call:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.10', '3.11', '3.12', '3.13']
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
+        with:
+          activate-environment: true
+          python-version: ${{ matrix.python-version }}
+      - name: Install tox
+        run: uv pip install '.[tox]'
+      - name: Run tests
+        run: tox -e py$(echo "${{ matrix.python-version }}" | tr -d .)
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.python-version }}
+          path: .tox/.coverage.*
+          include-hidden-files: true
+
+  coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [test]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
+        with:
+          activate-environment: true
+      - name: Install tox
+        run: uv pip install '.[tox]'
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: coverage-*
+          path: .tox
+          merge-multiple: true
+      - name: Combine coverage and enforce threshold
+        run: tox -e coverage
+
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
+        with:
+          activate-environment: true
+      - name: Install tox
+        run: uv pip install '.[tox]'
+      - name: Lint
+        run: tox -e lint
+
+  type-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
+        with:
+          activate-environment: true
+      - name: Install tox
+        run: uv pip install '.[tox]'
+      - name: Type-check
+        run: tox -e pyright,mypy,pyrefly
+
+  docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
+        with:
+          activate-environment: true
+      - name: Install tox
+        run: uv pip install '.[tox]'
+      - name: Build docs
+        run: tox -e docs
