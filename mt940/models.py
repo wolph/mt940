@@ -1,3 +1,12 @@
+"""Data models returned by the MT940 parser.
+
+The parser produces a :class:`Transactions` collection (statement-level data
+plus a sequence of :class:`Transaction` objects). The remaining classes are the
+value types stored on them: :class:`Amount`, :class:`Balance`, :class:`Date`,
+:class:`DateTime` and :class:`FixedOffset`. They accept the string fields
+found in raw MT940 data and coerce them to native Python types.
+"""
+
 from __future__ import annotations
 
 import datetime
@@ -19,6 +28,8 @@ from ._types import Processors
 
 
 class Model:
+    """Base class for MT940 models, providing a uniform ``repr``."""
+
     def __repr__(self) -> str:
         return f'<{self.__class__.__name__}>'
 
@@ -44,12 +55,15 @@ class FixedOffset(datetime.tzinfo):
         self._offset = datetime.timedelta(minutes=offset)
 
     def utcoffset(self, dt: datetime.datetime | None) -> datetime.timedelta:
+        """Return the fixed offset east of UTC."""
         return self._offset
 
     def dst(self, dt: datetime.datetime | None) -> datetime.timedelta:
+        """Return a zero DST adjustment (fixed offsets have no DST)."""
         return datetime.timedelta(0)
 
     def tzname(self, dt: datetime.datetime | None) -> str:
+        """Return the offset's name."""
         return self._name
 
 
@@ -107,6 +121,13 @@ class DateTime(datetime.datetime, Model):
     """
 
     def __new__(cls, *args: Any, **kwargs: Any) -> DateTime:
+        """Build a ``DateTime`` from string or positional date components.
+
+        When keyword arguments are given the individual fields are coerced from
+        strings, two-digit years are shifted into the 2000s, and ``offset`` (in
+        minutes) is converted to a :class:`FixedOffset`. Positional arguments
+        fall through to :class:`datetime.datetime`.
+        """
         if kwargs:
             tzinfo = None
             if 'tzinfo' in kwargs:
@@ -156,6 +177,12 @@ class Date(datetime.date, Model):
     """
 
     def __new__(cls, *args: Any, **kwargs: Any) -> Date:
+        """Build a ``Date`` from string or positional date components.
+
+        Keyword arguments are coerced through :class:`DateTime` (so two-digit
+        years are normalised); positional arguments fall through to
+        :class:`datetime.date`.
+        """
         if kwargs:
             dt = DateTime(*args, **kwargs).date()
             return datetime.date.__new__(cls, dt.year, dt.month, dt.day)
@@ -184,6 +211,12 @@ class Amount(Model):
         currency: str | None = None,
         **kwargs: Any,
     ) -> None:
+        """Coerce ``amount`` to a signed :class:`decimal.Decimal`.
+
+        ``status`` is ``'C'`` for credit (positive) or ``'D'`` for debit, in
+        which case the amount is negated. Extra keyword arguments are ignored
+        so a parsed tag dictionary can be splatted in directly.
+        """
         self.amount = decimal.Decimal(amount.replace(',', '.'))
         self.currency = currency
 
@@ -207,12 +240,19 @@ class Amount(Model):
 
 
 class SumAmount(Amount):
+    """An :class:`Amount` that also tracks how many entries it sums.
+
+    Used for the ``:90D:``/``:90C:`` tags, which report the total amount *and*
+    the ``number`` of debit/credit entries that make it up.
+    """
+
     def __init__(
         self,
         *args: Any,
         number: int,
         **kwargs: Any,
     ) -> None:
+        """Store the entry ``number`` alongside the summed amount."""
         super().__init__(*args, **kwargs)
         self.number = number
 
@@ -273,11 +313,24 @@ class Balance(Model):
 
 
 class Transaction(Model):
+    """A single statement transaction and its parsed fields.
+
+    Holds a back-reference to its owning :class:`Transactions` collection and a
+    ``data`` dictionary with the parsed tag fields (amount, dates, references,
+    purpose, ...). Field availability depends on the source bank and tags.
+    """
+
     def __init__(
         self,
         transactions: Transactions,
         data: dict[str, Any] | None = None,
     ) -> None:
+        """Create a transaction owned by ``transactions``.
+
+        Args:
+            transactions: The collection this transaction belongs to.
+            data: Optional initial field data to populate.
+        """
         self.transactions = transactions
         self.data: dict[str, Any] = {}
         self.update(data)
@@ -356,6 +409,7 @@ class Transactions(Sequence[Transaction]):
     )
 
     def __getstate__(self) -> dict[str, Any]:
+        """Return picklable state, dropping the (unpicklable) processors."""
         # Processors are not always safe to dump so ignore them entirely
         state = self.__dict__.copy()
         del state['processors']
@@ -367,6 +421,17 @@ class Transactions(Sequence[Transaction]):
         tags: dict[int | str, mt940.tags.Tag] | None = None,
         transaction_boundary: Iterable[str] | None = None,
     ) -> None:
+        """Create an empty collection, optionally customizing parsing.
+
+        Args:
+            processors: Extra pre/post processors merged over
+                :attr:`DEFAULT_PROCESSORS`.
+            tags: Extra or overriding tag parsers merged over the defaults.
+            transaction_boundary: Tag *slugs* that each open a new transaction
+                (issue #110). By default only ``:61:`` starts one; a bare
+                string is treated as a single slug. Omit to keep the legacy
+                behaviour.
+        """
         self.processors: Processors = self.DEFAULT_PROCESSORS.copy()
         self.tags: MutableMapping[int | str, mt940.tags.Tag] = dict(
             self.default_tags()
@@ -395,6 +460,11 @@ class Transactions(Sequence[Transaction]):
 
     @property
     def currency(self) -> str | None:
+        """The statement currency, derived from the first available balance.
+
+        Returns ``None`` when no balance or floor-limit carrying a currency has
+        been parsed yet.
+        """
         balance = utils.coalesce(
             self.data.get('final_opening_balance'),
             self.data.get('opening_balance'),
@@ -417,6 +487,7 @@ class Transactions(Sequence[Transaction]):
 
     @classmethod
     def defaultTags(cls) -> Mapping[int | str, mt940.tags.Tag]:  # noqa: N802 # pragma: no cover
+        """Deprecated alias for :meth:`default_tags`."""
         warnings.warn(
             'defaultTags is deprecated, use default_tags instead',
             DeprecationWarning,
@@ -426,6 +497,7 @@ class Transactions(Sequence[Transaction]):
 
     @staticmethod
     def default_tags() -> Mapping[int | str, mt940.tags.Tag]:
+        """Return the built-in tag parsers keyed by tag id."""
         return mt940.tags.TAG_BY_ID
 
     def parse(self, data: str) -> list[Transaction]:
@@ -464,6 +536,14 @@ class Transactions(Sequence[Transaction]):
         valid_matches: list[re.Match[str]],
         data: str,
     ) -> None:
+        """Parse one matched tag and route its result to the right place.
+
+        Runs the tag's pre-processors, builds the model object, runs the
+        post-processors, then files the result as either statement-level data,
+        a new transaction (``:61:`` or a configured boundary tag), or an update
+        to the current transaction, based on the tag's
+        :attr:`~mt940.tags.Tag.scope`.
+        """
         tag_id = self.normalize_tag_id(match.group('tag'))
 
         # get tag instance corresponding to tag id
@@ -511,6 +591,11 @@ class Transactions(Sequence[Transaction]):
             self.data.update(result)
 
     def _process_statement_tag(self, result: dict[str, Any]) -> None:
+        """File a ``:61:`` statement result into the current/new transaction.
+
+        Reuses the trailing placeholder transaction if it has no ``id`` yet,
+        otherwise starts a new :class:`Transaction`.
+        """
         if not self.transactions:
             transaction = Transaction(self)
             self.transactions.append(transaction)
@@ -523,6 +608,11 @@ class Transactions(Sequence[Transaction]):
             transaction.data.update(result)
 
     def _update_transaction(self, result: dict[str, Any]) -> None:
+        """Merge a transaction-scoped result into the current transaction.
+
+        New keys are set directly; string values for keys that already exist
+        are appended on a new line (e.g. multi-line ``:86:`` details).
+        """
         transaction = self.transactions[-1]
         for k, v in result.items():
             if k in transaction.data and hasattr(v, 'strip'):

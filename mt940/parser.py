@@ -85,19 +85,21 @@ def parse(
     tags: dict[int | str, mt940.tags.Tag] | None = None,
     transaction_boundary: Iterable[str] | None = None,
 ) -> Transactions:
-    """
-    Parses mt940 data and returns transactions object
+    """Parse MT940 data into a single :class:`~mt940.models.Transactions`.
 
-    :param src: file handler to read, filename to read or raw data as string
-    :param encoding: optional encoding override for byte input
-    :param processors: optional extra pre/post processors
-    :param tags: optional extra/override tag parsers
-    :param transaction_boundary: optional iterable of tag *slugs* that each
-        start a new transaction (issue #110). By default only ``:61:`` starts a
-        transaction; pass e.g. ``{'transaction_reference_number'}`` to also
-        start one on every ``:20:``. Omitting it keeps the legacy behaviour.
-    :return: Collection of transactions
-    :rtype: Transactions
+    Args:
+        src: A file handle, a filename to read, or the raw data as
+            ``str``/``bytes``.
+        encoding: Optional encoding override for byte input.
+        processors: Optional extra pre/post processors.
+        tags: Optional extra or overriding tag parsers.
+        transaction_boundary: Optional iterable of tag *slugs* that each start
+            a new transaction (issue #110). By default only ``:61:`` starts a
+            transaction; pass e.g. ``{'transaction_reference_number'}`` to also
+            start one on every ``:20:``. Omit it to keep the legacy behaviour.
+
+    Returns:
+        The parsed collection of transactions.
     """
     data = _read(src, encoding)
     transactions = mt940.models.Transactions(
@@ -133,13 +135,16 @@ def parse_statements(
     which instead treats ``:20:`` as an *intra*-statement transaction boundary;
     the two target different, non-standard bank formats -- don't combine them.
 
-    :param src: file handler to read, filename to read or raw data as string
-    :param encoding: optional encoding override for byte input
-    :param processors: optional extra pre/post processors (applied per block)
-    :param tags: optional extra/override tag parsers (applied per block)
-    :param transaction_boundary: see :func:`parse` (see the note above)
-    :return: one Transactions per statement block
-    :rtype: list[Transactions]
+    Args:
+        src: A file handle, a filename to read, or the raw data as
+            ``str``/``bytes``.
+        encoding: Optional encoding override for byte input.
+        processors: Optional extra pre/post processors (applied per block).
+        tags: Optional extra or overriding tag parsers (applied per block).
+        transaction_boundary: See :func:`parse` (and the note above).
+
+    Returns:
+        One :class:`~mt940.models.Transactions` per statement block.
     """
     data = _read(src, encoding)
     statements: list[Transactions] = []

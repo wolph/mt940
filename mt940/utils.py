@@ -1,3 +1,10 @@
+"""Small, dependency-free helpers shared across the package.
+
+Contains :func:`coalesce` (first non-``None`` value) and :func:`join_lines`
+(whitespace-aware line joining) together with the :class:`Strip` flag enum that
+configures the latter.
+"""
+
 from __future__ import annotations
 
 import enum

@@ -1,3 +1,11 @@
+"""Shared type aliases and processor protocols.
+
+These are the precise types used across the public API. They live in their own
+module to avoid import cycles: the protocols reference
+:class:`~mt940.models.Transactions` and :class:`~mt940.tags.Tag` only under
+``TYPE_CHECKING``, so this module imports nothing from the package at runtime.
+"""
+
 from __future__ import annotations
 
 import os
