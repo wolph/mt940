@@ -106,10 +106,15 @@ class Tag:
         """
         Parses the given value using the Tag's pattern.
 
-        :param transactions: The transactions model instance.
-        :param value: The string value to parse.
-        :return: A dictionary of matched group values.
-        :raises RuntimeError: If parsing fails.
+        Args:
+            transactions: The transactions model instance.
+            value: The string value to parse.
+
+        Returns:
+            A dictionary of matched group values.
+
+        Raises:
+            RuntimeError: If the value does not match the tag's pattern.
         """
         match = self.re.match(value)
         if match:  # pragma: no branch
@@ -160,15 +165,23 @@ class Tag:
         """
         Processes the tag value and returns parsed content.
 
-        :param transactions: The transactions model instance.
-        :param value: The string value to process.
-        :return: The processed value, which can be a string or dict.
+        The base implementation returns ``value`` unchanged; subclasses
+        override it to build model objects (amounts, balances, dates, ...).
+
+        Args:
+            transactions: The transactions model instance.
+            value: The parsed group dictionary to process.
+
+        Returns:
+            The processed mapping.
         """
         return value
 
     def __new__(cls, *args: typing.Any, **kwargs: typing.Any) -> Tag:
-        """
-        Creates a new Tag instance and sets up logging details.
+        """Create a Tag instance, deriving its ``name``, ``slug`` and logger.
+
+        The ``slug`` is the snake_case form of the class name and is used to
+        look up matching pre/post processors.
         """
         cls.name = cls.__name__
         words = re.findall('([A-Z][a-z]+)', cls.__name__)
@@ -177,10 +190,10 @@ class Tag:
         return object.__new__(cls)
 
     def __hash__(self) -> int:
-        """
-        Returns a hash based on the tag's ID.
+        """Return a hash based on the tag's ``id``.
 
-        :return: The integer hash of the tag.
+        Returns:
+            The integer hash of the tag.
         """
         return hash(self.id) if isinstance(self.id, str) else self.id
 
@@ -361,14 +374,20 @@ class BalanceBase(Tag):
 
 
 class OpeningBalance(BalanceBase):
+    """Opening balance (``:60:``)."""
+
     id = 60
 
 
 class FinalOpeningBalance(BalanceBase):
+    """Final opening balance (``:60F:``)."""
+
     id = '60F'
 
 
 class IntermediateOpeningBalance(BalanceBase):
+    """Intermediate opening balance (``:60M:``)."""
+
     id = '60M'
 
 
@@ -540,22 +559,32 @@ class StatementGLS(Statement):
 
 
 class ClosingBalance(BalanceBase):
+    """Closing balance (``:62:``)."""
+
     id: str | int = 62
 
 
 class IntermediateClosingBalance(ClosingBalance):
+    """Intermediate closing balance (``:62M:``)."""
+
     id = '62M'
 
 
 class FinalClosingBalance(ClosingBalance):
+    """Final closing balance (``:62F:``)."""
+
     id = '62F'
 
 
 class AvailableBalance(BalanceBase):
+    """Available balance (``:64:``)."""
+
     id = 64
 
 
 class ForwardAvailableBalance(BalanceBase):
+    """Forward available balance (``:65:``)."""
+
     id = 65
 
 
@@ -592,17 +621,23 @@ class SumEntries(Tag):
 
 
 class SumDebitEntries(SumEntries):
+    """Number and sum of debit entries (``:90D:``)."""
+
     status = 'D'
     id = '90D'
 
 
 class SumCreditEntries(SumEntries):
+    """Number and sum of credit entries (``:90C:``)."""
+
     status = 'C'
     id = '90C'
 
 
 @enum.unique
 class Tags(enum.Enum):
+    """Registry of the built-in tag parsers, one instance per member."""
+
     DATE_TIME_INDICATION = DateTimeIndication()
     TRANSACTION_REFERENCE_NUMBER = TransactionReferenceNumber()
     RELATED_REFERENCE = RelatedReference()
@@ -625,4 +660,5 @@ class Tags(enum.Enum):
     SUM_CREDIT_ENTRIES = SumCreditEntries()
 
 
+#: Mapping of tag id (``int`` or ``str``) to the tag instance that parses it.
 TAG_BY_ID = {t.value.id: t.value for t in Tags}

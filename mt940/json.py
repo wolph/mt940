@@ -1,3 +1,17 @@
+"""JSON serialization for MT940 models.
+
+This module exposes :class:`JSONEncoder`, a :class:`json.JSONEncoder` subclass
+that knows how to serialize the model types returned by the parser (balances,
+amounts, dates and the transaction collections).
+
+Example:
+    >>> import json
+    >>> import mt940
+    >>> transactions = mt940.models.Transactions()
+    >>> json.dumps(transactions, cls=mt940.JSONEncoder)
+    '{"transactions": []}'
+"""
+
 from __future__ import annotations
 
 import datetime
@@ -9,12 +23,21 @@ from . import models
 
 
 class JSONEncoder(json.JSONEncoder):
+    """Serialize MT940 model objects to JSON-compatible primitives.
+
+    Dates, datetimes, timedeltas, timezones and decimals are rendered as
+    strings; :class:`~mt940.models.Transactions`,
+    :class:`~mt940.models.Transaction`, :class:`~mt940.models.Balance` and
+    :class:`~mt940.models.Amount` are rendered as their ``data``/``__dict__``
+    mappings. Pass it as the ``cls`` argument to :func:`json.dumps`.
+    """
+
     def default(self, o: Any) -> Any:
-        """
-        Custom JSON encoder for MT940 models.
+        """Return a JSON-serializable representation of ``o``.
 
         Args:
-            o: The object to serialize.
+            o: The object to serialize. ``o`` keeps the permissive ``Any`` type
+                of the overridden :meth:`json.JSONEncoder.default`.
 
         Returns:
             The serialized form of the object.
