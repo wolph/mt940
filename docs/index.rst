@@ -1,10 +1,14 @@
 Welcome to MT940's documentation!
 =================================
 
-``mt940`` is a library to parse MT940 files and return smart Python collections
-for statistics and manipulation. See the project `README
-<https://github.com/WoLpH/mt940>`_ for a feature overview and quick-start
-examples.
+``mt940`` parses MT940 bank statement files and returns smart, fully typed
+Python collections for statistics and manipulation. It has no runtime
+dependencies, ships type information (``py.typed``), and handles the quirks of
+many real-world banks.
+
+Start with :doc:`installation` and :doc:`usage`; the :doc:`modules` section
+contains the full API reference. See the project `README
+<https://github.com/WoLpH/mt940>`_ for a feature overview.
 
 Contents:
 

@@ -54,6 +54,9 @@ output/*/index.html
 docs/_build
 /docs/doctrees/
 /docs/html/
+# API reference pages, regenerated from docs/conf.py on every build
+/docs/modules.rst
+/docs/mt940*.rst
 .aider*
 .env
 
