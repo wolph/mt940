@@ -73,6 +73,37 @@ transactions = mt940.parse('mt940_tests/jejik/abnamro.sta')
 print(json.dumps(transactions, indent=4, cls=mt940.JSONEncoder))
 ```
 
+### Reading balances
+
+Statement-level balances live on the `Transactions` object's `data`, not on the
+individual transactions — this works even for files with no transactions at all:
+
+```python
+import mt940
+
+transactions = mt940.parse('statement.sta')
+print(transactions.data['final_opening_balance'])
+print(transactions.data['final_closing_balance'])
+print(transactions.data['available_balance'])
+```
+
+### Multiple statements in one file
+
+A single `parse()` merges everything into one `Transactions` and keeps only the
+**last** block's statement-level data (e.g. balances). For files that concatenate
+several statements (including balance-only blocks), use `parse_statements()`,
+which splits on `:20:` boundaries and returns one `Transactions` per statement,
+each with its own balances:
+
+```python
+import mt940
+
+# src may be a filename, a file handle or the raw data, just like parse()
+for statement in mt940.parse_statements('statements.sta'):
+    print(statement.data['final_opening_balance'])
+    print(statement.data['final_closing_balance'])
+```
+
 ### Parsing statements from the Dutch bank ASN
 
 Tag 61 in ASN statements does not follow the SWIFT specification, so a custom
