@@ -1,20 +1,17 @@
 """Shared type aliases and processor protocols.
 
-These are the precise types used across the public API. They live in their own
-module to avoid import cycles: the protocols reference
-:class:`~mt940.models.Transactions` and :class:`~mt940.tags.Tag` only under
-``TYPE_CHECKING``, so this module imports nothing from the package at runtime.
+These are the precise types used across the public API. The module is a *leaf*:
+it imports nothing from the rest of the package, so it never participates in an
+import cycle. The processor protocols therefore type their ``transactions`` and
+``tag`` arguments as :data:`~typing.Any`; the concrete processor functions in
+:mod:`mt940.processors` still annotate them precisely.
 """
 
 from __future__ import annotations
 
 import os
-import typing
 from collections.abc import Callable
 from typing import IO, Any, Protocol
-
-if typing.TYPE_CHECKING:
-    from . import models, tags
 
 #: Accepted input for :func:`mt940.parse` and :func:`mt940.parse_statements`:
 #: a path, raw ``str``/``bytes`` data, or an open binary/text file handle.
@@ -30,8 +27,8 @@ class PreProcessor(Protocol):
 
     def __call__(
         self,
-        transactions: models.Transactions,
-        tag: tags.Tag,
+        transactions: Any,
+        tag: Any,
         tag_dict: TagDict,
         /,
         *args: Any,
@@ -43,8 +40,8 @@ class PostProcessor(Protocol):
 
     def __call__(
         self,
-        transactions: models.Transactions,
-        tag: tags.Tag,
+        transactions: Any,
+        tag: Any,
         tag_dict: TagDict,
         result: TagDict,
         /,
