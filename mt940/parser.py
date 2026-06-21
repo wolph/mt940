@@ -124,18 +124,25 @@ def parse_statements(
     ``Transactions`` would only keep the last block's statement-level data such
     as the opening/closing/available balances (issue #107).
 
+    Each ``:20:`` is treated as the start of a new statement, matching the
+    standard where ``:20:`` is the once-per-statement transaction reference.
+    This is therefore mutually exclusive with
+    ``transaction_boundary={'transaction_reference_number'}`` (issue #110),
+    which instead treats ``:20:`` as an *intra*-statement transaction boundary;
+    the two target different, non-standard bank formats -- don't combine them.
+
     :param src: file handler to read, filename to read or raw data as string
     :param encoding: optional encoding override for byte input
     :param processors: optional extra pre/post processors (applied per block)
     :param tags: optional extra/override tag parsers (applied per block)
-    :param transaction_boundary: see :func:`parse`
+    :param transaction_boundary: see :func:`parse` (see the note above)
     :return: one Transactions per statement block
     :rtype: list[Transactions]
     """
     data = _read(src, encoding)
     statements: list[Transactions] = []
     for block in re.split(r'(?m)^(?=:20:)', data):
-        if ':20:' not in block:
+        if not block.strip().startswith(':20:'):
             # Drop any leading header / empty chunk before the first :20:.
             continue
         transactions = mt940.models.Transactions(

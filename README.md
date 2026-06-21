@@ -81,7 +81,7 @@ individual transactions — this works even for files with no transactions at al
 ```python
 import mt940
 
-transactions = mt940.parse(data)
+transactions = mt940.parse('statement.sta')
 print(transactions.data['final_opening_balance'])
 print(transactions.data['final_closing_balance'])
 print(transactions.data['available_balance'])
@@ -98,7 +98,8 @@ each with its own balances:
 ```python
 import mt940
 
-for statement in mt940.parse_statements(data):
+# src may be a filename, a file handle or the raw data, just like parse()
+for statement in mt940.parse_statements('statements.sta'):
     print(statement.data['final_opening_balance'])
     print(statement.data['final_closing_balance'])
 ```
