@@ -3,10 +3,8 @@ from __future__ import annotations
 import datetime
 import decimal
 import re
-import typing
 import warnings
 from collections.abc import (
-    Callable,
     Iterable,
     Mapping,
     MutableMapping,
@@ -17,9 +15,7 @@ from typing import Any, ClassVar, overload
 import mt940
 
 from . import processors, utils
-
-if typing.TYPE_CHECKING:
-    pass
+from ._types import Processors
 
 
 class Model:
@@ -196,7 +192,7 @@ class Amount(Model):
         if status == 'D':
             self.amount = -self.amount
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return (
             isinstance(other, Amount)
             and self.amount == other.amount
@@ -262,7 +258,7 @@ class Balance(Model):
         self.amount = amount
         self.date = date
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         return (
             isinstance(other, Balance)
             and self.amount == other.amount
@@ -312,7 +308,7 @@ class Transactions(Sequence[Transaction]):
     as begin and end balance
     """
 
-    DEFAULT_PROCESSORS: ClassVar[dict[str, list[Callable[..., Any]]]] = dict(
+    DEFAULT_PROCESSORS: ClassVar[Processors] = dict(
         pre_account_identification=[],
         post_account_identification=[],
         pre_available_balance=[],
@@ -367,13 +363,11 @@ class Transactions(Sequence[Transaction]):
 
     def __init__(
         self,
-        processors: dict[str, list[Callable[..., Any]]] | None = None,
+        processors: Processors | None = None,
         tags: dict[int | str, mt940.tags.Tag] | None = None,
         transaction_boundary: Iterable[str] | None = None,
     ) -> None:
-        self.processors: dict[str, list[Callable[..., Any]]] = (
-            self.DEFAULT_PROCESSORS.copy()
-        )
+        self.processors: Processors = self.DEFAULT_PROCESSORS.copy()
         self.tags: MutableMapping[int | str, mt940.tags.Tag] = dict(
             self.default_tags()
         )

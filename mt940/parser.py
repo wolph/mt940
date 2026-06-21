@@ -28,11 +28,13 @@ from __future__ import annotations
 
 import os
 import re
+from collections.abc import Iterable
 from typing import TYPE_CHECKING, Any
 
 import mt940
 
 if TYPE_CHECKING:
+    from ._types import Processors, Source
     from .models import Transactions
 
 
@@ -77,11 +79,11 @@ def _read(src: Any, encoding: str | None = None) -> str:
 
 
 def parse(
-    src: Any,
+    src: Source,
     encoding: str | None = None,
-    processors: dict[str, list[Any]] | None = None,
-    tags: dict[Any, Any] | None = None,
-    transaction_boundary: Any = None,
+    processors: Processors | None = None,
+    tags: dict[int | str, mt940.tags.Tag] | None = None,
+    transaction_boundary: Iterable[str] | None = None,
 ) -> Transactions:
     """
     Parses mt940 data and returns transactions object
@@ -107,11 +109,11 @@ def parse(
 
 
 def parse_statements(
-    src: Any,
+    src: Source,
     encoding: str | None = None,
-    processors: dict[str, list[Any]] | None = None,
-    tags: dict[Any, Any] | None = None,
-    transaction_boundary: Any = None,
+    processors: Processors | None = None,
+    tags: dict[int | str, mt940.tags.Tag] | None = None,
+    transaction_boundary: Iterable[str] | None = None,
 ) -> list[Transactions]:
     """
     Parse an mt940 file that contains multiple statement blocks.

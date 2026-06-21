@@ -13,18 +13,17 @@ import calendar
 import collections
 import functools
 import re
-import typing
-from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from . import models, tags
+    from ._types import PostProcessor, PreProcessor
 
 
 def add_currency_pre_processor(
     currency: str,
     overwrite: bool = True,
-) -> Callable[..., Any]:
+) -> PreProcessor:
     """
     Return a pre-processor that adds currency information
     to tag dictionaries.
@@ -437,15 +436,7 @@ segments.
 
 def transactions_to_transaction(
     *keys: str,
-) -> typing.Callable[
-    [
-        models.Transactions,
-        tags.Tag,
-        dict[str, Any],
-        dict[str, Any],
-    ],
-    dict[str, Any],
-]:
+) -> PostProcessor:
     """
     Copy the global transactions details to the transaction.
 
