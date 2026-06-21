@@ -15,9 +15,10 @@ import functools
 import re
 from typing import TYPE_CHECKING, Any
 
+from ._types import PostProcessor, PreProcessor
+
 if TYPE_CHECKING:
     from . import models, tags
-    from ._types import PostProcessor, PreProcessor
 
 
 def add_currency_pre_processor(

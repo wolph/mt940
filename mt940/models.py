@@ -415,6 +415,15 @@ class Transactions(Sequence[Transaction]):
         del state['processors']
         return state
 
+    def __setstate__(self, state: dict[str, Any]) -> None:
+        """Restore unpickled state, re-creating the dropped processors.
+
+        ``__getstate__`` omits :attr:`processors`, so it is rebuilt from
+        :attr:`DEFAULT_PROCESSORS` here to keep the unpickled object usable.
+        """
+        self.__dict__.update(state)
+        self.processors: Processors = self.DEFAULT_PROCESSORS.copy()
+
     def __init__(
         self,
         processors: Processors | None = None,
@@ -432,7 +441,7 @@ class Transactions(Sequence[Transaction]):
                 string is treated as a single slug. Omit to keep the legacy
                 behaviour.
         """
-        self.processors: Processors = self.DEFAULT_PROCESSORS.copy()
+        self.processors = self.DEFAULT_PROCESSORS.copy()
         self.tags: MutableMapping[int | str, mt940.tags.Tag] = dict(
             self.default_tags()
         )

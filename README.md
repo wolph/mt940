@@ -147,7 +147,7 @@ import mt940
 
 # Each `:20:` (transaction_reference_number) starts its own transaction:
 transactions = mt940.parse(
-    data, transaction_boundary={'transaction_reference_number'}
+    'statement.sta', transaction_boundary={'transaction_reference_number'}
 )
 ```
 
@@ -165,7 +165,7 @@ same-line data, so this is handled by an **opt-in** `StatementGLS` tag:
 import mt940
 
 gls = mt940.tags.StatementGLS()
-transactions = mt940.parse(data, tags={gls.id: gls})
+transactions = mt940.parse('statement.sta', tags={gls.id: gls})
 ```
 
 (Longer *supplementary details* — issue #117, e.g. Wise — are handled by the

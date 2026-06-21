@@ -87,7 +87,7 @@ transaction on those tags — for example to treat every ``:20:`` as a boundary:
     import mt940
 
     transactions = mt940.parse(
-        data, transaction_boundary={'transaction_reference_number'}
+        'statement.sta', transaction_boundary={'transaction_reference_number'}
     )
 
 Longer reference fields
@@ -102,7 +102,7 @@ Some banks (e.g. GLS / Atruvia) put a customer reference longer than the SWIFT
     import mt940
 
     gls = mt940.tags.StatementGLS()
-    transactions = mt940.parse(data, tags={gls.id: gls})
+    transactions = mt940.parse('statement.sta', tags={gls.id: gls})
 
 Statements from the Dutch bank ASN
 ----------------------------------
@@ -115,5 +115,4 @@ Tag 61 in ASN statements does not follow the SWIFT specification, so the opt-in
     import mt940
 
     tag = mt940.tags.StatementASNB()
-    transactions = mt940.models.Transactions(tags={tag.id: tag})
-    transactions.parse(data)
+    transactions = mt940.parse('statement.sta', tags={tag.id: tag})
