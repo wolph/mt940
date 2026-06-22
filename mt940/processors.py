@@ -1,93 +1,175 @@
-# encoding=utf-8
-import re
-import functools
+"""
+Module Processors
+
+This module contains pre- and post-processors for modifying tag
+dictionaries in MT940 processing. It provides functions for currency
+addition, date fix-up, transaction code extraction, transaction details
+parsing, and segment joining for transaction details.
+"""
+
+from __future__ import annotations
+
 import calendar
 import collections
+import functools
+import re
+from typing import TYPE_CHECKING, Any
+
+from ._types import PostProcessor, PreProcessor
+
+if TYPE_CHECKING:
+    from . import models, tags
 
 
-def add_currency_pre_processor(currency, overwrite=True):
-    def _add_currency_pre_processor(transactions, tag, tag_dict, *args):
+def add_currency_pre_processor(
+    currency: str,
+    overwrite: bool = True,
+) -> PreProcessor:
+    """
+    Return a pre-processor that adds currency information
+    to tag dictionaries.
+
+    Args:
+        currency: The currency to set in the tag dictionary.
+        overwrite: Whether to overwrite existing currency information.
+
+    Returns:
+        A pre-processor function that adds currency information.
+    """
+
+    def _add_currency_pre_processor(
+        transactions: models.Transactions,
+        tag: tags.Tag,
+        tag_dict: dict[str, Any],
+        *args: Any,
+    ) -> dict[str, Any]:
         if 'currency' not in tag_dict or overwrite:  # pragma: no branch
             tag_dict['currency'] = currency
-
         return tag_dict
 
     return _add_currency_pre_processor
 
 
-def date_fixup_pre_processor(transactions, tag, tag_dict, *args):
+def date_fixup_pre_processor(
+    transactions: models.Transactions,
+    tag: tags.Tag,
+    tag_dict: dict[str, Any],
+    *args: Any,
+) -> dict[str, Any]:
     """
-    Replace illegal February 29, 30 dates with the last day of February.
+    Adjust the date in the tag dictionary if necessary.
 
-    German banks use a variant of the 30/360 interest rate calculation,
-    where each month has always 30 days even February. Python's datetime
-    module won't accept such dates.
+    If the day in February exceeds the maximum day in that month,
+    adjust it to the last day of February.
+
+    Args:
+        transactions: The transactions object.
+        tag: The tag being processed.
+        tag_dict: The tag dictionary.
+
+    Returns:
+        The adjusted tag dictionary.
     """
+    # If the month is February, ensure that the day does not exceed the
+    # maximum valid day.
     if tag_dict['month'] == '02':
         year = int(tag_dict['year'], 10)
         _, max_month_day = calendar.monthrange(year, 2)
         if int(tag_dict['day'], 10) > max_month_day:
             tag_dict['day'] = str(max_month_day)
-
     return tag_dict
 
 
-def date_cleanup_post_processor(transactions, tag, tag_dict, result):
+def date_cleanup_post_processor(
+    transactions: models.Transactions,
+    tag: tags.Tag,
+    tag_dict: dict[str, Any],
+    result: dict[str, Any],
+) -> dict[str, Any]:
+    """
+    Remove date components from the result dictionary.
+
+    Removes the 'day', 'month', 'year', 'entry_day', and 'entry_month' keys
+    from the result dictionary.
+
+    Args:
+        transactions: The transactions object.
+        tag: The tag being processed.
+        tag_dict: The tag dictionary.
+        result: The result dictionary.
+
+    Returns:
+        The adjusted result dictionary.
+    """
+    # Remove all date-related keys from the result dictionary.
     for k in ('day', 'month', 'year', 'entry_day', 'entry_month'):
         result.pop(k, None)
-
     return result
 
 
-def mBank_set_transaction_code(transactions, tag, tag_dict, *args):
+def mBank_set_transaction_code(  # noqa: N802
+    transactions: models.Transactions,
+    tag: tags.Tag,
+    tag_dict: dict[str, Any],
+    *args: Any,
+) -> dict[str, Any]:
     """
-    mBank Collect uses transaction code 911 to distinguish icoming mass
+    mBank Collect uses transaction code 911 to distinguish incoming mass
     payments transactions, adding transaction_code may be helpful in further
-    processing
+    processing.
     """
+    # Extract the transaction code from the tag value.
+    # Split the value at ';' and then by the first space to isolate the
+    # numeric transaction code, which is converted to an integer before
+    # being assigned.
+    tag_value = tag_dict[tag.slug]
     tag_dict['transaction_code'] = int(
-        tag_dict[tag.slug].split(';')[0].split(' ', 1)[0]
+        tag_value.split(';')[0].split(' ', 1)[0]
     )
-
     return tag_dict
 
 
+# Regular expression to extract IPH ID from mBank tag values.
 iph_id_re = re.compile(r' ID IPH: X*(?P<iph_id>\d{0,14});')
 
 
-def mBank_set_iph_id(transactions, tag, tag_dict, *args):
+def mBank_set_iph_id(  # noqa: N802
+    transactions: models.Transactions,
+    tag: tags.Tag,
+    tag_dict: dict[str, Any],
+    *args: Any,
+) -> dict[str, Any]:
     """
     mBank Collect uses ID IPH to distinguish between virtual accounts,
-    adding iph_id may be helpful in further processing
+    adding iph_id may be helpful in further processing.
     """
     matches = iph_id_re.search(tag_dict[tag.slug])
-
-    if matches:  # pragma no branch
-        tag_dict['iph_id'] = matches.groupdict()['iph_id']
-
+    if matches:  # pragma: no branch
+        tag_dict['iph_id'] = matches.group('iph_id')
     return tag_dict
 
 
-tnr_re = re.compile(
-    r'TNR:[ \n](?P<tnr>\d+\.\d+)',
-    flags=re.MULTILINE | re.UNICODE
-)
+# Regular expression to extract the Transaction Number (TNR) from tag
+# values, accounting for potential newline characters.
+tnr_re = re.compile(r'TNR:[ \n](?P<tnr>\d+\.\d+)', flags=re.MULTILINE)
 
 
-def mBank_set_tnr(transactions, tag, tag_dict, *args):
+def mBank_set_tnr(  # noqa: N802
+    transactions: models.Transactions,
+    tag: tags.Tag,
+    tag_dict: dict[str, Any],
+    *args: Any,
+) -> dict[str, Any]:
     """
     mBank Collect states TNR in transaction details as unique id for
     transactions, that may be used to identify the same transactions in
     different statement files eg. partial mt942 and full mt940
-    Information about tnr uniqueness has been obtained from mBank support,
+    Information about TNR uniqueness has been obtained from mBank support,
     it lacks in mt940 mBank specification.
     """
-
     matches = tnr_re.search(tag_dict[tag.slug])
-
-    if matches:  # pragma no branch
-        tag_dict['tnr'] = matches.groupdict()['tnr']
-
+    if matches:  # pragma: no branch
+        tag_dict['tnr'] = matches.group('tnr')
     return tag_dict
 
 
@@ -98,7 +180,7 @@ DETAIL_KEYS = {
     '10': 'prima_nota',
     '20': 'purpose',
     '30': 'applicant_bin',
-    '31': 'applicant_iban',
+    '31': 'applicant_name',
     '32': 'applicant_name',
     '34': 'return_debit_notes',
     '35': 'recipient_name',
@@ -129,28 +211,66 @@ GVC_KEYS = {
 }
 
 
-def _parse_mt940_details(detail_str, space=False):
-    result = collections.defaultdict(list)
+def _parse_segments(detail_str: str) -> collections.OrderedDict[str, str]:
+    """
+    Parse segments from a detail string.
 
-    tmp = collections.OrderedDict()
+    This function splits the provided detail string into segments using
+    the '?' delimiter. Each segment is associated with a two-character
+    segment type that follows the '?' marker.
+
+    Args:
+        detail_str: A string containing the transaction detail segments.
+
+    Returns:
+        An OrderedDict mapping segment identifiers to their extracted content.
+    """
+    tmp: collections.OrderedDict[str, str] = collections.OrderedDict()
     segment = ''
     segment_type = ''
 
     for index, char in enumerate(detail_str):
         if char != '?':
+            # Accumulate characters into the current segment until a '?'
+            # delimiter is encountered.
             segment += char
             continue
 
+        # If there aren't enough characters left to form a segment type,
+        # exit the loop.
         if index + 2 >= len(detail_str):
             break
 
+        # Finalize the current segment. If a segment type exists, skip the
+        # first two header characters.
         tmp[segment_type] = segment if not segment_type else segment[2:]
+        # Extract the new segment type from the following two characters.
         segment_type = detail_str[index + 1] + detail_str[index + 2]
+        # Reset the segment accumulator for the next segment.
         segment = ''
 
     if segment_type:  # pragma: no branch
+        # Finalize the last captured segment.
         tmp[segment_type] = segment if not segment_type else segment[2:]
 
+    return tmp
+
+
+def _process_segments(
+    tmp: collections.OrderedDict[str, str],
+) -> dict[str, list[str]]:
+    """
+    Process segments into result dictionary.
+
+    Args:
+        tmp: An OrderedDict of segment types to their content.
+
+    Returns:
+        A dictionary mapping keys to lists of segment contents.
+    """
+    result: collections.defaultdict[str, list[str]] = collections.defaultdict(
+        list
+    )
     for key, value in tmp.items():
         if key in DETAIL_KEYS:
             result[DETAIL_KEYS[key]].append(value)
@@ -158,42 +278,97 @@ def _parse_mt940_details(detail_str, space=False):
             key32 = DETAIL_KEYS['32']
             result[key32].append(value)
         elif key.startswith('2'):
+            # Some banks append a bare ' BIC'/' IBAN' label with no value at
+            # the end of a detail segment (issue #109); strip the dangling
+            # label so it does not pollute the purpose. Segment keys are
+            # always two characters (see _parse_segments), so the historical
+            # '29'/'28D' key checks could never match the IBAN case -- the
+            # label is matched on the value instead.
+            for label in (' BIC', ' IBAN'):
+                if value.endswith(label):
+                    value = value.removesuffix(label).rstrip()
+                    break
             key20 = DETAIL_KEYS['20']
             result[key20].append(value)
         elif key in {'60', '61', '62', '63', '64', '65'}:
             key60 = DETAIL_KEYS['60']
             result[key60].append(value)
+    return result
 
-    joined_result = dict()
+
+def _join_result(
+    result: dict[str, list[str]],
+    space: bool,
+) -> dict[str, str | None]:
+    """
+    Join result lists into strings.
+
+    Args:
+        result: The result dictionary with lists of strings.
+        space: Whether to include spaces between segments.
+
+    Returns:
+        A dictionary with joined strings.
+    """
+    joined_result: dict[str, str | None] = {}
     for key in DETAIL_KEYS.values():
         if space:
-            value = ' '.join(result[key])
+            value = ' '.join(result.get(key, []))
         else:
-            value = ''.join(result[key])
-
+            value = ''.join(result.get(key, []))
         joined_result[key] = value or None
-
     return joined_result
 
 
-def _parse_mt940_gvcodes(purpose):
-    result = {}
+def _parse_mt940_details(
+    detail_str: str,
+    space: bool = False,
+) -> dict[str, str | None]:
+    """
+    Parse MT940 transaction details.
 
-    for key, value in GVC_KEYS.items():
-        result[value] = None
+    Args:
+        detail_str: The detail string to parse.
+        space: Whether to include spaces between segments.
 
-    tmp = {}
-    segment_type = None
+    Returns:
+        A dictionary of parsed transaction details.
+    """
+    tmp = _parse_segments(detail_str)
+    result = _process_segments(tmp)
+    return _join_result(result, space)
+
+
+def _parse_mt940_gvcodes(purpose: str) -> dict[str, str | None]:
+    """
+    Parse MT940 GVC codes from the purpose string.
+
+    Args:
+        purpose: The purpose string to parse.
+
+    Returns:
+        A dictionary of parsed GVC codes.
+    """
+    result: dict[str, str | None] = dict.fromkeys(GVC_KEYS.values())
+
+    tmp: dict[str, str] = {}
+    segment_type: str | None = None
     text = ''
 
     for index, char in enumerate(purpose):
-        if char == '+' and purpose[index - 4:index] in GVC_KEYS:
+        # Detect the beginning of a GVC segment: if a '+' is encountered
+        # and the four characters preceding it form a valid GVC key.
+        if char == '+' and purpose[index - 4 : index] in GVC_KEYS:
             if segment_type:
+                # If already processing a segment, finalize it by removing
+                # the trailing GVC key and reset the text accumulator.
                 tmp[segment_type] = text[:-4]
                 text = ''
             else:
                 text = ''
-            segment_type = purpose[index - 4:index]
+            # Set the new segment type from the four characters preceding
+            # the '+'.
+            segment_type = purpose[index - 4 : index]
         else:
             text += char
 
@@ -209,17 +384,26 @@ def _parse_mt940_gvcodes(purpose):
 
 
 def transaction_details_post_processor(
-        transactions, tag, tag_dict, result, space=False):
-    '''Parse the extra details in some transaction formats such as the 60-65
-    keys.
+    transactions: models.Transactions,
+    tag: tags.Tag,
+    tag_dict: dict[str, Any],
+    result: dict[str, Any],
+    space: bool = False,
+) -> dict[str, Any]:
+    """
+    Parse the extra details in some transaction formats,
+    such as the 60-65 keys.
 
     Args:
-        transactions (mt940.models.Transactions): list of transactions
-        tag (mt940.tags.Tag): tag
-        tag_dict (dict): dict with the raw tag details
-        result (dict): the resulting tag dict
-        space (bool): include spaces between lines in the mt940 details
-    '''
+        transactions: The transactions object.
+        tag: The tag being processed.
+        tag_dict: The tag dictionary.
+        result: The result dictionary.
+        space: Whether to include spaces between segments.
+
+    Returns:
+        The updated result dictionary.
+    """
     details = tag_dict['transaction_details']
     details = ''.join(detail.strip('\n\r') for detail in details.splitlines())
 
@@ -229,11 +413,13 @@ def transaction_details_post_processor(
 
         purpose = result.get('purpose')
 
-        if purpose and any(
-            gvk in purpose for gvk in GVC_KEYS
-            if gvk != ''
-        ):  # pragma: no branch
+        if purpose and any(gvk in purpose for gvk in GVC_KEYS if gvk != ''):
             result.update(_parse_mt940_gvcodes(result['purpose']))
+
+        # Clean up the purpose field
+        if result.get('purpose'):
+            # Remove trailing "BIC" without an actual BIC value
+            result['purpose'] = result['purpose'].removesuffix(' BIC')
 
         del result['transaction_details']
 
@@ -243,27 +429,48 @@ def transaction_details_post_processor(
 transaction_details_post_processor_with_space = functools.partial(
     transaction_details_post_processor, space=True
 )
+transaction_details_post_processor_with_space.__doc__ = """
+A variant of transaction_details_post_processor that includes spaces between
+segments.
+"""
 
 
-def transactions_to_transaction(*keys):
-    '''Copy the global transactions details to the transaction.
+def transactions_to_transaction(
+    *keys: str,
+) -> PostProcessor:
+    """
+    Copy the global transactions details to the transaction.
 
     Args:
-        *keys (str): the keys to copy to the transaction
-    '''
-    def _transactions_to_transaction(transactions, tag, tag_dict, result):
-        '''Copy the global transactions details to the transaction.
+        *keys: The keys to copy to the transaction.
+
+    Returns:
+        A post-processor function that copies specified keys.
+    """
+
+    def _transactions_to_transaction(
+        transactions: models.Transactions,
+        tag: tags.Tag,
+        tag_dict: dict[str, Any],
+        result: dict[str, Any],
+    ) -> dict[str, Any]:
+        """
+        Copy the global transactions details to the transaction.
 
         Args:
-            transactions (mt940.models.Transactions): list of transactions
-            tag (mt940.tags.Tag): tag
-            tag_dict (dict): dict with the raw tag details
-            result (dict): the resulting tag dict
-        '''
+            transactions: The transactions object.
+            tag: The tag being processed.
+            tag_dict: The tag dictionary.
+            result: The result dictionary.
+
+        Returns:
+            The updated result dictionary.
+        """
+        # Copy each specified key from the global transactions data to the
+        # transaction-specific dictionary.
         for key in keys:
             if key in transactions.data:
                 result[key] = transactions.data[key]
-
         return result
 
     return _transactions_to_transaction

@@ -1,0 +1,164 @@
+[build-system]
+requires = ['uv_build>=0.11.0,<0.12']
+build-backend = 'uv_build'
+
+[project]
+name = 'mt-940'
+version = '5.0.0'
+description = 'A library to parse MT940 files and returns smart Python collections for statistics and manipulation.'
+readme = 'README.md'
+license = 'BSD-3-Clause'
+license-files = ['LICENSE']
+requires-python = '>=3.10'
+authors = [{ name = 'Rick van Hattem', email = 'wolph@wol.ph' }]
+keywords = ['MT940']
+classifiers = [
+    'Development Status :: 6 - Mature',
+    'Intended Audience :: Developers',
+    'Operating System :: OS Independent',
+    'Natural Language :: English',
+    'Programming Language :: Python',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
+    'Topic :: Software Development :: Libraries :: Python Modules',
+    'Typing :: Typed',
+]
+dependencies = []
+
+[project.urls]
+Homepage = 'https://github.com/WoLpH/mt940'
+
+[project.optional-dependencies]
+docs = ['sphinx>=8.0', 'furo>=2024.8']
+tests = [
+    'pytest>=8.0',
+    'pytest-cov>=5.0',
+    'coverage>=7.0',
+    'pyyaml',
+    'types-pyyaml',
+]
+tox = ['tox>=4.0', 'tox-uv>=1.0', 'tox-gh-actions>=3.0']
+
+[dependency-groups]
+dev = [
+    'mt-940[docs,tests]',
+    'ruff>=0.8.4',
+    'mypy>=1.14.1',
+    'pyright>=1.1.391',
+    'basedpyright>=1.23.1',
+    'pyrefly>=0.1',
+    'codespell>=2.3',
+    'lefthook>=1.0',
+]
+
+[tool.uv.build-backend]
+# The distribution name (mt-940) normalizes to `mt_940`, but the import
+# package is `mt940`, so the module name has to be set explicitly.
+module-root = ''
+module-name = 'mt940'
+
+[tool.pytest.ini_options]
+minversion = '8.0'
+testpaths = ['mt940', 'mt940_tests']
+python_files = ['mt940/*.py', 'mt940_tests/*.py']
+log_level = 'INFO'
+xfail_strict = true
+addopts = [
+    '--strict-config',
+    '--strict-markers',
+    '-ra',
+    '--cov=mt940',
+    '--cov-report=term-missing',
+    '--cov-report=html',
+    '--no-cov-on-fail',
+    '--doctest-modules',
+]
+doctest_optionflags = 'NORMALIZE_WHITESPACE IGNORE_EXCEPTION_DETAIL ELLIPSIS'
+filterwarnings = ['error']
+norecursedirs = ['_build', 'docs', 'build', 'dist', '.tox', '.eggs']
+
+[tool.repo-review]
+ignore = [
+    'PY005', # tests live in mt940_tests/ (established convention)
+    'PY006', # pre-commit replaced by lefthook
+    'PC110', # no pre-commit (we use lefthook)
+    'PC111', # no blacken-docs because markdown has no code
+    'PC140', # manual typecheck hooks
+    'PC170', # no pygrep-hooks because no rST
+    'RTD',   # no RTD repo-review checks
+]
+
+[tool.codespell]
+skip = '*/htmlcov,./docs/_build,*.asc,*.yml,*.sta,*.txt,*.html,./docs/html'
+
+[tool.pyright]
+include = ['mt940', 'mt940_tests']
+exclude = ['dist/*', 'mt940_tests/*']
+strict = [
+    'mt940/__about__.py',
+    'mt940/__init__.py',
+    'mt940/json.py',
+    'mt940/models.py',
+    'mt940/parser.py',
+    'mt940/processors.py',
+    'mt940/tags.py',
+    'mt940/utils.py',
+]
+
+[tool.mypy]
+python_version = '3.10'
+packages = ['mt940']
+strict = true
+warn_return_any = false
+warn_unused_configs = true
+warn_unused_ignores = false
+warn_unreachable = true
+ignore_missing_imports = true
+exclude = ['dist', 'docs', '.venv', 'venv']
+enable_error_code = [
+    'ignore-without-code',
+    'truthy-bool',
+    'redundant-expr',
+]
+
+[tool.pyrefly]
+project-includes = ['mt940']
+
+[tool.coverage.run]
+branch = true
+source = ['mt940', 'mt940_tests']
+omit = ['*/mock/*', '*/nose/*']
+
+[tool.coverage.paths]
+# Map the package as installed into each tox env back to the source tree so
+# per-env `.coverage.*` files combine into a single report.
+source = [
+    'mt940',
+    '*/site-packages/mt940',
+    '*/.tox/*/lib/*/site-packages/mt940',
+]
+tests = ['mt940_tests', '*/mt940_tests']
+
+[tool.coverage.report]
+fail_under = 100
+
+# Regexes for lines to exclude from consideration
+exclude_also = [
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self\\.debug",
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+    'if (typing\.|)TYPE_CHECKING',
+    # Don't complain about abstract methods, they aren't run:
+    "@(abc\\.)?abstractmethod",
+    'def __repr__',
+    '@overload',
+]

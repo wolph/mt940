@@ -31,8 +31,8 @@ pip-log.txt
 .tox
 nosetests.xml
 cover
-/.cache/
-/htmlcov/
+.cache/
+htmlcov/
 
 # Translations
 *.mo
@@ -54,3 +54,29 @@ output/*/index.html
 docs/_build
 /docs/doctrees/
 /docs/html/
+# API reference pages, regenerated from docs/conf.py on every build
+/docs/modules.rst
+/docs/mt940*.rst
+.aider*
+.env
+
+# uv (lockfile not committed for a library)
+uv.lock
+
+# Tool caches
+.mypy_cache
+.ruff_cache
+.pytest_cache
+.pdm-build
+
+# Profiling / scratch artifacts
+*.lprof
+*.py.html
+
+# Local scratch / sample files (not part of the package)
+/test.py
+/test.csv
+/test.mt940
+/cov.txt
+/coverage_report.txt
+/*.swi.txt

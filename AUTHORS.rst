@@ -14,5 +14,5 @@ Contributors
 
 Why not join the club?
 
-A more up to date list can be found here: 
+A more up to date list can be found here:
 https://github.com/WoLpH/mt940/graphs/contributors

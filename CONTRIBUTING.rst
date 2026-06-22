@@ -3,7 +3,7 @@ Contributing
 ============
 
 Contributions are welcome, and they are greatly appreciated! Every
-little bit helps, and credit will always be given. 
+little bit helps, and credit will always be given.
 
 You can contribute in many ways:
 
@@ -36,7 +36,7 @@ is open to whoever wants to implement it.
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-MT940 could always use more documentation, whether as part of the 
+MT940 could always use more documentation, whether as part of the
 official MT940 docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
@@ -75,18 +75,18 @@ Ready to contribute? Here's how to set up `mt940` for local development.
    Or without git-flow:
 
     $ git checkout -b feature/name-of-your-bugfix-or-feature
-   
+
    Now you can make your changes locally.
 
-5. When you're done making changes, check that your changes pass flake8 and the tests, including testing other Python versions with tox::
+5. When you're done making changes, check that your changes pass linting, type-checking and the tests, including other Python versions with tox::
 
-    $ flake8 mt940 mt940_tests
-    $ py.test
-    $ tox
+    $ uv run tox -e lint
+    $ uv run tox -e py312
+    $ uv run tox
 
-   To get flake8 and tox, just pip install them into your virtualenv using the requirements file.
-   
-    $ pip install -r mt940_tests/requirements.txt
+   To get the development tools, sync the dev extra into your environment::
+
+    $ uv sync
 
 6. Commit your changes and push your branch to GitHub with `git-flow-avh`_::
 
@@ -110,12 +110,11 @@ Before you submit a pull request, check that it meets these guidelines:
 1. The pull request should include tests.
 2. If the pull request adds functionality, the docs should be updated. Put
    your new functionality into a function with a docstring, and add the
-   feature to the list in README.rst.
-3. The pull request should work for Python 2.7, 3.4+, and for PyPy. Check 
-   https://travis-ci.org/WoLpH/mt940/pull_requests
-   and make sure that the tests pass for all supported Python versions. To
-   test locally you can use `tox` which will run on all installed Python
-   versions.
+   feature to the list in README.md.
+3. The pull request should work for Python 3.10+. Check the GitHub Actions CI
+   at https://github.com/WoLpH/mt940/actions and make sure that the tests pass
+   for all supported Python versions. To test locally you can use `tox` which
+   will run on all installed Python versions.
 
 Tips
 ----
