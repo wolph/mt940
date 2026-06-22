@@ -56,6 +56,21 @@ intersphinx_mapping = {
     'python': ('https://docs.python.org/3/', None),
 }
 
+# -- Cross-reference strictness -----------------------------------------------
+# Treat unresolved references as errors so the ``-W`` build used in CI catches
+# broken links. The entries below are references autodoc emits for objects that
+# cannot have a documentation target: PEP 613 type aliases and TypeVars are not
+# classes, and the processor protocols live in the private ``mt940._types`` leaf
+# module that is intentionally excluded from the public API reference.
+nitpicky = True
+nitpick_ignore = [
+    ('py:class', 'Source'),
+    ('py:class', 'Processors'),
+    ('py:class', 'mt940.utils.T'),
+    ('py:class', 'mt940._types.PreProcessor'),
+    ('py:class', 'mt940._types.PostProcessor'),
+]
+
 # -- HTML output --------------------------------------------------------------
 html_theme = 'furo'
 html_title = f'{project} {release}'

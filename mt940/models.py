@@ -115,7 +115,7 @@ class DateTime(datetime.datetime, Model):
         minute (str): Minute
         second (str): Second
         microsecond (str): Microsecond
-        tzinfo (tzinfo): Timezone information. Overwrites `offset`
+        tzinfo (datetime.tzinfo): Timezone information. Overwrites `offset`
         offset (str): Timezone offset in minutes, generates a tzinfo object
                       with the given offset if no tzinfo is available.
     """
@@ -267,7 +267,7 @@ class Balance(Model):
         status (str): Either C or D for credit or debit respectively
         amount (Amount | str | None): Object containing the amount and currency
             or amount string
-        date (date): The balance date
+        date (Date | None): The balance date
 
     >>> balance = Balance('C', '0.00', Date(2010, 7, 22))
     >>> balance.status
