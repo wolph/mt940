@@ -91,7 +91,7 @@ class Tag:
     """
 
     id: str | int = 0
-    RE_FLAGS: ClassVar = re.IGNORECASE | re.VERBOSE | re.UNICODE
+    RE_FLAGS: ClassVar[re.RegexFlag] = re.IGNORECASE | re.VERBOSE | re.UNICODE
     scope: ClassVar[type[models.Transactions | models.Transaction]] = (
         models.Transactions
     )

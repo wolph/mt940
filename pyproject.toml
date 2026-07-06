@@ -97,6 +97,9 @@ skip = '*/htmlcov,./docs/_build,*.asc,*.yml,*.sta,*.txt,*.html,./docs/html'
 [tool.pyright]
 include = ['mt940', 'mt940_tests']
 exclude = ['dist/*', 'mt940_tests/*']
+# mt940/parser.py imports the package root (`import mt940`) by design, so the
+# package has intentional import cycles; basedpyright reads this section too.
+reportImportCycles = false
 strict = [
     'mt940/__about__.py',
     'mt940/__init__.py',
