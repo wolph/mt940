@@ -116,6 +116,65 @@ def test_unparseable_value_raises_runtime_error():
         transactions.parse(':20:REF\n:28C:NOTDIGITS\n')
 
 
+@pytest.mark.xfail(
+    strict=True,
+    reason='RC reversal amount sign -- pending decision (audit task 5): '
+    'a reversal of credit takes funds out of the account, but Amount only '
+    'negates on a plain D mark, so RC amounts stay positive (as do the RC '
+    'transactions in the betterplace fixture goldens).',
+)
+def test_statement_rc_reversal_amount_is_negative():
+    transactions = mt940.parse(
+        _HEADER + ':61:2312290101RC10,50NTRFREF//BANK\n' + _FOOTER
+    )
+    data = transactions[0].data
+    assert data['status'] == 'RC'
+    assert str(data['amount']) == '-10.50 EUR'
+
+
+def test_statement_reversal_marks_parse():
+    # RC/RD marks (2a subfield) parse and are preserved in `status`; the
+    # amount sign for RC is a pending decision, see the xfail above.
+    transactions = mt940.parse(
+        _HEADER
+        + ':61:2312290101RD10,50NTRFREF//BANK\n'
+        + ':61:2312290101RC10,50NTRFREF//BANK\n'
+        + _FOOTER
+    )
+    assert transactions[0].data['status'] == 'RD'
+    assert str(transactions[0].data['amount']) == '10.50 EUR'
+    assert transactions[1].data['status'] == 'RC'
+
+
+def test_statement_amount_without_decimals():
+    # 15d allows a trailing decimal comma with no fraction digits.
+    transactions = mt940.parse(
+        _HEADER + ':61:2312290101C10,NTRFREF//BANK\n' + _FOOTER
+    )
+    assert str(transactions[0].data['amount']) == '10 EUR'
+
+
+def test_statement_second_double_slash_stays_in_bank_reference():
+    # Only the first // separates the bank reference; a second one is kept
+    # as part of the reference content.
+    transactions = mt940.parse(
+        _HEADER + ':61:2312290101C10,50NTRFREF//BANK//EXTRA\n' + _FOOTER
+    )
+    data = transactions[0].data
+    assert data['customer_reference'] == 'REF'
+    assert data['bank_reference'] == 'BANK//EXTRA'
+
+
+def test_balance_on_leap_day():
+    transactions = mt940.parse(
+        ':20:REF\n:25:ACC\n:28C:1\n:60F:C240229EUR0,00\n'
+        ':61:2402290229C10,50NTRFREF\n'
+        ':62F:C240229EUR10,50\n'
+    )
+    balance = transactions.data['final_opening_balance']
+    assert balance.date == models.Date(2024, 2, 29)
+
+
 def test_date_time_indication_without_offset():
     # The offset is optional in the pattern; a bare 10-digit :13: must not
     # crash and yields a naive datetime.
