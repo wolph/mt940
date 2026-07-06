@@ -27,6 +27,24 @@ def test_date_time_indication_negative_offset():
     assert date.utcoffset() == -datetime.timedelta(hours=5)
 
 
+def test_transaction_details_long_multiline_not_truncated():
+    # The old :86: pattern capped the capture at nine 65-char chunks
+    # (~593 chars); longer details -- e.g. German banks packing many ?NN
+    # subfields -- were silently truncated. The cap had already been bumped
+    # once (commit 4575222) for exactly this reason.
+    lines = [f'line {i:02d} ' + 'x' * 57 for i in range(12)]
+    details = '\n'.join(lines)
+    transactions = mt940.parse(
+        _HEADER
+        + ':61:2312290101D10,50NMSC\n'
+        + ':86:'
+        + details
+        + '\n'
+        + _FOOTER
+    )
+    assert transactions[0].data['transaction_details'] == details
+
+
 def test_date_time_indication_without_offset():
     # The offset is optional in the pattern; a bare 10-digit :13: must not
     # crash and yields a naive datetime.

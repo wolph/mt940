@@ -610,8 +610,13 @@ class TransactionDetails(Tag):
 
     id = 86
     scope = models.Transaction
+    # The SWIFT spec caps this field at 6 lines of 65 characters, but many
+    # banks send more. A previous cap of nine 65-char chunks silently
+    # truncated anything longer, so the capture is unbounded: the parser in
+    # `models.Transactions.parse` already limits the value to this tag's own
+    # slice of the statement.
     pattern = r"""
-    (?P<transaction_details>(([\s\S]{0,65}\r?\n?){0,8}[\s\S]{0,65}))
+    (?P<transaction_details>[\s\S]*)
     """
 
 
