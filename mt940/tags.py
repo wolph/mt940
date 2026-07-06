@@ -214,13 +214,24 @@ class DateTimeIndication(Tag):
     (?P<day>\d{2})
     (?P<hour>\d{2})
     (?P<minute>\d{2})
-    (\+(?P<offset>\d{4})|)
+    ((?P<offset_sign>[+-])(?P<offset>\d{4}))?
     """
 
     def __call__(
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, object]:
         data = super().__call__(transactions, value)
+        # The offset subfield is a signed HHMM value (e.g. +0130 is 1 hour
+        # and 30 minutes east of UTC), while `models.DateTime` expects the
+        # offset as a number of minutes. Convert it here and drop the raw
+        # groups so they are not passed on when the offset is absent.
+        sign: str | None = data.pop('offset_sign', None)
+        offset: str | None = data.pop('offset', None)
+        if offset:
+            minutes: int = int(offset[:2]) * 60 + int(offset[2:])
+            if sign == '-':
+                minutes = -minutes
+            data['offset'] = minutes
         return {'date': models.DateTime(**data)}
 
 

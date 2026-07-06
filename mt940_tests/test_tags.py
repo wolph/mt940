@@ -1,3 +1,4 @@
+import datetime
 import pathlib
 
 import mt940
@@ -5,6 +6,34 @@ import pytest
 from mt940 import models, tags
 
 _tests_path = pathlib.Path(__file__).parent
+
+# Minimal valid MT940 statement to wrap single-tag test values in.
+_HEADER = ':20:REF\n:25:ACC\n:28C:1\n:60F:C231229EUR0,00\n'
+_FOOTER = ':62F:C231229EUR10,00\n'
+
+
+def test_date_time_indication_positive_offset_is_hhmm():
+    # The :13(D): offset subfield is HHMM (like ISO 8601 +0130), not a
+    # number of minutes: +0130 means 1 hour 30 minutes.
+    transactions = mt940.parse(':13D:1701191815+0130\n' + _HEADER + _FOOTER)
+    date = transactions.data['date']
+    assert date.utcoffset() == datetime.timedelta(hours=1, minutes=30)
+
+
+def test_date_time_indication_negative_offset():
+    # 1!x sign can be '-' as well (e.g. US banks): -0500 is UTC-5.
+    transactions = mt940.parse(':13D:1701191815-0500\n' + _HEADER + _FOOTER)
+    date = transactions.data['date']
+    assert date.utcoffset() == -datetime.timedelta(hours=5)
+
+
+def test_date_time_indication_without_offset():
+    # The offset is optional in the pattern; a bare 10-digit :13: must not
+    # crash and yields a naive datetime.
+    transactions = mt940.parse(':13:1701191815\n' + _HEADER + _FOOTER)
+    date = transactions.data['date']
+    assert date == models.DateTime(2017, 1, 19, 18, 15)
+    assert date.tzinfo is None
 
 
 @pytest.fixture
