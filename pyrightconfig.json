@@ -1,0 +1,15 @@
+{
+  "include": ["mt940", "mt940_tests"],
+  "exclude": ["dist/*", "mt940_tests/*"],
+  "strict": [
+    "mt940/__about__.py",
+    "mt940/__init__.py",
+    "mt940/json.py",
+    "mt940/models.py",
+    "mt940/parser.py",
+    "mt940/processors.py",
+    "mt940/tags.py",
+    "mt940/utils.py"
+  ],
+  "reportImportCycles": false
+}

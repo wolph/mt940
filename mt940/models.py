@@ -724,7 +724,9 @@ class Transactions(Sequence[Transaction]):
         return valid_matches
 
 
-class TransactionsAndTransaction(Transactions, Transaction):  # type: ignore[misc]
+class TransactionsAndTransaction(  # type: ignore[misc]  # pyright: ignore[reportUnsafeMultipleInheritance]
+    Transactions, Transaction
+):
     """
     Subclass of both Transactions and Transaction for scope definitions.
 

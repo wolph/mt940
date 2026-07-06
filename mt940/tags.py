@@ -78,6 +78,7 @@ import enum
 import logging
 import re
 import typing
+from typing import ClassVar
 
 from . import models
 
@@ -90,12 +91,14 @@ class Tag:
     """
 
     id: str | int = 0
-    RE_FLAGS = re.IGNORECASE | re.VERBOSE | re.UNICODE
-    scope: type[models.Transactions | models.Transaction] = models.Transactions
-    pattern: str
-    name: str
-    slug: str
-    logger: logging.Logger
+    RE_FLAGS: ClassVar = re.IGNORECASE | re.VERBOSE | re.UNICODE
+    scope: ClassVar[type[models.Transactions | models.Transaction]] = (
+        models.Transactions
+    )
+    pattern: ClassVar[str]
+    name: ClassVar[str]
+    slug: ClassVar[str]
+    logger: ClassVar[logging.Logger]
 
     def __init__(self) -> None:
         self.re = re.compile(self.pattern, self.RE_FLAGS)
@@ -610,7 +613,7 @@ class SumEntries(Tag):
     (?P<currency>.{3})  # 3!a Currency
     (?P<amount>[\d,]{1,15})  # 15d Amount
     """
-    status: str
+    status: ClassVar[str]
 
     def __call__(
         self, transactions: models.Transactions, value: dict[str, typing.Any]
