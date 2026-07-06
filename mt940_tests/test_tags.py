@@ -72,6 +72,29 @@ def test_non_swift_blank_lines_collapse():
     assert result['non_swift_text'] == 'foo\n\nbar'
 
 
+def test_floor_limit_space_indicator_treated_as_absent():
+    # Fiducia / Volksbank Ortenau sends ':34F:EUR 999999999999,99' (commit
+    # d36c51b relaxed the regex for it). A blank D/C mark means "applies to
+    # both", like an absent mark -- it must not create a ' _floor_limit' key.
+    transactions = mt940.parse(
+        ':20:REF\n:25:ACC\n:28C:1\n'
+        ':34F:EUR 999999999999,99\n' + ':60F:C231229EUR0,00\n' + _FOOTER
+    )
+    assert ' _floor_limit' not in transactions.data
+    assert str(transactions.data['d_floor_limit']) == '-999999999999.99 EUR'
+    assert str(transactions.data['c_floor_limit']) == '999999999999.99 EUR'
+
+
+def test_floor_limit_lowercase_indicator_normalized():
+    # The tag regexes are compiled with re.IGNORECASE, so a lowercase mark
+    # must behave exactly like its uppercase form (debit -> negative).
+    transactions = mt940.parse(
+        ':20:REF\n:25:ACC\n:28C:1\n'
+        ':34F:EURd10,00\n' + ':60F:C231229EUR0,00\n' + _FOOTER
+    )
+    assert str(transactions.data['d_floor_limit']) == '-10.00 EUR'
+
+
 def test_date_time_indication_without_offset():
     # The offset is optional in the pattern; a bare 10-digit :13: must not
     # crash and yields a naive datetime.

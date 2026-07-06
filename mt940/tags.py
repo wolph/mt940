@@ -299,8 +299,14 @@ class FloorLimitIndicator(Tag):
             dict[str, str],
             super().__call__(transactions, value),
         )
-        if data['status']:
-            key = data['status'].lower() + '_floor_limit'
+        # Normalize the D/C mark: a space (sent by e.g. Fiducia/Volksbank,
+        # d36c51b) means "both", like an absent mark, and a lowercase mark
+        # (the patterns match case-insensitively) must behave like its
+        # uppercase form so the debit amount is negated consistently.
+        status: str = data['status'].strip().upper()
+        if status:
+            data['status'] = status
+            key: str = status.lower() + '_floor_limit'
             return {key: models.Amount(**data)}
         data_d = data.copy()
         data_c = data.copy()
