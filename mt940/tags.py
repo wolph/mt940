@@ -326,15 +326,12 @@ class NonSwift(Tag):
     scope = models.TransactionsAndTransaction
     id = 'NS'
 
+    # NS content is bank specific and free-form, so accept anything
+    # (including multi-line values whose lines do not all start with a
+    # two-digit sub-tag); `__call__` extracts the `2!n35x` structure per
+    # line where present.
     pattern = r"""
-    (?P<non_swift>
-        (
-            (\d{2}.{0,})
-            (\n\d{2}.{0,})*
-        )|(
-            [^\n]*
-        )
-    )
+    (?P<non_swift>[\s\S]*)
     $"""
     sub_pattern = r"""
     (?P<ns_id>\d{2})(?P<ns_data>.{0,})
@@ -354,10 +351,13 @@ class NonSwift(Tag):
                 ns = frag.groupdict()
                 value['non_swift_' + ns['ns_id']] = ns['ns_data']
                 text.append(ns['ns_data'])
-            elif len(text) and text[-1]:
-                text.append('')
             elif line.strip():
+                # Free-form line without a two-digit sub-tag: keep the
+                # content instead of dropping it.
                 text.append(line.strip())
+            elif len(text) and text[-1]:
+                # Blank line: collapse runs into one paragraph separator.
+                text.append('')
         value['non_swift_text'] = '\n'.join(text)
         value['non_swift'] = data
         return value

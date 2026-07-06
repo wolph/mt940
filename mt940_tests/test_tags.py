@@ -45,6 +45,33 @@ def test_transaction_details_long_multiline_not_truncated():
     assert transactions[0].data['transaction_details'] == details
 
 
+def test_non_swift_multiline_free_text():
+    # NS content is bank specific ("could be anything"); multi-line values
+    # whose lines do not all start with a two-digit sub-tag used to fail the
+    # NS pattern and abort the whole parse.
+    transactions = mt940.parse(_HEADER + ':NS:hello\nworld\n' + _FOOTER)
+    assert transactions.data['non_swift'] == 'hello\nworld'
+    assert transactions.data['non_swift_text'] == 'hello\nworld'
+
+
+def test_non_swift_structured_line_followed_by_free_text():
+    transactions = mt940.parse(_HEADER + ':NS:22foo\nbar\n' + _FOOTER)
+    assert transactions.data['non_swift'] == '22foo\nbar'
+    assert transactions.data['non_swift_22'] == 'foo'
+    assert transactions.data['non_swift_text'] == 'foo\nbar'
+
+
+def test_non_swift_blank_lines_collapse():
+    # Direct tag call: blank lines between content are kept as single
+    # paragraph separators in non_swift_text (mt940.parse strips blank
+    # lines before tags ever see them).
+    tag = tags.NonSwift()
+    result = tag(
+        mt940.models.Transactions(), {'non_swift': '22foo\n\n\n22bar'}
+    )
+    assert result['non_swift_text'] == 'foo\n\nbar'
+
+
 def test_date_time_indication_without_offset():
     # The offset is optional in the pattern; a bare 10-digit :13: must not
     # crash and yields a naive datetime.
