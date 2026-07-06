@@ -120,7 +120,7 @@ class Tag:
             RuntimeError: If the value does not match the tag's pattern.
         """
         match = self.re.match(value)
-        if match:  # pragma: no branch
+        if match:
             self.logger.debug(
                 'matched (%d) %r against "%s", got: %s',
                 len(value),
@@ -129,7 +129,7 @@ class Tag:
                 match.groupdict(),
             )
             return match.groupdict()
-        else:  # pragma: no cover
+        else:
             self.logger.error(
                 'matching id=%s (len=%d) "%s" against\n    %s',
                 self.id,
@@ -142,13 +142,20 @@ class Tag:
                 f'Unable to parse {self!r} from {value!r}', self, value
             )
 
-    def _debug_partial_match(self, value: str) -> None:  # pragma: no cover
+    def _debug_partial_match(self, value: str) -> None:
         """
         Helper function to debug partial matches against the pattern.
         """
         part_value = value
         for pattern in self.pattern.split('\n'):
-            match = re.match(pattern, part_value, self.RE_FLAGS)
+            try:
+                match = re.match(pattern, part_value, self.RE_FLAGS)
+            except re.error:
+                # Single lines of a pattern with multi-line groups are not
+                # valid patterns on their own; skip them instead of masking
+                # the RuntimeError raised by `parse`.
+                self.logger.info('cannot compile fragment %r', pattern)
+                continue
             if match:
                 self.logger.info(
                     'matched %r against %r, got: %s',

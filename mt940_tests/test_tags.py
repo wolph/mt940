@@ -95,6 +95,27 @@ def test_floor_limit_lowercase_indicator_normalized():
     assert str(transactions.data['d_floor_limit']) == '-10.00 EUR'
 
 
+class MultilineGroupTag(tags.Tag):
+    """Tag whose (valid) pattern spreads one group over several lines."""
+
+    id = 28
+    pattern = r"""
+    (?P<statement_number>
+        \d+
+    )
+    $"""
+
+
+def test_unparseable_value_raises_runtime_error():
+    # Tag.parse documents RuntimeError for unparseable values, but the
+    # debug helper re-compiles the pattern line by line; for patterns with
+    # multi-line groups the unbalanced fragments raised re.error instead.
+    tag_parser = MultilineGroupTag()
+    transactions = mt940.models.Transactions(tags={tag_parser.id: tag_parser})
+    with pytest.raises(RuntimeError, match='Unable to parse'):
+        transactions.parse(':20:REF\n:28C:NOTDIGITS\n')
+
+
 def test_date_time_indication_without_offset():
     # The offset is optional in the pattern; a bare 10-digit :13: must not
     # crash and yields a naive datetime.
