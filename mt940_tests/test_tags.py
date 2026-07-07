@@ -107,7 +107,7 @@ class MultilineGroupTag(tags.Tag):
 
 
 def test_unparseable_value_raises_runtime_error():
-    # Tag.parse documents RuntimeError for unparseable values, but the
+    # Tag.parse documents RuntimeError for unparsable values, but the
     # debug helper re-compiles the pattern line by line; for patterns with
     # multi-line groups the unbalanced fragments raised re.error instead.
     tag_parser = MultilineGroupTag()

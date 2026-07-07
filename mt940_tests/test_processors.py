@@ -189,7 +189,7 @@ def test_json_round_trip_preserves_model_values() -> None:
     decoded = json.loads(json.dumps(transactions, cls=mt940.JSONEncoder))
 
     assert len(decoded['transactions']) == len(transactions)
-    # Balance -> nested dict; Amount -> Decimal rendered as str; Date -> ISO str
+    # Balance -> nested dict; Amount -> Decimal as str; Date -> ISO str
     assert decoded['final_opening_balance'] == {
         'status': 'C',
         'amount': {'amount': '3236.28', 'currency': 'EUR'},
@@ -345,7 +345,7 @@ def test_repeated_structured_86_merges_without_crash(
     strict=True,
     reason='repeated structured :86: None-clobber semantics -- pending '
     'decision (audit task 7 review): preserving non-None values against a '
-    'later tag\'s None is arguably more correct, but the same rule stops a '
+    "later tag's None is arguably more correct, but the same rule stops a "
     'structured :86: from nulling the customer_reference set by :61:, '
     'changing 5 real-bank goldens.',
 )
