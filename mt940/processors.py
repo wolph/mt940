@@ -357,8 +357,17 @@ def _parse_mt940_gvcodes(purpose: str) -> dict[str, str | None]:
 
     for index, char in enumerate(purpose):
         # Detect the beginning of a GVC segment: if a '+' is encountered
-        # and the four characters preceding it form a valid GVC key.
-        if char == '+' and purpose[index - 4 : index] in GVC_KEYS:
+        # and the four characters preceding it form a valid GVC key. GVC
+        # keywords are four characters wide, so a '+' before index 4 cannot
+        # terminate one; guarding on ``index >= 4`` also avoids a negative
+        # ``purpose[index - 4:index]`` slice wrapping to the empty string
+        # (which spuriously matched the empty-string GVC key and truncated a
+        # literal '+' in the leading free text).
+        if (
+            char == '+'
+            and index >= 4
+            and purpose[index - 4 : index] in GVC_KEYS
+        ):
             if segment_type:
                 # If already processing a segment, finalize it by removing
                 # the trailing GVC key and reset the text accumulator.
@@ -372,10 +381,10 @@ def _parse_mt940_gvcodes(purpose: str) -> dict[str, str | None]:
         else:
             text += char
 
-    if segment_type:  # pragma: no branch
+    if segment_type:
         tmp[segment_type] = text
     else:
-        tmp[''] = text  # pragma: no cover
+        tmp[''] = text
 
     for key, value in tmp.items():
         result[GVC_KEYS[key]] = value

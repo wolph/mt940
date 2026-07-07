@@ -258,3 +258,37 @@ def test_date_fixup_non_leap_february_clamped() -> None:
     )
     transactions = mt940.parse(data)
     assert transactions[0].data['date'] == mt940.models.Date(2017, 2, 28)
+
+
+@pytest.mark.parametrize(
+    ('detail', 'expected_purpose'),
+    [
+        # A literal '+' inside the first characters of free text (e.g. a
+        # company name like "AB+...") must not be treated as a GVC KEYWORD+
+        # separator: EREF is a real GVC key later in the text, so gvcodes runs.
+        ('020?20AB+EREF', 'AB+EREF'),
+        # 'A+B' at the very start must survive; SVWZ triggers gvcodes parsing.
+        ('020?20A+B SVWZ TEXT', 'A+B SVWZ TEXT'),
+    ],
+)
+def test_gvcode_leading_plus_in_free_text_kept_in_purpose(
+    detail: str, expected_purpose: str
+) -> None:
+    """A '+' earlier than position 4 cannot terminate a GVC keyword.
+
+    GVC keywords are 3-4 chars followed by '+'. ``_parse_mt940_gvcodes`` sliced
+    ``purpose[index - 4:index]`` without a lower bound, so a '+' at index < 4
+    produced a wrapped/empty slice matching the empty-string GVC key and
+    truncated the purpose (dropping the leading free text before the '+').
+    """
+    data = (
+        ':20:REF\n'
+        ':25:123456789\n'
+        ':28C:0\n'
+        ':60F:C200101EUR100,00\n'
+        ':61:2001010101C10,00NTRFNONREF\n'
+        f':86:{detail}\n'
+        ':62F:C200101EUR110,00\n'
+    )
+    transaction = mt940.parse(data)[0].data
+    assert transaction['purpose'] == expected_purpose
