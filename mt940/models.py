@@ -624,12 +624,19 @@ class Transactions(Sequence[Transaction]):
     def _update_transaction(self, result: dict[str, Any]) -> None:
         """Merge a transaction-scoped result into the current transaction.
 
-        New keys are set directly; string values for keys that already exist
-        are appended on a new line (e.g. multi-line ``:86:`` details).
+        New keys are set directly; when both the existing and incoming
+        values are strings, the incoming one is appended on a new line
+        (e.g. multi-line ``:86:`` details). Any other combination assigns
+        the incoming value: a structured ``:86:`` emits ``None`` for absent
+        sub-fields, so a later string must replace an existing ``None``
+        rather than crash on ``None += str`` (and an incoming ``None``
+        still overwrites, preserving the merge semantics the fixture
+        goldens encode).
         """
         transaction = self.transactions[-1]
         for k, v in result.items():
-            if k in transaction.data and hasattr(v, 'strip'):
+            existing = transaction.data.get(k)
+            if hasattr(existing, 'strip') and hasattr(v, 'strip'):
                 transaction.data[k] += f'\n{v.strip()}'
             else:
                 transaction.data[k] = v
