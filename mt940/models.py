@@ -214,15 +214,20 @@ class Amount(Model):
         """Coerce ``amount`` to a signed :class:`decimal.Decimal`.
 
         ``status`` is ``'C'`` for credit (positive) or ``'D'`` for debit, in
-        which case the amount is negated. Extra keyword arguments are ignored
-        so a parsed tag dictionary can be splatted in directly.
+        which case the amount is negated. The comparison is case-insensitive:
+        the tag patterns are compiled with :data:`re.IGNORECASE`, so a bank
+        that sends a lowercase ``'d'`` mark must still have its debit negated
+        rather than silently stored as a positive amount. Reversal marks
+        (``'RD'``/``'RC'``) are intentionally left unchanged here. Extra
+        keyword arguments are ignored so a parsed tag dictionary can be
+        splatted in directly.
         """
         self.amount = decimal.Decimal(amount.replace(',', '.'))
         self.currency = currency
 
         # C = credit, D = debit
 
-        if status == 'D':
+        if status.upper() == 'D':
             self.amount = -self.amount
 
     def __eq__(self, other: object) -> bool:

@@ -154,6 +154,18 @@ def test_statement_amount_without_decimals():
     assert str(transactions[0].data['amount']) == '10 EUR'
 
 
+def test_statement_lowercase_debit_mark_is_negative():
+    # The tag patterns are compiled with re.IGNORECASE, so a lowercase 'd'
+    # debit mark is accepted. Amount must still treat it as a debit and
+    # negate the amount; otherwise a debit is silently stored as positive.
+    transactions = mt940.parse(
+        _HEADER + ':61:2312290101d10,50NTRFREF//BANK\n' + _FOOTER
+    )
+    data = transactions[0].data
+    assert data['status'] == 'd'
+    assert str(data['amount']) == '-10.50 EUR'
+
+
 def test_statement_second_double_slash_stays_in_bank_reference():
     # Only the first // separates the bank reference; a second one is kept
     # as part of the reference content.
