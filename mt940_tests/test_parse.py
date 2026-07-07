@@ -28,6 +28,33 @@ def test_non_ascii_parse(path, encoding):
         pickle.dumps(mt940.parse(data))
 
 
+_BOM_STATEMENT = (
+    ':20:REF\n'
+    ':25:NL00BANK0123456789\n'
+    ':28C:1/1\n'
+    ':60F:C091019EUR1000,00\n'
+    ':61:0910201020C500,00NTRFNONREF//B\n'
+    ':86:Example transaction\n'
+    ':62F:C091020EUR1500,00\n'
+)
+
+
+def test_utf8_bom_bytes_does_not_drop_first_tag():
+    # A UTF-8 BOM (emitted by many Windows tools/banks) must not push the
+    # leading :20: past the start-of-line tag anchor and drop its data.
+    data = b'\xef\xbb\xbf' + _BOM_STATEMENT.encode('utf-8')
+    transactions = mt940.parse(data)
+    assert transactions.data.get('transaction_reference') == 'REF'
+    assert len(transactions) == 1
+
+
+def test_utf8_bom_str_does_not_drop_first_tag():
+    # Same file already decoded to str with a stray BOM character.
+    transactions = mt940.parse('﻿' + _BOM_STATEMENT)
+    assert transactions.data.get('transaction_reference') == 'REF'
+    assert len(transactions) == 1
+
+
 def test_pickle_roundtrip_restores_processors():
     # __getstate__ drops the (unpicklable) processors; __setstate__ must
     # restore them so the unpickled object is still usable.
