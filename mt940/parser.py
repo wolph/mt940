@@ -75,11 +75,12 @@ def _read(src: Any, encoding: str | None = None) -> str:
             raise exception  # pragma: no cover
 
     assert isinstance(data, str)
-    # Strip a leading byte-order mark. utf-8/utf-16 files written by Windows
-    # tools decode to a leading ``﻿``, which is not whitespace and so
-    # survives ``strip`` -- it would push the first ``:20:`` off the
-    # start-of-line tag anchor and silently drop that tag's data.
-    return data.removeprefix('﻿')
+    # Strip a leading byte-order mark (U+FEFF). A BOM survives decoding as
+    # U+FEFF for UTF-8 input (and for UTF-16 only when an explicit
+    # utf-16-le/-be encoding is passed). It is not whitespace, so it would
+    # otherwise displace the first `:20:` off the start-of-line tag anchor and
+    # silently drop that tag's data.
+    return data.removeprefix('\ufeff')
 
 
 def parse(
