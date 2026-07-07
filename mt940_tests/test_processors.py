@@ -1,3 +1,4 @@
+import json
 import os
 import pathlib
 import typing
@@ -174,3 +175,86 @@ def test_citi_bank_processors() -> None:
         assert len(transactions) == 5
         expected_date = mt940.models.Date(2024, 3, 12)
         assert transactions[0].data['date'] == expected_date
+
+
+def test_json_round_trip_preserves_model_values() -> None:
+    """`mt940.JSONEncoder` serialises every model type and round-trips.
+
+    The existing ``test_json_dump`` only calls ``json.dumps`` over ``.sta``
+    fixtures. This exercises the full ``dumps`` -> ``loads`` round-trip and
+    asserts the string forms of the nested ``Balance``/``Amount``/``Date``
+    value types, which were previously unchecked.
+    """
+    transactions = mt940.parse(str(_tests_path / 'jejik' / 'abnamro.sta'))
+    decoded = json.loads(json.dumps(transactions, cls=mt940.JSONEncoder))
+
+    assert len(decoded['transactions']) == len(transactions)
+    # Balance -> nested dict; Amount -> Decimal rendered as str; Date -> ISO str
+    assert decoded['final_opening_balance'] == {
+        'status': 'C',
+        'amount': {'amount': '3236.28', 'currency': 'EUR'},
+        'date': '2011-05-22',
+    }
+    # Every transaction amount is a Decimal serialised to a plain string.
+    for transaction in decoded['transactions']:
+        assert isinstance(transaction['amount']['amount'], str)
+        assert isinstance(transaction['date'], str)
+
+
+def test_json_round_trip_sum_amount_and_datetime() -> None:
+    """``SumAmount`` (with its entry ``number``) and ``DateTime`` serialise.
+
+    The mBank ``:90D:``/``:90C:`` and ``:13D:`` tags produce ``SumAmount`` and
+    ``DateTime`` objects that never appear in the jejik ``.sta`` fixtures used
+    by ``test_json_dump``'s value-free smoke check.
+    """
+    transactions = mt940.parse(str(_tests_path / 'mBank' / 'mt942.sta'))
+    decoded = json.loads(json.dumps(transactions, cls=mt940.JSONEncoder))
+
+    assert decoded['sum_credit_entries'] == {
+        'amount': '0.03',
+        'currency': 'PLN',
+        'number': '3',
+    }
+    # The :13D: DateTime (with a +0100 FixedOffset) renders as an ISO string,
+    # carrying the timezone offset, not a mapping.
+    assert decoded['date'] == '2017-01-19 18:15:00+01:00'
+
+
+def test_json_round_trip_asnb_non_swift_statement() -> None:
+    """The opt-in ``StatementASNB`` tag output also round-trips cleanly.
+
+    ASN fixtures live in ``.txt`` files and require a custom tag, so they are
+    outside ``test_json_dump``'s ``.sta`` glob entirely.
+    """
+    tag = mt940.tags.StatementASNB()
+    transactions = mt940.models.Transactions(tags={tag.id: tag})
+    with (_tests_path / 'ASNB' / 'mt940.txt').open() as fh:
+        transactions.parse(fh.read())
+
+    decoded = json.loads(json.dumps(transactions, cls=mt940.JSONEncoder))
+    assert len(decoded['transactions']) == len(transactions)
+    assert decoded['transactions'][0]['amount'] == {
+        'amount': '-65.00',
+        'currency': 'EUR',
+    }
+
+
+def test_date_fixup_non_leap_february_clamped() -> None:
+    """A Feb 29 value date in a non-leap year is clamped to Feb 28.
+
+    ``test_date_fixup_pre_processor`` only covers Feb 30 in a leap year
+    (``february_30.sta``, 2016 -> Feb 29); the non-leap clamp path was
+    previously unexercised.
+    """
+    data = (
+        ':20:REF\n'
+        ':25:123456789\n'
+        ':28C:0\n'
+        ':60F:C170201EUR100,00\n'
+        ':61:1702290228DR6,00N024NONREF\n'
+        ':86:free\n'
+        ':62F:C170228EUR94,00\n'
+    )
+    transactions = mt940.parse(data)
+    assert transactions[0].data['date'] == mt940.models.Date(2017, 2, 28)
