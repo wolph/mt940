@@ -55,6 +55,57 @@ def test_utf8_bom_str_does_not_drop_first_tag():
     assert len(transactions) == 1
 
 
+def test_86_line_with_embedded_tag_lookalike_stays_in_details():
+    # A :86: free-text line that itself starts with a tag-lookalike (:12:,
+    # which is not a known tag) must not be split off as a separate tag and
+    # corrupt the statement -- it stays part of the transaction details.
+    transactions = mt940.parse(
+        ':20:R\n:25:A\n:28C:1\n:60F:C240101EUR0,00\n'
+        ':61:2401010101C10,00NTRFREF//B\n'
+        ':86:PAYMENT FOR\n:12:INVOICE STYLE REF\n'
+        ':62F:C240101EUR10,00\n'
+    )
+    assert len(transactions) == 1
+    # No corruption: the closing balance still parses off the real :62F:.
+    assert (
+        str(transactions.data['final_closing_balance'].amount) == '10.00 EUR'
+    )
+    # The lookalike line is retained verbatim inside the details.
+    details = transactions[0].data['transaction_details']
+    assert 'INVOICE STYLE REF' in details
+
+
+def test_parse_statements_drops_swift_header_and_absorbs_terminators():
+    # A leading SWIFT {1:}{2:}{4: header before the first :20: must be dropped,
+    # and the lone `-` statement terminators must not create empty statements.
+    data = (
+        '{1:F01BANKNL2AXXXX0000000000}{2:I940BANKNL2AXXXXN}{4:\n'
+        ':20:STMT1\n:25:NL00BANK1\n:28C:1/1\n:60F:C240101EUR100,00\n'
+        ':62F:C240101EUR100,00\n-}\n'
+        ':20:STMT2\n:25:NL00BANK2\n:28C:2/1\n:60F:C240102EUR200,00\n'
+        ':62F:C240102EUR200,00\n-\n'
+    )
+    statements = mt940.parse_statements(data)
+    assert [s.data['transaction_reference'] for s in statements] == [
+        'STMT1',
+        'STMT2',
+    ]
+
+
+def test_86_continuation_preserves_leading_whitespace():
+    # Transactions.strip only rstrips, so significant leading whitespace on a
+    # :86: continuation line is preserved rather than eaten.
+    transactions = mt940.parse(
+        ':20:R\n:25:A\n:28C:1\n:60F:C240101EUR0,00\n'
+        ':61:2401010101C10,00NTRFREF//B\n'
+        ':86:LINE ONE\n    INDENTED TWO\n'
+        ':62F:C240101EUR10,00\n'
+    )
+    assert transactions[0].data['transaction_details'] == (
+        'LINE ONE\n    INDENTED TWO'
+    )
+
+
 def test_pickle_roundtrip_restores_processors():
     # __getstate__ drops the (unpicklable) processors; __setstate__ must
     # restore them so the unpickled object is still usable.
