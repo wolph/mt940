@@ -42,3 +42,19 @@ def test_pickle_roundtrip_restores_processors():
     assert len(restored) == len(transactions)
     # Re-parsing exercises the restored processors without raising.
     restored.parse('')
+
+
+def test_pickle_roundtrip_preserves_transaction_boundary():
+    # __getstate__ only drops `processors`; newer state such as the opt-in
+    # `transaction_boundary` (issue #110) must survive a pickle round-trip.
+    transactions = mt940.models.Transactions(
+        transaction_boundary={'transaction_reference_number'}
+    )
+
+    # Trusted, self-produced pickle (a round-trip of our own object), so
+    # pickle.loads is safe here.
+    restored = pickle.loads(pickle.dumps(transactions))
+
+    assert restored.transaction_boundary == frozenset(
+        {'transaction_reference_number'}
+    )
