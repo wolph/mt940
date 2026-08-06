@@ -368,7 +368,7 @@ transactions:
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal
-      - '204.88'
+      - '-204.88'
       currency: EUR
     applicant_bin: null
     applicant_name: null
@@ -973,7 +973,7 @@ transactions:
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal
-      - '204.88'
+      - '-204.88'
       currency: EUR
     applicant_bin: null
     applicant_name: null
