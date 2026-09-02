@@ -25,8 +25,9 @@ data:
 tags:
   13: !!python/object:mt940.tags.DateTimeIndication
     re: !!python/object/apply:re._compile
-    - "^\n    (?P<year>\\d{2})\n    (?P<month>\\d{2})\n    (?P<day>\\d{2})\n    (?P<hour>\\d{2})\n
-      \   (?P<minute>\\d{2})\n    (\\+(?P<offset>\\d{4})|)\n    "
+    - "^\n    (?P<year>\\d{2})\n    (?P<month>\\d{2})\n    (?P<day>\\d{2})\n    (?P<hour>\\\
+      d{2})\n    (?P<minute>\\d{2})\n    ((?P<offset_sign>[+-])(?P<offset>\\d{4}))?\n\
+      \    "
     - 98
   20: !!python/object:mt940.tags.TransactionReferenceNumber
     re: !!python/object/apply:re._compile
@@ -42,15 +43,15 @@ tags:
     - 98
   28: !!python/object:mt940.tags.StatementNumber
     re: !!python/object/apply:re._compile
-    - "\n    (?P<statement_number>\\d{1,5})  # 5n\n    (?:/?(?P<sequence_number>\\d{1,5}))?
-      \ # [/5n]\n    $"
+    - "\n    (?P<statement_number>\\d{1,5})  # 5n\n    (?:/?(?P<sequence_number>\\\
+      d{1,5}))?  # [/5n]\n    $"
     - 98
   60: !!python/object:mt940.tags.OpeningBalance
     re: &id001 !!python/object/apply:re._compile
-    - "^\n    (?P<status>[DC])  # 1!a Debit/Credit\n    (?P<year>\\d{2})  # 6!n Value
-      Date (YYMMDD)\n    (?P<month>\\d{2})\n    (?P<day>\\d{2})\n    (?P<currency>.{3})
-      \ # 3!a Currency\n    (?P<amount>[0-9,]{0,16})  # 15d Amount (includes decimal
-      sign, so 16)\n    "
+    - "^\n    (?P<status>[DC])  # 1!a Debit/Credit\n    (?P<year>\\d{2})  # 6!n Value\
+      \ Date (YYMMDD)\n    (?P<month>\\d{2})\n    (?P<day>\\d{2})\n    (?P<currency>.{3})\
+      \  # 3!a Currency\n    (?P<amount>[0-9,]{0,16})  # 15d Amount (includes decimal\
+      \ sign, so 16)\n    "
     - 98
   60M: !!python/object:mt940.tags.IntermediateOpeningBalance
     re: *id001
@@ -58,14 +59,17 @@ tags:
     re: *id001
   61: !!python/object:mt940.tags.Statement
     re: !!python/object/apply:re._compile
-    - "^\n    (?P<year>\\d{2})  # 6!n Value Date (YYMMDD)\n    (?P<month>\\d{2})\n
-      \   (?P<day>\\d{2})\n    (?P<entry_month>\\d{2}|\\s{2})?  # [4!n] Entry Date
-      (MMDD)\n    (?P<entry_day>\\d{2}|\\s{2})?\n    (?P<status>R?[DC])  # 2a Debit/Credit
-      Mark\n    (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd character of the currency\n
-      \                           # code, if needed)\n    [\\n ]?\n    (?P<amount>[\\d,]{1,15})
-      \ # 15d Amount\n    (?P<id>[A-Z][A-Z0-9 ]{3})?\n    (?P<customer_reference>((?!//)[^\\n]){0,16})\n
-      \   (//(?P<bank_reference>.{0,23}))?\n    (\\n?(?P<extra_details>.{0,34}))?\n
-      \   $"
+    - "^\n    (?P<year>\\d{2})  # 6!n Value Date (YYMMDD)\n    (?P<month>\\d{2})\n\
+      \    (?P<day>\\d{2})\n    (?P<entry_month>\\d{2}|\\s{2})?  # [4!n] Entry Date\
+      \ (MMDD)\n    (?P<entry_day>\\d{2}|\\s{2})?\n    (?P<status>R?[DC])  # 2a Debit/Credit\
+      \ Mark\n    (?P<funds_code>[A-Z])? # [1!a] Funds Code (3rd character of the\
+      \ currency\n                            # code, if needed)\n    [\\n ]?\n  \
+      \  (?P<amount>[\\d,]{1,15})  # 15d Amount\n    (?P<id>[A-Z][A-Z0-9 ]{3})?\n\
+      \    (?P<customer_reference>((?!//)[^\\n]){0,16})\n    (//(?P<bank_reference>.{0,23}))?\n\
+      \    # Supplementary details: the SWIFT spec caps this at 34x, but some banks\n\
+      \    # (e.g. Wise, issue #117) send more, so the length limit is relaxed. This\n\
+      \    # only ever turns a previous parse error into a successful parse.\n   \
+      \ (\\n?(?P<extra_details>.*))?\n    $"
     - 98
   62: !!python/object:mt940.tags.ClosingBalance
     re: *id001
@@ -79,29 +83,29 @@ tags:
     re: *id001
   86: !!python/object:mt940.tags.TransactionDetails
     re: !!python/object/apply:re._compile
-    - "\n    (?P<transaction_details>(([\\s\\S]{0,65}\\r?\\n?){0,8}[\\s\\S]{0,65}))\n
-      \   "
+    - "\n    (?P<transaction_details>[\\s\\S]*)\n    "
     - 98
   34: !!python/object:mt940.tags.FloorLimitIndicator
     re: !!python/object/apply:re._compile
-    - "^\n    (?P<currency>[A-Z]{3})  # 3!a Currency\n    (?P<status>[DC ]?)  # 2a
-      Debit/Credit Mark\n    (?P<amount>[0-9,]{0,16})  # 15d Amount (includes decimal
-      sign, so 16)\n    $"
+    - "^\n    (?P<currency>[A-Z]{3})  # 3!a Currency\n    (?P<status>[DC ]?)  # 2a\
+      \ Debit/Credit Mark\n    (?P<amount>[0-9,]{0,16})  # 15d Amount (includes decimal\
+      \ sign, so 16)\n    $"
     - 98
   NS: !!python/object:mt940.tags.NonSwift
     re: !!python/object/apply:re._compile
-    - "\n    (?P<non_swift>\n        (\n            (\\d{2}.{0,})\n            (\\n\\d{2}.{0,})*\n
-      \       )|(\n            [^\\n]*\n        )\n    )\n    $"
+    - "\n    (?P<non_swift>[\\s\\S]*)\n    $"
     - 98
   90: !!python/object:mt940.tags.SumEntries
     re: &id002 !!python/object/apply:re._compile
-    - "^\n    (?P<number>\\d*)\n    (?P<currency>.{3})  # 3!a Currency\n    (?P<amount>[\\d,]{1,15})
-      \ # 15d Amount\n    "
+    - "^\n    (?P<number>\\d*)\n    (?P<currency>.{3})  # 3!a Currency\n    (?P<amount>[\\\
+      d,]{1,15})  # 15d Amount\n    "
     - 98
   90D: !!python/object:mt940.tags.SumDebitEntries
     re: *id002
   90C: !!python/object:mt940.tags.SumCreditEntries
     re: *id002
+transaction_boundary: !!python/object/apply:builtins.frozenset
+- []
 transactions:
 - !!python/object:mt940.models.Transaction
   data:

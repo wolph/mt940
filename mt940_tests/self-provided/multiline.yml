@@ -102,8 +102,7 @@ tags:
     - 98
   NS: !!python/object:mt940.tags.NonSwift
     re: !!python/object/apply:re._compile
-    - "\n    (?P<non_swift>\n        (\n            (\\d{2}.{0,})\n            (\\\
-      n\\d{2}.{0,})*\n        )|(\n            [^\\n]*\n        )\n    )\n    $"
+    - "\n    (?P<non_swift>[\\s\\S]*)\n    $"
     - 98
   90: !!python/object:mt940.tags.SumEntries
     re: &id002 !!python/object/apply:re._compile
