@@ -42,4 +42,6 @@ pre-push:
     ty:
       run: uv run ty check
     test:
-      run: uv run pytest -q -x --no-cov -p no:randomly
+      # Fixed order for a fast, deterministic gate. The plugin stays loaded
+      # because pyproject lists it as required.
+      run: uv run pytest -q -x --no-cov --randomly-dont-reorganize
