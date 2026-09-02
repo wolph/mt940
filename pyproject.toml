@@ -165,3 +165,6 @@ exclude_also = [
     'def __repr__',
     '@overload',
 ]
+
+[tool.uv]
+exclude-newer = "14 days"
