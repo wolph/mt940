@@ -126,8 +126,8 @@ transactions:
       - '-5'
       currency: EUR
     applicant_bin: BILLLULL1234
-    applicant_name: NUMERO DE COMPTE01234567NOM DU DO / BENEFICIAIRE 11NOM DU DO /
-      BENEFICIAIRE 22
+    applicant_iban: NUMERO DE COMPTE01234567
+    applicant_name: NOM DU DO / BENEFICIAIRE 11NOM DU DO / BENEFICIAIRE 22
     bank_reference: MUL0408041114005
     currency: EUR
     customer_reference: REFERENCE DO 111

@@ -307,61 +307,39 @@ def _two_structured_86_data(first_detail: str, second_detail: str) -> str:
 
 
 @pytest.mark.parametrize(
-    ('first_detail', 'second_detail', 'expected_purpose', 'expected_posting'),
-    [
-        # The second tag's None sub-fields clobber the first tag's real
-        # values under the current (golden-pinned) merge semantics: the last
-        # structured :86: wins per key, even with None.
-        ('020?20REALPURPOSE', '020?00POSTINGTEXT', None, 'POSTINGTEXT'),
-        ('020?00POSTINGTEXT', '020?20REALPURPOSE', 'REALPURPOSE', None),
-    ],
-)
-def test_repeated_structured_86_merges_without_crash(
-    first_detail: str,
-    second_detail: str,
-    expected_purpose: str | None,
-    expected_posting: str | None,
-) -> None:
-    """Two structured ``:86:`` tags on one ``:61:`` must not crash the parse.
-
-    A structured ``:86:`` emits every ``DETAIL_KEYS`` value including ``None``
-    for absent sub-fields. A second structured ``:86:`` then hit
-    ``None += str`` in ``_update_transaction`` (``TypeError`` aborting the
-    whole file) in either order. This pins the CURRENT post-fix merge
-    contract: a later string replaces an existing ``None``, while a later
-    ``None`` still overwrites an earlier real value (the semantics the
-    real-bank goldens encode -- see the xfail below for the pending
-    preservation question).
-    """
-    transaction = mt940.parse(
-        _two_structured_86_data(first_detail, second_detail)
-    )[0].data
-    assert transaction['purpose'] == expected_purpose
-    assert transaction['posting_text'] == expected_posting
-
-
-_NONE_CLOBBER_REASON = """repeated structured :86: None-clobber semantics, \
-pending decision (audit task 7 review): preserving non-None values against a \
-later tag's None is arguably more correct, but the same rule stops a \
-structured :86: from nulling the customer_reference set by :61:, changing 5 \
-real-bank goldens."""
-
-
-@pytest.mark.xfail(strict=True, reason=_NONE_CLOBBER_REASON)
-@pytest.mark.parametrize(
-    ('first', 'second'),
+    ('first_detail', 'second_detail'),
     [
         ('020?20REALPURPOSE', '020?00POSTINGTEXT'),
         ('020?00POSTINGTEXT', '020?20REALPURPOSE'),
     ],
 )
-def test_repeated_structured_86_preserves_real_values(
-    first: str, second: str
+def test_repeated_structured_86_keeps_real_values_in_either_order(
+    first_detail: str, second_detail: str
 ) -> None:
-    """Preservation ideal: real values from BOTH tags survive, either order."""
-    transaction = mt940.parse(_two_structured_86_data(first, second))[0].data
+    """Two structured ``:86:`` tags on one ``:61:`` merge without loss.
+
+    A structured ``:86:`` emits every ``DETAIL_KEYS`` value, ``None`` for the
+    sub-fields it does not carry. A second one used to hit ``None += str`` in
+    ``_update_transaction`` and abort the parse, and once that was fixed its
+    ``None`` values still overwrote the first tag's real values. A ``None``
+    never replaces an existing value now, so both tags' values survive.
+    """
+    transaction = mt940.parse(
+        _two_structured_86_data(first_detail, second_detail)
+    )[0].data
     assert transaction['purpose'] == 'REALPURPOSE'
     assert transaction['posting_text'] == 'POSTINGTEXT'
+
+
+def test_structured_86_without_kref_keeps_the_61_customer_reference() -> None:
+    # The :61: carries the customer reference. A structured :86: without a
+    # KREF emits customer_reference=None, which used to null the real value
+    # in nine fixtures from four banks.
+    data = _two_structured_86_data('020?20PURPOSE', '020?00TEXT').replace(
+        'NTRFNONREF', 'NTRFTFNR 40001'
+    )
+    transaction = mt940.parse(data)[0].data
+    assert transaction['customer_reference'] == 'TFNR 40001'
 
 
 def test_add_currency_pre_processor_can_keep_an_existing_currency() -> None:

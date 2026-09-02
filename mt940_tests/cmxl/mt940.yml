@@ -325,7 +325,8 @@ transactions:
       - '-800'
       currency: EUR
     applicant_bin: '10020030'
-    applicant_name: 234567MUELLER
+    applicant_iban: '234567'
+    applicant_name: MUELLER
     bank_reference: '55555'
     currency: EUR
     customer_reference: NONREF
@@ -356,7 +357,8 @@ transactions:
       - '3000'
       currency: EUR
     applicant_bin: '50060400'
-    applicant_name: 0847564700MUELLER
+    applicant_iban: 0847564700
+    applicant_name: MUELLER
     bank_reference: '55555'
     currency: EUR
     customer_reference: NONREF
@@ -387,7 +389,8 @@ transactions:
       - '20000.00'
       currency: PLN
     applicant_bin: '10600076'
-    applicant_name: 0000777777777777HUTA SZKLA TOPIC ULPRZEMYSLOWA 67 32-669 WROCLAW
+    applicant_iban: '0000777777777777'
+    applicant_name: HUTA SZKLA TOPIC ULPRZEMYSLOWA 67 32-669 WROCLAW
     bank_reference: '8327000090031789'
     currency: PLN
     customer_reference: NONREF
@@ -420,7 +423,8 @@ transactions:
       - '-10000.00'
       currency: PLN
     applicant_bin: '10600076'
-    applicant_name: '0000777777777777'
+    applicant_iban: '0000777777777777'
+    applicant_name: null
     bank_reference: '8327000090031790'
     currency: PLN
     customer_reference: REF 25611247
@@ -453,6 +457,7 @@ transactions:
       - '40.00'
       currency: PLN
     applicant_bin: null
+    applicant_iban: null
     applicant_name: null
     bank_reference: '8327000090031791'
     currency: PLN

@@ -120,11 +120,12 @@ transactions:
       currency: EUR
     applicant_bin: BYLADEMM
     applicant_creditor_id: null
-    applicant_name: DE99700500000000012345Finanzamt Muenchen Abteilung Erhebung
+    applicant_iban: DE99700500000000012345
+    applicant_name: Finanzamt Muenchen Abteilung Erhebung
     bank_reference: null
     compensation_amount: null
     currency: EUR
-    customer_reference: null
+    customer_reference: ''
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B+EJDg==

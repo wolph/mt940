@@ -115,7 +115,8 @@ transactions:
       - '27.00'
       currency: EUR
     applicant_bin: '50070010'
-    applicant_name: 0175526300PAYPAL
+    applicant_iban: '0175526300'
+    applicant_name: PAYPAL
     bank_reference: 32-P1-TCS49518
     currency: EUR
     customer_reference: 100323-03-100323
@@ -146,7 +147,8 @@ transactions:
       - '13068.30'
       currency: EUR
     applicant_bin: '51230800'
-    applicant_name: 9990437808WIRECARD BANK AG
+    applicant_iban: '9990437808'
+    applicant_name: WIRECARD BANK AG
     bank_reference: null
     currency: EUR
     customer_reference: NONREF
@@ -177,6 +179,7 @@ transactions:
       - '-193282.05'
       currency: EUR
     applicant_bin: null
+    applicant_iban: null
     applicant_name: null
     bank_reference: null
     currency: EUR
@@ -209,6 +212,7 @@ transactions:
       - '1120.00'
       currency: EUR
     applicant_bin: null
+    applicant_iban: null
     applicant_name: null
     bank_reference: null
     currency: EUR

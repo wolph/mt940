@@ -700,21 +700,20 @@ class Transactions(Sequence[Transaction]):
     def _update_transaction(self, result: dict[str, Any]) -> None:
         """Merge a transaction-scoped result into the current transaction.
 
-        New keys are set directly; when both the existing and incoming
-        values are strings, the incoming one is appended on a new line
-        (e.g. multi-line ``:86:`` details). Any other combination assigns
-        the incoming value: a structured ``:86:`` emits ``None`` for absent
-        sub-fields, so a later string must replace an existing ``None``
-        rather than crash on ``None += str`` (and an incoming ``None``
-        still overwrites, preserving the merge semantics the fixture
-        goldens encode).
+        New keys are set directly. When both the existing and the incoming
+        values are strings, the incoming one is appended on a new line, as
+        with a multi-line ``:86:``. A structured ``:86:`` emits ``None`` for
+        every sub-field it does not carry, and such a ``None`` never replaces
+        a value another tag already provided: the ``:61:`` customer reference
+        survives a later structured ``:86:`` without a ``KREF``. Any other
+        incoming value replaces the existing one.
         """
         transaction = self.transactions[-1]
         for k, v in result.items():
             existing = transaction.data.get(k)
             if hasattr(existing, 'strip') and hasattr(v, 'strip'):
                 transaction.data[k] += f'\n{v.strip()}'
-            else:
+            elif v is not None or k not in transaction.data:
                 transaction.data[k] = v
 
     @overload
@@ -817,8 +816,24 @@ class Transactions(Sequence[Transaction]):
 class TransactionsAndTransaction(  # type: ignore[misc]  # pyright: ignore[reportUnsafeMultipleInheritance, reportIncompatibleVariableOverride]
     Transactions, Transaction
 ):
-    """Subclass of both Transactions and Transaction for scope definitions.
+    """Scope marker for tags whose data belongs to statement and transaction.
 
-    This is useful for the non-swift data for example which can function both
-    as details for a transaction and for a collection of transactions.
+    ``:NS:`` is the example: its content is filed both as statement data and
+    as details of the current transaction. The class exists so that the
+    ``issubclass`` checks against :attr:`~mt940.tags.Tag.scope` succeed for
+    both bases. It is never instantiated.
     """
+
+    # No super call: the constructor refuses instantiation, so there is
+    # nothing to initialise.
+    def __init__(  # pyright: ignore[reportMissingSuperCall]
+        self, *args: object, **kwargs: object
+    ) -> None:
+        """Refuse instantiation, the class is only a scope marker.
+
+        Raises:
+            TypeError: Always.
+        """
+        del args, kwargs
+        msg = f'{type(self).__name__} is a scope marker, it cannot be created'
+        raise TypeError(msg)

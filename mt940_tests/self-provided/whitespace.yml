@@ -115,7 +115,8 @@ transactions:
       - '-233.15'
       currency: EUR
     applicant_bin: '12030000'
-    applicant_name: 9003932309DEUTSCHE KREDITBANK AG
+    applicant_iban: '9003932309'
+    applicant_name: DEUTSCHE KREDITBANK AG
     bank_reference: null
     currency: EUR
     customer_reference: ''

@@ -110,11 +110,12 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: ' AB12CDE0000000000000000034 '
+    applicant_iban: null
     applicant_name: PayPal (Europe) S.a.r.l. et
     bank_reference: null
     compensation_amount: null
     currency: EUR
-    customer_reference: null
+    customer_reference: ''
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B+EJDg==

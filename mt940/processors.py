@@ -206,7 +206,10 @@ DETAIL_KEYS = {
     '10': 'prima_nota',
     '20': 'purpose',
     '30': 'applicant_bin',
-    '31': 'applicant_name',
+    # ?31 is the counterparty account, usually an IBAN, sometimes a plain
+    # account number. The field name dates from 4.x and is kept for
+    # compatibility (issue #132). ?32 and ?33 together hold the name.
+    '31': 'applicant_iban',
     '32': 'applicant_name',
     '34': 'return_debit_notes',
     '35': 'recipient_name',

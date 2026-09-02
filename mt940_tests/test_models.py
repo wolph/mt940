@@ -63,3 +63,12 @@ def test_currency_from_a_bare_floor_limit() -> None:
     transactions = models.Transactions()
     transactions.data['c_floor_limit'] = models.Amount('1,00', 'C', 'CHF')
     assert transactions.currency == 'CHF'
+
+
+def test_scope_marker_cannot_be_instantiated() -> None:
+    # TransactionsAndTransaction only exists for issubclass checks on
+    # Tag.scope, so building one is a programming error.
+    with pytest.raises(TypeError, match='scope marker'):
+        _ = models.TransactionsAndTransaction()
+    assert issubclass(models.TransactionsAndTransaction, models.Transactions)
+    assert issubclass(models.TransactionsAndTransaction, models.Transaction)

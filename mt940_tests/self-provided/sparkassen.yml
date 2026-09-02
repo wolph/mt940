@@ -97,11 +97,12 @@ transactions:
       currency: null
     applicant_bin: null
     applicant_creditor_id: null
+    applicant_iban: null
     applicant_name: null
     bank_reference: null
     compensation_amount: null
     currency: null
-    customer_reference: null
+    customer_reference: NONREF
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B+ILGg==

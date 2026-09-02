@@ -120,11 +120,12 @@ transactions:
     applicant_bin: null
     applicant_creditor_id: XX0000000000000000ABCDEFGHIJKLMNOPQRSTUVW/PL 12-09-2014T16:26:37
       Folgenr. 007
+    applicant_iban: null
     applicant_name: null
     bank_reference: null
     compensation_amount: null
     currency: EUR
-    customer_reference: null
+    customer_reference: NONREF
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B+ACHQ==

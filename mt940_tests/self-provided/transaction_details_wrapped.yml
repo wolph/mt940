@@ -115,6 +115,7 @@ transactions:
       - '-6.00'
       currency: EUR
     applicant_bin: '12345678'
+    applicant_iban: null
     applicant_name: null
     bank_reference: null
     currency: EUR
