@@ -17,14 +17,13 @@ from typing import TYPE_CHECKING, NoReturn
 import mt940
 import pytest
 import yaml
-from mt940 import models
 
 if TYPE_CHECKING:
     from typing_extensions import TypeIs
 
 _TESTS_PATH = pathlib.Path(__file__).parent
 _SCALAR_TYPES = (datetime.date, decimal.Decimal, int, str)
-_DATA_TYPES = (models.Transactions, models.Transaction)
+_DATA_TYPES = (mt940.models.Transactions, mt940.models.Transaction)
 
 _STATEMENT = """:20:REF
 :25:ACC
@@ -61,7 +60,7 @@ def write_yaml_data(sta_file: str, data: object) -> None:
 
 
 def maybe_write_golden(
-    sta_file: str, transactions: models.Transactions
+    sta_file: str, transactions: mt940.models.Transactions
 ) -> None:
     # Development only: regenerate the golden next to the fixture.
     if os.environ.get('WRITE_YAML_FILES'):
@@ -110,7 +109,7 @@ def compare(a: object, b: object, keys: list[str] | None = None) -> None:
         compare_iterables(a, b, keys)
     elif isinstance(a, _DATA_TYPES):
         compare_data_attributes(a, b, keys)
-    elif isinstance(a, models.Model):
+    elif isinstance(a, mt940.models.Model):
         compare_model_instances(a, b, keys)
     else:
         msg = f'Unsupported type {type(a)} at {_path(keys)}'
@@ -182,7 +181,9 @@ def compare_iterables(
 
 
 def compare_data_attributes(
-    a: models.Transactions | models.Transaction, b: object, keys: list[str]
+    a: mt940.models.Transactions | mt940.models.Transaction,
+    b: object,
+    keys: list[str],
 ) -> None:
     """Compare objects through their ``data`` attribute.
 
@@ -197,7 +198,7 @@ def compare_data_attributes(
 
 
 def compare_model_instances(
-    a: models.Model, b: object, keys: list[str]
+    a: mt940.models.Model, b: object, keys: list[str]
 ) -> None:
     """Compare model instances through their instance attributes.
 
@@ -206,7 +207,7 @@ def compare_model_instances(
         b: The parsed model.
         keys: The key path being compared.
     """
-    if not isinstance(b, models.Model):
+    if not isinstance(b, mt940.models.Model):
         _fail_kind_mismatch(a, b, keys)
     compare(vars(a), vars(b), keys)
 
@@ -234,12 +235,12 @@ def test_compare_accepts_equal_structures() -> None:
         ({'k': 1}, [1], 'Type mismatch at <root>: dict != list'),
         ([1], {'k': 1}, 'Type mismatch at <root>: list != dict'),
         (
-            models.Amount('1', 'C', 'EUR'),
-            models.Amount('2', 'C', 'EUR'),
+            mt940.models.Amount('1', 'C', 'EUR'),
+            mt940.models.Amount('2', 'C', 'EUR'),
             "Difference at amount: Decimal('1') != Decimal('2')",
         ),
         (
-            models.Amount('1', 'C', 'EUR'),
+            mt940.models.Amount('1', 'C', 'EUR'),
             'x',
             'Type mismatch at <root>: Amount != str',
         ),
@@ -298,7 +299,7 @@ def test_parse(sta_file: str) -> None:
     transactions = mt940.parse(sta_file)
     maybe_write_golden(sta_file, transactions)
     expected = get_yaml_data(sta_file)
-    assert isinstance(expected, models.Transactions)
+    assert isinstance(expected, mt940.models.Transactions)
 
     # Every model has to render without raising.
     _ = repr(transactions)

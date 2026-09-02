@@ -209,6 +209,19 @@ class Tag:
         cls.logger = logger.getChild(cls.name)
         return object.__new__(cls)
 
+    def __eq__(self, other: object) -> bool:
+        """Return whether ``other`` is a tag of the same class and ``id``.
+
+        Tags carry no instance state beyond what their class defines, so two
+        instances of one class are interchangeable, which is what
+        ``__hash__`` already assumes.
+        """
+        return (
+            isinstance(other, Tag)
+            and type(other) is type(self)
+            and other.id == self.id
+        )
+
     def __hash__(self) -> int:
         """Return a hash based on the tag's ``id``.
 
