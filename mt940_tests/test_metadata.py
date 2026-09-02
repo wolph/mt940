@@ -1,4 +1,8 @@
+import importlib
+import importlib.metadata
+
 import pytest
+from mt940 import __about__
 
 
 @pytest.mark.parametrize(
@@ -15,9 +19,27 @@ import pytest
         ('__url__', 'https://'),
     ],
 )
-def test_metadata(attribute, contains) -> None:
-    from mt940 import __about__
+def test_metadata(attribute: str, contains: str) -> None:
+    value: str = getattr(__about__, attribute)
+    assert contains in value
 
-    assert getattr(__about__, attribute)
-    if contains:
-        assert contains in getattr(__about__, attribute)
+
+def test_version_falls_back_when_the_package_is_not_installed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # __about__ reads the version from the installed metadata at import time.
+    # A source checkout that was never installed has no metadata, and the
+    # placeholder must not crash the import.
+    installed = __about__.__version__
+
+    def missing(distribution_name: str) -> str:
+        raise importlib.metadata.PackageNotFoundError(distribution_name)
+
+    monkeypatch.setattr(importlib.metadata, 'version', missing)
+    try:
+        assert importlib.reload(__about__).__version__ == '0.0.0'
+    finally:
+        monkeypatch.undo()
+        _ = importlib.reload(__about__)
+
+    assert __about__.__version__ == installed

@@ -1,5 +1,4 @@
 import json
-import os
 import pathlib
 import typing
 
@@ -42,24 +41,22 @@ def test_date_fixup_pre_processor(february_30_data: str) -> None:
             ],
         }
     )
-    transactions.parse(february_30_data)
+    _ = transactions.parse(february_30_data)
     assert transactions[0].data['date'] == mt940.models.Date(2016, 2, 29)
 
 
 def test_parse_data() -> None:
-    with (_tests_path / 'jejik' / 'abnamro.sta').open() as fh:
-        mt940.parse(fh.read())
+    with (_tests_path / 'jejik' / 'abnamro.sta').open(encoding='utf-8') as fh:
+        assert len(mt940.parse(fh.read())) > 0
 
 
 def test_parse_fh() -> None:
-    with (_tests_path / 'jejik' / 'abnamro.sta').open() as fh:
-        mt940.parse(fh)
+    with (_tests_path / 'jejik' / 'abnamro.sta').open(encoding='utf-8') as fh:
+        assert len(mt940.parse(fh)) > 0
 
 
 def test_parse_filename() -> None:
-    path = 'mt940_tests/jejik/abnamro.sta'
-    path = path.replace('/', os.pathsep)
-    mt940.parse(path)
+    assert len(mt940.parse(str(_tests_path / 'jejik' / 'abnamro.sta'))) > 0
 
 
 def test_pre_processor(sta_data: str) -> None:
@@ -73,7 +70,7 @@ def test_pre_processor(sta_data: str) -> None:
             ],
         }
     )
-    transactions.parse(sta_data)
+    _ = transactions.parse(sta_data)
     assert transactions.data['final_closing_balance'].amount.currency == 'USD'
     assert transactions.data['final_opening_balance'].amount.currency == 'EUR'
 
@@ -86,7 +83,7 @@ def test_post_processor(sta_data: str) -> None:
             ],
         }
     )
-    transactions.parse(sta_data)
+    _ = transactions.parse(sta_data)
     assert 'closing_balance_day' not in transactions.data
 
 
@@ -191,7 +188,7 @@ def test_json_round_trip_preserves_model_values() -> None:
     decoded = json.loads(json.dumps(transactions, cls=mt940.JSONEncoder))
 
     assert len(decoded['transactions']) == len(transactions)
-    # Balance -> nested dict; Amount -> Decimal as str; Date -> ISO str
+    # Balance -> nested dict, Amount -> Decimal as str, Date -> ISO str
     assert decoded['final_opening_balance'] == {
         'status': 'C',
         'amount': {'amount': '3236.28', 'currency': 'EUR'},
@@ -232,7 +229,7 @@ def test_json_round_trip_asnb_non_swift_statement() -> None:
     tag = mt940.tags.StatementASNB()
     transactions = mt940.models.Transactions(tags={tag.id: tag})
     with (_tests_path / 'ASNB' / 'mt940.txt').open() as fh:
-        transactions.parse(fh.read())
+        _ = transactions.parse(fh.read())
 
     decoded = json.loads(json.dumps(transactions, cls=mt940.JSONEncoder))
     assert len(decoded['transactions']) == len(transactions)
@@ -246,7 +243,7 @@ def test_date_fixup_non_leap_february_clamped() -> None:
     """A Feb 29 value date in a non-leap year is clamped to Feb 28.
 
     ``test_date_fixup_pre_processor`` only covers Feb 30 in a leap year
-    (``february_30.sta``, 2016 -> Feb 29); the non-leap clamp path was
+    (``february_30.sta``, 2016 -> Feb 29). The non-leap clamp path was
     previously unexercised.
     """
     data = (
@@ -269,7 +266,7 @@ def test_date_fixup_non_leap_february_clamped() -> None:
         # company name like "AB+...") must not be treated as a GVC KEYWORD+
         # separator: EREF is a real GVC key later in the text, so gvcodes runs.
         ('020?20AB+EREF', 'AB+EREF'),
-        # 'A+B' at the very start must survive; SVWZ triggers gvcodes parsing.
+        # 'A+B' at the very start must survive. SVWZ triggers gvcodes parsing.
         ('020?20A+B SVWZ TEXT', 'A+B SVWZ TEXT'),
     ],
 )
@@ -328,7 +325,7 @@ def test_repeated_structured_86_merges_without_crash(
     """Two structured ``:86:`` tags on one ``:61:`` must not crash the parse.
 
     A structured ``:86:`` emits every ``DETAIL_KEYS`` value including ``None``
-    for absent sub-fields; a second structured ``:86:`` then hit
+    for absent sub-fields. A second structured ``:86:`` then hit
     ``None += str`` in ``_update_transaction`` (``TypeError`` aborting the
     whole file) in either order. This pins the CURRENT post-fix merge
     contract: a later string replaces an existing ``None``, while a later
@@ -343,22 +340,51 @@ def test_repeated_structured_86_merges_without_crash(
     assert transaction['posting_text'] == expected_posting
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason='repeated structured :86: None-clobber semantics -- pending '
-    'decision (audit task 7 review): preserving non-None values against a '
-    "later tag's None is arguably more correct, but the same rule stops a "
-    'structured :86: from nulling the customer_reference set by :61:, '
-    'changing 5 real-bank goldens.',
-)
-def test_repeated_structured_86_preserves_real_values() -> None:
-    """Preservation ideal: real values from BOTH tags survive, either order."""
-    for first, second in [
+_NONE_CLOBBER_REASON = """repeated structured :86: None-clobber semantics, \
+pending decision (audit task 7 review): preserving non-None values against a \
+later tag's None is arguably more correct, but the same rule stops a \
+structured :86: from nulling the customer_reference set by :61:, changing 5 \
+real-bank goldens."""
+
+
+@pytest.mark.xfail(strict=True, reason=_NONE_CLOBBER_REASON)
+@pytest.mark.parametrize(
+    ('first', 'second'),
+    [
         ('020?20REALPURPOSE', '020?00POSTINGTEXT'),
         ('020?00POSTINGTEXT', '020?20REALPURPOSE'),
-    ]:
-        transaction = mt940.parse(_two_structured_86_data(first, second))[
-            0
-        ].data
-        assert transaction['purpose'] == 'REALPURPOSE'
-        assert transaction['posting_text'] == 'POSTINGTEXT'
+    ],
+)
+def test_repeated_structured_86_preserves_real_values(
+    first: str, second: str
+) -> None:
+    """Preservation ideal: real values from BOTH tags survive, either order."""
+    transaction = mt940.parse(_two_structured_86_data(first, second))[0].data
+    assert transaction['purpose'] == 'REALPURPOSE'
+    assert transaction['posting_text'] == 'POSTINGTEXT'
+
+
+def test_add_currency_pre_processor_can_keep_an_existing_currency() -> None:
+    transactions = mt940.models.Transactions()
+    tag = mt940.tags.Statement()
+    keep = mt940.processors.add_currency_pre_processor('EUR', overwrite=False)
+    replace = mt940.processors.add_currency_pre_processor('EUR')
+
+    assert keep(transactions, tag, {'currency': 'USD'}) == {'currency': 'USD'}
+    assert keep(transactions, tag, {}) == {'currency': 'EUR'}
+    assert replace(transactions, tag, {'currency': 'USD'}) == {
+        'currency': 'EUR'
+    }
+
+
+def test_mbank_processors_leave_unmatched_details_alone() -> None:
+    transactions = mt940.models.Transactions()
+    tag = mt940.tags.TransactionDetails()
+    details = {'transaction_details': 'no mBank markers in here'}
+
+    assert mt940.processors.mBank_set_iph_id(transactions, tag, details) == {
+        'transaction_details': 'no mBank markers in here'
+    }
+    assert mt940.processors.mBank_set_tnr(transactions, tag, details) == {
+        'transaction_details': 'no mBank markers in here'
+    }

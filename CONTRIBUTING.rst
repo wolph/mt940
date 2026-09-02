@@ -78,15 +78,19 @@ Ready to contribute? Here's how to set up `mt940` for local development.
 
    Now you can make your changes locally.
 
-5. When you're done making changes, check that your changes pass linting, type-checking and the tests, including other Python versions with tox::
+5. When you're done making changes, check that your changes pass linting,
+   type-checking and the tests, including other Python versions with tox::
 
-    $ uv run tox -e lint
+    $ uv run tox -m check
     $ uv run tox -e py312
     $ uv run tox
 
-   To get the development tools, sync the dev extra into your environment::
+   To get the development tools, sync the dev group into your environment
+   and install the git hooks, which run ruff on every commit and every
+   checker on every push::
 
     $ uv sync
+    $ uv run lefthook install
 
 6. Commit your changes and push your branch to GitHub with `git-flow-avh`_::
 

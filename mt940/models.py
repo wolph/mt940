@@ -31,16 +31,24 @@ if TYPE_CHECKING:
     from ._types import Processors
 
 
+#: MT940 carries two-digit years. Anything below this limit is taken to be
+#: relative to :data:`_SHORT_YEAR_BASE`, so ``23`` becomes ``2023``.
+_SHORT_YEAR_LIMIT = 1000
+_SHORT_YEAR_BASE = 2000
+
+
 class Model:
     """Base class for MT940 models, providing a uniform ``repr``."""
 
     def __repr__(self) -> str:
+        """Return the class name in angle brackets."""
         return f'<{self.__class__.__name__}>'
 
 
 class FixedOffset(datetime.tzinfo):
-    """Fixed time offset based on the Python docs
-    Source: https://docs.python.org/2/library/datetime.html#tzinfo-objects.
+    """Fixed time offset, after the ``tzinfo`` example in the Python docs.
+
+    Source: https://docs.python.org/3/library/datetime.html#tzinfo-objects
 
     >>> offset = FixedOffset(60)
     >>> offset.utcoffset(None).total_seconds()
@@ -52,21 +60,31 @@ class FixedOffset(datetime.tzinfo):
     """
 
     def __init__(self, offset: int | str = 0, name: str | None = None) -> None:
-        self._name = name or str(offset)
+        """Store the offset in minutes east of UTC and an optional name.
+
+        Args:
+            offset: Minutes east of UTC, as an ``int`` or a numeric string.
+            name: The zone name, defaults to the offset as a string.
+        """
+        self._name: str = name or str(offset)
 
         if not isinstance(offset, int):
             offset = int(offset)
-        self._offset = datetime.timedelta(minutes=offset)
+        self._offset: datetime.timedelta = datetime.timedelta(minutes=offset)
 
-    def utcoffset(self, dt: datetime.datetime | None) -> datetime.timedelta:
+    def utcoffset(
+        self, _dt: datetime.datetime | None, /
+    ) -> datetime.timedelta:
         """Return the fixed offset east of UTC."""
         return self._offset
 
-    def dst(self, dt: datetime.datetime | None) -> datetime.timedelta:
+    def dst(  # noqa: PLR6301 (the tzinfo API is instance-based)
+        self, _dt: datetime.datetime | None, /
+    ) -> datetime.timedelta:
         """Return a zero DST adjustment (fixed offsets have no DST)."""
         return datetime.timedelta(0)
 
-    def tzname(self, dt: datetime.datetime | None) -> str:
+    def tzname(self, _dt: datetime.datetime | None, /) -> str:
         """Return the offset's name."""
         return self._name
 
@@ -147,8 +165,8 @@ class DateTime(datetime.datetime, Model):
             second = int(kwargs.get('second', 0))
             microsecond = int(kwargs.get('microsecond', 0))
 
-            if year < 1000:
-                year += 2000
+            if year < _SHORT_YEAR_LIMIT:
+                year += _SHORT_YEAR_BASE
 
             return datetime.datetime.__new__(
                 cls,
@@ -232,8 +250,11 @@ class Amount(Model):
         arguments are ignored so a parsed tag dictionary can be splatted in
         directly.
         """
-        self.amount = decimal.Decimal(amount.replace(',', '.'))
-        self.currency = currency
+        del kwargs
+        self.amount: decimal.Decimal = decimal.Decimal(
+            amount.replace(',', '.')
+        )
+        self.currency: str | None = currency
 
         # C = credit, D = debit, RC = reversal of a credit (so money leaves
         # the account, like a debit), RD = reversal of a debit (so money
@@ -246,16 +267,23 @@ class Amount(Model):
             self.amount = -self.amount
 
     def __eq__(self, other: object) -> bool:
+        """Return whether ``other`` is an equal-valued ``Amount``."""
         return (
             isinstance(other, Amount)
             and self.amount == other.amount
             and self.currency == other.currency
         )
 
+    def __hash__(self) -> int:
+        """Return a hash of amount and currency, matching ``__eq__``."""
+        return hash((self.amount, self.currency))
+
     def __str__(self) -> str:
+        """Return ``'<amount> <currency>'``."""
         return f'{self.amount} {self.currency}'
 
     def __repr__(self) -> str:
+        """Return the string form in angle brackets."""
         return f'<{self}>'
 
 
@@ -274,9 +302,10 @@ class SumAmount(Amount):
     ) -> None:
         """Store the entry ``number`` alongside the summed amount."""
         super().__init__(*args, **kwargs)
-        self.number = number
+        self.number: int = number
 
     def __repr__(self) -> str:
+        """Return the amount, currency and entry count in angle brackets."""
         return f'<{self.amount} {self.currency} in {self.number} stmts)>'
 
 
@@ -310,26 +339,51 @@ class Balance(Model):
         date: Date | None = None,
         **kwargs: Any,
     ) -> None:
-        if amount and not isinstance(amount, Amount):
-            if status is None:  # pragma: no cover
+        """Store the balance, coercing a string ``amount`` to an ``Amount``.
+
+        The ``:60F:``-style tag patterns allow an empty amount, so an empty
+        string is stored as ``None`` rather than failing the whole parse.
+
+        Args:
+            status: The debit/credit mark, needed to sign a string amount.
+            amount: An :class:`Amount`, or an amount string to coerce.
+            date: The balance date.
+            **kwargs: Extra parsed tag fields, only ``currency`` is used.
+
+        Raises:
+            ValueError: When ``amount`` is a non-empty string and ``status``
+                is missing.
+        """
+        if isinstance(amount, str):
+            if not amount:
+                amount = None
+            elif status is None:
                 msg = 'Cannot create Amount without status'
                 raise ValueError(msg)
-            amount = Amount(amount, status, kwargs.get('currency'))
-        self.status = status
-        self.amount = amount
-        self.date = date
+            else:
+                amount = Amount(amount, status, kwargs.get('currency'))
+        self.status: str | None = status
+        self.amount: Amount | None = amount
+        self.date: Date | None = date
 
     def __eq__(self, other: object) -> bool:
+        """Return whether ``other`` is an equal-valued ``Balance``."""
         return (
             isinstance(other, Balance)
             and self.amount == other.amount
             and self.status == other.status
         )
 
+    def __hash__(self) -> int:
+        """Return a hash of amount and status, matching ``__eq__``."""
+        return hash((self.amount, self.status))
+
     def __repr__(self) -> str:
+        """Return the string form in angle brackets."""
         return f'<{self}>'
 
     def __str__(self) -> str:
+        """Return ``'<amount> @ <date>'``."""
         return f'{self.amount} @ {self.date}'
 
 
@@ -352,7 +406,7 @@ class Transaction(Model):
             transactions: The collection this transaction belongs to.
             data: Optional initial field data to populate.
         """
-        self.transactions = transactions
+        self.transactions: Transactions = transactions
         self.data: dict[str, Any] = {}
         self.update(data)
 
@@ -369,6 +423,7 @@ class Transaction(Model):
             self.data.update(data)
 
     def __repr__(self) -> str:
+        """Return the class name with the transaction date and amount."""
         return '<{}[{}] {}>'.format(
             self.__class__.__name__,
             self.data.get('date'),
@@ -377,8 +432,10 @@ class Transaction(Model):
 
 
 class Transactions(Sequence[Transaction]):
-    """Collection of Transaction objects with global properties such
-    as begin and end balance.
+    """Collection of Transaction objects with statement-level properties.
+
+    The statement-level data, such as the opening and closing balances, lives
+    in ``data``, the transactions themselves in ``transactions``.
     """
 
     DEFAULT_PROCESSORS: ClassVar[Processors] = {
@@ -494,7 +551,7 @@ class Transactions(Sequence[Transaction]):
         Returns ``None`` when no balance or floor-limit carrying a currency has
         been parsed yet.
         """
-        balance = utils.coalesce(
+        balance: object = utils.coalesce(
             self.data.get('final_opening_balance'),
             self.data.get('opening_balance'),
             self.data.get('intermediate_opening_balance'),
@@ -507,16 +564,20 @@ class Transactions(Sequence[Transaction]):
             self.data.get('d_floor_limit'),
         )
 
-        if balance is not None:
-            if hasattr(balance, 'currency'):  # type: ignore[unreachable]
-                return balance.currency
-
+        # Floor limits are bare amounts, balances wrap one.
+        if isinstance(balance, Amount):
+            return balance.currency
+        if isinstance(balance, Balance) and balance.amount is not None:
             return balance.amount.currency
         return None
 
     @classmethod
-    def defaultTags(cls) -> Mapping[int | str, mt940.tags.Tag]:  # noqa: N802 # pragma: no cover
-        """Deprecated alias for :meth:`default_tags`."""
+    def defaultTags(cls) -> Mapping[int | str, mt940.tags.Tag]:  # noqa: N802
+        """Return :meth:`default_tags`, with a deprecation warning.
+
+        Returns:
+            The built-in tag parsers keyed by tag id.
+        """
         warnings.warn(
             'defaultTags is deprecated, use default_tags instead',
             DeprecationWarning,
@@ -614,10 +675,10 @@ class Transactions(Sequence[Transaction]):
                 self.data.update(result)
         elif issubclass(tag.scope, Transaction) and self.transactions:
             self._update_transaction(result)
-        elif issubclass(  # pragma: no branch
-            tag.scope, Transactions
-        ):  # pyright: ignore [reportUnnecessaryIsInstance]
+        elif issubclass(tag.scope, Transactions):
             self.data.update(result)
+        # Transaction-scoped data before the first transaction has nowhere to
+        # go and is dropped (the empty_86 fixture depends on this).
 
     def _process_statement_tag(self, result: dict[str, Any]) -> None:
         """File a ``:61:`` statement result into the current/new transaction.
@@ -666,12 +727,15 @@ class Transactions(Sequence[Transaction]):
         self,
         key: int | slice,
     ) -> Transaction | list[Transaction]:
+        """Return the transaction at ``key``, or a slice of them."""
         return self.transactions[key]
 
     def __len__(self) -> int:
+        """Return the number of transactions."""
         return len(self.transactions)
 
     def __repr__(self) -> str:
+        """Return the class name and every balance in ``data``."""
         return '<{}[{}]>'.format(
             self.__class__.__name__,
             ']['.join(
@@ -692,9 +756,8 @@ class Transactions(Sequence[Transaction]):
             list[str]: List of cleaned lines.
         """
         stripped_lines: list[str] = []
-        for line in lines:
-            line = line.replace('\r', '')
-            line = line.rstrip()
+        for raw_line in lines:
+            line = raw_line.replace('\r', '').rstrip()
             if line.strip() == '-':
                 continue
             if line:
@@ -736,7 +799,7 @@ class Transactions(Sequence[Transaction]):
                 continue
             i_next = i + 1
             tag_id = self.normalize_tag_id(match.group('tag'))
-            if tag_id not in self.tags:  # pragma: no cover
+            if tag_id not in self.tags:
                 continue
 
             if tag_id == mt940.tags.Tags.TRANSACTION_DETAILS.value.id:
@@ -751,7 +814,7 @@ class Transactions(Sequence[Transaction]):
         return valid_matches
 
 
-class TransactionsAndTransaction(  # type: ignore[misc]  # pyright: ignore[reportUnsafeMultipleInheritance]
+class TransactionsAndTransaction(  # type: ignore[misc]  # pyright: ignore[reportUnsafeMultipleInheritance, reportIncompatibleVariableOverride]
     Transactions, Transaction
 ):
     """Subclass of both Transactions and Transaction for scope definitions.

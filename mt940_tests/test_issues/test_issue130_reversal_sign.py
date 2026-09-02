@@ -3,27 +3,26 @@
 Field 61 defines four debit/credit marks, not two: ``C``, ``D``, ``RC`` (a
 reversal of a credit) and ``RD`` (a reversal of a debit). A reversal of a
 credit takes the money back out of the account, so it belongs on the debit
-side; a reversal of a debit puts it back in.
+side. A reversal of a debit puts it back in.
 
 ``RC`` used to come back positive, which is a silent error: nothing raised,
 nothing warned, and the figure that came out was plausible.
 """
 
 import decimal
-import os
 import pathlib
 
 import mt940
 import pytest
 
-BETTERPLACE = os.path.join(
-    pathlib.Path(pathlib.Path(pathlib.Path(__file__).resolve()).parent).parent,
-    'betterplace',
-    'sepa_mt9401.sta',
+BETTERPLACE = (
+    pathlib.Path(__file__).resolve().parent.parent
+    / 'betterplace'
+    / 'sepa_mt9401.sta'
 )
 
 
-def statement(mark) -> str:
+def statement(mark: str) -> str:
     return f""":20:REF
 :25:ACC
 :60F:C200101EUR0,00
@@ -48,7 +47,7 @@ def statement(mark) -> str:
     ],
 )
 def test_reversal_marks_get_the_sign_of_their_direction(
-    mark, expected
+    mark: str, expected: decimal.Decimal
 ) -> None:
     transactions = mt940.parse(statement(mark))
     assert len(transactions) == 1

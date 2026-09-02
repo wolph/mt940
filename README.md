@@ -213,16 +213,20 @@ pprint.pprint(transactions.data, sort_dicts=False)
 ## Contributing
 
 Help is greatly appreciated. Please clone the **develop** branch and run `tox`
-before opening a pull request; CI checks linting (ruff), type-checking
-(pyright, mypy, pyrefly), the test suite (100% coverage required), and the
-documentation build.
+before opening a pull request. CI runs the same tox environments: ruff with
+every rule enabled, four type checkers (mypy, basedpyright, pyrefly and ty),
+the test suite on Python 3.10 through 3.14 with 100% coverage required, the
+documentation build, and audits of the TOML files, the workflows and the
+dependencies.
 
 ```bash
 git clone --branch develop https://github.com/WoLpH/mt940.git
 cd mt940
 uv sync
-uv run tox          # run the full matrix
-uv run tox -e py312 # or a single environment
+uv run lefthook install  # ruff on commit, every checker on push
+uv run tox               # run the full matrix
+uv run tox -m check      # only the static checks
+uv run tox -e py312      # or a single environment
 ```
 
 ## Links

@@ -1,10 +1,13 @@
-"""Issue #109: strip a dangling ' BIC'/' IBAN' label (a label with no value)
-from the end of a transaction-detail segment.
+"""Issue #109: strip a dangling ' BIC' or ' IBAN' label from a detail segment.
 
-These tests drive the real segment pipeline (`_parse_segments` ->
-`_process_segments`) instead of fabricating segment dictionaries, so the input
-matches what banks actually send (segment keys are always two characters).
+A label with no value after it carries no information. These tests drive the
+real segment pipeline (`_parse_segments` -> `_process_segments`) instead of
+fabricating segment dictionaries, so the input matches what banks actually
+send (segment keys are always two characters).
 """
+
+# pyright: reportPrivateUsage=false
+# The private segment helpers are the unit under test here.
 
 import mt940
 
@@ -47,3 +50,18 @@ def test_issue_109_end_to_end() -> None:
     blob = ' '.join(str(v) for v in transaction.data.values())
     assert ' BIC' not in blob
     assert 'DE69280123450012345670' in blob
+
+
+def test_parse_segments_without_a_delimiter_is_empty() -> None:
+    # No '?' means no segment type ever starts, so nothing is captured.
+    assert mt940.processors._parse_segments('plain text') == {}
+
+
+def test_parse_segments_ignores_a_truncated_trailing_delimiter() -> None:
+    # A '?' with fewer than two characters after it cannot open a segment.
+    # The empty key holds the (empty) text before the first delimiter.
+    assert mt940.processors._parse_segments('?20Purpose?2') == {
+        '': '',
+        '20': 'Purpose',
+    }
+    assert mt940.processors._parse_segments('?2') == {}

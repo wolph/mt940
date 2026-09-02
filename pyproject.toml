@@ -85,6 +85,7 @@ addopts = [
     '--strict-markers',
     '-ra',
     '--cov=mt940',
+    '--cov=mt940_tests',
     '--cov-report=term-missing',
     '--cov-report=html',
     '--no-cov-on-fail',
@@ -124,7 +125,10 @@ exclude_also = [
 
 [tool.mypy]
 python_version = '3.10'
-files = ['mt940', 'mt940_tests', 'docs/conf.py']
+# docs/conf.py imports sphinx, which uses `type` statements that mypy cannot
+# parse at a 3.10 target. tox and the hooks check it separately with
+# `mypy --python-version 3.12 docs/conf.py`, the version the docs build on.
+files = ['mt940', 'mt940_tests']
 exclude = ['^dist/', '^build/', '^docs/_build/', '^\.tox/', '^\.?venv/']
 strict = true
 strict_bytes = true
@@ -160,8 +164,6 @@ reportExplicitAny = false
 reportImplicitOverride = false
 # mt940/parser.py imports the package root (`import mt940`) by design.
 reportImportCycles = false
-# mt940.json is a public module name that happens to shadow the stdlib.
-reportShadowedImports = false
 
 [tool.pyrefly]
 project-includes = ['mt940', 'mt940_tests', 'docs/conf.py']

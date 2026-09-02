@@ -39,7 +39,7 @@ def test_transaction_boundary_opt_in_via_transactions() -> None:
     transactions = mt940.models.Transactions(
         transaction_boundary={'transaction_reference_number'}
     )
-    transactions.parse(DATA)
+    _ = transactions.parse(DATA)
     assert len(transactions) == 2
 
 

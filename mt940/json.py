@@ -21,6 +21,9 @@ from typing import Any
 
 from . import models
 
+#: Sentinel for "no ``data`` attribute", so ``data = None`` still counts.
+_MISSING = object()
+
 
 class JSONEncoder(json.JSONEncoder):
     """Serialize MT940 model objects to JSON-compatible primitives.
@@ -32,15 +35,15 @@ class JSONEncoder(json.JSONEncoder):
     mappings. Pass it as the ``cls`` argument to :func:`json.dumps`.
     """
 
-    def default(self, o: Any) -> Any:
+    def default(self, o: object) -> object:
         """Return a JSON-serializable representation of ``o``.
 
         Args:
-            o: The object to serialize. ``o`` keeps the permissive ``Any`` type
-                of the overridden :meth:`json.JSONEncoder.default`.
+            o: The object to serialize.
 
         Returns:
-            The serialized form of the object.
+            The serialized form of the object. Unsupported types fall through
+            to :meth:`json.JSONEncoder.default`, which raises ``TypeError``.
         """
         # The following types should simply be cast to strings
         str_types = (
@@ -66,13 +69,13 @@ class JSONEncoder(json.JSONEncoder):
 
         # If an object has a `data` attribute, return that instead of the
         # `__dict__` to prevent loops
-        if hasattr(o, 'data'):
-            return o.data
+        data_attribute: object = getattr(o, 'data', _MISSING)
+        if data_attribute is not _MISSING:
+            return data_attribute
 
         # Handle types that have a `__dict__` containing the data (doesn't work
         # for classes using `__slots__` such as `datetime`)
         if isinstance(o, dict_types):
             return o.__dict__
 
-        # pragma: no cover
         return super().default(o)

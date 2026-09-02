@@ -32,7 +32,7 @@ pre-push:
     ruff-format:
       run: ruff format --check
     mypy:
-      run: mypy
+      run: mypy && mypy --python-version 3.12 docs/conf.py
     basedpyright:
       run: basedpyright
     pyrefly:

@@ -66,7 +66,7 @@ def test_single_statement_returns_one() -> None:
 
 
 def test_abnamro_file_splits_into_statements() -> None:
-    # abnamro.sta has two :20: blocks; parse_statements separates them while
+    # abnamro.sta has two :20: blocks. parse_statements separates them while
     # the default parse() still merges them into one collection.
     path = 'mt940_tests/jejik/abnamro.sta'
     statements = mt940.parse_statements(path)

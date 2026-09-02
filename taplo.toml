@@ -1,2 +1,5 @@
+# Only the project's own TOML files, the virtualenvs carry third-party ones.
+include = ['pyproject.toml', 'ruff.toml', 'taplo.toml']
+
 [formatting]
 indent_string = '    '

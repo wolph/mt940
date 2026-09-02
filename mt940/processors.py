@@ -1,4 +1,7 @@
-"""Module Processors.
+# pyright: reportUnusedParameter=false
+# Every processor shares one positional signature, so most of them leave at
+# least one of the arguments untouched.
+"""Pre- and post-processors that adjust parsed tag data.
 
 This module contains pre- and post-processors for modifying tag
 dictionaries in MT940 processing. It provides functions for currency
@@ -23,8 +26,7 @@ def add_currency_pre_processor(
     currency: str,
     overwrite: bool = True,
 ) -> PreProcessor:
-    """Return a pre-processor that adds currency information
-    to tag dictionaries.
+    """Return a pre-processor that adds currency information to tag data.
 
     Args:
         currency: The currency to set in the tag dictionary.
@@ -40,7 +42,7 @@ def add_currency_pre_processor(
         tag_dict: dict[str, Any],
         *args: Any,
     ) -> dict[str, Any]:
-        if 'currency' not in tag_dict or overwrite:  # pragma: no branch
+        if 'currency' not in tag_dict or overwrite:
             tag_dict['currency'] = currency
         return tag_dict
 
@@ -62,6 +64,7 @@ def date_fixup_pre_processor(
         transactions: The transactions object.
         tag: The tag being processed.
         tag_dict: The tag dictionary.
+        *args: Ignored, present so every processor shares one signature.
 
     Returns:
         The adjusted tag dictionary.
@@ -108,9 +111,19 @@ def mBank_set_transaction_code(
     tag_dict: dict[str, Any],
     *args: Any,
 ) -> dict[str, Any]:
-    """MBank Collect uses transaction code 911 to distinguish incoming mass
-    payments transactions, adding transaction_code may be helpful in further
-    processing.
+    """Set ``transaction_code`` from an mBank Collect tag value.
+
+    mBank Collect uses transaction code 911 to distinguish incoming mass
+    payment transactions, so exposing the code helps further processing.
+
+    Args:
+        transactions: The transactions object.
+        tag: The tag being processed.
+        tag_dict: The tag dictionary.
+        *args: Ignored, present so every processor shares one signature.
+
+    Returns:
+        The tag dictionary with ``transaction_code`` added.
     """
     # Extract the transaction code from the tag value.
     # Split the value at ';' and then by the first space to isolate the
@@ -133,11 +146,22 @@ def mBank_set_iph_id(
     tag_dict: dict[str, Any],
     *args: Any,
 ) -> dict[str, Any]:
-    """MBank Collect uses ID IPH to distinguish between virtual accounts,
-    adding iph_id may be helpful in further processing.
+    """Set ``iph_id`` from an mBank Collect tag value.
+
+    mBank Collect uses the IPH ID to distinguish between virtual accounts,
+    so exposing it helps further processing.
+
+    Args:
+        transactions: The transactions object.
+        tag: The tag being processed.
+        tag_dict: The tag dictionary.
+        *args: Ignored, present so every processor shares one signature.
+
+    Returns:
+        The tag dictionary, with ``iph_id`` added when the value carries one.
     """
     matches = iph_id_re.search(tag_dict[tag.slug])
-    if matches:  # pragma: no branch
+    if matches:
         tag_dict['iph_id'] = matches.group('iph_id')
     return tag_dict
 
@@ -153,14 +177,24 @@ def mBank_set_tnr(
     tag_dict: dict[str, Any],
     *args: Any,
 ) -> dict[str, Any]:
-    """MBank Collect states TNR in transaction details as unique id for
-    transactions, that may be used to identify the same transactions in
-    different statement files eg. partial mt942 and full mt940
-    Information about TNR uniqueness has been obtained from mBank support,
-    it lacks in mt940 mBank specification.
+    """Set ``tnr`` from an mBank Collect tag value.
+
+    mBank Collect states the TNR in the transaction details as a unique id,
+    which identifies the same transaction across statement files, such as a
+    partial MT942 and the full MT940. mBank support confirmed the uniqueness,
+    the mBank MT940 specification does not mention it.
+
+    Args:
+        transactions: The transactions object.
+        tag: The tag being processed.
+        tag_dict: The tag dictionary.
+        *args: Ignored, present so every processor shares one signature.
+
+    Returns:
+        The tag dictionary, with ``tnr`` added when the value carries one.
     """
     matches = tnr_re.search(tag_dict[tag.slug])
-    if matches:  # pragma: no branch
+    if matches:
         tag_dict['tnr'] = matches.group('tnr')
     return tag_dict
 
@@ -202,6 +236,9 @@ GVC_KEYS = {
     'OAMT': 'original_amount',
 }
 
+#: Every GVC keyword (``EREF``, ``SVWZ``, ...) is exactly this wide.
+_GVC_KEY_LENGTH = 4
+
 
 def _parse_segments(detail_str: str) -> collections.OrderedDict[str, str]:
     """Parse segments from a detail string.
@@ -240,7 +277,7 @@ def _parse_segments(detail_str: str) -> collections.OrderedDict[str, str]:
         # Reset the segment accumulator for the next segment.
         segment = ''
 
-    if segment_type:  # pragma: no branch
+    if segment_type:
         # Finalize the last captured segment.
         tmp[segment_type] = segment if not segment_type else segment[2:]
 
@@ -274,12 +311,13 @@ def _process_segments(
             # always two characters (see _parse_segments), so the historical
             # '29'/'28D' key checks could never match the IBAN case -- the
             # label is matched on the value instead.
+            purpose = value
             for label in (' BIC', ' IBAN'):
-                if value.endswith(label):
-                    value = value.removesuffix(label).rstrip()
+                if purpose.endswith(label):
+                    purpose = purpose.removesuffix(label).rstrip()
                     break
             key20 = DETAIL_KEYS['20']
-            result[key20].append(value)
+            result[key20].append(purpose)
         elif key in {'60', '61', '62', '63', '64', '65'}:
             key60 = DETAIL_KEYS['60']
             result[key60].append(value)
@@ -346,25 +384,25 @@ def _parse_mt940_gvcodes(purpose: str) -> dict[str, str | None]:
         # Detect the beginning of a GVC segment: if a '+' is encountered
         # and the four characters preceding it form a valid GVC key. GVC
         # keywords are four characters wide, so a '+' before index 4 cannot
-        # terminate one; guarding on ``index >= 4`` also avoids a negative
+        # terminate one; guarding on the index also avoids a negative
         # ``purpose[index - 4:index]`` slice wrapping to the empty string
         # (which spuriously matched the empty-string GVC key and truncated a
         # literal '+' in the leading free text).
         if (
             char == '+'
-            and index >= 4
-            and purpose[index - 4 : index] in GVC_KEYS
+            and index >= _GVC_KEY_LENGTH
+            and purpose[index - _GVC_KEY_LENGTH : index] in GVC_KEYS
         ):
             if segment_type:
                 # If already processing a segment, finalize it by removing
                 # the trailing GVC key and reset the text accumulator.
-                tmp[segment_type] = text[:-4]
+                tmp[segment_type] = text[:-_GVC_KEY_LENGTH]
                 text = ''
             else:
                 text = ''
             # Set the new segment type from the four characters preceding
             # the '+'.
-            segment_type = purpose[index - 4 : index]
+            segment_type = purpose[index - _GVC_KEY_LENGTH : index]
         else:
             text += char
 
@@ -386,8 +424,7 @@ def transaction_details_post_processor(
     result: dict[str, Any],
     space: bool = False,
 ) -> dict[str, Any]:
-    """Parse the extra details in some transaction formats,
-    such as the 60-65 keys.
+    """Parse the structured ``:86:`` details, including the 60-65 keys.
 
     Args:
         transactions: The transactions object.
@@ -408,7 +445,7 @@ def transaction_details_post_processor(
 
         purpose = result.get('purpose')
 
-        if purpose and any(gvk in purpose for gvk in GVC_KEYS if gvk != ''):
+        if purpose and any(gvk in purpose for gvk in GVC_KEYS if gvk):
             result.update(_parse_mt940_gvcodes(result['purpose']))
 
         # Clean up the purpose field

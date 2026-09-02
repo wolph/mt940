@@ -7,6 +7,7 @@ there without raising ``AttributeError: 'NoneType' object has no attribute
 """
 
 import mt940
+import pytest
 
 VALID = """:20:STARTUMS
 :25:NL12RABO0123456789
@@ -18,7 +19,9 @@ VALID = """:20:STARTUMS
 """
 
 
-def test_parses_without_stdout_and_stderr(monkeypatch) -> None:
+def test_parses_without_stdout_and_stderr(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr('sys.stdout', None)
     monkeypatch.setattr('sys.stderr', None)
     transactions = mt940.parse(VALID)

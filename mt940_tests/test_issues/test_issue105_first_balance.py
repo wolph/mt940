@@ -2,7 +2,7 @@
 
 With the default ``parse()`` every statement-scope tag merges into one dict,
 so in files with several pages only the LAST ``:60M:`` / ``:25:`` survive.
-``parse_statements()`` preserves per-``:20:``-block data (shape 1); this test
+``parse_statements()`` preserves per-``:20:``-block data (shape 1). This test
 also covers the paged single-block shape (shape 2).
 """
 

@@ -1,4 +1,6 @@
-"""Format.
+"""Read MT940 sources and turn them into transaction collections.
+
+Format
 ---------------------
 
 Sources:
@@ -126,7 +128,7 @@ def parse(
     transactions = mt940.models.Transactions(
         processors, tags, transaction_boundary=transaction_boundary
     )
-    transactions.parse(data)
+    _ = transactions.parse(data)
 
     return transactions
 
@@ -175,7 +177,7 @@ def parse_statements(
         transactions = mt940.models.Transactions(
             processors, tags, transaction_boundary=transaction_boundary
         )
-        transactions.parse(block)
+        _ = transactions.parse(block)
         statements.append(transactions)
 
     return statements
