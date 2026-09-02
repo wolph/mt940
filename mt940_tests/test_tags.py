@@ -4,7 +4,6 @@ from typing import ClassVar
 
 import mt940
 import pytest
-from mt940 import models, tags
 
 _tests_path = pathlib.Path(__file__).parent
 
@@ -68,7 +67,7 @@ def test_non_swift_blank_lines_collapse() -> None:
     # Direct tag call: blank lines between content are kept as single
     # paragraph separators in non_swift_text (mt940.parse strips blank
     # lines before tags ever see them).
-    tag = tags.NonSwift()
+    tag = mt940.tags.NonSwift()
     result = tag(
         mt940.models.Transactions(), {'non_swift': '22foo\n\n\n22bar'}
     )
@@ -96,7 +95,7 @@ def test_floor_limit_lowercase_indicator_normalized() -> None:
     assert str(transactions.data['d_floor_limit']) == '-10.00 EUR'
 
 
-class MultilineGroupTag(tags.Tag):
+class MultilineGroupTag(mt940.tags.Tag):
     """Tag whose (valid) pattern spreads one group over several lines."""
 
     id: ClassVar[str | int] = 28
@@ -185,7 +184,7 @@ _LEAP_DAY_STATEMENT = """:20:REF
 def test_balance_on_leap_day() -> None:
     transactions = mt940.parse(_LEAP_DAY_STATEMENT)
     balance = transactions.data['final_opening_balance']
-    assert balance.date == models.Date(2024, 2, 29)
+    assert balance.date == mt940.models.Date(2024, 2, 29)
 
 
 def test_date_time_indication_without_offset() -> None:
@@ -193,7 +192,7 @@ def test_date_time_indication_without_offset() -> None:
     # crash and yields a naive datetime.
     transactions = mt940.parse(':13:1701191815\n' + _HEADER + _FOOTER)
     date = transactions.data['date']
-    assert date == models.DateTime(2017, 1, 19, 18, 15)
+    assert date == mt940.models.DateTime(2017, 1, 19, 18, 15)
     assert date.tzinfo is None
 
 
@@ -205,7 +204,7 @@ def long_statement_number() -> str:
         return fh.read()
 
 
-class MyStatementNumber(tags.Tag):
+class MyStatementNumber(mt940.tags.Tag):
     """Statement number / sequence number.
 
     Pattern: 10n
@@ -227,18 +226,22 @@ def test_specify_different_tag_classes(long_statement_number: str) -> None:
 @pytest.mark.parametrize(
     ('path_to_file', 'first_expected_entry_date', 'last_expected_entry_date'),
     [
-        ('ASNB/mt940.txt', models.Date(2020, 1, 1), models.Date(2020, 1, 31)),
+        (
+            'ASNB/mt940.txt',
+            mt940.models.Date(2020, 1, 1),
+            mt940.models.Date(2020, 1, 31),
+        ),
         ('ASNB/mt940_with_spaces_for_entry_date.txt', None, None),
     ],
 )
 def test_asnb_tags(
     path_to_file: str,
-    first_expected_entry_date: models.Date | None,
-    last_expected_entry_date: models.Date | None,
+    first_expected_entry_date: mt940.models.Date | None,
+    last_expected_entry_date: mt940.models.Date | None,
 ) -> None:
     with _tests_path.joinpath(path_to_file).open(encoding='utf-8') as fh:
         data = fh.read()
-        tag_parser = tags.StatementASNB()
+        tag_parser = mt940.tags.StatementASNB()
         trs = mt940.models.Transactions(tags={tag_parser.id: tag_parser})
 
         _ = trs.parse(data)
@@ -248,15 +251,15 @@ def test_asnb_tags(
             'transaction_reference': '0000000000',
             'statement_number': '31',
             'sequence_number': '1',
-            'final_opening_balance': models.Balance(
+            'final_opening_balance': mt940.models.Balance(
                 status='C',
-                amount=models.Amount('404.81', 'C', 'EUR'),
-                date=models.Date(2020, 1, 31),
+                amount=mt940.models.Amount('404.81', 'C', 'EUR'),
+                date=mt940.models.Date(2020, 1, 31),
             ),
-            'final_closing_balance': models.Balance(
+            'final_closing_balance': mt940.models.Balance(
                 status='C',
-                amount=models.Amount('501.23', 'C', 'EUR'),
-                date=models.Date(2020, 1, 31),
+                amount=mt940.models.Amount('501.23', 'C', 'EUR'),
+                date=mt940.models.Date(2020, 1, 31),
             ),
         }
         assert len(trs) == 8
@@ -266,13 +269,13 @@ def test_asnb_tags(
         first_expected_transaction_data = {
             'status': 'D',
             'funds_code': None,
-            'amount': models.Amount('65.00', 'D', 'EUR'),
+            'amount': mt940.models.Amount('65.00', 'D', 'EUR'),
             'id': 'NOVB',
             'customer_reference': 'NL47INGB9999999999',
             'bank_reference': None,
             'extra_details': 'hr gjlm paulissen',
             'currency': 'EUR',
-            'date': models.Date(2020, 1, 1),
+            'date': mt940.models.Date(2020, 1, 1),
             'transaction_reference': '0000000000',
         }
         if first_expected_entry_date:
@@ -286,22 +289,22 @@ def test_asnb_tags(
         assert trs.transactions[0].data == first_expected_transaction_data
 
         assert td == 'NL47INGB9999999999 hr gjlm paulissen\nBetaling sieraden'
-        assert trs.transactions[1].data['amount'] == models.Amount(
+        assert trs.transactions[1].data['amount'] == mt940.models.Amount(
             '1000.00', 'C', 'EUR'
         )
-        assert trs.transactions[2].data['amount'] == models.Amount(
+        assert trs.transactions[2].data['amount'] == mt940.models.Amount(
             '801.55', 'D', 'EUR'
         )
-        assert trs.transactions[3].data['amount'] == models.Amount(
+        assert trs.transactions[3].data['amount'] == mt940.models.Amount(
             '1.65', 'D', 'EUR'
         )
-        assert trs.transactions[4].data['amount'] == models.Amount(
+        assert trs.transactions[4].data['amount'] == mt940.models.Amount(
             '828.72', 'C', 'EUR'
         )
-        assert trs.transactions[5].data['amount'] == models.Amount(
+        assert trs.transactions[5].data['amount'] == mt940.models.Amount(
             '1000.00', 'D', 'EUR'
         )
-        assert trs.transactions[6].data['amount'] == models.Amount(
+        assert trs.transactions[6].data['amount'] == mt940.models.Amount(
             '1000.18', 'C', 'EUR'
         )
 
@@ -309,13 +312,13 @@ def test_asnb_tags(
         last_expected_transaction_data = {
             'status': 'D',
             'funds_code': None,
-            'amount': models.Amount('903.76', 'D', 'EUR'),
+            'amount': mt940.models.Amount('903.76', 'D', 'EUR'),
             'id': 'NIDB',
             'customer_reference': 'NL08ABNA9999999999',
             'bank_reference': None,
             'extra_details': 'international card services',
             'currency': 'EUR',
-            'date': models.Date(2020, 1, 31),
+            'date': mt940.models.Date(2020, 1, 31),
             'transaction_reference': '0000000000',
         }
         if last_expected_entry_date:
@@ -345,3 +348,13 @@ def test_unknown_tag_id_is_skipped() -> None:
     assert transactions.data['account_identification'] == 'ACC'
     assert transactions.data['statement_number'] == '1'
     assert 'IGNORED' not in str(transactions.data)
+
+
+def test_tags_of_one_class_are_equal_and_hash_alike() -> None:
+    # CodeQL py/equals-hash-mismatch: Tag hashed on its id without defining
+    # equality. Instances of one tag class are interchangeable.
+    assert mt940.tags.Statement() == mt940.tags.Statement()
+    assert hash(mt940.tags.Statement()) == hash(mt940.tags.Statement())
+    assert mt940.tags.Statement() != mt940.tags.StatementASNB()
+    assert mt940.tags.Statement() != mt940.tags.Statement().id
+    assert len({mt940.tags.Statement(), mt940.tags.Statement()}) == 1
