@@ -96,9 +96,11 @@ mt940.tags.BalanceBase.scope = mt940.models.Transaction
 
 # The currency has to be set manually when moving the BalanceBase scope to
 # Transaction.
-transactions = mt940.models.Transactions(processors=dict(
-    pre_statement=[mt940.processors.add_currency_pre_processor('EUR')],
-))
+transactions = mt940.models.Transactions(
+    processors=dict(
+        pre_statement=[mt940.processors.add_currency_pre_processor('EUR')],
+    )
+)
 
 with open('mt940_tests/jejik/abnamro.sta') as fh:
     transactions.parse(fh.read())
