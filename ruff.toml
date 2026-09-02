@@ -10,39 +10,57 @@ exclude = ['.tox', 'test.py', '*_old.py']
 [lint]
 select = ['ALL']
 ignore = [
-    'COM812', # Trailing commas are managed by the formatter.
-    'ISC001', # Implicit string concatenation is managed by the formatter.
-    'D203',   # Conflicts with D211 (no blank line before a class docstring).
-    'D213',   # Conflicts with D212 (summary on the first docstring line).
-    'CPY001', # No per-file copyright headers, the LICENSE file covers it.
-    'TRY003', # Exception messages live at the raise site, not in subclasses.
-    'RUF105', # `noqa` stays readable by other tools, `ruff: ignore` is not.
-    'FBT001', # Keyword-only booleans would break positional callers of the
-    'FBT002', # public API (add_currency_pre_processor and friends).
-    'A005',   # mt940.json shadows the stdlib json module: public module name.
+    # Trailing commas and implicit string concatenation are managed by the
+    # formatter.
+    'missing-trailing-comma',
+    'single-line-implicit-string-concatenation',
+    # One blank line before a class docstring and the summary on the first
+    # docstring line (D211 and D212) are the chosen sides of two pydocstyle
+    # conflicts.
+    'incorrect-blank-line-before-class',
+    'multi-line-summary-second-line',
+    # No per-file copyright headers, the LICENSE file covers it.
+    'missing-copyright-notice',
+    # Exception messages live at the raise site, not in exception subclasses.
+    'raise-vanilla-args',
+    # `noqa` stays readable by other tools, `ruff: ignore` is not.
+    'noqa-comments',
+    # Keyword-only booleans would break positional callers of the public API
+    # (add_currency_pre_processor and friends).
+    'boolean-type-hint-positional-argument',
+    'boolean-default-value-positional-argument',
+    # mt940.json shadows the stdlib json module: it is a public module name.
+    'stdlib-module-shadowing',
 ]
 
 [lint.per-file-ignores]
 'mt940_tests/**' = [
-    'S101',    # Tests assert.
-    'PLR2004', # Magic values are the expected outputs in tests.
-    'D1',      # Test names document the tests, docstrings are optional.
-    'SLF001',  # Tests poke at private helpers on purpose.
-    'N802',    # Test names may carry bank names such as mBank.
-    'N803',
+    # Tests assert, compare against literal expected values, are documented
+    # by their names, poke at private helpers on purpose and may carry bank
+    # names such as mBank.
+    'assert',
+    'magic-value-comparison',
+    'D1',
+    'private-member-access',
+    'invalid-function-name',
+    'invalid-argument-name',
 ]
 'mt940_tests/test_parse.py' = [
-    'S301', # The pickle round-trip test deserialises its own output.
-    'S403',
+    # The pickle round-trip test deserialises its own output.
+    'suspicious-pickle-usage',
+    'suspicious-pickle-import',
 ]
 'mt940/processors.py' = [
-    'N802',   # mBank_* processor names are public API.
-    'N803',
-    'ARG001', # Every processor shares one signature, so most of them ignore
-    # at least one of the positional arguments.
+    # mBank_* processor names are public API.
+    'invalid-function-name',
+    'invalid-argument-name',
+    # Every processor shares one signature, so most of them ignore at least
+    # one of the positional arguments.
+    'unused-function-argument',
 ]
 'docs/conf.py' = [
-    'INP001', # Sphinx loads conf.py as a script, not as a package module.
+    # Sphinx loads conf.py as a script, not as a package module.
+    'implicit-namespace-package',
 ]
 
 [lint.flake8-annotations]

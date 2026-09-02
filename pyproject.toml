@@ -188,11 +188,12 @@ check-hidden = true
 
 [tool.repo-review]
 ignore = [
-    'PY005', # tests live in mt940_tests/ (established convention)
-    'PY006', # pre-commit replaced by lefthook
-    'PC110', # no pre-commit (we use lefthook)
-    'PC111', # no blacken-docs because markdown has no code
-    'PC140', # manual typecheck hooks
-    'PC170', # no pygrep-hooks because no rST
-    'RTD',   # no RTD repo-review checks
+    'SEC001', # zizmor runs as a tox env (pedantic persona) in CI, not via pre-commit
+    'PY005',  # tests live in mt940_tests/ (established convention)
+    'PY006',  # pre-commit replaced by lefthook
+    'PC110',  # no pre-commit (we use lefthook)
+    'PC111',  # no blacken-docs because markdown has no code
+    'PC140',  # manual typecheck hooks
+    'PC170',  # no pygrep-hooks because no rST
+    'RTD',    # no RTD repo-review checks
 ]
