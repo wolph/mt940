@@ -80,7 +80,7 @@ Transaction grouping
 
 By default a new transaction is started only on the ``:61:`` statement tag.
 Pass ``transaction_boundary`` (an iterable of tag *slugs*) to also start a new
-transaction on those tags — for example to treat every ``:20:`` as a boundary:
+transaction on those tags, for example to treat every ``:20:`` as a boundary:
 
 .. code-block:: python
 
@@ -103,6 +103,22 @@ Some banks (e.g. GLS / Atruvia) put a customer reference longer than the SWIFT
 
     gls = mt940.tags.StatementGLS()
     transactions = mt940.parse('statement.sta', tags={gls.id: gls})
+
+Parser fixes
+------------
+
+Several parsing fixes change the output for input that 5.0.0 accepted, so
+each of them is off by default and switched on through
+:class:`mt940.options.Options`. The class documents every switch, and
+:meth:`mt940.options.Options.all` enables all of them, which is what the next
+major release will do by default::
+
+    import mt940
+
+    options = mt940.Options(reversal_sign=True, applicant_iban=True)
+    transactions = mt940.parse('statement.sta', options=options)
+
+    transactions = mt940.parse('statement.sta', options=mt940.Options.all())
 
 Statements from the Dutch bank ASN
 ----------------------------------

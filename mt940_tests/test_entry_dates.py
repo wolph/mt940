@@ -5,13 +5,13 @@ import mt940
 
 def _statement(
     transactions: mt940.models.Transactions, **kwargs: object
-) -> dict:
+) -> dict[str, object]:
     statement = mt940.tags.Statement()
-    data = dict(amount='123', status='D', **kwargs)
+    data: dict[str, object] = {'amount': '123', 'status': 'D', **kwargs}
     return statement(transactions, data)
 
 
-def test_entry_dates_wrapping_years():
+def test_entry_dates_wrapping_years() -> None:
     transactions = mt940.models.Transactions()
 
     # Regular statement without an entry date: only the value date is set.
@@ -36,8 +36,8 @@ def test_entry_dates_wrapping_years():
     assert forward['guessed_entry_date'] == forward['entry_date']
 
     # Entry date wraps into the previous year (value date Jan, entry date
-    # Dec) -- issue #121. `entry_date` must be resolved, not left in the
-    # value date's year.
+    # Dec), issue #121. `entry_date` must be resolved, not left in the value
+    # date's year.
     backward = _statement(
         transactions, year=2000, month=1, day=1, entry_month=12, entry_day=31
     )

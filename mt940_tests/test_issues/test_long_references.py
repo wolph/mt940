@@ -7,7 +7,7 @@
 import mt940
 
 
-def test_issue_111_long_customer_reference():
+def test_issue_111_long_customer_reference() -> None:
     # GLS / Atruvia sends a 35-char customer reference followed by the //
     # bank-reference delimiter. This is handled by the opt-in StatementGLS tag
     # (relaxing the default would change Rabobank-style same-line parsing).
@@ -29,7 +29,7 @@ def test_issue_111_long_customer_reference():
     assert str(transaction.data['amount']) == '-20 EUR'
 
 
-def test_same_line_details_with_double_slash_preserved():
+def test_same_line_details_with_double_slash_preserved() -> None:
     # A // inside same-line details (e.g. a URL) must NOT be treated as the
     # bank-reference delimiter by the default Statement tag (backwards-compat
     # guard: the GLS support is opt-in for exactly this reason).
@@ -47,7 +47,7 @@ def test_same_line_details_with_double_slash_preserved():
     assert transaction.data.get('bank_reference') is None
 
 
-def test_issue_117_long_extra_details():
+def test_issue_117_long_extra_details() -> None:
     # Wise sends supplementary details longer than the 34-char SWIFT cap.
     long_details = 'Sent money to John Doe for invoice 12345 reference ABCDE'
     assert len(long_details) > 34
@@ -65,7 +65,7 @@ def test_issue_117_long_extra_details():
     assert str(transaction.data['amount']) == '50.00 EUR'
 
 
-def test_rabobank_same_line_extra_details_unchanged():
+def test_rabobank_same_line_extra_details_unchanged() -> None:
     # Rabobank packs a 16-char (space-padded) customer reference plus extra
     # text on the same line, with no // delimiter. The relaxation must keep
     # splitting these (backwards compatibility).

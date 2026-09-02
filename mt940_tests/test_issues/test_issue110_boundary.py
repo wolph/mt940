@@ -19,7 +19,7 @@ DATA = """:20:REF1
 """
 
 
-def test_default_grouping_unchanged():
+def test_default_grouping_unchanged() -> None:
     # Legacy behaviour: the second :20: overwrites the global reference and a
     # single transaction is produced.
     transactions = mt940.parse(DATA)
@@ -27,7 +27,7 @@ def test_default_grouping_unchanged():
     assert transactions[0].data['transaction_reference'] == 'REF2'
 
 
-def test_transaction_boundary_opt_in_via_parse():
+def test_transaction_boundary_opt_in_via_parse() -> None:
     transactions = mt940.parse(
         DATA, transaction_boundary={'transaction_reference_number'}
     )
@@ -35,15 +35,15 @@ def test_transaction_boundary_opt_in_via_parse():
     assert refs == ['REF1', 'REF2']
 
 
-def test_transaction_boundary_opt_in_via_transactions():
+def test_transaction_boundary_opt_in_via_transactions() -> None:
     transactions = mt940.models.Transactions(
         transaction_boundary={'transaction_reference_number'}
     )
-    transactions.parse(DATA)
+    _ = transactions.parse(DATA)
     assert len(transactions) == 2
 
 
-def test_transaction_boundary_accepts_a_bare_string():
+def test_transaction_boundary_accepts_a_bare_string() -> None:
     # A single slug passed as a plain string must not be iterated per-char.
     transactions = mt940.parse(
         DATA, transaction_boundary='transaction_reference_number'
@@ -52,7 +52,7 @@ def test_transaction_boundary_accepts_a_bare_string():
     assert refs == ['REF1', 'REF2']
 
 
-def test_reference_propagates_to_later_statements_in_block():
+def test_reference_propagates_to_later_statements_in_block() -> None:
     # A block with one :20: and several :61: tags: every transaction in the
     # block must carry the block's reference (the global reference is kept in
     # sync for the transactions_to_transaction post-processor).
@@ -72,7 +72,7 @@ def test_reference_propagates_to_later_statements_in_block():
     assert refs == ['REF1', 'REF1', 'REF2']
 
 
-def test_transaction_scoped_boundary_tag():
+def test_transaction_scoped_boundary_tag() -> None:
     # A boundary tag whose scope is Transaction (not Transactions) opens a new
     # transaction without touching the global statement data.
     data = """:20:REF

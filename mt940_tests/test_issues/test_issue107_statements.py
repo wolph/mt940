@@ -24,7 +24,7 @@ MULTI_BLOCK = """:20:REF1
 """
 
 
-def test_multi_block_balance_only_keeps_every_block():
+def test_multi_block_balance_only_keeps_every_block() -> None:
     statements = mt940.parse_statements(MULTI_BLOCK)
     assert len(statements) == 2
     assert str(statements[0].data['final_opening_balance']).startswith(
@@ -41,14 +41,14 @@ def test_multi_block_balance_only_keeps_every_block():
     )
 
 
-def test_default_parse_unchanged_for_multi_block():
+def test_default_parse_unchanged_for_multi_block() -> None:
     # The default parser still merges and keeps only the last block's balance.
     transactions = mt940.parse(MULTI_BLOCK)
     assert len(transactions) == 0
     assert str(transactions.data['final_opening_balance']).startswith('200.00')
 
 
-def test_single_statement_returns_one():
+def test_single_statement_returns_one() -> None:
     data = """:20:REF
 :25:NL00BANK0123456789EUR
 :28:1/1
@@ -65,8 +65,8 @@ def test_single_statement_returns_one():
     assert str(statements[0].data['available_balance']).startswith('1500.00')
 
 
-def test_abnamro_file_splits_into_statements():
-    # abnamro.sta has two :20: blocks; parse_statements separates them while
+def test_abnamro_file_splits_into_statements() -> None:
+    # abnamro.sta has two :20: blocks. parse_statements separates them while
     # the default parse() still merges them into one collection.
     path = 'mt940_tests/jejik/abnamro.sta'
     statements = mt940.parse_statements(path)
@@ -74,7 +74,7 @@ def test_abnamro_file_splits_into_statements():
     assert len(mt940.parse(path)) == 10
 
 
-def test_kwargs_passed_through_to_each_block():
+def test_kwargs_passed_through_to_each_block() -> None:
     gls = mt940.tags.StatementGLS()
     data = (
         ':20:R\n:25:ACC\n:60F:C220706EUR0,00\n'

@@ -1,10 +1,13 @@
 """Shared type aliases and processor protocols.
 
-These are the precise types used across the public API. The module is a *leaf*:
-it imports nothing from the rest of the package, so it never participates in an
-import cycle. The processor protocols therefore type their ``transactions`` and
-``tag`` arguments as :data:`~typing.Any`; the concrete processor functions in
-:mod:`mt940.processors` still annotate them precisely.
+These are the precise types used across the public API. The module is a
+*leaf*: it imports nothing from the rest of the package, so it never
+participates in an import cycle. That is also why the processor protocols
+type their ``transactions`` and ``tag`` arguments as :data:`~typing.Any`:
+naming the model and tag classes would need an import, and
+:func:`typing.get_type_hints` has to resolve these signatures at runtime, as
+it did in 5.0.0. The concrete processors in :mod:`mt940.processors` annotate
+them precisely.
 """
 
 from __future__ import annotations
@@ -14,8 +17,9 @@ from collections.abc import Callable
 from typing import IO, Any, Protocol
 
 #: Accepted input for :func:`mt940.parse` and :func:`mt940.parse_statements`:
-#: a path, raw ``str``/``bytes`` data, or an open binary/text file handle.
-Source = str | bytes | os.PathLike[str] | IO[str] | IO[bytes]
+#: a path, raw ``str``/``bytes`` data, an open file descriptor, or an open
+#: binary/text file handle.
+Source = str | bytes | os.PathLike[str] | int | IO[str] | IO[bytes]
 
 #: A parsed tag dictionary. Intentionally dynamic: the available keys are
 #: tag- and bank-specific, so a precise ``TypedDict`` would misrepresent it.
@@ -27,8 +31,9 @@ class PreProcessor(Protocol):
 
     def __call__(
         self,
-        transactions: Any,
-        tag: Any,
+        # Any rather than the model and tag classes: see the module docstring.
+        transactions: Any,  # noqa: ANN401
+        tag: Any,  # noqa: ANN401
         tag_dict: TagDict,
         /,
         *args: Any,
@@ -40,8 +45,9 @@ class PostProcessor(Protocol):
 
     def __call__(
         self,
-        transactions: Any,
-        tag: Any,
+        # Any rather than the model and tag classes: see the module docstring.
+        transactions: Any,  # noqa: ANN401
+        tag: Any,  # noqa: ANN401
         tag_dict: TagDict,
         result: TagDict,
         /,

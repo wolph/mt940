@@ -23,15 +23,15 @@ for transaction in transactions:
 
 ## Why mt940
 
-- **Zero runtime dependencies** — pure standard library.
-- **Fully typed** — ships `py.typed`; checked under pyright, mypy and pyrefly.
-- **Battle-tested** — 100% test coverage against fixtures from many banks.
-- **Smart models** — amounts, balances and dates come back as rich Python
+- **Zero runtime dependencies**: pure standard library.
+- **Fully typed**: ships `py.typed` and is checked under mypy, basedpyright, pyrefly and ty.
+- **Battle-tested**: 100% test coverage against fixtures from many banks.
+- **Smart models**: amounts, balances and dates come back as rich Python
   objects, not raw strings.
-- **JSON-ready** — a single encoder serializes a whole statement.
-- **Extensible** — opt-in tags and pre/post processors for bank-specific
+- **JSON-ready**: a single encoder serializes a whole statement.
+- **Extensible**: opt-in tags and pre/post processors for bank-specific
   formats.
-- **Modern Python** — supports 3.10 through 3.13.
+- **Modern Python**: supports 3.10 through 3.14.
 
 ## Installation
 
@@ -75,7 +75,7 @@ fields are present depends on the source bank and the tags in the file.
 ### Reading balances
 
 Statement-level balances live on the `Transactions` object's `data`, not on the
-individual transactions — this works even for files with no transactions at all:
+individual transactions. This works even for files with no transactions at all:
 
 ```python
 import mt940
@@ -96,9 +96,11 @@ mt940.tags.BalanceBase.scope = mt940.models.Transaction
 
 # The currency has to be set manually when moving the BalanceBase scope to
 # Transaction.
-transactions = mt940.models.Transactions(processors=dict(
-    pre_statement=[mt940.processors.add_currency_pre_processor('EUR')],
-))
+transactions = mt940.models.Transactions(
+    processors=dict(
+        pre_statement=[mt940.processors.add_currency_pre_processor('EUR')],
+    )
+)
 
 with open('mt940_tests/jejik/abnamro.sta') as fh:
     transactions.parse(fh.read())
@@ -137,7 +139,7 @@ print(json.dumps(transactions, indent=4, cls=mt940.JSONEncoder))
 ### Transaction grouping (opt-in)
 
 By default a new transaction is started only on the `:61:` statement tag. Some
-banks delimit transactions differently — for example by repeating the `:20:`
+banks delimit transactions differently, for example by repeating the `:20:`
 transaction reference per block. Because changing the default grouping would
 break existing users, this behaviour is **opt-in**: pass `transaction_boundary`
 (an iterable of tag *slugs*) to start a new transaction on those tags too.
@@ -168,7 +170,7 @@ gls = mt940.tags.StatementGLS()
 transactions = mt940.parse('statement.sta', tags={gls.id: gls})
 ```
 
-(Longer *supplementary details* — issue #117, e.g. Wise — are handled by the
+(Longer *supplementary details*, issue #117, e.g. Wise, are handled by the
 default parser and need no opt-in.)
 
 ### Statements from the Dutch bank ASN (opt-in)
@@ -188,6 +190,41 @@ with open('mt940_tests/ASNB/mt940.txt') as fh:
 
 pprint.pprint(transactions.data, sort_dicts=False)
 ```
+
+### Parser fixes (opt-in)
+
+Several parsing fixes change the output for input that 5.0.0 accepted without
+complaint. Because that would break existing users, every one of them is off
+by default and switched on through `mt940.Options`. The next major release
+turns them all on.
+
+```python
+import mt940
+
+options = mt940.Options(reversal_sign=True, applicant_iban=True)
+transactions = mt940.parse(
+    'mt940_tests/betterplace/sepa_mt9401.sta', options=options
+)
+
+# Or take every fix at once, which is what the next major release does.
+transactions = mt940.parse('statement.sta', options=mt940.Options.all())
+```
+
+| Option | Default (5.0.0) | Switched on |
+|---|---|---|
+| `applicant_iban` | `?31` is prepended to `applicant_name` | `?31` is `applicant_iban` (issue #132, the 4.x behaviour) |
+| `merge_keeps_values` | a structured `:86:` overwrites other tags' values with `None` for sub-fields it lacks | existing values survive, so the `:61:` customer reference keeps its value |
+| `reversal_sign` | the `RC` reversal mark gives a positive amount | `RC` is negative like the debit it is (issue #130) |
+| `case_insensitive_marks` | a lowercase `d` or `rc` mark does not sign the amount | lowercase marks work like uppercase ones |
+| `timezone_offset` | a `:13D:` offset of `+0100` is read as 100 minutes | `+0100` is one hour |
+| `unbounded_details` | `:86:` details are cut after nine chunks of 65 characters | details of any length are kept |
+| `non_swift_free_text` | an `:NS:` line without a two-digit sub-tag loses its content | the content is kept |
+| `floor_limit_blank_mark` | a blank `:34F:` mark yields a key with a leading space and no currency | it yields both floor limits and the currency |
+| `strip_bom` | a leading byte-order mark hides the first `:20:` tag | the mark is dropped |
+| `gvc_leading_text` | free text before the first GVC keyword is lost when it contains a `+` | the text is kept |
+
+Crash fixes need no option: input that made 5.0.0 raise now parses in every
+mode.
 
 ## Supported tags
 
@@ -211,16 +248,20 @@ pprint.pprint(transactions.data, sort_dicts=False)
 ## Contributing
 
 Help is greatly appreciated. Please clone the **develop** branch and run `tox`
-before opening a pull request; CI checks linting (ruff), type-checking
-(pyright, mypy, pyrefly), the test suite (100% coverage required), and the
-documentation build.
+before opening a pull request. CI runs the same tox environments: ruff with
+every rule enabled, four type checkers (mypy, basedpyright, pyrefly and ty),
+the test suite on Python 3.10 through 3.14 with 100% coverage required, the
+documentation build, and audits of the TOML files, the workflows and the
+dependencies.
 
 ```bash
 git clone --branch develop https://github.com/WoLpH/mt940.git
 cd mt940
 uv sync
-uv run tox          # run the full matrix
-uv run tox -e py312 # or a single environment
+uv run lefthook install  # ruff on commit, every checker on push
+uv run tox               # run the full matrix
+uv run tox -m check      # only the static checks
+uv run tox -e py312      # or a single environment
 ```
 
 ## Links

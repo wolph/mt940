@@ -8,7 +8,9 @@ many real-world banks.
 
 Start with :doc:`installation` and :doc:`usage`; the :doc:`modules` section
 contains the full API reference. See the project `README
-<https://github.com/WoLpH/mt940>`_ for a feature overview.
+<https://github.com/WoLpH/mt940>`_ for a feature overview, the `contributors
+<https://github.com/WoLpH/mt940/graphs/contributors>`_ who made it possible, and
+the `release notes <https://github.com/WoLpH/mt940/releases>`_ for the changelog.
 
 Contents:
 
@@ -19,8 +21,6 @@ Contents:
    usage
    modules
    contributing
-   authors
-   history
 
 Indices and tables
 ==================

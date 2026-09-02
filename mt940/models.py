@@ -19,24 +19,41 @@ from collections.abc import (
     MutableMapping,
     Sequence,
 )
-from typing import Any, ClassVar, overload
+from typing import TYPE_CHECKING, Any, ClassVar, overload
 
 import mt940
 
 from . import processors, utils
-from ._types import Processors
+
+# Kept at runtime: 5.0.0 exposed it as mt940.models.Processors.
+from ._types import Processors as Processors  # noqa: PLC0414, TC001
+from .options import Options
+
+if TYPE_CHECKING:
+    from typing_extensions import Self
+
+#: Sentinel for attributes that are absent, as opposed to ``None``.
+_MISSING = object()
+
+
+#: MT940 carries two-digit years. Anything below this limit is taken to be
+#: relative to :data:`_SHORT_YEAR_BASE`, so ``23`` becomes ``2023``.
+_SHORT_YEAR_LIMIT = 1000
+_SHORT_YEAR_BASE = 2000
 
 
 class Model:
     """Base class for MT940 models, providing a uniform ``repr``."""
 
     def __repr__(self) -> str:
+        """Return the class name in angle brackets."""
         return f'<{self.__class__.__name__}>'
 
 
 class FixedOffset(datetime.tzinfo):
-    """Fixed time offset based on the Python docs
-    Source: https://docs.python.org/2/library/datetime.html#tzinfo-objects
+    """Fixed time offset, after the ``tzinfo`` example in the Python docs.
+
+    Source: https://docs.python.org/3/library/datetime.html#tzinfo-objects
 
     >>> offset = FixedOffset(60)
     >>> offset.utcoffset(None).total_seconds()
@@ -48,27 +65,38 @@ class FixedOffset(datetime.tzinfo):
     """
 
     def __init__(self, offset: int | str = 0, name: str | None = None) -> None:
-        self._name = name or str(offset)
+        """Store the offset in minutes east of UTC and an optional name.
+
+        Args:
+            offset: Minutes east of UTC, as an ``int`` or a numeric string.
+            name: The zone name, defaults to the offset as a string.
+        """
+        self._name: str = name or str(offset)
 
         if not isinstance(offset, int):
             offset = int(offset)
-        self._offset = datetime.timedelta(minutes=offset)
+        self._offset: datetime.timedelta = datetime.timedelta(minutes=offset)
 
     def utcoffset(self, dt: datetime.datetime | None) -> datetime.timedelta:
         """Return the fixed offset east of UTC."""
+        del dt
         return self._offset
 
-    def dst(self, dt: datetime.datetime | None) -> datetime.timedelta:
+    def dst(  # noqa: PLR6301 (the tzinfo API is instance-based)
+        self, dt: datetime.datetime | None
+    ) -> datetime.timedelta:
         """Return a zero DST adjustment (fixed offsets have no DST)."""
+        del dt
         return datetime.timedelta(0)
 
     def tzname(self, dt: datetime.datetime | None) -> str:
         """Return the offset's name."""
+        del dt
         return self._name
 
 
 class DateTime(datetime.datetime, Model):
-    """Just a regular datetime object which supports dates given as strings
+    """Just a regular datetime object which supports dates given as strings.
 
     >>> DateTime(
     ...     year='2000',
@@ -115,12 +143,12 @@ class DateTime(datetime.datetime, Model):
         minute (str): Minute
         second (str): Second
         microsecond (str): Microsecond
-        tzinfo (tzinfo): Timezone information. Overwrites `offset`
+        tzinfo (datetime.tzinfo): Timezone information. Overwrites `offset`
         offset (str): Timezone offset in minutes, generates a tzinfo object
                       with the given offset if no tzinfo is available.
     """
 
-    def __new__(cls, *args: Any, **kwargs: Any) -> DateTime:
+    def __new__(cls, *args: Any, **kwargs: Any) -> Self:
         """Build a ``DateTime`` from string or positional date components.
 
         When keyword arguments are given the individual fields are coerced from
@@ -143,8 +171,8 @@ class DateTime(datetime.datetime, Model):
             second = int(kwargs.get('second', 0))
             microsecond = int(kwargs.get('microsecond', 0))
 
-            if year < 1000:
-                year += 2000
+            if year < _SHORT_YEAR_LIMIT:
+                year += _SHORT_YEAR_BASE
 
             return datetime.datetime.__new__(
                 cls,
@@ -157,12 +185,11 @@ class DateTime(datetime.datetime, Model):
                 microsecond,
                 tzinfo=tzinfo,
             )
-        else:
-            return datetime.datetime.__new__(cls, *args, **kwargs)
+        return datetime.datetime.__new__(cls, *args, **kwargs)
 
 
 class Date(datetime.date, Model):
-    """Just a regular date object which supports dates given as strings
+    """Just a regular date object which supports dates given as strings.
 
     >>> Date(year='2000', month='1', day='2')
     Date(2000, 1, 2)
@@ -176,7 +203,7 @@ class Date(datetime.date, Model):
         day (str): Day
     """
 
-    def __new__(cls, *args: Any, **kwargs: Any) -> Date:
+    def __new__(cls, *args: Any, **kwargs: Any) -> Self:
         """Build a ``Date`` from string or positional date components.
 
         Keyword arguments are coerced through :class:`DateTime` (so two-digit
@@ -186,56 +213,105 @@ class Date(datetime.date, Model):
         if kwargs:
             dt = DateTime(*args, **kwargs).date()
             return datetime.date.__new__(cls, dt.year, dt.month, dt.day)
-        else:
-            return datetime.date.__new__(cls, *args, **kwargs)
+        return datetime.date.__new__(cls, *args, **kwargs)
 
 
 class Amount(Model):
-    """Amount object containing currency and amount
+    """Amount object containing currency and amount.
 
     Args:
         amount (str): Amount using either a , or a . as decimal separator
-        status (str): Either C or D for credit or debit respectively
+        status (str): The debit/credit mark of field 61, one of C, D, RC or
+            RD. C and RD are positive, D and RC are negative.
         currency (str): A 3 letter currency (e.g. EUR)
 
     >>> Amount('123.45', 'C', 'EUR')
     <123.45 EUR>
     >>> Amount('123.45', 'D', 'EUR')
     <-123.45 EUR>
+
+    Release 5.0.0 negated a plain ``D`` only, so a reversal of a credit
+    (``RC``) and a lowercase ``d`` came back positive. That stays the
+    default. Opt in through :class:`mt940.options.Options` to sign them:
+
+    >>> Amount('123.45', 'RC', 'EUR')
+    <123.45 EUR>
+    >>> Amount(
+    ...     '123.45', 'RC', 'EUR', options=mt940.Options(reversal_sign=True)
+    ... )
+    <-123.45 EUR>
+    >>> Amount(
+    ...     '1.00',
+    ...     'd',
+    ...     'EUR',
+    ...     options=mt940.Options(case_insensitive_marks=True),
+    ... )
+    <-1.00 EUR>
+
+    A reversal of a debit puts money back in, so it stays positive:
+
+    >>> Amount('123.45', 'RD', 'EUR', options=mt940.Options.all())
+    <123.45 EUR>
     """
 
     def __init__(
         self,
         amount: str,
-        status: str,
+        status: str | None,
         currency: str | None = None,
+        *,
+        options: Options | None = None,
         **kwargs: Any,
     ) -> None:
         """Coerce ``amount`` to a signed :class:`decimal.Decimal`.
 
-        ``status`` is ``'C'`` for credit (positive) or ``'D'`` for debit, in
-        which case the amount is negated. Extra keyword arguments are ignored
-        so a parsed tag dictionary can be splatted in directly.
+        Args:
+            amount: The amount, with ``,`` or ``.`` as decimal separator.
+            status: The debit/credit mark of field 61. ``None`` counts as
+                no mark.
+            currency: The three-letter currency code.
+            options: Which marks negate the amount, see
+                :class:`mt940.options.Options`. By default only a plain
+                ``D`` does, like release 5.0.0.
+            **kwargs: Ignored, so a parsed tag dictionary can be splatted
+                in directly.
         """
-        self.amount = decimal.Decimal(amount.replace(',', '.'))
-        self.currency = currency
+        del kwargs
+        self.amount: decimal.Decimal = decimal.Decimal(
+            amount.replace(',', '.')
+        )
+        self.currency: str | None = currency
 
-        # C = credit, D = debit
-
-        if status == 'D':
+        # C = credit, D = debit, RC = reversal of a credit (money leaves the
+        # account, like a debit), RD = reversal of a debit (money comes back
+        # in, like a credit). The tag patterns compile with re.IGNORECASE,
+        # so a lowercase mark reaches this constructor as-is.
+        options = options or Options()
+        mark = status or ''
+        if options.case_insensitive_marks:
+            mark = mark.upper()
+        debit_marks = {'D', 'RC'} if options.reversal_sign else {'D'}
+        if mark in debit_marks:
             self.amount = -self.amount
 
     def __eq__(self, other: object) -> bool:
+        """Return whether ``other`` is an equal-valued ``Amount``."""
         return (
             isinstance(other, Amount)
             and self.amount == other.amount
             and self.currency == other.currency
         )
 
+    def __hash__(self) -> int:
+        """Return a hash of amount and currency, matching ``__eq__``."""
+        return hash((self.amount, self.currency))
+
     def __str__(self) -> str:
+        """Return ``'<amount> <currency>'``."""
         return f'{self.amount} {self.currency}'
 
     def __repr__(self) -> str:
+        """Return the string form in angle brackets."""
         return f'<{self}>'
 
 
@@ -254,20 +330,34 @@ class SumAmount(Amount):
     ) -> None:
         """Store the entry ``number`` alongside the summed amount."""
         super().__init__(*args, **kwargs)
-        self.number = number
+        self.number: int = number
+
+    def __eq__(self, other: object) -> bool:
+        """Return whether ``other`` is an equal-valued amount.
+
+        ``number`` is informational and takes no part, as in 5.0.0: a plain
+        :class:`Amount` of the same value compares equal, and so do two
+        totals over a different number of entries.
+        """
+        return super().__eq__(other)
+
+    def __hash__(self) -> int:
+        """Return the :class:`Amount` hash, matching ``__eq__``."""
+        return super().__hash__()
 
     def __repr__(self) -> str:
+        """Return the amount, currency and entry count in angle brackets."""
         return f'<{self.amount} {self.currency} in {self.number} stmts)>'
 
 
 class Balance(Model):
-    """Parse balance statement
+    """Parse balance statement.
 
     Args:
         status (str): Either C or D for credit or debit respectively
         amount (Amount | str | None): Object containing the amount and currency
             or amount string
-        date (date): The balance date
+        date (Date | None): The balance date
 
     >>> balance = Balance('C', '0.00', Date(2010, 7, 22))
     >>> balance.status
@@ -288,27 +378,54 @@ class Balance(Model):
         status: str | None = None,
         amount: Amount | str | None = None,
         date: Date | None = None,
+        *,
+        options: Options | None = None,
         **kwargs: Any,
     ) -> None:
-        if amount and not isinstance(amount, Amount):
-            if status is None:  # pragma: no cover
-                raise ValueError('Cannot create Amount without status')
-            amount = Amount(amount, status, kwargs.get('currency'))
-        self.status = status
-        self.amount = amount
-        self.date = date
+        """Store the balance, coercing a string ``amount`` to an ``Amount``.
+
+        An empty amount string is stored as it is, like release 5.0.0 did.
+
+        Args:
+            status: The debit/credit mark, needed to sign a string amount.
+            amount: An :class:`Amount`, or an amount string to coerce.
+            date: The balance date.
+            options: Passed on to :class:`Amount` when coercing.
+            **kwargs: Extra parsed tag fields, only ``currency`` is used.
+
+        Raises:
+            ValueError: When ``amount`` is a non-empty string and ``status``
+                is missing.
+        """
+        if isinstance(amount, str) and amount:
+            if status is None:
+                msg = 'Cannot create Amount without status'
+                raise ValueError(msg)
+            amount = Amount(
+                amount, status, kwargs.get('currency'), options=options
+            )
+        self.status: str | None = status
+        self.amount: Amount | str | None = amount
+        self.date: Date | None = date
 
     def __eq__(self, other: object) -> bool:
+        """Return whether ``other`` is an equal-valued ``Balance``."""
         return (
             isinstance(other, Balance)
             and self.amount == other.amount
             and self.status == other.status
         )
 
+    def __hash__(self) -> int:
+        """Return a hash of amount and status, matching ``__eq__``."""
+        return hash((self.amount, self.status))
+
     def __repr__(self) -> str:
+        """Return the string form in angle brackets."""
         return f'<{self}>'
 
     def __str__(self) -> str:
+        """Return ``'<amount> @ <date>'``."""
         return f'{self.amount} @ {self.date}'
 
 
@@ -331,7 +448,7 @@ class Transaction(Model):
             transactions: The collection this transaction belongs to.
             data: Optional initial field data to populate.
         """
-        self.transactions = transactions
+        self.transactions: Transactions = transactions
         self.data: dict[str, Any] = {}
         self.update(data)
 
@@ -348,6 +465,7 @@ class Transaction(Model):
             self.data.update(data)
 
     def __repr__(self) -> str:
+        """Return the class name with the transaction date and amount."""
         return '<{}[{}] {}>'.format(
             self.__class__.__name__,
             self.data.get('date'),
@@ -356,57 +474,58 @@ class Transaction(Model):
 
 
 class Transactions(Sequence[Transaction]):
-    """
-    Collection of Transaction objects with global properties such
-    as begin and end balance
+    """Collection of Transaction objects with statement-level properties.
+
+    The statement-level data, such as the opening and closing balances, lives
+    in ``data``, the transactions themselves in ``transactions``.
     """
 
-    DEFAULT_PROCESSORS: ClassVar[Processors] = dict(
-        pre_account_identification=[],
-        post_account_identification=[],
-        pre_available_balance=[],
-        post_available_balance=[],
-        pre_closing_balance=[],
-        post_closing_balance=[],
-        pre_intermediate_closing_balance=[],
-        post_intermediate_closing_balance=[],
-        pre_final_closing_balance=[],
-        post_final_closing_balance=[],
-        pre_forward_available_balance=[],
-        post_forward_available_balance=[],
-        pre_opening_balance=[],
-        post_opening_balance=[],
-        pre_intermediate_opening_balance=[],
-        post_intermediate_opening_balance=[],
-        pre_final_opening_balance=[],
-        post_final_opening_balance=[],
-        pre_related_reference=[],
-        post_related_reference=[],
-        pre_statement=[processors.date_fixup_pre_processor],
-        post_statement=[
+    DEFAULT_PROCESSORS: ClassVar[Processors] = {
+        'pre_account_identification': [],
+        'post_account_identification': [],
+        'pre_available_balance': [],
+        'post_available_balance': [],
+        'pre_closing_balance': [],
+        'post_closing_balance': [],
+        'pre_intermediate_closing_balance': [],
+        'post_intermediate_closing_balance': [],
+        'pre_final_closing_balance': [],
+        'post_final_closing_balance': [],
+        'pre_forward_available_balance': [],
+        'post_forward_available_balance': [],
+        'pre_opening_balance': [],
+        'post_opening_balance': [],
+        'pre_intermediate_opening_balance': [],
+        'post_intermediate_opening_balance': [],
+        'pre_final_opening_balance': [],
+        'post_final_opening_balance': [],
+        'pre_related_reference': [],
+        'post_related_reference': [],
+        'pre_statement': [processors.date_fixup_pre_processor],
+        'post_statement': [
             processors.date_cleanup_post_processor,
             processors.transactions_to_transaction('transaction_reference'),
         ],
-        pre_statement_number=[],
-        post_statement_number=[],
-        pre_non_swift=[],
-        post_non_swift=[],
-        pre_transaction_details=[],
-        post_transaction_details=[
+        'pre_statement_number': [],
+        'post_statement_number': [],
+        'pre_non_swift': [],
+        'post_non_swift': [],
+        'pre_transaction_details': [],
+        'post_transaction_details': [
             processors.transaction_details_post_processor,
             # processors.transaction_details_post_processor_with_space
         ],
-        pre_transaction_reference_number=[],
-        post_transaction_reference_number=[],
-        pre_floor_limit_indicator=[],
-        post_floor_limit_indicator=[],
-        pre_date_time_indication=[],
-        post_date_time_indication=[],
-        pre_sum_credit_entries=[],
-        post_sum_credit_entries=[],
-        pre_sum_debit_entries=[],
-        post_sum_debit_entries=[],
-    )
+        'pre_transaction_reference_number': [],
+        'post_transaction_reference_number': [],
+        'pre_floor_limit_indicator': [],
+        'post_floor_limit_indicator': [],
+        'pre_date_time_indication': [],
+        'post_date_time_indication': [],
+        'pre_sum_credit_entries': [],
+        'post_sum_credit_entries': [],
+        'pre_sum_debit_entries': [],
+        'post_sum_debit_entries': [],
+    }
 
     def __getstate__(self) -> dict[str, Any]:
         """Return picklable state, dropping the (unpicklable) processors."""
@@ -423,12 +542,16 @@ class Transactions(Sequence[Transaction]):
         """
         self.__dict__.update(state)
         self.processors: Processors = self.DEFAULT_PROCESSORS.copy()
+        # Pickles written by 5.0.0 predate the options attribute.
+        _ = self.__dict__.setdefault('options', Options())
 
     def __init__(
         self,
         processors: Processors | None = None,
         tags: dict[int | str, mt940.tags.Tag] | None = None,
         transaction_boundary: Iterable[str] | None = None,
+        *,
+        options: Options | None = None,
     ) -> None:
         """Create an empty collection, optionally customizing parsing.
 
@@ -440,7 +563,10 @@ class Transactions(Sequence[Transaction]):
                 (issue #110). By default only ``:61:`` starts one; a bare
                 string is treated as a single slug. Omit to keep the legacy
                 behaviour.
+            options: Opt-in behaviours, see :class:`mt940.options.Options`.
+                Omit to parse exactly like release 5.0.0.
         """
+        self.options: Options = options or Options()
         self.processors = self.DEFAULT_PROCESSORS.copy()
         self.tags: MutableMapping[int | str, mt940.tags.Tag] = dict(
             self.default_tags()
@@ -474,7 +600,7 @@ class Transactions(Sequence[Transaction]):
         Returns ``None`` when no balance or floor-limit carrying a currency has
         been parsed yet.
         """
-        balance = utils.coalesce(
+        balance: object = utils.coalesce(
             self.data.get('final_opening_balance'),
             self.data.get('opening_balance'),
             self.data.get('intermediate_opening_balance'),
@@ -487,16 +613,24 @@ class Transactions(Sequence[Transaction]):
             self.data.get('d_floor_limit'),
         )
 
-        if balance is not None:
-            if hasattr(balance, 'currency'):  # type: ignore[unreachable]
-                return balance.currency
-
-            return balance.amount.currency
-        return None
+        if balance is None:
+            return None
+        # Floor limits are bare amounts, balances wrap one. Duck-typed, as
+        # in 5.0.0: anything with a currency, or with an amount that has one,
+        # counts. Nothing usable gives None instead of an error.
+        currency: object = getattr(balance, 'currency', _MISSING)
+        if currency is _MISSING:
+            amount: object = getattr(balance, 'amount', None)
+            currency = getattr(amount, 'currency', None)
+        return currency if isinstance(currency, str) else None
 
     @classmethod
-    def defaultTags(cls) -> Mapping[int | str, mt940.tags.Tag]:  # noqa: N802 # pragma: no cover
-        """Deprecated alias for :meth:`default_tags`."""
+    def defaultTags(cls) -> Mapping[int | str, mt940.tags.Tag]:  # noqa: N802
+        """Return :meth:`default_tags`, with a deprecation warning.
+
+        Returns:
+            The built-in tag parsers keyed by tag id.
+        """
         warnings.warn(
             'defaultTags is deprecated, use default_tags instead',
             DeprecationWarning,
@@ -510,7 +644,7 @@ class Transactions(Sequence[Transaction]):
         return mt940.tags.TAG_BY_ID
 
     def parse(self, data: str) -> list[Transaction]:
-        """Parses mt940 data, expects a string with data
+        """Parses mt940 data, expects a string with data.
 
         Args:
             data (str): The MT940 data
@@ -594,10 +728,10 @@ class Transactions(Sequence[Transaction]):
                 self.data.update(result)
         elif issubclass(tag.scope, Transaction) and self.transactions:
             self._update_transaction(result)
-        elif issubclass(  # pragma: no branch
-            tag.scope, Transactions
-        ):  # pyright: ignore [reportUnnecessaryIsInstance]
+        elif issubclass(tag.scope, Transactions):
             self.data.update(result)
+        # Transaction-scoped data before the first transaction has nowhere to
+        # go and is dropped (the empty_86 fixture depends on this).
 
     def _process_statement_tag(self, result: dict[str, Any]) -> None:
         """File a ``:61:`` statement result into the current/new transaction.
@@ -619,13 +753,24 @@ class Transactions(Sequence[Transaction]):
     def _update_transaction(self, result: dict[str, Any]) -> None:
         """Merge a transaction-scoped result into the current transaction.
 
-        New keys are set directly; string values for keys that already exist
-        are appended on a new line (e.g. multi-line ``:86:`` details).
+        New keys are set directly. When both the existing and the incoming
+        values are strings, the incoming one is appended on a new line, as
+        with a multi-line ``:86:``. A structured ``:86:`` emits ``None`` for
+        every sub-field it does not carry. By default such a ``None``
+        replaces whatever another tag provided, as in 5.0.0, so the ``:61:``
+        customer reference is lost to a later ``:86:`` without a ``KREF``.
+        With :attr:`~mt940.options.Options.merge_keeps_values` a ``None``
+        never replaces an existing value. Either way a later string replaces
+        an existing ``None`` instead of crashing on ``None += str``.
         """
         transaction = self.transactions[-1]
+        keep_values = self.options.merge_keeps_values
         for k, v in result.items():
-            if k in transaction.data and hasattr(v, 'strip'):
+            existing = transaction.data.get(k)
+            if hasattr(existing, 'strip') and hasattr(v, 'strip'):
                 transaction.data[k] += f'\n{v.strip()}'
+            elif v is None and keep_values and k in transaction.data:
+                continue
             else:
                 transaction.data[k] = v
 
@@ -639,12 +784,15 @@ class Transactions(Sequence[Transaction]):
         self,
         key: int | slice,
     ) -> Transaction | list[Transaction]:
+        """Return the transaction at ``key``, or a slice of them."""
         return self.transactions[key]
 
     def __len__(self) -> int:
+        """Return the number of transactions."""
         return len(self.transactions)
 
     def __repr__(self) -> str:
+        """Return the class name and every balance in ``data``."""
         return '<{}[{}]>'.format(
             self.__class__.__name__,
             ']['.join(
@@ -665,9 +813,8 @@ class Transactions(Sequence[Transaction]):
             list[str]: List of cleaned lines.
         """
         stripped_lines: list[str] = []
-        for line in lines:
-            line = line.replace('\r', '')
-            line = line.rstrip()
+        for raw_line in lines:
+            line = raw_line.replace('\r', '').rstrip()
             if line.strip() == '-':
                 continue
             if line:
@@ -709,7 +856,7 @@ class Transactions(Sequence[Transaction]):
                 continue
             i_next = i + 1
             tag_id = self.normalize_tag_id(match.group('tag'))
-            if tag_id not in self.tags:  # pragma: no cover
+            if tag_id not in self.tags:
                 continue
 
             if tag_id == mt940.tags.Tags.TRANSACTION_DETAILS.value.id:
@@ -724,10 +871,14 @@ class Transactions(Sequence[Transaction]):
         return valid_matches
 
 
-class TransactionsAndTransaction(Transactions, Transaction):  # type: ignore[misc]
-    """
-    Subclass of both Transactions and Transaction for scope definitions.
+class TransactionsAndTransaction(  # type: ignore[misc]  # pyright: ignore[reportUnsafeMultipleInheritance, reportIncompatibleVariableOverride]
+    Transactions, Transaction
+):
+    """Scope marker for tags whose data belongs to statement and transaction.
 
-    This is useful for the non-swift data for example which can function both
-    as details for a transaction and for a collection of transactions.
+    ``:NS:`` is the example: its content is filed both as statement data and
+    as details of the current transaction. The class exists so that the
+    ``issubclass`` checks against :attr:`~mt940.tags.Tag.scope` succeed for
+    both bases. The parser never creates an instance, but building one works
+    and behaves like an empty :class:`Transactions`, as in 5.0.0.
     """

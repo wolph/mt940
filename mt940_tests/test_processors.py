@@ -1,10 +1,12 @@
-import os
+import json
 import pathlib
 import typing
 
 import mt940
 import pytest
-from mt940.models import Transactions
+
+if typing.TYPE_CHECKING:
+    from mt940.models import Transactions
 
 _tests_path: pathlib.Path = pathlib.Path(__file__).parent
 
@@ -33,57 +35,55 @@ def february_30_data() -> str:
 
 def test_date_fixup_pre_processor(february_30_data: str) -> None:
     transactions = mt940.models.Transactions(
-        processors=dict(
-            pre_statement=[
+        processors={
+            'pre_statement': [
                 mt940.processors.date_fixup_pre_processor,
             ],
-        )
+        }
     )
-    transactions.parse(february_30_data)
+    _ = transactions.parse(february_30_data)
     assert transactions[0].data['date'] == mt940.models.Date(2016, 2, 29)
 
 
 def test_parse_data() -> None:
-    with (_tests_path / 'jejik' / 'abnamro.sta').open() as fh:
-        mt940.parse(fh.read())
+    with (_tests_path / 'jejik' / 'abnamro.sta').open(encoding='utf-8') as fh:
+        assert len(mt940.parse(fh.read())) > 0
 
 
 def test_parse_fh() -> None:
-    with (_tests_path / 'jejik' / 'abnamro.sta').open() as fh:
-        mt940.parse(fh)
+    with (_tests_path / 'jejik' / 'abnamro.sta').open(encoding='utf-8') as fh:
+        assert len(mt940.parse(fh)) > 0
 
 
 def test_parse_filename() -> None:
-    path = 'mt940_tests/jejik/abnamro.sta'
-    path = path.replace('/', os.pathsep)
-    mt940.parse(path)
+    assert len(mt940.parse(str(_tests_path / 'jejik' / 'abnamro.sta'))) > 0
 
 
 def test_pre_processor(sta_data: str) -> None:
     transactions = mt940.models.Transactions(
-        processors=dict(
-            pre_final_closing_balance=[
+        processors={
+            'pre_final_closing_balance': [
                 mt940.processors.add_currency_pre_processor('USD'),
             ],
-            pre_final_opening_balance=[
+            'pre_final_opening_balance': [
                 mt940.processors.add_currency_pre_processor('EUR'),
             ],
-        )
+        }
     )
-    transactions.parse(sta_data)
+    _ = transactions.parse(sta_data)
     assert transactions.data['final_closing_balance'].amount.currency == 'USD'
     assert transactions.data['final_opening_balance'].amount.currency == 'EUR'
 
 
 def test_post_processor(sta_data: str) -> None:
     transactions = mt940.models.Transactions(
-        processors=dict(
-            post_closing_balance=[
+        processors={
+            'post_closing_balance': [
                 mt940.processors.date_cleanup_post_processor,
             ],
-        )
+        }
     )
-    transactions.parse(sta_data)
+    _ = transactions.parse(sta_data)
     assert 'closing_balance_day' not in transactions.data
 
 
@@ -100,13 +100,13 @@ def mBank_mt942_data() -> str:
 
 def test_mBank_processors(mBank_mt942_data: str) -> None:
     transactions = mt940.models.Transactions(
-        processors=dict(
-            post_transaction_details=[
+        processors={
+            'post_transaction_details': [
                 mt940.processors.mBank_set_transaction_code,
                 mt940.processors.mBank_set_iph_id,
                 mt940.processors.mBank_set_tnr,
             ],
-        )
+        }
     )
     transaction = transactions.parse(mBank_mt942_data)[0].data
     assert transaction['transaction_code'] == 911
@@ -121,11 +121,11 @@ def test_transaction_details_post_processor_with_space() -> None:
 
     transactions = mt940.parse(
         filename,
-        processors=dict(
-            post_transaction_details=[
+        processors={
+            'post_transaction_details': [
                 mt940.processors.transaction_details_post_processor_with_space,
             ],
-        ),
+        },
     )
     transaction = transactions[0].data
     assert (
@@ -149,11 +149,11 @@ def test_mBank_set_tnr_parses_tnr_with_newlines(
     mBank_with_newline_in_tnr: str,
 ) -> None:
     transactions = mt940.models.Transactions(
-        processors=dict(
-            post_transaction_details=[
+        processors={
+            'post_transaction_details': [
                 mt940.processors.mBank_set_tnr,
             ],
-        )
+        }
     )
     transactions_ = transactions.parse(mBank_with_newline_in_tnr)
     assert transactions_[0].data['tnr'] == '179301073837502.000001'
@@ -174,3 +174,234 @@ def test_citi_bank_processors() -> None:
         assert len(transactions) == 5
         expected_date = mt940.models.Date(2024, 3, 12)
         assert transactions[0].data['date'] == expected_date
+
+
+def test_json_round_trip_preserves_model_values() -> None:
+    """`mt940.JSONEncoder` serialises every model type and round-trips.
+
+    The existing ``test_json_dump`` only calls ``json.dumps`` over ``.sta``
+    fixtures. This exercises the full ``dumps`` -> ``loads`` round-trip and
+    asserts the string forms of the nested ``Balance``/``Amount``/``Date``
+    value types, which were previously unchecked.
+    """
+    transactions = mt940.parse(str(_tests_path / 'jejik' / 'abnamro.sta'))
+    decoded = json.loads(json.dumps(transactions, cls=mt940.JSONEncoder))
+
+    assert len(decoded['transactions']) == len(transactions)
+    # Balance -> nested dict, Amount -> Decimal as str, Date -> ISO str
+    assert decoded['final_opening_balance'] == {
+        'status': 'C',
+        'amount': {'amount': '3236.28', 'currency': 'EUR'},
+        'date': '2011-05-22',
+    }
+    # Every transaction amount is a Decimal serialised to a plain string.
+    for transaction in decoded['transactions']:
+        assert isinstance(transaction['amount']['amount'], str)
+        assert isinstance(transaction['date'], str)
+
+
+def test_json_round_trip_sum_amount_and_datetime() -> None:
+    """``SumAmount`` (with its entry ``number``) and ``DateTime`` serialise.
+
+    The mBank ``:90D:``/``:90C:`` and ``:13D:`` tags produce ``SumAmount`` and
+    ``DateTime`` objects that never appear in the jejik ``.sta`` fixtures used
+    by ``test_json_dump``'s value-free smoke check.
+    """
+    transactions = mt940.parse(str(_tests_path / 'mBank' / 'mt942.sta'))
+    decoded = json.loads(json.dumps(transactions, cls=mt940.JSONEncoder))
+
+    assert decoded['sum_credit_entries'] == {
+        'amount': '0.03',
+        'currency': 'PLN',
+        'number': '3',
+    }
+    # The :13D: DateTime renders as an ISO string carrying the timezone
+    # offset, not a mapping. 5.0.0 read the +0100 subfield as 100 minutes.
+    assert decoded['date'] == '2017-01-19 18:15:00+01:40'
+
+
+def test_json_round_trip_datetime_with_timezone_offset_option() -> None:
+    transactions = mt940.parse(
+        str(_tests_path / 'mBank' / 'mt942.sta'),
+        options=mt940.Options(timezone_offset=True),
+    )
+    decoded = json.loads(json.dumps(transactions, cls=mt940.JSONEncoder))
+    assert decoded['date'] == '2017-01-19 18:15:00+01:00'
+
+
+def test_json_round_trip_asnb_non_swift_statement() -> None:
+    """The opt-in ``StatementASNB`` tag output also round-trips cleanly.
+
+    ASN fixtures live in ``.txt`` files and require a custom tag, so they are
+    outside ``test_json_dump``'s ``.sta`` glob entirely.
+    """
+    tag = mt940.tags.StatementASNB()
+    transactions = mt940.models.Transactions(tags={tag.id: tag})
+    with (_tests_path / 'ASNB' / 'mt940.txt').open() as fh:
+        _ = transactions.parse(fh.read())
+
+    decoded = json.loads(json.dumps(transactions, cls=mt940.JSONEncoder))
+    assert len(decoded['transactions']) == len(transactions)
+    assert decoded['transactions'][0]['amount'] == {
+        'amount': '-65.00',
+        'currency': 'EUR',
+    }
+
+
+def test_date_fixup_non_leap_february_clamped() -> None:
+    """A Feb 29 value date in a non-leap year is clamped to Feb 28.
+
+    ``test_date_fixup_pre_processor`` only covers Feb 30 in a leap year
+    (``february_30.sta``, 2016 -> Feb 29). The non-leap clamp path was
+    previously unexercised.
+    """
+    data = (
+        ':20:REF\n'
+        ':25:123456789\n'
+        ':28C:0\n'
+        ':60F:C170201EUR100,00\n'
+        ':61:1702290228DR6,00N024NONREF\n'
+        ':86:free\n'
+        ':62F:C170228EUR94,00\n'
+    )
+    transactions = mt940.parse(data)
+    assert transactions[0].data['date'] == mt940.models.Date(2017, 2, 28)
+
+
+@pytest.mark.parametrize(
+    ('detail', 'legacy_purpose', 'fixed_purpose'),
+    [
+        # A literal '+' inside the first characters of free text (e.g. a
+        # company name like "AB+...") is not a GVC KEYWORD+ separator: EREF
+        # is a real GVC key later in the text, so gvcodes runs.
+        ('020?20AB+EREF', 'EREF', 'AB+EREF'),
+        # 'A+B' at the very start. SVWZ triggers gvcodes parsing.
+        ('020?20A+B SVWZ TEXT', 'B SVWZ TEXT', 'A+B SVWZ TEXT'),
+    ],
+)
+def test_gvcode_leading_plus_in_free_text(
+    detail: str, legacy_purpose: str, fixed_purpose: str
+) -> None:
+    """A '+' earlier than position 4 cannot terminate a GVC keyword.
+
+    GVC keywords are four characters followed by '+'. 5.0.0 sliced
+    ``purpose[index - 4:index]`` without a lower bound, so a '+' at index < 4
+    produced a wrapped, empty slice matching the empty-string GVC key and
+    dropped the free text in front of the '+'. That stays the default,
+    ``Options(gvc_leading_text=True)`` keeps the text.
+    """
+    data = (
+        ':20:REF\n'
+        ':25:123456789\n'
+        ':28C:0\n'
+        ':60F:C200101EUR100,00\n'
+        ':61:2001010101C10,00NTRFNONREF\n'
+        f':86:{detail}\n'
+        ':62F:C200101EUR110,00\n'
+    )
+    assert mt940.parse(data)[0].data['purpose'] == legacy_purpose
+    fixed = mt940.parse(data, options=mt940.Options(gvc_leading_text=True))
+    assert fixed[0].data['purpose'] == fixed_purpose
+
+
+def _two_structured_86_data(first_detail: str, second_detail: str) -> str:
+    return (
+        ':20:REF\n'
+        ':25:123456789\n'
+        ':28C:0\n'
+        ':60F:C200101EUR100,00\n'
+        ':61:2001010101C10,00NTRFNONREF\n'
+        f':86:{first_detail}\n'
+        f':86:{second_detail}\n'
+        ':62F:C200101EUR110,00\n'
+    )
+
+
+@pytest.mark.parametrize(
+    ('first_detail', 'second_detail', 'legacy_purpose', 'legacy_posting'),
+    [
+        ('020?20REALPURPOSE', '020?00POSTINGTEXT', None, 'POSTINGTEXT'),
+        ('020?00POSTINGTEXT', '020?20REALPURPOSE', 'REALPURPOSE', None),
+    ],
+)
+def test_repeated_structured_86_merge(
+    first_detail: str,
+    second_detail: str,
+    legacy_purpose: str | None,
+    legacy_posting: str | None,
+) -> None:
+    """Two structured ``:86:`` tags on one ``:61:`` merge without a crash.
+
+    A structured ``:86:`` emits every ``DETAIL_KEYS`` value, ``None`` for the
+    sub-fields it does not carry. 5.0.0 hit ``None += str`` in one order and
+    aborted the parse, which stays fixed, and in the other order let the
+    later ``None`` overwrite the earlier real value, which stays the default.
+    With ``Options(merge_keeps_values=True)`` a ``None`` never replaces an
+    existing value, so both tags' values survive in either order.
+    """
+    data = _two_structured_86_data(first_detail, second_detail)
+    legacy = mt940.parse(data)[0].data
+    assert legacy['purpose'] == legacy_purpose
+    assert legacy['posting_text'] == legacy_posting
+
+    kept = mt940.parse(data, options=mt940.Options(merge_keeps_values=True))
+    assert kept[0].data['purpose'] == 'REALPURPOSE'
+    assert kept[0].data['posting_text'] == 'POSTINGTEXT'
+
+
+def test_structured_86_without_kref_and_the_61_customer_reference() -> None:
+    # The :61: carries the customer reference. A structured :86: without a
+    # KREF emits customer_reference=None, which nulls the real value in nine
+    # fixtures from four banks under the 5.0.0 rule.
+    data = _two_structured_86_data('020?20PURPOSE', '020?00TEXT').replace(
+        'NTRFNONREF', 'NTRFTFNR 40001'
+    )
+    assert mt940.parse(data)[0].data['customer_reference'] is None
+    kept = mt940.parse(data, options=mt940.Options(merge_keeps_values=True))
+    assert kept[0].data['customer_reference'] == 'TFNR 40001'
+
+
+def test_detail_key_mappings() -> None:
+    # DETAIL_KEYS is the 5.0.0 mapping, the ?31 variant is a separate
+    # constant with the same keys in the same order.
+    assert mt940.processors.DETAIL_KEYS['31'] == 'applicant_name'
+    assert (
+        mt940.processors.DETAIL_KEYS_APPLICANT_IBAN['31'] == 'applicant_iban'
+    )
+    assert list(mt940.processors.DETAIL_KEYS_APPLICANT_IBAN) == list(
+        mt940.processors.DETAIL_KEYS
+    )
+
+
+def test_processor_protocols_are_importable_from_processors() -> None:
+    # 5.0.0 exposed the protocols here, typed user code imports them here.
+    for name in ('PreProcessor', 'PostProcessor'):
+        protocol = getattr(mt940.processors, name)
+        assert protocol.__module__ == 'mt940._types'
+        assert protocol.__name__ == name
+
+
+def test_add_currency_pre_processor_can_keep_an_existing_currency() -> None:
+    transactions = mt940.models.Transactions()
+    tag = mt940.tags.Statement()
+    keep = mt940.processors.add_currency_pre_processor('EUR', overwrite=False)
+    replace = mt940.processors.add_currency_pre_processor('EUR')
+
+    assert keep(transactions, tag, {'currency': 'USD'}) == {'currency': 'USD'}
+    assert keep(transactions, tag, {}) == {'currency': 'EUR'}
+    assert replace(transactions, tag, {'currency': 'USD'}) == {
+        'currency': 'EUR'
+    }
+
+
+def test_mbank_processors_leave_unmatched_details_alone() -> None:
+    transactions = mt940.models.Transactions()
+    tag = mt940.tags.TransactionDetails()
+    details = {'transaction_details': 'no mBank markers in here'}
+
+    assert mt940.processors.mBank_set_iph_id(transactions, tag, details) == {
+        'transaction_details': 'no mBank markers in here'
+    }
+    assert mt940.processors.mBank_set_tnr(transactions, tag, details) == {
+        'transaction_details': 'no mBank markers in here'
+    }

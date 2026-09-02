@@ -8,47 +8,64 @@ on:
   # Lets publish.yml run the full test suite as a release gate.
   workflow_call:
 
+# Read-only by default, no job in this workflow writes to the repository.
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
   cancel-in-progress: true
 
+env:
+  FORCE_COLOR: '1'
+
 jobs:
+  # tox-gh-actions maps the runner's Python to its py3xx env, so CI and a
+  # local `tox` run the identical matrix.
   test:
+    name: Test on Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13']
+        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14']
     steps:
-      - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
           activate-environment: true
           python-version: ${{ matrix.python-version }}
       - name: Install tox
         run: uv pip install '.[tox]'
       - name: Run tests
-        run: tox -e py$(echo "${{ matrix.python-version }}" | tr -d .)
+        run: tox
       - name: Upload coverage
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage-${{ matrix.python-version }}
           path: .tox/.coverage.*
           include-hidden-files: true
+          if-no-files-found: error
 
+  # The real coverage gate: combine every matrix cell, enforce 100% once.
   coverage:
+    name: Combined coverage
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs: [test]
     steps:
-      - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
           activate-environment: true
       - name: Install tox
         run: uv pip install '.[tox]'
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           pattern: coverage-*
           path: .tox
@@ -56,41 +73,38 @@ jobs:
       - name: Combine coverage and enforce threshold
         run: tox -e coverage
 
-  lint:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v7
-        with:
-          activate-environment: true
-      - name: Install tox
-        run: uv pip install '.[tox]'
-      - name: Lint
-        run: tox -e lint
-
-  type-check:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v7
-        with:
-          activate-environment: true
-      - name: Install tox
-        run: uv pip install '.[tox]'
-      - name: Type-check
-        run: tox -e pyright,mypy,pyrefly
-
-  docs:
+  # One cell per static check. Each is a tox env, so `tox -m check` locally
+  # runs the same commands.
+  check:
+    name: Check ${{ matrix.env }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        env:
+          - lint
+          - taplo
+          - mypy
+          - basedpyright
+          - pyrefly
+          - ty
+          - docs
+          - codespell
+          - repo-review
+          - zizmor
+          - audit
+    env:
+      TOX_ENV: ${{ matrix.env }}
     steps:
-      - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
         with:
           activate-environment: true
+          python-version: '3.12'
       - name: Install tox
         run: uv pip install '.[tox]'
-      - name: Build docs
-        run: tox -e docs
+      - name: Run ${{ matrix.env }}
+        run: tox -e "$TOX_ENV"

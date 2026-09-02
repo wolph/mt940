@@ -1,18 +1,47 @@
 # Git hooks for mt940 development.
-# Install with: lefthook install
-# (the `lefthook` binary ships with the `lefthook` dev dependency)
+# Install with: uv run lefthook install
+#
+# Every command goes through `uv run` so the hooks use the project's own
+# tool versions, whatever is (or is not) on the shell's PATH.
+#
+# pre-commit stays sub-second: only the staged files, only auto-fixers and the
+# spell-checker. pre-push runs the full lint, every type checker and a fast
+# test pass. The complete matrix and the coverage gate belong to tox and CI.
 
 pre-commit:
   parallel: true
   commands:
     ruff-check:
       glob: '*.py'
-      run: ruff check --fix {staged_files}
+      run: uv run ruff check --fix {staged_files}
       stage_fixed: true
     ruff-format:
       glob: '*.py'
-      run: ruff format {staged_files}
+      run: uv run ruff format {staged_files}
       stage_fixed: true
+    taplo:
+      glob: '*.toml'
+      run: uv run taplo fmt --check {staged_files}
     codespell:
       # No file args: honour the skip patterns in [tool.codespell].
-      run: codespell
+      run: uv run codespell
+
+pre-push:
+  parallel: true
+  commands:
+    ruff:
+      run: uv run ruff check
+    ruff-format:
+      run: uv run ruff format --check
+    mypy:
+      run: uv run mypy && uv run mypy --python-version 3.12 docs/conf.py
+    basedpyright:
+      run: uv run basedpyright
+    pyrefly:
+      run: uv run pyrefly check
+    ty:
+      run: uv run ty check
+    test:
+      # Fixed order for a fast, deterministic gate. The plugin stays loaded
+      # because pyproject lists it as required.
+      run: uv run pytest -q -x --no-cov --randomly-dont-reorganize

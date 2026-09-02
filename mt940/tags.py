@@ -1,5 +1,5 @@
-# pyright: strict
-"""
+"""Tag parsers for the fields of an MT940 statement.
+
 The MT940 format is a standard for bank account statements. It is used by
 many banks in Europe and is based on the SWIFT MT940 format.
 
@@ -78,33 +78,65 @@ import enum
 import logging
 import re
 import typing
+from typing import TYPE_CHECKING, ClassVar
 
 from . import models
+from .options import Options
+
+if TYPE_CHECKING:
+    from typing_extensions import Self
 
 logger = logging.getLogger(__name__)
 
+#: An entry date more than this many days away from the value date means the
+#: two fall in different years, so the entry date's year needs correcting.
+_YEAR_BOUNDARY_DAYS = 330
+
+#: What 5.0.0 captured of a ``:86:`` value: up to nine chunks of at most 65
+#: characters, each but the last optionally followed by a line break. Longer
+#: details were silently cut off. The pattern accepts the empty string, so it
+#: always matches.
+_LEGACY_DETAILS_RE = re.compile(r'(?:[\s\S]{0,65}\r?\n?){0,8}[\s\S]{0,65}')
+
+
+def _options_of(transactions: models.Transactions) -> Options:
+    """Return the options of the collection being parsed.
+
+    Tags are shared singletons, so the switches always come from
+    ``transactions``. Callers that pass something without options, as older
+    code did with ``None``, get the 5.0.0 defaults.
+
+    Args:
+        transactions: The collection being parsed.
+
+    Returns:
+        The options to honour.
+    """
+    options: object = getattr(transactions, 'options', None)
+    return options if isinstance(options, Options) else Options()
+
 
 class Tag:
-    """
-    Base Tag class for parsing and handling MT940 tag contents.
-    """
+    """Base Tag class for parsing and handling MT940 tag contents."""
 
-    id: str | int = 0
-    RE_FLAGS = re.IGNORECASE | re.VERBOSE | re.UNICODE
-    scope: type[models.Transactions | models.Transaction] = models.Transactions
-    pattern: str
-    name: str
-    slug: str
-    logger: logging.Logger
+    id: ClassVar[str | int] = 0
+    RE_FLAGS: ClassVar[re.RegexFlag] = re.IGNORECASE | re.VERBOSE | re.UNICODE
+    scope: ClassVar[type[models.Transactions | models.Transaction]] = (
+        models.Transactions
+    )
+    pattern: ClassVar[str]
+    name: ClassVar[str]
+    slug: ClassVar[str]
+    logger: ClassVar[logging.Logger]
 
     def __init__(self) -> None:
-        self.re = re.compile(self.pattern, self.RE_FLAGS)
+        """Compile the tag's ``pattern`` with :attr:`RE_FLAGS`."""
+        self.re: re.Pattern[str] = re.compile(self.pattern, self.RE_FLAGS)
 
     def parse(
         self, transactions: models.Transactions, value: str
     ) -> dict[str, str | None]:
-        """
-        Parses the given value using the Tag's pattern.
+        """Parses the given value using the Tag's pattern.
 
         Args:
             transactions: The transactions model instance.
@@ -116,8 +148,10 @@ class Tag:
         Raises:
             RuntimeError: If the value does not match the tag's pattern.
         """
+        # Part of the tag protocol, the base parser needs no context.
+        del transactions
         match = self.re.match(value)
-        if match:  # pragma: no branch
+        if match:
             self.logger.debug(
                 'matched (%d) %r against "%s", got: %s',
                 len(value),
@@ -126,26 +160,29 @@ class Tag:
                 match.groupdict(),
             )
             return match.groupdict()
-        else:  # pragma: no cover
-            self.logger.error(
-                'matching id=%s (len=%d) "%s" against\n    %s',
-                self.id,
-                len(value),
-                value,
-                self.pattern,
-            )
-            self._debug_partial_match(value)
-            raise RuntimeError(
-                f'Unable to parse {self!r} from {value!r}', self, value
-            )
+        self.logger.error(
+            'matching id=%s (len=%d) "%s" against\n    %s',
+            self.id,
+            len(value),
+            value,
+            self.pattern,
+        )
+        self._debug_partial_match(value)
+        msg = f'Unable to parse {self!r} from {value!r}'
+        raise RuntimeError(msg, self, value)
 
-    def _debug_partial_match(self, value: str) -> None:  # pragma: no cover
-        """
-        Helper function to debug partial matches against the pattern.
-        """
+    def _debug_partial_match(self, value: str) -> None:
+        """Helper function to debug partial matches against the pattern."""
         part_value = value
         for pattern in self.pattern.split('\n'):
-            match = re.match(pattern, part_value, self.RE_FLAGS)
+            try:
+                match = re.match(pattern, part_value, self.RE_FLAGS)
+            except re.error:
+                # Single lines of a pattern with multi-line groups are not
+                # valid patterns on their own; skip them instead of masking
+                # the RuntimeError raised by `parse`.
+                self.logger.info('cannot compile fragment %r', pattern)
+                continue
             if match:
                 self.logger.info(
                     'matched %r against %r, got: %s',
@@ -162,8 +199,7 @@ class Tag:
     def __call__(
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, typing.Any]:
-        """
-        Processes the tag value and returns parsed content.
+        """Processes the tag value and returns parsed content.
 
         The base implementation returns ``value`` unchanged; subclasses
         override it to build model objects (amounts, balances, dates, ...).
@@ -175,19 +211,37 @@ class Tag:
         Returns:
             The processed mapping.
         """
+        # Part of the tag protocol, the base implementation needs no context.
+        del transactions
         return value
 
-    def __new__(cls, *args: typing.Any, **kwargs: typing.Any) -> Tag:
+    def __new__(cls, *args: typing.Any, **kwargs: typing.Any) -> Self:
         """Create a Tag instance, deriving its ``name``, ``slug`` and logger.
 
         The ``slug`` is the snake_case form of the class name and is used to
         look up matching pre/post processors.
+
+        Returns:
+            The new, not yet initialised, tag instance.
         """
+        # Tags take no constructor arguments, the signature only mirrors the
+        # ``__init__`` of subclasses.
+        del args, kwargs
         cls.name = cls.__name__
-        words = re.findall('([A-Z][a-z]+)', cls.__name__)
+        words = re.findall(r'([A-Z][a-z]+)', cls.__name__)
         cls.slug = '_'.join(w.lower() for w in words)
         cls.logger = logger.getChild(cls.name)
         return object.__new__(cls)
+
+    def __eq__(self, other: object) -> bool:
+        """Return whether ``other`` is this very tag instance.
+
+        Tags compare by identity, as they did in 5.0.0, so two instances of
+        one class stay distinct set members and dictionary keys. The
+        id-based ``__hash__`` is consistent with that: an object is always
+        equal to itself.
+        """
+        return self is other
 
     def __hash__(self) -> int:
         """Return a hash based on the tag's ``id``.
@@ -199,80 +253,95 @@ class Tag:
 
 
 class DateTimeIndication(Tag):
-    """Date/Time indication at which the report was created
+    """Date/Time indication at which the report was created.
 
     Pattern: 6!n4!n1! x4!n
     """
 
-    id = 13
-    pattern = r"""^
+    id: ClassVar[str | int] = 13
+    pattern: ClassVar[str] = r"""^
     (?P<year>\d{2})
     (?P<month>\d{2})
     (?P<day>\d{2})
     (?P<hour>\d{2})
     (?P<minute>\d{2})
-    (\+(?P<offset>\d{4})|)
+    ((?P<offset_sign>[+-])(?P<offset>\d{4}))?
     """
 
     def __call__(
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, object]:
+        """Return the report :class:`~mt940.models.DateTime` as ``date``."""
         data = super().__call__(transactions, value)
+        # Drop the raw groups so they are not passed on when the offset is
+        # absent, which then yields a naive datetime.
+        sign: str | None = data.pop('offset_sign', None)
+        offset: str | None = data.pop('offset', None)
+        if offset and _options_of(transactions).timezone_offset:
+            # The subfield is a signed HHMM value: +0130 is one hour and
+            # thirty minutes east of UTC, and models.DateTime wants minutes.
+            minutes: int = int(offset[:2]) * 60 + int(offset[2:])
+            data['offset'] = -minutes if sign == '-' else minutes
+        elif offset:
+            # 5.0.0 handed the digits to FixedOffset as a minute count, so
+            # +0100 became 100 minutes with '0100' as the zone name.
+            data['offset'] = f'-{offset}' if sign == '-' else offset
         return {'date': models.DateTime(**data)}
 
 
 class TransactionReferenceNumber(Tag):
-    """Transaction reference number
+    """Transaction reference number.
 
     Pattern: 16x
     """
 
-    id = 20
-    pattern = r'(?P<transaction_reference>.{0,16})'
+    id: ClassVar[str | int] = 20
+    pattern: ClassVar[str] = r'(?P<transaction_reference>.{0,16})'
 
 
 class RelatedReference(Tag):
-    """Related reference
+    """Related reference.
 
     Pattern: 16x
     """
 
-    id = 21
-    pattern = r'(?P<related_reference>.{0,16})'
+    id: ClassVar[str | int] = 21
+    pattern: ClassVar[str] = r'(?P<related_reference>.{0,16})'
 
 
 class AccountIdentification(Tag):
-    """Account identification
+    """Account identification.
 
     Pattern: 35x
     """
 
-    id = 25
-    pattern = r'(?P<account_identification>.{0,35})'
+    id: ClassVar[str | int] = 25
+    pattern: ClassVar[str] = r'(?P<account_identification>.{0,35})'
 
 
 class StatementNumber(Tag):
-    """Statement number / sequence number
+    """Statement number / sequence number.
 
     Pattern: 5n[/5n]
     """
 
-    id = 28
-    pattern = r"""
+    id: ClassVar[str | int] = 28
+    pattern: ClassVar[str] = r"""
     (?P<statement_number>\d{1,5})  # 5n
     (?:/?(?P<sequence_number>\d{1,5}))?  # [/5n]
     $"""
 
 
 class FloorLimitIndicator(Tag):
-    """Floor limit indicator
-    indicates the minimum value reported for debit and credit amounts
+    """Floor limit indicator.
+
+    Indicates the minimum value reported for debit and credit amounts.
 
     Pattern: :34F:GHSC0,00
     """
 
-    id = 34
-    pattern = r"""^
+    id: ClassVar[str | int] = 34
+    pattern: ClassVar[str] = r"""^
     (?P<currency>[A-Z]{3})  # 3!a Currency
     (?P<status>[DC ]?)  # 2a Debit/Credit Mark
     (?P<amount>[0-9,]{0,16})  # 15d Amount (includes decimal sign, so 16)
@@ -281,57 +350,73 @@ class FloorLimitIndicator(Tag):
     def __call__(
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, object]:
+        """Return the floor limit as ``d_floor_limit``/``c_floor_limit``."""
         data = typing.cast(
-            dict[str, str],
+            'dict[str, str | None]',
             super().__call__(transactions, value),
         )
-        if data['status']:
-            key = data['status'].lower() + '_floor_limit'
-            return {key: models.Amount(**data)}
-        data_d = data.copy()
-        data_c = data.copy()
-        data_d.update({'status': 'D'})
-        data_c.update({'status': 'C'})
+        options = _options_of(transactions)
+        # A missing mark counts as absent, as it did in 5.0.0.
+        status: str = data.get('status') or ''
+        if options.floor_limit_blank_mark:
+            # A space (sent by e.g. Fiducia/Volksbank, d36c51b) means
+            # "both", like an absent mark. Without the option it survives
+            # into the key, as ' _floor_limit'. The sign of a lowercase mark
+            # is Amount's business, through case_insensitive_marks.
+            status = status.strip()
+        amount: str = data.get('amount') or ''
+        currency = data.get('currency')
+        if status:
+            key: str = status.lower() + '_floor_limit'
+            return {
+                key: models.Amount(amount, status, currency, options=options)
+            }
         return {
-            'd_floor_limit': models.Amount(**data_d),
-            'c_floor_limit': models.Amount(**data_c),
+            'd_floor_limit': models.Amount(
+                amount, 'D', currency, options=options
+            ),
+            'c_floor_limit': models.Amount(
+                amount, 'C', currency, options=options
+            ),
         }
 
 
 class NonSwift(Tag):
-    """Non-swift extension for MT940 containing extra information. The
-    actual definition is not consistent between banks so the current
+    """Non-swift extension for MT940 containing extra information.
+
+    The actual definition is not consistent between banks so the current
     implementation is a tad limited. Feel free to extend the implementation
-    and create a pull request with a better version :)
+    and create a pull request with a better version :).
 
     It seems this could be anything so we'll have to be flexible about it.
 
     Pattern: `2!n35x | *x`
     """
 
-    scope = models.TransactionsAndTransaction
-    id = 'NS'
-
-    pattern = r"""
-    (?P<non_swift>
-        (
-            (\d{2}.{0,})
-            (\n\d{2}.{0,})*
-        )|(
-            [^\n]*
-        )
+    scope: ClassVar[type[models.Transactions | models.Transaction]] = (
+        models.TransactionsAndTransaction
     )
+    id: ClassVar[str | int] = 'NS'
+
+    # NS content is bank specific and free-form, so accept anything
+    # (including multi-line values whose lines do not all start with a
+    # two-digit sub-tag); `__call__` extracts the `2!n35x` structure per
+    # line where present.
+    pattern: ClassVar[str] = r"""
+    (?P<non_swift>[\s\S]*)
     $"""
-    sub_pattern = r"""
+    sub_pattern: ClassVar[str] = r"""
     (?P<ns_id>\d{2})(?P<ns_data>.{0,})
     """
-    sub_pattern_m = re.compile(
+    sub_pattern_m: ClassVar[re.Pattern[str]] = re.compile(
         sub_pattern, re.IGNORECASE | re.VERBOSE | re.UNICODE
     )
 
     def __call__(
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, object]:
+        """Return ``value`` with per-line ``non_swift_<id>`` fields added."""
+        keep_free_text = _options_of(transactions).non_swift_free_text
         text: list[str] = []
         data = value['non_swift']
         for line in data.split('\n'):
@@ -340,9 +425,17 @@ class NonSwift(Tag):
                 ns = frag.groupdict()
                 value['non_swift_' + ns['ns_id']] = ns['ns_data']
                 text.append(ns['ns_data'])
-            elif len(text) and text[-1]:
+            elif keep_free_text and line.strip():
+                # Free-form line without a two-digit sub-tag: keep the
+                # content instead of dropping it.
+                text.append(line.strip())
+            elif text and text[-1]:
+                # Blank line, or in 5.0.0 any line without a sub-tag after
+                # content: collapse runs into one paragraph separator.
                 text.append('')
             elif line.strip():
+                # 5.0.0 kept a free-form line only at the start of the text
+                # or after a separator.
                 text.append(line.strip())
         value['non_swift_text'] = '\n'.join(text)
         value['non_swift'] = data
@@ -350,12 +443,12 @@ class NonSwift(Tag):
 
 
 class BalanceBase(Tag):
-    """Balance base
+    """Balance base.
 
     Pattern: 1!a6!n3!a15d
     """
 
-    pattern = r"""^
+    pattern: ClassVar[str] = r"""^
     (?P<status>[DC])  # 1!a Debit/Credit
     (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
     (?P<month>\d{2})
@@ -367,36 +460,37 @@ class BalanceBase(Tag):
     def __call__(
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, object]:
+        """Return a :class:`~mt940.models.Balance` under the tag's slug."""
         data = super().__call__(transactions, value)
-        data['amount'] = models.Amount(**data)
+        options = _options_of(transactions)
+        data['amount'] = models.Amount(**data, options=options)
         data['date'] = models.Date(**data)
-        return {self.slug: models.Balance(**data)}
+        return {self.slug: models.Balance(**data, options=options)}
 
 
 class OpeningBalance(BalanceBase):
     """Opening balance (``:60:``)."""
 
-    id = 60
+    id: ClassVar[str | int] = 60
 
 
 class FinalOpeningBalance(BalanceBase):
     """Final opening balance (``:60F:``)."""
 
-    id = '60F'
+    id: ClassVar[str | int] = '60F'
 
 
 class IntermediateOpeningBalance(BalanceBase):
     """Intermediate opening balance (``:60M:``)."""
 
-    id = '60M'
+    id: ClassVar[str | int] = '60M'
 
 
 class Statement(Tag):
-    """
-    The MT940 Tag 61 provides information about a single transaction that
-    has taken place on the account. Each transaction is identified by a
-    unique transaction reference number (Tag 20) and is described in the
-    Statement Line (Tag 61).
+    """Statement line, a single transaction on the account (``:61:``).
+
+    Each transaction is identified by a unique transaction reference number
+    (Tag 20) and is described in the Statement Line (Tag 61).
 
     Pattern: 6!n[4!n]2a[1!a]15d1!a3!c23x[//16x]
 
@@ -424,9 +518,11 @@ class Statement(Tag):
     occurrence representing a different transaction.
     """
 
-    id = 61
-    scope = models.Transaction
-    pattern = r"""^
+    id: ClassVar[str | int] = 61
+    scope: ClassVar[type[models.Transactions | models.Transaction]] = (
+        models.Transaction
+    )
+    pattern: ClassVar[str] = r"""^
     (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
     (?P<month>\d{2})
     (?P<day>\d{2})
@@ -449,9 +545,12 @@ class Statement(Tag):
     def __call__(
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, object]:
+        """Return the data with the amount and dates built."""
         data = super().__call__(transactions, value)
         data.setdefault('currency', transactions.currency)
-        data['amount'] = models.Amount(**data)
+        data['amount'] = models.Amount(
+            **data, options=_options_of(transactions)
+        )
         date = data['date'] = models.Date(**data)
 
         entry_day = str(data.get('entry_day') or '')
@@ -461,9 +560,15 @@ class Statement(Tag):
             entry_date = models.Date(
                 day=entry_day, month=entry_month, year=str(date.year)
             )
-            if date > entry_date and (date - entry_date).days >= 330:
+            if (
+                date > entry_date
+                and (date - entry_date).days >= _YEAR_BOUNDARY_DAYS
+            ):
                 year = 1
-            elif entry_date > date and (entry_date - date).days >= 330:
+            elif (
+                entry_date > date
+                and (entry_date - date).days >= _YEAR_BOUNDARY_DAYS
+            ):
                 year = -1
             else:
                 year = 0
@@ -485,7 +590,7 @@ class Statement(Tag):
 
 
 class StatementASNB(Statement):
-    """StatementASNB
+    """StatementASNB.
 
     From: https://www.sepaforcorporates.com/swift-for-corporates
 
@@ -501,7 +606,7 @@ class StatementASNB(Statement):
     [34x]
     """
 
-    pattern = r"""^
+    pattern: ClassVar[str] = r"""^
     (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
     (?P<month>\d{2})
     (?P<day>\d{2})
@@ -520,6 +625,7 @@ class StatementASNB(Statement):
     def __call__(
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, object]:
+        """Return the statement data, built exactly like :class:`Statement`."""
         return super().__call__(transactions, value)
 
 
@@ -540,7 +646,7 @@ class StatementGLS(Statement):
         mt940.parse(data, tags={gls.id: gls})
     """
 
-    pattern = r"""^
+    pattern: ClassVar[str] = r"""^
     (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
     (?P<month>\d{2})
     (?P<day>\d{2})
@@ -561,77 +667,108 @@ class StatementGLS(Statement):
 class ClosingBalance(BalanceBase):
     """Closing balance (``:62:``)."""
 
-    id: str | int = 62
+    id: ClassVar[str | int] = 62
 
 
 class IntermediateClosingBalance(ClosingBalance):
     """Intermediate closing balance (``:62M:``)."""
 
-    id = '62M'
+    id: ClassVar[str | int] = '62M'
 
 
 class FinalClosingBalance(ClosingBalance):
     """Final closing balance (``:62F:``)."""
 
-    id = '62F'
+    id: ClassVar[str | int] = '62F'
 
 
 class AvailableBalance(BalanceBase):
     """Available balance (``:64:``)."""
 
-    id = 64
+    id: ClassVar[str | int] = 64
 
 
 class ForwardAvailableBalance(BalanceBase):
     """Forward available balance (``:65:``)."""
 
-    id = 65
+    id: ClassVar[str | int] = 65
 
 
 class TransactionDetails(Tag):
-    """Transaction details
+    """Transaction details.
 
     Pattern: 6x65x
     """
 
-    id = 86
-    scope = models.Transaction
-    pattern = r"""
-    (?P<transaction_details>(([\s\S]{0,65}\r?\n?){0,8}[\s\S]{0,65}))
+    id: ClassVar[str | int] = 86
+    scope: ClassVar[type[models.Transactions | models.Transaction]] = (
+        models.Transaction
+    )
+    # The SWIFT spec caps this field at 6 lines of 65 characters, but many
+    # banks send more. The capture is unbounded: the parser in
+    # `models.Transactions.parse` already limits the value to this tag's own
+    # slice of the statement. `parse` below applies the 5.0.0 cap of nine
+    # 65-character chunks unless `Options.unbounded_details` is on.
+    pattern: ClassVar[str] = r"""
+    (?P<transaction_details>[\s\S]*)
     """
+
+    def parse(
+        self, transactions: models.Transactions, value: str
+    ) -> dict[str, str | None]:
+        """Capture the details, cut like 5.0.0 did unless opted out.
+
+        Args:
+            transactions: The collection being parsed, for its options.
+            value: The raw tag value.
+
+        Returns:
+            The ``transaction_details`` group.
+        """
+        data = super().parse(transactions, value)
+        if not _options_of(transactions).unbounded_details:
+            details = data['transaction_details'] or ''
+            match = _LEGACY_DETAILS_RE.match(details)
+            data['transaction_details'] = match.group(0) if match else ''
+        return data
 
 
 class SumEntries(Tag):
-    """Number and Sum of debit Entries"""
+    """Number and Sum of debit Entries."""
 
-    id: str | int = 90
-    pattern = r"""^
+    id: ClassVar[str | int] = 90
+    pattern: ClassVar[str] = r"""^
     (?P<number>\d*)
     (?P<currency>.{3})  # 3!a Currency
     (?P<amount>[\d,]{1,15})  # 15d Amount
     """
-    status: str
+    status: ClassVar[str]
 
     def __call__(
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, object]:
+        """Return a :class:`~mt940.models.SumAmount` under the tag's slug."""
         data = super().__call__(transactions, value)
         data['status'] = self.status
-        return {self.slug: models.SumAmount(**data)}
+        return {
+            self.slug: models.SumAmount(
+                **data, options=_options_of(transactions)
+            )
+        }
 
 
 class SumDebitEntries(SumEntries):
     """Number and sum of debit entries (``:90D:``)."""
 
-    status = 'D'
-    id = '90D'
+    status: ClassVar[str] = 'D'
+    id: ClassVar[str | int] = '90D'
 
 
 class SumCreditEntries(SumEntries):
     """Number and sum of credit entries (``:90C:``)."""
 
-    status = 'C'
-    id = '90C'
+    status: ClassVar[str] = 'C'
+    id: ClassVar[str | int] = '90C'
 
 
 @enum.unique
