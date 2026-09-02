@@ -116,13 +116,6 @@ def test_unparseable_value_raises_runtime_error():
         transactions.parse(':20:REF\n:28C:NOTDIGITS\n')
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason='RC reversal amount sign -- pending decision (audit task 5): '
-    'a reversal of credit takes funds out of the account, but Amount only '
-    'negates on a plain D mark, so RC amounts stay positive (as do the RC '
-    'transactions in the betterplace fixture goldens).',
-)
 def test_statement_rc_reversal_amount_is_negative():
     transactions = mt940.parse(
         _HEADER + ':61:2312290101RC10,50NTRFREF//BANK\n' + _FOOTER
@@ -133,8 +126,9 @@ def test_statement_rc_reversal_amount_is_negative():
 
 
 def test_statement_reversal_marks_parse():
-    # RC/RD marks (2a subfield) parse and are preserved in `status`; the
-    # amount sign for RC is a pending decision, see the xfail above.
+    # RC/RD marks (2a subfield) parse and are preserved in `status`. RD is
+    # a reversed debit (money back in, positive), RC a reversed credit
+    # (money back out, negative).
     transactions = mt940.parse(
         _HEADER
         + ':61:2312290101RD10,50NTRFREF//BANK\n'
@@ -144,6 +138,7 @@ def test_statement_reversal_marks_parse():
     assert transactions[0].data['status'] == 'RD'
     assert str(transactions[0].data['amount']) == '10.50 EUR'
     assert transactions[1].data['status'] == 'RC'
+    assert str(transactions[1].data['amount']) == '-10.50 EUR'
 
 
 def test_statement_amount_without_decimals():
