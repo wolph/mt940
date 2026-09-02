@@ -183,7 +183,14 @@ error-on-warning = true
 # ── Repository checks ────────────────────────────────────────
 
 [tool.codespell]
-skip = '*/htmlcov,./docs/_build,*.asc,*.yml,*.sta,*.txt,*.html,./docs/html,./.venv,./.tox'
+# Hidden files are checked so .github/ is covered, which means every local
+# hidden directory (git objects, tool caches, editor state) must be skipped
+# explicitly. The fixture formats carry bank data, not prose.
+skip = '''
+    ./.git,./.venv,./.tox,./.mypy_cache,./.ruff_cache,./.pytest_cache,
+    ./.idea,./.superpowers,./.remember,./.zshhistory,./.coverage,
+    ./build,./dist,*/htmlcov,./docs/_build,./docs/html,
+    *.asc,*.yml,*.sta,*.txt,*.html,*.lock'''
 check-hidden = true
 
 [tool.repo-review]
