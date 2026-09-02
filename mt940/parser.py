@@ -39,6 +39,7 @@ if TYPE_CHECKING:
 
     from ._types import Processors, Source
     from .models import Transactions
+    from .options import Options
 
 
 def _decode(data: bytes, encoding: str | None) -> str:
@@ -107,6 +108,8 @@ def parse(
     processors: Processors | None = None,
     tags: dict[int | str, mt940.tags.Tag] | None = None,
     transaction_boundary: Iterable[str] | None = None,
+    *,
+    options: Options | None = None,
 ) -> Transactions:
     """Parse MT940 data into a single :class:`~mt940.models.Transactions`.
 
@@ -120,13 +123,18 @@ def parse(
             a new transaction (issue #110). By default only ``:61:`` starts a
             transaction; pass e.g. ``{'transaction_reference_number'}`` to also
             start one on every ``:20:``. Omit it to keep the legacy behaviour.
+        options: Opt-in behaviours, see :class:`mt940.options.Options`. Omit
+            to parse exactly like release 5.0.0.
 
     Returns:
         The parsed collection of transactions.
     """
     data = _read(src, encoding)
     transactions = mt940.models.Transactions(
-        processors, tags, transaction_boundary=transaction_boundary
+        processors,
+        tags,
+        transaction_boundary=transaction_boundary,
+        options=options,
     )
     _ = transactions.parse(data)
 
@@ -139,6 +147,8 @@ def parse_statements(
     processors: Processors | None = None,
     tags: dict[int | str, mt940.tags.Tag] | None = None,
     transaction_boundary: Iterable[str] | None = None,
+    *,
+    options: Options | None = None,
 ) -> list[Transactions]:
     """Parse an mt940 file that contains multiple statement blocks.
 
@@ -164,6 +174,7 @@ def parse_statements(
         processors: Optional extra pre/post processors (applied per block).
         tags: Optional extra or overriding tag parsers (applied per block).
         transaction_boundary: See :func:`parse` (and the note above).
+        options: See :func:`parse`.
 
     Returns:
         One :class:`~mt940.models.Transactions` per statement block.
@@ -175,7 +186,10 @@ def parse_statements(
             # Drop any leading header / empty chunk before the first :20:.
             continue
         transactions = mt940.models.Transactions(
-            processors, tags, transaction_boundary=transaction_boundary
+            processors,
+            tags,
+            transaction_boundary=transaction_boundary,
+            options=options,
         )
         _ = transactions.parse(block)
         statements.append(transactions)

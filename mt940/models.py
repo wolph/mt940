@@ -24,6 +24,7 @@ from typing import TYPE_CHECKING, Any, ClassVar, overload
 import mt940
 
 from . import processors, utils
+from .options import Options
 
 if TYPE_CHECKING:
     from typing_extensions import Self
@@ -516,12 +517,16 @@ class Transactions(Sequence[Transaction]):
         """
         self.__dict__.update(state)
         self.processors: Processors = self.DEFAULT_PROCESSORS.copy()
+        # Pickles written by 5.0.0 predate the options attribute.
+        _ = self.__dict__.setdefault('options', Options())
 
     def __init__(
         self,
         processors: Processors | None = None,
         tags: dict[int | str, mt940.tags.Tag] | None = None,
         transaction_boundary: Iterable[str] | None = None,
+        *,
+        options: Options | None = None,
     ) -> None:
         """Create an empty collection, optionally customizing parsing.
 
@@ -533,7 +538,10 @@ class Transactions(Sequence[Transaction]):
                 (issue #110). By default only ``:61:`` starts one; a bare
                 string is treated as a single slug. Omit to keep the legacy
                 behaviour.
+            options: Opt-in behaviours, see :class:`mt940.options.Options`.
+                Omit to parse exactly like release 5.0.0.
         """
+        self.options: Options = options or Options()
         self.processors = self.DEFAULT_PROCESSORS.copy()
         self.tags: MutableMapping[int | str, mt940.tags.Tag] = dict(
             self.default_tags()

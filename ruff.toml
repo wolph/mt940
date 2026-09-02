@@ -88,6 +88,10 @@ ignore-decorators = ['typing.overload', 'typing.override']
 [lint.pycodestyle]
 max-line-length = 79
 
+[lint.pylint]
+# parse() takes the source plus five documented knobs.
+max-args = 6
+
 [format]
 line-ending = 'lf'
 indent-style = 'space'

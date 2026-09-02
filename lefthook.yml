@@ -1,6 +1,8 @@
 # Git hooks for mt940 development.
-# Install with: lefthook install
-# (the `lefthook` binary ships with the `lefthook` dev dependency)
+# Install with: uv run lefthook install
+#
+# Every command goes through `uv run` so the hooks use the project's own
+# tool versions, whatever is (or is not) on the shell's PATH.
 #
 # pre-commit stays sub-second: only the staged files, only auto-fixers and the
 # spell-checker. pre-push runs the full lint, every type checker and a fast
@@ -11,33 +13,33 @@ pre-commit:
   commands:
     ruff-check:
       glob: '*.py'
-      run: ruff check --fix {staged_files}
+      run: uv run ruff check --fix {staged_files}
       stage_fixed: true
     ruff-format:
       glob: '*.py'
-      run: ruff format {staged_files}
+      run: uv run ruff format {staged_files}
       stage_fixed: true
     taplo:
       glob: '*.toml'
-      run: taplo fmt --check {staged_files}
+      run: uv run taplo fmt --check {staged_files}
     codespell:
       # No file args: honour the skip patterns in [tool.codespell].
-      run: codespell
+      run: uv run codespell
 
 pre-push:
   parallel: true
   commands:
     ruff:
-      run: ruff check
+      run: uv run ruff check
     ruff-format:
-      run: ruff format --check
+      run: uv run ruff format --check
     mypy:
-      run: mypy && mypy --python-version 3.12 docs/conf.py
+      run: uv run mypy && uv run mypy --python-version 3.12 docs/conf.py
     basedpyright:
-      run: basedpyright
+      run: uv run basedpyright
     pyrefly:
-      run: pyrefly check
+      run: uv run pyrefly check
     ty:
-      run: ty check
+      run: uv run ty check
     test:
-      run: pytest -q -x --no-cov -p no:randomly
+      run: uv run pytest -q -x --no-cov -p no:randomly
