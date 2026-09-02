@@ -195,13 +195,25 @@ class Amount(Model):
 
     Args:
         amount (str): Amount using either a , or a . as decimal separator
-        status (str): Either C or D for credit or debit respectively
+        status (str): The debit/credit mark of field 61, one of C, D, RC or
+            RD. C and RD are positive, D and RC are negative.
         currency (str): A 3 letter currency (e.g. EUR)
 
     >>> Amount('123.45', 'C', 'EUR')
     <123.45 EUR>
     >>> Amount('123.45', 'D', 'EUR')
     <-123.45 EUR>
+
+    A reversal of a credit takes the money back out of the account, so it
+    is negative like a debit:
+
+    >>> Amount('123.45', 'RC', 'EUR')
+    <-123.45 EUR>
+
+    And a reversal of a debit puts it back in, so it is positive:
+
+    >>> Amount('123.45', 'RD', 'EUR')
+    <123.45 EUR>
     """
 
     def __init__(
@@ -213,16 +225,22 @@ class Amount(Model):
     ) -> None:
         """Coerce ``amount`` to a signed :class:`decimal.Decimal`.
 
-        ``status`` is ``'C'`` for credit (positive) or ``'D'`` for debit, in
-        which case the amount is negated. Extra keyword arguments are ignored
-        so a parsed tag dictionary can be splatted in directly.
+        ``status`` is the field 61 debit/credit mark. The amount is negated
+        for the two marks that take money out of the account. Extra keyword
+        arguments are ignored so a parsed tag dictionary can be splatted in
+        directly.
         """
         self.amount = decimal.Decimal(amount.replace(',', '.'))
         self.currency = currency
 
-        # C = credit, D = debit
+        # C = credit, D = debit, RC = reversal of a credit (so money leaves
+        # the account, like a debit), RD = reversal of a debit (so money
+        # comes back in, like a credit).
+        #
+        # Compared case-insensitively because the tag patterns compile with
+        # re.IGNORECASE, so a lowercase mark reaches this constructor as-is.
 
-        if status == 'D':
+        if status.upper() in ('D', 'RC'):
             self.amount = -self.amount
 
     def __eq__(self, other: object) -> bool:
