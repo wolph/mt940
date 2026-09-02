@@ -543,8 +543,9 @@ def test_tags_compare_by_identity() -> None:
     # 5.0.0 semantics: every instance is its own set member and dictionary
     # key, while the hash stays id-based so an object hashes like itself.
     first = mt940.tags.Statement()
+    same = first
     second = mt940.tags.Statement()
-    assert first == first  # noqa: PLR0124 (identity is the point)
+    assert first == same
     assert first != second
     assert hash(first) == hash(second)
     assert len({first, second}) == 2
