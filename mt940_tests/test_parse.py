@@ -8,14 +8,14 @@ _tests_path = pathlib.Path(__file__).parent
 
 
 @pytest.mark.parametrize(
-    'path,encoding',
+    ('path', 'encoding'),
     [
         (_tests_path / 'jejik' / 'ing.sta', 'utf-8'),
         (_tests_path / 'self-provided' / 'raphaelm.sta', 'utf-8'),
         (_tests_path / 'betterplace' / 'with_binary_character.sta', 'utf-8'),
     ],
 )
-def test_non_ascii_parse(path, encoding):
+def test_non_ascii_parse(path, encoding) -> None:
     # Read as binary
     with path.open('rb') as fh:
         data = fh.read()
@@ -39,7 +39,7 @@ _BOM_STATEMENT = (
 )
 
 
-def test_utf8_bom_bytes_does_not_drop_first_tag():
+def test_utf8_bom_bytes_does_not_drop_first_tag() -> None:
     # A UTF-8 BOM (emitted by many Windows tools/banks) must not push the
     # leading :20: past the start-of-line tag anchor and drop its data.
     data = b'\xef\xbb\xbf' + _BOM_STATEMENT.encode('utf-8')
@@ -48,14 +48,14 @@ def test_utf8_bom_bytes_does_not_drop_first_tag():
     assert len(transactions) == 1
 
 
-def test_utf8_bom_str_does_not_drop_first_tag():
+def test_utf8_bom_str_does_not_drop_first_tag() -> None:
     # Same file already decoded to str with a stray BOM character.
     transactions = mt940.parse('﻿' + _BOM_STATEMENT)
     assert transactions.data.get('transaction_reference') == 'REF'
     assert len(transactions) == 1
 
 
-def test_86_line_with_embedded_tag_lookalike_stays_in_details():
+def test_86_line_with_embedded_tag_lookalike_stays_in_details() -> None:
     # A :86: free-text line that itself starts with a tag-lookalike (:12:,
     # which is not a known tag) must not be split off as a separate tag and
     # corrupt the statement -- it stays part of the transaction details.
@@ -75,7 +75,7 @@ def test_86_line_with_embedded_tag_lookalike_stays_in_details():
     assert 'INVOICE STYLE REF' in details
 
 
-def test_parse_statements_drops_swift_header_and_absorbs_terminators():
+def test_parse_statements_drops_swift_header_and_absorbs_terminators() -> None:
     # A leading SWIFT {1:}{2:}{4: header before the first :20: must be dropped,
     # and the lone `-` statement terminators must not create empty statements.
     data = (
@@ -92,7 +92,7 @@ def test_parse_statements_drops_swift_header_and_absorbs_terminators():
     ]
 
 
-def test_86_continuation_preserves_leading_whitespace():
+def test_86_continuation_preserves_leading_whitespace() -> None:
     # Transactions.strip only rstrips, so significant leading whitespace on a
     # :86: continuation line is preserved rather than eaten.
     transactions = mt940.parse(
@@ -106,7 +106,7 @@ def test_86_continuation_preserves_leading_whitespace():
     )
 
 
-def test_pickle_roundtrip_restores_processors():
+def test_pickle_roundtrip_restores_processors() -> None:
     # __getstate__ drops the (unpicklable) processors; __setstate__ must
     # restore them so the unpickled object is still usable.
     with (_tests_path / 'jejik' / 'ing.sta').open() as fh:
@@ -122,7 +122,7 @@ def test_pickle_roundtrip_restores_processors():
     restored.parse('')
 
 
-def test_pickle_roundtrip_preserves_transaction_boundary():
+def test_pickle_roundtrip_preserves_transaction_boundary() -> None:
     # __getstate__ only drops `processors`; newer state such as the opt-in
     # `transaction_boundary` (issue #110) must survive a pickle round-trip.
     transactions = mt940.models.Transactions(
@@ -133,6 +133,6 @@ def test_pickle_roundtrip_preserves_transaction_boundary():
     # pickle.loads is safe here.
     restored = pickle.loads(pickle.dumps(transactions))
 
-    assert restored.transaction_boundary == frozenset(
-        {'transaction_reference_number'}
-    )
+    assert restored.transaction_boundary == frozenset({
+        'transaction_reference_number'
+    })

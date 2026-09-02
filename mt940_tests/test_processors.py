@@ -5,7 +5,9 @@ import typing
 
 import mt940
 import pytest
-from mt940.models import Transactions
+
+if typing.TYPE_CHECKING:
+    from mt940.models import Transactions
 
 _tests_path: pathlib.Path = pathlib.Path(__file__).parent
 
@@ -34,11 +36,11 @@ def february_30_data() -> str:
 
 def test_date_fixup_pre_processor(february_30_data: str) -> None:
     transactions = mt940.models.Transactions(
-        processors=dict(
-            pre_statement=[
+        processors={
+            'pre_statement': [
                 mt940.processors.date_fixup_pre_processor,
             ],
-        )
+        }
     )
     transactions.parse(february_30_data)
     assert transactions[0].data['date'] == mt940.models.Date(2016, 2, 29)
@@ -62,14 +64,14 @@ def test_parse_filename() -> None:
 
 def test_pre_processor(sta_data: str) -> None:
     transactions = mt940.models.Transactions(
-        processors=dict(
-            pre_final_closing_balance=[
+        processors={
+            'pre_final_closing_balance': [
                 mt940.processors.add_currency_pre_processor('USD'),
             ],
-            pre_final_opening_balance=[
+            'pre_final_opening_balance': [
                 mt940.processors.add_currency_pre_processor('EUR'),
             ],
-        )
+        }
     )
     transactions.parse(sta_data)
     assert transactions.data['final_closing_balance'].amount.currency == 'USD'
@@ -78,11 +80,11 @@ def test_pre_processor(sta_data: str) -> None:
 
 def test_post_processor(sta_data: str) -> None:
     transactions = mt940.models.Transactions(
-        processors=dict(
-            post_closing_balance=[
+        processors={
+            'post_closing_balance': [
                 mt940.processors.date_cleanup_post_processor,
             ],
-        )
+        }
     )
     transactions.parse(sta_data)
     assert 'closing_balance_day' not in transactions.data
@@ -101,13 +103,13 @@ def mBank_mt942_data() -> str:
 
 def test_mBank_processors(mBank_mt942_data: str) -> None:
     transactions = mt940.models.Transactions(
-        processors=dict(
-            post_transaction_details=[
+        processors={
+            'post_transaction_details': [
                 mt940.processors.mBank_set_transaction_code,
                 mt940.processors.mBank_set_iph_id,
                 mt940.processors.mBank_set_tnr,
             ],
-        )
+        }
     )
     transaction = transactions.parse(mBank_mt942_data)[0].data
     assert transaction['transaction_code'] == 911
@@ -122,11 +124,11 @@ def test_transaction_details_post_processor_with_space() -> None:
 
     transactions = mt940.parse(
         filename,
-        processors=dict(
-            post_transaction_details=[
+        processors={
+            'post_transaction_details': [
                 mt940.processors.transaction_details_post_processor_with_space,
             ],
-        ),
+        },
     )
     transaction = transactions[0].data
     assert (
@@ -150,11 +152,11 @@ def test_mBank_set_tnr_parses_tnr_with_newlines(
     mBank_with_newline_in_tnr: str,
 ) -> None:
     transactions = mt940.models.Transactions(
-        processors=dict(
-            post_transaction_details=[
+        processors={
+            'post_transaction_details': [
                 mt940.processors.mBank_set_tnr,
             ],
-        )
+        }
     )
     transactions_ = transactions.parse(mBank_with_newline_in_tnr)
     assert transactions_[0].data['tnr'] == '179301073837502.000001'

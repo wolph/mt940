@@ -5,6 +5,7 @@ import decimal
 import json
 import logging
 import os
+import pathlib
 from typing import Any
 
 import mt940
@@ -24,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_sta_files() -> list[str]:
-    base_path = os.path.relpath(os.path.dirname(__file__))
+    base_path = os.path.relpath(pathlib.Path(__file__).parent)
     sta_files: list[str] = []
     for path, _dirs, files in os.walk(base_path):
         for file in files:
@@ -36,19 +37,19 @@ def get_sta_files() -> list[str]:
 
 def get_yaml_data(sta_file):
     yml_file = sta_file.replace('.sta', '.yml')
-    with open(yml_file) as fh:
+    with pathlib.Path(yml_file).open(encoding='utf-8') as fh:
         return yaml.load(fh, Loader=Loader)
 
 
-def write_yaml_data(sta_file, data):
+def write_yaml_data(sta_file, data) -> None:
     yml_file = sta_file.replace('.sta', '.yml')
-    with open(yml_file, 'w') as fh:
-        fh.write(yaml.dump(data, Dumper=Dumper))
+    pathlib.Path(yml_file).write_text(
+        yaml.dump(data, Dumper=Dumper), encoding='utf-8'
+    )
 
 
 def compare(a: Any, b: Any, keys: list[str] | None = None) -> None:
-    """
-    Recursively compares two objects `a` and `b`, asserting their equality.
+    """Recursively compares two objects `a` and `b`, asserting their equality.
 
     Args:
         a: The first object to compare.
@@ -79,12 +80,12 @@ def compare(a: Any, b: Any, keys: list[str] | None = None) -> None:
         compare_model_instances(a, b, keys)
     else:
         path = '.'.join(keys)
-        raise TypeError(f'Unsupported type {type(a)} at {path}')
+        msg = f'Unsupported type {type(a)} at {path}'
+        raise TypeError(msg)
 
 
 def compare_simple_types(a: Any, b: Any, keys: list[str]) -> None:
-    """
-    Compare simple types like datetime, Decimal, and int.
+    """Compare simple types like datetime, Decimal, and int.
 
     Args:
         a: The first simple type to compare.
@@ -96,12 +97,12 @@ def compare_simple_types(a: Any, b: Any, keys: list[str]) -> None:
     """
     if a != b:
         path = '.'.join(keys)
-        raise AssertionError(f'Difference at {path}: {a} != {b}')
+        msg = f'Difference at {path}: {a} != {b}'
+        raise AssertionError(msg)
 
 
 def compare_strings(a: str, b: str, keys: list[str]) -> None:
-    """
-    Compare string types.
+    """Compare string types.
 
     Args:
         a: The first string to compare.
@@ -113,12 +114,12 @@ def compare_strings(a: str, b: str, keys: list[str]) -> None:
     """
     if a != b:
         path = '.'.join(keys)
-        raise AssertionError(f"Difference at {path}: '{a}' != '{b}'")
+        msg = f"Difference at {path}: '{a}' != '{b}'"
+        raise AssertionError(msg)
 
 
 def compare_none(a: None, b: None, keys: list[str]) -> None:
-    """
-    Compare None types.
+    """Compare None types.
 
     Args:
         a: The first None value.
@@ -130,14 +131,14 @@ def compare_none(a: None, b: None, keys: list[str]) -> None:
     """
     if a is not b:
         path = '.'.join(keys)  # type: ignore[unreachable]
-        raise AssertionError(f'Difference at {path}: {a} is not {b}')
+        msg = f'Difference at {path}: {a} is not {b}'
+        raise AssertionError(msg)
 
 
 def compare_dicts(
     a: dict[Any, Any], b: dict[Any, Any], keys: list[str]
 ) -> None:
-    """
-    Compare dictionaries recursively.
+    """Compare dictionaries recursively.
 
     Args:
         a: The first dictionary to compare.
@@ -150,14 +151,14 @@ def compare_dicts(
     for k in a:
         if k not in b:
             path = '.'.join([*keys, str(k)])
-            raise AssertionError(f"Key '{k}' missing in second dict at {path}")
+            msg = f"Key '{k}' missing in second dict at {path}"
+            raise AssertionError(msg)
         compare(a[k], b[k], [*keys, str(k)])
     for k in b:
         if k not in a:
             path = '.'.join([*keys, str(k)])
-            raise AssertionError(
-                f"Unexpected key '{k}' in second dict at {path}"
-            )
+            msg = f"Unexpected key '{k}' in second dict at {path}"
+            raise AssertionError(msg)
 
 
 def compare_iterables(
@@ -165,8 +166,7 @@ def compare_iterables(
     b: list[Any] | tuple[Any, ...],
     keys: list[str],
 ) -> None:
-    """
-    Compare lists or tuples recursively.
+    """Compare lists or tuples recursively.
 
     Args:
         a: The first iterable to compare.
@@ -178,16 +178,14 @@ def compare_iterables(
     """
     if len(a) != len(b):
         path = '.'.join(keys)
-        raise AssertionError(
-            f'Difference in length at {path}: {len(a)} != {len(b)}'
-        )
+        msg = f'Difference in length at {path}: {len(a)} != {len(b)}'
+        raise AssertionError(msg)
     for index, (av, bv) in enumerate(zip(a, b, strict=False)):
         compare(av, bv, [*keys, f'[{index}]'])
 
 
 def compare_data_attributes(a: Any, b: Any, keys: list[str]) -> None:
-    """
-    Compare objects that have a 'data' attribute.
+    """Compare objects that have a 'data' attribute.
 
     Args:
         a: The first object to compare.
@@ -198,8 +196,7 @@ def compare_data_attributes(a: Any, b: Any, keys: list[str]) -> None:
 
 
 def compare_model_instances(a: Any, b: Any, keys: list[str]) -> None:
-    """
-    Compare model instances by comparing their __dict__ attributes.
+    """Compare model instances by comparing their __dict__ attributes.
 
     Args:
         a: The first model instance to compare.
@@ -210,7 +207,7 @@ def compare_model_instances(a: Any, b: Any, keys: list[str]) -> None:
 
 
 @pytest.mark.parametrize('sta_file', get_sta_files())
-def test_parse(sta_file):
+def test_parse(sta_file) -> None:
     transactions = mt940.parse(sta_file)
     # To update the yaml files after changing the code use the following
     # environment variable.
@@ -245,6 +242,6 @@ def test_parse(sta_file):
 
 
 @pytest.mark.parametrize('sta_file', get_sta_files())
-def test_json_dump(sta_file):
+def test_json_dump(sta_file) -> None:
     transactions = mt940.parse(sta_file)
     json.dumps(transactions, cls=mt940.JSONEncoder)

@@ -6,7 +6,7 @@ import mt940
 class TestPurposeFieldFormatting(unittest.TestCase):
     """Test for purpose field formatting in MT940 statements."""
 
-    def test_purpose_field_formatting(self):
+    def test_purpose_field_formatting(self) -> None:
         """Test that the purpose field is correctly formatted."""
         # Parse the example from the issue #109
         trans = mt940.parse("""\
@@ -24,10 +24,10 @@ class TestPurposeFieldFormatting(unittest.TestCase):
         purpose = trans[0].data.get('purpose', '')
 
         # Check that the purpose field doesn't end with "BIC"
-        self.assertFalse(purpose.endswith(' BIC'))
+        assert not purpose.endswith(' BIC')
 
         # Check that the purpose field contains the IBAN
-        self.assertIn('DE69280123450012345670', purpose)
+        assert 'DE69280123450012345670' in purpose
 
 
 if __name__ == '__main__':

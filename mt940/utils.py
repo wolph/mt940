@@ -14,8 +14,7 @@ T = typing.TypeVar('T')
 
 
 def coalesce(*args: T | None) -> T | None:
-    """
-    Return the first non-None argument.
+    """Return the first non-None argument.
 
     Examples:
         >>> coalesce()
@@ -47,20 +46,19 @@ class Strip(enum.IntFlag):
 
 
 def join_lines(string: str, strip: Strip = Strip.BOTH) -> str:
-    """
-    Join strings together and strip whitespace in between if needed.
+    r"""Join strings together and strip whitespace in between if needed.
 
     Args:
         string: The string with lines to join.
         strip: Strip options from the Strip enum.
 
-    >>> join_lines('  line1\\nline2  \\n line3 ')
+    >>> join_lines('  line1\nline2  \n line3 ')
     'line1line2line3'
-    >>> join_lines('  line1\\nline2  \\n line3 ', strip=Strip.LEFT)
+    >>> join_lines('  line1\nline2  \n line3 ', strip=Strip.LEFT)
     'line1line2  line3 '
-    >>> join_lines('  line1\\nline2  \\n line3 ', strip=Strip.RIGHT)
+    >>> join_lines('  line1\nline2  \n line3 ', strip=Strip.RIGHT)
     '  line1line2 line3'
-    >>> join_lines('  line1\\nline2  \\n line3 ', strip=Strip.NONE)
+    >>> join_lines('  line1\nline2  \n line3 ', strip=Strip.NONE)
     '  line1line2  line3 '
 
 

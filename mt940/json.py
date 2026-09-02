@@ -59,20 +59,20 @@ class JSONEncoder(json.JSONEncoder):
 
         # Handling of the Transaction objects to include the
         # actual transactions
-        elif isinstance(o, models.Transactions):
+        if isinstance(o, models.Transactions):
             data: dict[str, Any] = o.data.copy()
             data['transactions'] = o.transactions
             return data
 
         # If an object has a `data` attribute, return that instead of the
         # `__dict__` to prevent loops
-        elif hasattr(o, 'data'):
+        if hasattr(o, 'data'):
             return o.data
 
         # Handle types that have a `__dict__` containing the data (doesn't work
         # for classes using `__slots__` such as `datetime`)
-        elif isinstance(o, dict_types):
+        if isinstance(o, dict_types):
             return o.__dict__
 
-        else:  # pragma: no cover
-            return super().default(o)
+        # pragma: no cover
+        return super().default(o)

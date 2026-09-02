@@ -1,5 +1,4 @@
-"""
-Module Processors
+"""Module Processors.
 
 This module contains pre- and post-processors for modifying tag
 dictionaries in MT940 processing. It provides functions for currency
@@ -15,18 +14,16 @@ import functools
 import re
 from typing import TYPE_CHECKING, Any
 
-from ._types import PostProcessor, PreProcessor
-
 if TYPE_CHECKING:
     from . import models, tags
+    from ._types import PostProcessor, PreProcessor
 
 
 def add_currency_pre_processor(
     currency: str,
     overwrite: bool = True,
 ) -> PreProcessor:
-    """
-    Return a pre-processor that adds currency information
+    """Return a pre-processor that adds currency information
     to tag dictionaries.
 
     Args:
@@ -56,8 +53,7 @@ def date_fixup_pre_processor(
     tag_dict: dict[str, Any],
     *args: Any,
 ) -> dict[str, Any]:
-    """
-    Adjust the date in the tag dictionary if necessary.
+    """Adjust the date in the tag dictionary if necessary.
 
     If the day in February exceeds the maximum day in that month,
     adjust it to the last day of February.
@@ -86,8 +82,7 @@ def date_cleanup_post_processor(
     tag_dict: dict[str, Any],
     result: dict[str, Any],
 ) -> dict[str, Any]:
-    """
-    Remove date components from the result dictionary.
+    """Remove date components from the result dictionary.
 
     Removes the 'day', 'month', 'year', 'entry_day', and 'entry_month' keys
     from the result dictionary.
@@ -107,14 +102,13 @@ def date_cleanup_post_processor(
     return result
 
 
-def mBank_set_transaction_code(  # noqa: N802
+def mBank_set_transaction_code(
     transactions: models.Transactions,
     tag: tags.Tag,
     tag_dict: dict[str, Any],
     *args: Any,
 ) -> dict[str, Any]:
-    """
-    mBank Collect uses transaction code 911 to distinguish incoming mass
+    """MBank Collect uses transaction code 911 to distinguish incoming mass
     payments transactions, adding transaction_code may be helpful in further
     processing.
     """
@@ -133,14 +127,13 @@ def mBank_set_transaction_code(  # noqa: N802
 iph_id_re = re.compile(r' ID IPH: X*(?P<iph_id>\d{0,14});')
 
 
-def mBank_set_iph_id(  # noqa: N802
+def mBank_set_iph_id(
     transactions: models.Transactions,
     tag: tags.Tag,
     tag_dict: dict[str, Any],
     *args: Any,
 ) -> dict[str, Any]:
-    """
-    mBank Collect uses ID IPH to distinguish between virtual accounts,
+    """MBank Collect uses ID IPH to distinguish between virtual accounts,
     adding iph_id may be helpful in further processing.
     """
     matches = iph_id_re.search(tag_dict[tag.slug])
@@ -154,14 +147,13 @@ def mBank_set_iph_id(  # noqa: N802
 tnr_re = re.compile(r'TNR:[ \n](?P<tnr>\d+\.\d+)', flags=re.MULTILINE)
 
 
-def mBank_set_tnr(  # noqa: N802
+def mBank_set_tnr(
     transactions: models.Transactions,
     tag: tags.Tag,
     tag_dict: dict[str, Any],
     *args: Any,
 ) -> dict[str, Any]:
-    """
-    mBank Collect states TNR in transaction details as unique id for
+    """MBank Collect states TNR in transaction details as unique id for
     transactions, that may be used to identify the same transactions in
     different statement files eg. partial mt942 and full mt940
     Information about TNR uniqueness has been obtained from mBank support,
@@ -212,8 +204,7 @@ GVC_KEYS = {
 
 
 def _parse_segments(detail_str: str) -> collections.OrderedDict[str, str]:
-    """
-    Parse segments from a detail string.
+    """Parse segments from a detail string.
 
     This function splits the provided detail string into segments using
     the '?' delimiter. Each segment is associated with a two-character
@@ -259,8 +250,7 @@ def _parse_segments(detail_str: str) -> collections.OrderedDict[str, str]:
 def _process_segments(
     tmp: collections.OrderedDict[str, str],
 ) -> dict[str, list[str]]:
-    """
-    Process segments into result dictionary.
+    """Process segments into result dictionary.
 
     Args:
         tmp: An OrderedDict of segment types to their content.
@@ -300,8 +290,7 @@ def _join_result(
     result: dict[str, list[str]],
     space: bool,
 ) -> dict[str, str | None]:
-    """
-    Join result lists into strings.
+    """Join result lists into strings.
 
     Args:
         result: The result dictionary with lists of strings.
@@ -324,8 +313,7 @@ def _parse_mt940_details(
     detail_str: str,
     space: bool = False,
 ) -> dict[str, str | None]:
-    """
-    Parse MT940 transaction details.
+    """Parse MT940 transaction details.
 
     Args:
         detail_str: The detail string to parse.
@@ -340,8 +328,7 @@ def _parse_mt940_details(
 
 
 def _parse_mt940_gvcodes(purpose: str) -> dict[str, str | None]:
-    """
-    Parse MT940 GVC codes from the purpose string.
+    """Parse MT940 GVC codes from the purpose string.
 
     Args:
         purpose: The purpose string to parse.
@@ -399,8 +386,7 @@ def transaction_details_post_processor(
     result: dict[str, Any],
     space: bool = False,
 ) -> dict[str, Any]:
-    """
-    Parse the extra details in some transaction formats,
+    """Parse the extra details in some transaction formats,
     such as the 60-65 keys.
 
     Args:
@@ -447,8 +433,7 @@ segments.
 def transactions_to_transaction(
     *keys: str,
 ) -> PostProcessor:
-    """
-    Copy the global transactions details to the transaction.
+    """Copy the global transactions details to the transaction.
 
     Args:
         *keys: The keys to copy to the transaction.
@@ -463,8 +448,7 @@ def transactions_to_transaction(
         tag_dict: dict[str, Any],
         result: dict[str, Any],
     ) -> dict[str, Any]:
-        """
-        Copy the global transactions details to the transaction.
+        """Copy the global transactions details to the transaction.
 
         Args:
             transactions: The transactions object.

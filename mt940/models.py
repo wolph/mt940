@@ -19,12 +19,16 @@ from collections.abc import (
     MutableMapping,
     Sequence,
 )
-from typing import Any, ClassVar, overload
+from typing import TYPE_CHECKING, Any, ClassVar, overload
 
 import mt940
 
 from . import processors, utils
-from ._types import Processors
+
+if TYPE_CHECKING:
+    from typing_extensions import Self
+
+    from ._types import Processors
 
 
 class Model:
@@ -36,7 +40,7 @@ class Model:
 
 class FixedOffset(datetime.tzinfo):
     """Fixed time offset based on the Python docs
-    Source: https://docs.python.org/2/library/datetime.html#tzinfo-objects
+    Source: https://docs.python.org/2/library/datetime.html#tzinfo-objects.
 
     >>> offset = FixedOffset(60)
     >>> offset.utcoffset(None).total_seconds()
@@ -68,7 +72,7 @@ class FixedOffset(datetime.tzinfo):
 
 
 class DateTime(datetime.datetime, Model):
-    """Just a regular datetime object which supports dates given as strings
+    """Just a regular datetime object which supports dates given as strings.
 
     >>> DateTime(
     ...     year='2000',
@@ -120,7 +124,7 @@ class DateTime(datetime.datetime, Model):
                       with the given offset if no tzinfo is available.
     """
 
-    def __new__(cls, *args: Any, **kwargs: Any) -> DateTime:
+    def __new__(cls, *args: Any, **kwargs: Any) -> Self:
         """Build a ``DateTime`` from string or positional date components.
 
         When keyword arguments are given the individual fields are coerced from
@@ -157,12 +161,11 @@ class DateTime(datetime.datetime, Model):
                 microsecond,
                 tzinfo=tzinfo,
             )
-        else:
-            return datetime.datetime.__new__(cls, *args, **kwargs)
+        return datetime.datetime.__new__(cls, *args, **kwargs)
 
 
 class Date(datetime.date, Model):
-    """Just a regular date object which supports dates given as strings
+    """Just a regular date object which supports dates given as strings.
 
     >>> Date(year='2000', month='1', day='2')
     Date(2000, 1, 2)
@@ -176,7 +179,7 @@ class Date(datetime.date, Model):
         day (str): Day
     """
 
-    def __new__(cls, *args: Any, **kwargs: Any) -> Date:
+    def __new__(cls, *args: Any, **kwargs: Any) -> Self:
         """Build a ``Date`` from string or positional date components.
 
         Keyword arguments are coerced through :class:`DateTime` (so two-digit
@@ -186,12 +189,11 @@ class Date(datetime.date, Model):
         if kwargs:
             dt = DateTime(*args, **kwargs).date()
             return datetime.date.__new__(cls, dt.year, dt.month, dt.day)
-        else:
-            return datetime.date.__new__(cls, *args, **kwargs)
+        return datetime.date.__new__(cls, *args, **kwargs)
 
 
 class Amount(Model):
-    """Amount object containing currency and amount
+    """Amount object containing currency and amount.
 
     Args:
         amount (str): Amount using either a , or a . as decimal separator
@@ -240,7 +242,7 @@ class Amount(Model):
         # Compared case-insensitively because the tag patterns compile with
         # re.IGNORECASE, so a lowercase mark reaches this constructor as-is.
 
-        if status.upper() in ('D', 'RC'):
+        if status.upper() in {'D', 'RC'}:
             self.amount = -self.amount
 
     def __eq__(self, other: object) -> bool:
@@ -279,7 +281,7 @@ class SumAmount(Amount):
 
 
 class Balance(Model):
-    """Parse balance statement
+    """Parse balance statement.
 
     Args:
         status (str): Either C or D for credit or debit respectively
@@ -310,7 +312,8 @@ class Balance(Model):
     ) -> None:
         if amount and not isinstance(amount, Amount):
             if status is None:  # pragma: no cover
-                raise ValueError('Cannot create Amount without status')
+                msg = 'Cannot create Amount without status'
+                raise ValueError(msg)
             amount = Amount(amount, status, kwargs.get('currency'))
         self.status = status
         self.amount = amount
@@ -374,57 +377,56 @@ class Transaction(Model):
 
 
 class Transactions(Sequence[Transaction]):
-    """
-    Collection of Transaction objects with global properties such
-    as begin and end balance
+    """Collection of Transaction objects with global properties such
+    as begin and end balance.
     """
 
-    DEFAULT_PROCESSORS: ClassVar[Processors] = dict(
-        pre_account_identification=[],
-        post_account_identification=[],
-        pre_available_balance=[],
-        post_available_balance=[],
-        pre_closing_balance=[],
-        post_closing_balance=[],
-        pre_intermediate_closing_balance=[],
-        post_intermediate_closing_balance=[],
-        pre_final_closing_balance=[],
-        post_final_closing_balance=[],
-        pre_forward_available_balance=[],
-        post_forward_available_balance=[],
-        pre_opening_balance=[],
-        post_opening_balance=[],
-        pre_intermediate_opening_balance=[],
-        post_intermediate_opening_balance=[],
-        pre_final_opening_balance=[],
-        post_final_opening_balance=[],
-        pre_related_reference=[],
-        post_related_reference=[],
-        pre_statement=[processors.date_fixup_pre_processor],
-        post_statement=[
+    DEFAULT_PROCESSORS: ClassVar[Processors] = {
+        'pre_account_identification': [],
+        'post_account_identification': [],
+        'pre_available_balance': [],
+        'post_available_balance': [],
+        'pre_closing_balance': [],
+        'post_closing_balance': [],
+        'pre_intermediate_closing_balance': [],
+        'post_intermediate_closing_balance': [],
+        'pre_final_closing_balance': [],
+        'post_final_closing_balance': [],
+        'pre_forward_available_balance': [],
+        'post_forward_available_balance': [],
+        'pre_opening_balance': [],
+        'post_opening_balance': [],
+        'pre_intermediate_opening_balance': [],
+        'post_intermediate_opening_balance': [],
+        'pre_final_opening_balance': [],
+        'post_final_opening_balance': [],
+        'pre_related_reference': [],
+        'post_related_reference': [],
+        'pre_statement': [processors.date_fixup_pre_processor],
+        'post_statement': [
             processors.date_cleanup_post_processor,
             processors.transactions_to_transaction('transaction_reference'),
         ],
-        pre_statement_number=[],
-        post_statement_number=[],
-        pre_non_swift=[],
-        post_non_swift=[],
-        pre_transaction_details=[],
-        post_transaction_details=[
+        'pre_statement_number': [],
+        'post_statement_number': [],
+        'pre_non_swift': [],
+        'post_non_swift': [],
+        'pre_transaction_details': [],
+        'post_transaction_details': [
             processors.transaction_details_post_processor,
             # processors.transaction_details_post_processor_with_space
         ],
-        pre_transaction_reference_number=[],
-        post_transaction_reference_number=[],
-        pre_floor_limit_indicator=[],
-        post_floor_limit_indicator=[],
-        pre_date_time_indication=[],
-        post_date_time_indication=[],
-        pre_sum_credit_entries=[],
-        post_sum_credit_entries=[],
-        pre_sum_debit_entries=[],
-        post_sum_debit_entries=[],
-    )
+        'pre_transaction_reference_number': [],
+        'post_transaction_reference_number': [],
+        'pre_floor_limit_indicator': [],
+        'post_floor_limit_indicator': [],
+        'pre_date_time_indication': [],
+        'post_date_time_indication': [],
+        'pre_sum_credit_entries': [],
+        'post_sum_credit_entries': [],
+        'pre_sum_debit_entries': [],
+        'post_sum_debit_entries': [],
+    }
 
     def __getstate__(self) -> dict[str, Any]:
         """Return picklable state, dropping the (unpicklable) processors."""
@@ -528,7 +530,7 @@ class Transactions(Sequence[Transaction]):
         return mt940.tags.TAG_BY_ID
 
     def parse(self, data: str) -> list[Transaction]:
-        """Parses mt940 data, expects a string with data
+        """Parses mt940 data, expects a string with data.
 
         Args:
             data (str): The MT940 data
@@ -752,8 +754,7 @@ class Transactions(Sequence[Transaction]):
 class TransactionsAndTransaction(  # type: ignore[misc]  # pyright: ignore[reportUnsafeMultipleInheritance]
     Transactions, Transaction
 ):
-    """
-    Subclass of both Transactions and Transaction for scope definitions.
+    """Subclass of both Transactions and Transaction for scope definitions.
 
     This is useful for the non-swift data for example which can function both
     as details for a transaction and for a collection of transactions.

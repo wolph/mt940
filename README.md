@@ -23,15 +23,15 @@ for transaction in transactions:
 
 ## Why mt940
 
-- **Zero runtime dependencies** — pure standard library.
-- **Fully typed** — ships `py.typed`; checked under pyright, mypy and pyrefly.
-- **Battle-tested** — 100% test coverage against fixtures from many banks.
-- **Smart models** — amounts, balances and dates come back as rich Python
+- **Zero runtime dependencies**: pure standard library.
+- **Fully typed**: ships `py.typed` and is checked under mypy, basedpyright, pyrefly and ty.
+- **Battle-tested**: 100% test coverage against fixtures from many banks.
+- **Smart models**: amounts, balances and dates come back as rich Python
   objects, not raw strings.
-- **JSON-ready** — a single encoder serializes a whole statement.
-- **Extensible** — opt-in tags and pre/post processors for bank-specific
+- **JSON-ready**: a single encoder serializes a whole statement.
+- **Extensible**: opt-in tags and pre/post processors for bank-specific
   formats.
-- **Modern Python** — supports 3.10 through 3.13.
+- **Modern Python**: supports 3.10 through 3.14.
 
 ## Installation
 
@@ -75,7 +75,7 @@ fields are present depends on the source bank and the tags in the file.
 ### Reading balances
 
 Statement-level balances live on the `Transactions` object's `data`, not on the
-individual transactions — this works even for files with no transactions at all:
+individual transactions. This works even for files with no transactions at all:
 
 ```python
 import mt940
@@ -139,7 +139,7 @@ print(json.dumps(transactions, indent=4, cls=mt940.JSONEncoder))
 ### Transaction grouping (opt-in)
 
 By default a new transaction is started only on the `:61:` statement tag. Some
-banks delimit transactions differently — for example by repeating the `:20:`
+banks delimit transactions differently, for example by repeating the `:20:`
 transaction reference per block. Because changing the default grouping would
 break existing users, this behaviour is **opt-in**: pass `transaction_boundary`
 (an iterable of tag *slugs*) to start a new transaction on those tags too.
@@ -170,7 +170,7 @@ gls = mt940.tags.StatementGLS()
 transactions = mt940.parse('statement.sta', tags={gls.id: gls})
 ```
 
-(Longer *supplementary details* — issue #117, e.g. Wise — are handled by the
+(Longer *supplementary details*, issue #117, e.g. Wise, are handled by the
 default parser and need no opt-in.)
 
 ### Statements from the Dutch bank ASN (opt-in)

@@ -18,7 +18,7 @@ VALID = """:20:STARTUMS
 """
 
 
-def test_parses_without_stdout_and_stderr(monkeypatch):
+def test_parses_without_stdout_and_stderr(monkeypatch) -> None:
     monkeypatch.setattr('sys.stdout', None)
     monkeypatch.setattr('sys.stderr', None)
     transactions = mt940.parse(VALID)

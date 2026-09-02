@@ -39,7 +39,7 @@ PAGED_SINGLE_BLOCK = """:20:REF1
 """
 
 
-def test_two_blocks_first_intermediate_balance_preserved():
+def test_two_blocks_first_intermediate_balance_preserved() -> None:
     statements = mt940.parse_statements(TWO_BLOCKS)
     assert len(statements) == 2
     assert str(statements[0].data['intermediate_opening_balance']).startswith(
@@ -52,7 +52,7 @@ def test_two_blocks_first_intermediate_balance_preserved():
 @pytest.mark.xfail(
     strict=True, reason='issue #105 shape 2 -- pending decision'
 )
-def test_paged_single_block_first_intermediate_balance_accessible():
+def test_paged_single_block_first_intermediate_balance_accessible() -> None:
     statements = mt940.parse_statements(PAGED_SINGLE_BLOCK)
     first = statements[0].data['intermediate_opening_balance']
     assert str(first).startswith('100.00')

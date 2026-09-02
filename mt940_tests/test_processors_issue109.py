@@ -15,24 +15,24 @@ def _purpose(detail_str: str) -> list[str]:
     return processors._process_segments(segments)[processors.DETAIL_KEYS['20']]
 
 
-def test_dangling_bic_is_stripped():
+def test_dangling_bic_is_stripped() -> None:
     # ?29 ends with a bare ' BIC' label and no BIC value (issue #109).
     purpose = _purpose('?20Purpose?29 DE69280123450012345670 BIC')
     assert purpose == ['Purpose', ' DE69280123450012345670']
 
 
-def test_dangling_iban_is_stripped():
+def test_dangling_iban_is_stripped() -> None:
     # The same pattern with a bare ' IBAN' label must also be stripped.
     purpose = _purpose('?20Purpose?29 DE69280123450012345670 IBAN')
     assert purpose == ['Purpose', ' DE69280123450012345670']
 
 
-def test_value_not_ending_in_label_is_unchanged():
+def test_value_not_ending_in_label_is_unchanged() -> None:
     purpose = _purpose('?20Legit purpose text?29trailing content')
     assert purpose == ['Legit purpose text', 'trailing content']
 
 
-def test_issue_109_end_to_end():
+def test_issue_109_end_to_end() -> None:
     data = """:20:STARTUMS
 :25:GENODEF1XXX/1234567890
 :28C:0

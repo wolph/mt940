@@ -1,6 +1,5 @@
 # pyright: strict
-"""
-The MT940 format is a standard for bank account statements. It is used by
+"""The MT940 format is a standard for bank account statements. It is used by
 many banks in Europe and is based on the SWIFT MT940 format.
 
 The MT940 tags are:
@@ -78,17 +77,18 @@ import enum
 import logging
 import re
 import typing
-from typing import ClassVar
+from typing import TYPE_CHECKING, ClassVar
 
 from . import models
+
+if TYPE_CHECKING:
+    from typing_extensions import Self
 
 logger = logging.getLogger(__name__)
 
 
 class Tag:
-    """
-    Base Tag class for parsing and handling MT940 tag contents.
-    """
+    """Base Tag class for parsing and handling MT940 tag contents."""
 
     id: str | int = 0
     RE_FLAGS: ClassVar[re.RegexFlag] = re.IGNORECASE | re.VERBOSE | re.UNICODE
@@ -106,8 +106,7 @@ class Tag:
     def parse(
         self, transactions: models.Transactions, value: str
     ) -> dict[str, str | None]:
-        """
-        Parses the given value using the Tag's pattern.
+        """Parses the given value using the Tag's pattern.
 
         Args:
             transactions: The transactions model instance.
@@ -129,23 +128,19 @@ class Tag:
                 match.groupdict(),
             )
             return match.groupdict()
-        else:
-            self.logger.error(
-                'matching id=%s (len=%d) "%s" against\n    %s',
-                self.id,
-                len(value),
-                value,
-                self.pattern,
-            )
-            self._debug_partial_match(value)
-            raise RuntimeError(
-                f'Unable to parse {self!r} from {value!r}', self, value
-            )
+        self.logger.error(
+            'matching id=%s (len=%d) "%s" against\n    %s',
+            self.id,
+            len(value),
+            value,
+            self.pattern,
+        )
+        self._debug_partial_match(value)
+        msg = f'Unable to parse {self!r} from {value!r}'
+        raise RuntimeError(msg, self, value)
 
     def _debug_partial_match(self, value: str) -> None:
-        """
-        Helper function to debug partial matches against the pattern.
-        """
+        """Helper function to debug partial matches against the pattern."""
         part_value = value
         for pattern in self.pattern.split('\n'):
             try:
@@ -172,8 +167,7 @@ class Tag:
     def __call__(
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, typing.Any]:
-        """
-        Processes the tag value and returns parsed content.
+        """Processes the tag value and returns parsed content.
 
         The base implementation returns ``value`` unchanged; subclasses
         override it to build model objects (amounts, balances, dates, ...).
@@ -187,14 +181,14 @@ class Tag:
         """
         return value
 
-    def __new__(cls, *args: typing.Any, **kwargs: typing.Any) -> Tag:
+    def __new__(cls, *args: typing.Any, **kwargs: typing.Any) -> Self:
         """Create a Tag instance, deriving its ``name``, ``slug`` and logger.
 
         The ``slug`` is the snake_case form of the class name and is used to
         look up matching pre/post processors.
         """
         cls.name = cls.__name__
-        words = re.findall('([A-Z][a-z]+)', cls.__name__)
+        words = re.findall(r'([A-Z][a-z]+)', cls.__name__)
         cls.slug = '_'.join(w.lower() for w in words)
         cls.logger = logger.getChild(cls.name)
         return object.__new__(cls)
@@ -209,7 +203,7 @@ class Tag:
 
 
 class DateTimeIndication(Tag):
-    """Date/Time indication at which the report was created
+    """Date/Time indication at which the report was created.
 
     Pattern: 6!n4!n1! x4!n
     """
@@ -243,7 +237,7 @@ class DateTimeIndication(Tag):
 
 
 class TransactionReferenceNumber(Tag):
-    """Transaction reference number
+    """Transaction reference number.
 
     Pattern: 16x
     """
@@ -253,7 +247,7 @@ class TransactionReferenceNumber(Tag):
 
 
 class RelatedReference(Tag):
-    """Related reference
+    """Related reference.
 
     Pattern: 16x
     """
@@ -263,7 +257,7 @@ class RelatedReference(Tag):
 
 
 class AccountIdentification(Tag):
-    """Account identification
+    """Account identification.
 
     Pattern: 35x
     """
@@ -273,7 +267,7 @@ class AccountIdentification(Tag):
 
 
 class StatementNumber(Tag):
-    """Statement number / sequence number
+    """Statement number / sequence number.
 
     Pattern: 5n[/5n]
     """
@@ -287,7 +281,7 @@ class StatementNumber(Tag):
 
 class FloorLimitIndicator(Tag):
     """Floor limit indicator
-    indicates the minimum value reported for debit and credit amounts
+    indicates the minimum value reported for debit and credit amounts.
 
     Pattern: :34F:GHSC0,00
     """
@@ -303,7 +297,7 @@ class FloorLimitIndicator(Tag):
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, object]:
         data = typing.cast(
-            dict[str, str],
+            'dict[str, str]',
             super().__call__(transactions, value),
         )
         # Normalize the D/C mark: a space (sent by e.g. Fiducia/Volksbank,
@@ -329,7 +323,7 @@ class NonSwift(Tag):
     """Non-swift extension for MT940 containing extra information. The
     actual definition is not consistent between banks so the current
     implementation is a tad limited. Feel free to extend the implementation
-    and create a pull request with a better version :)
+    and create a pull request with a better version :).
 
     It seems this could be anything so we'll have to be flexible about it.
 
@@ -368,7 +362,7 @@ class NonSwift(Tag):
                 # Free-form line without a two-digit sub-tag: keep the
                 # content instead of dropping it.
                 text.append(line.strip())
-            elif len(text) and text[-1]:
+            elif text and text[-1]:
                 # Blank line: collapse runs into one paragraph separator.
                 text.append('')
         value['non_swift_text'] = '\n'.join(text)
@@ -377,7 +371,7 @@ class NonSwift(Tag):
 
 
 class BalanceBase(Tag):
-    """Balance base
+    """Balance base.
 
     Pattern: 1!a6!n3!a15d
     """
@@ -419,8 +413,7 @@ class IntermediateOpeningBalance(BalanceBase):
 
 
 class Statement(Tag):
-    """
-    The MT940 Tag 61 provides information about a single transaction that
+    """The MT940 Tag 61 provides information about a single transaction that
     has taken place on the account. Each transaction is identified by a
     unique transaction reference number (Tag 20) and is described in the
     Statement Line (Tag 61).
@@ -512,7 +505,7 @@ class Statement(Tag):
 
 
 class StatementASNB(Statement):
-    """StatementASNB
+    """StatementASNB.
 
     From: https://www.sepaforcorporates.com/swift-for-corporates
 
@@ -616,7 +609,7 @@ class ForwardAvailableBalance(BalanceBase):
 
 
 class TransactionDetails(Tag):
-    """Transaction details
+    """Transaction details.
 
     Pattern: 6x65x
     """
@@ -634,7 +627,7 @@ class TransactionDetails(Tag):
 
 
 class SumEntries(Tag):
-    """Number and Sum of debit Entries"""
+    """Number and Sum of debit Entries."""
 
     id: str | int = 90
     pattern = r"""^

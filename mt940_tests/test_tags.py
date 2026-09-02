@@ -12,7 +12,7 @@ _HEADER = ':20:REF\n:25:ACC\n:28C:1\n:60F:C231229EUR0,00\n'
 _FOOTER = ':62F:C231229EUR10,00\n'
 
 
-def test_date_time_indication_positive_offset_is_hhmm():
+def test_date_time_indication_positive_offset_is_hhmm() -> None:
     # The :13(D): offset subfield is HHMM (like ISO 8601 +0130), not a
     # number of minutes: +0130 means 1 hour 30 minutes.
     transactions = mt940.parse(':13D:1701191815+0130\n' + _HEADER + _FOOTER)
@@ -20,14 +20,14 @@ def test_date_time_indication_positive_offset_is_hhmm():
     assert date.utcoffset() == datetime.timedelta(hours=1, minutes=30)
 
 
-def test_date_time_indication_negative_offset():
+def test_date_time_indication_negative_offset() -> None:
     # 1!x sign can be '-' as well (e.g. US banks): -0500 is UTC-5.
     transactions = mt940.parse(':13D:1701191815-0500\n' + _HEADER + _FOOTER)
     date = transactions.data['date']
     assert date.utcoffset() == -datetime.timedelta(hours=5)
 
 
-def test_transaction_details_long_multiline_not_truncated():
+def test_transaction_details_long_multiline_not_truncated() -> None:
     # The old :86: pattern capped the capture at nine 65-char chunks
     # (~593 chars); longer details -- e.g. German banks packing many ?NN
     # subfields -- were silently truncated. The cap had already been bumped
@@ -45,7 +45,7 @@ def test_transaction_details_long_multiline_not_truncated():
     assert transactions[0].data['transaction_details'] == details
 
 
-def test_non_swift_multiline_free_text():
+def test_non_swift_multiline_free_text() -> None:
     # NS content is bank specific ("could be anything"); multi-line values
     # whose lines do not all start with a two-digit sub-tag used to fail the
     # NS pattern and abort the whole parse.
@@ -54,14 +54,14 @@ def test_non_swift_multiline_free_text():
     assert transactions.data['non_swift_text'] == 'hello\nworld'
 
 
-def test_non_swift_structured_line_followed_by_free_text():
+def test_non_swift_structured_line_followed_by_free_text() -> None:
     transactions = mt940.parse(_HEADER + ':NS:22foo\nbar\n' + _FOOTER)
     assert transactions.data['non_swift'] == '22foo\nbar'
     assert transactions.data['non_swift_22'] == 'foo'
     assert transactions.data['non_swift_text'] == 'foo\nbar'
 
 
-def test_non_swift_blank_lines_collapse():
+def test_non_swift_blank_lines_collapse() -> None:
     # Direct tag call: blank lines between content are kept as single
     # paragraph separators in non_swift_text (mt940.parse strips blank
     # lines before tags ever see them).
@@ -72,7 +72,7 @@ def test_non_swift_blank_lines_collapse():
     assert result['non_swift_text'] == 'foo\n\nbar'
 
 
-def test_floor_limit_space_indicator_treated_as_absent():
+def test_floor_limit_space_indicator_treated_as_absent() -> None:
     # Fiducia / Volksbank Ortenau sends ':34F:EUR 999999999999,99' (commit
     # d36c51b relaxed the regex for it). A blank D/C mark means "applies to
     # both", like an absent mark -- it must not create a ' _floor_limit' key.
@@ -85,7 +85,7 @@ def test_floor_limit_space_indicator_treated_as_absent():
     assert str(transactions.data['c_floor_limit']) == '999999999999.99 EUR'
 
 
-def test_floor_limit_lowercase_indicator_normalized():
+def test_floor_limit_lowercase_indicator_normalized() -> None:
     # The tag regexes are compiled with re.IGNORECASE, so a lowercase mark
     # must behave exactly like its uppercase form (debit -> negative).
     transactions = mt940.parse(
@@ -106,7 +106,7 @@ class MultilineGroupTag(tags.Tag):
     $"""
 
 
-def test_unparseable_value_raises_runtime_error():
+def test_unparseable_value_raises_runtime_error() -> None:
     # Tag.parse documents RuntimeError for unparsable values, but the
     # debug helper re-compiles the pattern line by line; for patterns with
     # multi-line groups the unbalanced fragments raised re.error instead.
@@ -116,7 +116,7 @@ def test_unparseable_value_raises_runtime_error():
         transactions.parse(':20:REF\n:28C:NOTDIGITS\n')
 
 
-def test_statement_rc_reversal_amount_is_negative():
+def test_statement_rc_reversal_amount_is_negative() -> None:
     transactions = mt940.parse(
         _HEADER + ':61:2312290101RC10,50NTRFREF//BANK\n' + _FOOTER
     )
@@ -125,7 +125,7 @@ def test_statement_rc_reversal_amount_is_negative():
     assert str(data['amount']) == '-10.50 EUR'
 
 
-def test_statement_reversal_marks_parse():
+def test_statement_reversal_marks_parse() -> None:
     # RC/RD marks (2a subfield) parse and are preserved in `status`. RD is
     # a reversed debit (money back in, positive), RC a reversed credit
     # (money back out, negative).
@@ -141,7 +141,7 @@ def test_statement_reversal_marks_parse():
     assert str(transactions[1].data['amount']) == '-10.50 EUR'
 
 
-def test_statement_amount_without_decimals():
+def test_statement_amount_without_decimals() -> None:
     # 15d allows a trailing decimal comma with no fraction digits.
     transactions = mt940.parse(
         _HEADER + ':61:2312290101C10,NTRFREF//BANK\n' + _FOOTER
@@ -149,7 +149,7 @@ def test_statement_amount_without_decimals():
     assert str(transactions[0].data['amount']) == '10 EUR'
 
 
-def test_statement_lowercase_debit_mark_is_negative():
+def test_statement_lowercase_debit_mark_is_negative() -> None:
     # The tag patterns are compiled with re.IGNORECASE, so a lowercase 'd'
     # debit mark is accepted. Amount must still treat it as a debit and
     # negate the amount; otherwise a debit is silently stored as positive.
@@ -161,7 +161,7 @@ def test_statement_lowercase_debit_mark_is_negative():
     assert str(data['amount']) == '-10.50 EUR'
 
 
-def test_statement_second_double_slash_stays_in_bank_reference():
+def test_statement_second_double_slash_stays_in_bank_reference() -> None:
     # Only the first // separates the bank reference; a second one is kept
     # as part of the reference content.
     transactions = mt940.parse(
@@ -172,7 +172,7 @@ def test_statement_second_double_slash_stays_in_bank_reference():
     assert data['bank_reference'] == 'BANK//EXTRA'
 
 
-def test_balance_on_leap_day():
+def test_balance_on_leap_day() -> None:
     transactions = mt940.parse(
         ':20:REF\n:25:ACC\n:28C:1\n:60F:C240229EUR0,00\n'
         ':61:2402290229C10,50NTRFREF\n'
@@ -182,7 +182,7 @@ def test_balance_on_leap_day():
     assert balance.date == models.Date(2024, 2, 29)
 
 
-def test_date_time_indication_without_offset():
+def test_date_time_indication_without_offset() -> None:
     # The offset is optional in the pattern; a bare 10-digit :13: must not
     # crash and yields a naive datetime.
     transactions = mt940.parse(':13:1701191815\n' + _HEADER + _FOOTER)
@@ -200,7 +200,7 @@ def long_statement_number():
 
 
 class MyStatementNumber(tags.Tag):
-    """Statement number / sequence number
+    """Statement number / sequence number.
 
     Pattern: 10n
     """
@@ -211,7 +211,7 @@ class MyStatementNumber(tags.Tag):
     $"""
 
 
-def test_specify_different_tag_classes(long_statement_number):
+def test_specify_different_tag_classes(long_statement_number) -> None:
     tag_parser = MyStatementNumber()
     transactions = mt940.models.Transactions(tags={tag_parser.id: tag_parser})
     transactions.parse(long_statement_number)
@@ -219,7 +219,7 @@ def test_specify_different_tag_classes(long_statement_number):
 
 
 @pytest.mark.parametrize(
-    'path_to_file,first_expected_entry_date,last_expected_entry_date',
+    ('path_to_file', 'first_expected_entry_date', 'last_expected_entry_date'),
     [
         ('ASNB/mt940.txt', models.Date(2020, 1, 1), models.Date(2020, 1, 31)),
         ('ASNB/mt940_with_spaces_for_entry_date.txt', None, None),
@@ -227,7 +227,7 @@ def test_specify_different_tag_classes(long_statement_number):
 )
 def test_asnb_tags(
     path_to_file, first_expected_entry_date, last_expected_entry_date
-):
+) -> None:
     with _tests_path.joinpath(path_to_file).open() as fh:
         data = fh.read()
         tag_parser = tags.StatementASNB()

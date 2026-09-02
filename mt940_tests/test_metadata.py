@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.mark.parametrize(
-    'attribute,contains',
+    ('attribute', 'contains'),
     [
         ('__title__', 'MT940'),
         ('__package_name__', 'mt-940'),
@@ -15,7 +15,7 @@ import pytest
         ('__url__', 'https://'),
     ],
 )
-def test_metadata(attribute, contains):
+def test_metadata(attribute, contains) -> None:
     from mt940 import __about__
 
     assert getattr(__about__, attribute)

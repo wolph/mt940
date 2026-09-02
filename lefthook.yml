@@ -1,6 +1,10 @@
 # Git hooks for mt940 development.
 # Install with: lefthook install
 # (the `lefthook` binary ships with the `lefthook` dev dependency)
+#
+# pre-commit stays sub-second: only the staged files, only auto-fixers and the
+# spell-checker. pre-push runs the full lint, every type checker and a fast
+# test pass. The complete matrix and the coverage gate belong to tox and CI.
 
 pre-commit:
   parallel: true
@@ -13,6 +17,27 @@ pre-commit:
       glob: '*.py'
       run: ruff format {staged_files}
       stage_fixed: true
+    taplo:
+      glob: '*.toml'
+      run: taplo fmt --check {staged_files}
     codespell:
       # No file args: honour the skip patterns in [tool.codespell].
       run: codespell
+
+pre-push:
+  parallel: true
+  commands:
+    ruff:
+      run: ruff check
+    ruff-format:
+      run: ruff format --check
+    mypy:
+      run: mypy
+    basedpyright:
+      run: basedpyright
+    pyrefly:
+      run: pyrefly check
+    ty:
+      run: ty check
+    test:
+      run: pytest -q -x --no-cov -p no:randomly

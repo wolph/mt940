@@ -11,7 +11,7 @@ def _statement(
     return statement(transactions, data)
 
 
-def test_entry_dates_wrapping_years():
+def test_entry_dates_wrapping_years() -> None:
     transactions = mt940.models.Transactions()
 
     # Regular statement without an entry date: only the value date is set.
