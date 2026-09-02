@@ -1,0 +1,15 @@
+name: mt940 CodeQL configuration
+
+queries:
+  - uses: security-and-quality
+
+# The cyclic-import queries do not understand `if TYPE_CHECKING:` blocks.
+# They report the type-only imports between mt940._types, mt940.models,
+# mt940.processors and mt940.tags as runtime cycles, which they are not:
+# every import order completes, and basedpyright and mypy both check the
+# real import graph.
+query-filters:
+  - exclude:
+      id: py/cyclic-import
+  - exclude:
+      id: py/unsafe-cyclic-import

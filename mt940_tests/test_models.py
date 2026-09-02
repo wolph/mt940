@@ -72,3 +72,18 @@ def test_scope_marker_cannot_be_instantiated() -> None:
         _ = models.TransactionsAndTransaction()
     assert issubclass(models.TransactionsAndTransaction, models.Transactions)
     assert issubclass(models.TransactionsAndTransaction, models.Transaction)
+
+
+def test_sum_amount_equality_includes_the_entry_count() -> None:
+    # CodeQL py/missing-equals: SumAmount adds `number`, so two totals over
+    # a different number of entries must not compare equal.
+    two = models.SumAmount('10,00', 'C', 'EUR', number=2)
+    also_two = models.SumAmount('10,00', 'C', 'EUR', number=2)
+    three = models.SumAmount('10,00', 'C', 'EUR', number=3)
+    plain = models.Amount('10,00', 'C', 'EUR')
+
+    assert two == also_two
+    assert hash(two) == hash(also_two)
+    assert two != three
+    assert two != plain
+    assert len({two, also_two, three}) == 2

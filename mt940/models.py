@@ -304,6 +304,22 @@ class SumAmount(Amount):
         super().__init__(*args, **kwargs)
         self.number: int = number
 
+    def __eq__(self, other: object) -> bool:
+        """Return whether ``other`` sums the same amount over as many entries.
+
+        Two totals over a different number of entries are different totals,
+        so ``number`` takes part in the comparison.
+        """
+        return (
+            isinstance(other, SumAmount)
+            and super().__eq__(other)
+            and self.number == other.number
+        )
+
+    def __hash__(self) -> int:
+        """Return a hash of amount, currency and count, matching ``__eq__``."""
+        return hash((self.amount, self.currency, self.number))
+
     def __repr__(self) -> str:
         """Return the amount, currency and entry count in angle brackets."""
         return f'<{self.amount} {self.currency} in {self.number} stmts)>'
