@@ -1,250 +1,327 @@
+"""Golden-file tests: every ``.sta`` fixture must parse to its ``.yml`` twin.
+
+Set ``WRITE_YAML_FILES=1`` to regenerate the goldens after an intentional
+change to the parser output.
+"""
+
 from __future__ import annotations
 
 import datetime
 import decimal
 import json
-import logging
 import os
-from typing import Any
+import pathlib
+import re
+from typing import TYPE_CHECKING, NoReturn
 
 import mt940
 import pytest
 import yaml
+from mt940 import models
 
-try:
-    from yaml import (
-        CDumper as Dumper,
-        CLoader as Loader,
-    )
-except ImportError:
-    from yaml import Dumper, Loader  # type: ignore[assignment]
+if TYPE_CHECKING:
+    from typing_extensions import TypeIs
 
+_TESTS_PATH = pathlib.Path(__file__).parent
+_SCALAR_TYPES = (datetime.date, decimal.Decimal, int, str)
+_DATA_TYPES = (models.Transactions, models.Transaction)
 
-logger = logging.getLogger(__name__)
+_STATEMENT = """:20:REF
+:25:ACC
+:28C:1
+:60F:C231229EUR0,00
+:61:2312290101C10,00NTRFREF//BANK
+:86:detail
+:62F:C231229EUR10,00
+"""
 
 
 def get_sta_files() -> list[str]:
-    base_path = os.path.relpath(os.path.dirname(__file__))
-    sta_files: list[str] = []
-    for path, _dirs, files in os.walk(base_path):
-        for file in files:
-            _, ext = os.path.splitext(file)
-            if ext.lower() == '.sta':
-                sta_files.append(os.path.join(path, file))
-    return sorted(sta_files)
+    # Relative paths keep the parametrised test ids short and stable.
+    base_path = pathlib.Path(os.path.relpath(_TESTS_PATH))
+    return sorted(str(path) for path in base_path.rglob('*.sta'))
 
 
-def get_yaml_data(sta_file):
-    yml_file = sta_file.replace('.sta', '.yml')
-    with open(yml_file) as fh:
-        return yaml.load(fh, Loader=Loader)
+def _golden_path(sta_file: str) -> pathlib.Path:
+    return pathlib.Path(sta_file).with_suffix('.yml')
 
 
-def write_yaml_data(sta_file, data):
-    yml_file = sta_file.replace('.sta', '.yml')
-    with open(yml_file, 'w') as fh:
-        fh.write(yaml.dump(data, Dumper=Dumper))
+def get_yaml_data(sta_file: str) -> object:
+    with _golden_path(sta_file).open(encoding='utf-8') as fh:
+        # The goldens carry the !!python tags written by write_yaml_data, so
+        # only the full Loader can read them back.
+        data: object = yaml.load(fh, Loader=yaml.Loader)  # noqa: S506
+    return data
 
 
-def compare(a: Any, b: Any, keys: list[str] | None = None) -> None:
-    """
-    Recursively compares two objects `a` and `b`, asserting their equality.
+def write_yaml_data(sta_file: str, data: object) -> None:
+    _ = _golden_path(sta_file).write_text(
+        yaml.dump(data, Dumper=yaml.Dumper), encoding='utf-8'
+    )
+
+
+def maybe_write_golden(
+    sta_file: str, transactions: models.Transactions
+) -> None:
+    # Development only: regenerate the golden next to the fixture.
+    if os.environ.get('WRITE_YAML_FILES'):
+        write_yaml_data(sta_file, transactions)
+
+
+def _path(keys: list[str]) -> str:
+    return '.'.join(keys) or '<root>'
+
+
+def _fail_kind_mismatch(a: object, b: object, keys: list[str]) -> NoReturn:
+    msg = (
+        f'Type mismatch at {_path(keys)}: '
+        f'{type(a).__name__} != {type(b).__name__}'
+    )
+    raise AssertionError(msg)
+
+
+def _is_dict(value: object) -> TypeIs[dict[object, object]]:
+    return isinstance(value, dict)
+
+
+def _is_sequence(value: object) -> TypeIs[list[object] | tuple[object, ...]]:
+    return isinstance(value, (list, tuple))
+
+
+def compare(a: object, b: object, keys: list[str] | None = None) -> None:
+    """Recursively compare ``a`` and ``b``, asserting their equality.
 
     Args:
-        a: The first object to compare.
-        b: The second object to compare.
-        keys: A list of strings representing the nested key path being
-        compared.
+        a: The expected object, as loaded from the golden file.
+        b: The parsed object.
+        keys: The nested key path being compared.
 
     Raises:
-        AssertionError: If `a` and `b` are not equal.
-        TypeError: If the type of `a` is not supported for comparison.
+        TypeError: If the type of ``a`` is not supported for comparison.
     """
     if keys is None:
         keys = []
 
-    if isinstance(a, (datetime.datetime, decimal.Decimal, int)):
-        compare_simple_types(a, b, keys)
-    elif isinstance(a, str):
-        compare_strings(a, b, keys)
-    elif a is None:
-        compare_none(a, b, keys)
-    elif isinstance(a, dict):
+    if a is None or isinstance(a, _SCALAR_TYPES):
+        compare_scalars(a, b, keys)
+    elif _is_dict(a):
         compare_dicts(a, b, keys)
-    elif isinstance(a, (list, tuple)):
+    elif _is_sequence(a):
         compare_iterables(a, b, keys)
-    elif hasattr(a, 'data'):
+    elif isinstance(a, _DATA_TYPES):
         compare_data_attributes(a, b, keys)
-    elif isinstance(a, mt940.models.Model):
+    elif isinstance(a, models.Model):
         compare_model_instances(a, b, keys)
     else:
-        path = '.'.join(keys)
-        raise TypeError(f'Unsupported type {type(a)} at {path}')
+        msg = f'Unsupported type {type(a)} at {_path(keys)}'
+        raise TypeError(msg)
 
 
-def compare_simple_types(a: Any, b: Any, keys: list[str]) -> None:
-    """
-    Compare simple types like datetime, Decimal, and int.
+def compare_scalars(a: object, b: object, keys: list[str]) -> None:
+    """Compare two scalars (``None``, dates, decimals, ints and strings).
 
     Args:
-        a: The first simple type to compare.
-        b: The second simple type to compare.
+        a: The expected scalar.
+        b: The parsed scalar.
         keys: The key path being compared.
 
     Raises:
-        AssertionError: If `a` and `b` are not equal.
+        AssertionError: If ``a`` and ``b`` differ.
     """
     if a != b:
-        path = '.'.join(keys)
-        raise AssertionError(f'Difference at {path}: {a} != {b}')
+        msg = f'Difference at {_path(keys)}: {a!r} != {b!r}'
+        raise AssertionError(msg)
 
 
-def compare_strings(a: str, b: str, keys: list[str]) -> None:
-    """
-    Compare string types.
+def compare_dicts(a: dict[object, object], b: object, keys: list[str]) -> None:
+    """Compare dictionaries recursively.
 
     Args:
-        a: The first string to compare.
-        b: The second string to compare.
+        a: The expected dictionary.
+        b: The parsed dictionary.
         keys: The key path being compared.
 
     Raises:
-        AssertionError: If `a` and `b` are not equal.
+        AssertionError: If the keys or any value differ.
     """
-    if a != b:
-        path = '.'.join(keys)
-        raise AssertionError(f"Difference at {path}: '{a}' != '{b}'")
-
-
-def compare_none(a: None, b: None, keys: list[str]) -> None:
-    """
-    Compare None types.
-
-    Args:
-        a: The first None value.
-        b: The second None value.
-        keys: The key path being compared.
-
-    Raises:
-        AssertionError: If `a` is not `b`.
-    """
-    if a is not b:
-        path = '.'.join(keys)  # type: ignore[unreachable]
-        raise AssertionError(f'Difference at {path}: {a} is not {b}')
-
-
-def compare_dicts(
-    a: dict[Any, Any], b: dict[Any, Any], keys: list[str]
-) -> None:
-    """
-    Compare dictionaries recursively.
-
-    Args:
-        a: The first dictionary to compare.
-        b: The second dictionary to compare.
-        keys: The key path being compared.
-
-    Raises:
-        AssertionError: If there are differences in keys or values.
-    """
-    for k in a:
-        if k not in b:
-            path = '.'.join([*keys, str(k)])
-            raise AssertionError(f"Key '{k}' missing in second dict at {path}")
-        compare(a[k], b[k], [*keys, str(k)])
-    for k in b:
-        if k not in a:
-            path = '.'.join([*keys, str(k)])
-            raise AssertionError(
-                f"Unexpected key '{k}' in second dict at {path}"
-            )
+    if not _is_dict(b):
+        _fail_kind_mismatch(a, b, keys)
+    for key, value in a.items():
+        path = [*keys, str(key)]
+        if key not in b:
+            msg = f'Key {key!r} missing in second dict at {_path(path)}'
+            raise AssertionError(msg)
+        compare(value, b[key], path)
+    for key in b:
+        if key not in a:
+            path = [*keys, str(key)]
+            msg = f'Unexpected key {key!r} in second dict at {_path(path)}'
+            raise AssertionError(msg)
 
 
 def compare_iterables(
-    a: list[Any] | tuple[Any, ...],
-    b: list[Any] | tuple[Any, ...],
-    keys: list[str],
+    a: list[object] | tuple[object, ...], b: object, keys: list[str]
 ) -> None:
-    """
-    Compare lists or tuples recursively.
+    """Compare lists or tuples recursively.
 
     Args:
-        a: The first iterable to compare.
-        b: The second iterable to compare.
+        a: The expected sequence.
+        b: The parsed sequence.
         keys: The key path being compared.
 
     Raises:
-        AssertionError: If there are differences in lengths or elements.
+        AssertionError: If the lengths or any element differ.
     """
+    if not _is_sequence(b):
+        _fail_kind_mismatch(a, b, keys)
     if len(a) != len(b):
-        path = '.'.join(keys)
-        raise AssertionError(
-            f'Difference in length at {path}: {len(a)} != {len(b)}'
-        )
-    for index, (av, bv) in enumerate(zip(a, b, strict=False)):
+        msg = f'Difference in length at {_path(keys)}: {len(a)} != {len(b)}'
+        raise AssertionError(msg)
+    for index, (av, bv) in enumerate(zip(a, b, strict=True)):
         compare(av, bv, [*keys, f'[{index}]'])
 
 
-def compare_data_attributes(a: Any, b: Any, keys: list[str]) -> None:
-    """
-    Compare objects that have a 'data' attribute.
+def compare_data_attributes(
+    a: models.Transactions | models.Transaction, b: object, keys: list[str]
+) -> None:
+    """Compare objects through their ``data`` attribute.
 
     Args:
-        a: The first object to compare.
-        b: The second object to compare.
+        a: The expected object.
+        b: The parsed object.
         keys: The key path being compared.
     """
+    if not isinstance(b, _DATA_TYPES):
+        _fail_kind_mismatch(a, b, keys)
     compare(a.data, b.data, [*keys, 'data'])
 
 
-def compare_model_instances(a: Any, b: Any, keys: list[str]) -> None:
-    """
-    Compare model instances by comparing their __dict__ attributes.
+def compare_model_instances(
+    a: models.Model, b: object, keys: list[str]
+) -> None:
+    """Compare model instances through their instance attributes.
 
     Args:
-        a: The first model instance to compare.
-        b: The second model instance to compare.
+        a: The expected model.
+        b: The parsed model.
         keys: The key path being compared.
     """
-    compare(a.__dict__, b.__dict__, keys)
+    if not isinstance(b, models.Model):
+        _fail_kind_mismatch(a, b, keys)
+    compare(vars(a), vars(b), keys)
+
+
+def test_compare_accepts_equal_structures() -> None:
+    transactions = mt940.parse(_STATEMENT)
+    compare(mt940.parse(_STATEMENT), transactions)
+    compare(transactions[:], transactions[:])
+    compare(
+        {'k': [1, 'a', None, decimal.Decimal('1.5')], 'd': {'n': 1}},
+        {'k': (1, 'a', None, decimal.Decimal('1.5')), 'd': {'n': 1}},
+    )
+
+
+@pytest.mark.parametrize(
+    ('expected', 'actual', 'message'),
+    [
+        ('a', 'b', "Difference at <root>: 'a' != 'b'"),
+        (None, 1, 'Difference at <root>: None != 1'),
+        ({'k': {'j': 1}}, {'k': {'j': 2}}, 'Difference at k.j: 1 != 2'),
+        ({'k': 1}, {}, "Key 'k' missing in second dict at k"),
+        ({}, {'k': 1}, "Unexpected key 'k' in second dict at k"),
+        ([1], [1, 2], 'Difference in length at <root>: 1 != 2'),
+        ([1, 2], [1, 3], 'Difference at [1]: 2 != 3'),
+        ({'k': 1}, [1], 'Type mismatch at <root>: dict != list'),
+        ([1], {'k': 1}, 'Type mismatch at <root>: list != dict'),
+        (
+            models.Amount('1', 'C', 'EUR'),
+            models.Amount('2', 'C', 'EUR'),
+            "Difference at amount: Decimal('1') != Decimal('2')",
+        ),
+        (
+            models.Amount('1', 'C', 'EUR'),
+            'x',
+            'Type mismatch at <root>: Amount != str',
+        ),
+        (
+            mt940.parse(_STATEMENT),
+            mt940.parse(_STATEMENT.replace('REF', 'OTHER')),
+            "Difference at data.transaction_reference: 'REF' != 'OTHER'",
+        ),
+        (
+            mt940.parse(_STATEMENT),
+            {},
+            'Type mismatch at <root>: Transactions != dict',
+        ),
+    ],
+)
+def test_compare_reports_the_first_difference(
+    expected: object, actual: object, message: str
+) -> None:
+    with pytest.raises(AssertionError, match=re.escape(message)):
+        compare(expected, actual)
+
+
+def test_compare_rejects_unsupported_types() -> None:
+    with pytest.raises(TypeError, match='Unsupported type'):
+        compare(object(), object())
+
+
+def test_write_yaml_data_round_trips(tmp_path: pathlib.Path) -> None:
+    sta_file = str(tmp_path / 'statement.sta')
+    _ = pathlib.Path(sta_file).write_text(_STATEMENT, encoding='utf-8')
+    transactions = mt940.parse(sta_file)
+
+    write_yaml_data(sta_file, transactions)
+
+    compare(get_yaml_data(sta_file), transactions)
+
+
+def test_maybe_write_golden_honours_the_environment(
+    tmp_path: pathlib.Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    sta_file = str(tmp_path / 'statement.sta')
+    _ = pathlib.Path(sta_file).write_text(_STATEMENT, encoding='utf-8')
+    transactions = mt940.parse(sta_file)
+
+    monkeypatch.delenv('WRITE_YAML_FILES', raising=False)
+    maybe_write_golden(sta_file, transactions)
+    assert not _golden_path(sta_file).exists()
+
+    monkeypatch.setenv('WRITE_YAML_FILES', '1')
+    maybe_write_golden(sta_file, transactions)
+    assert _golden_path(sta_file).exists()
 
 
 @pytest.mark.parametrize('sta_file', get_sta_files())
-def test_parse(sta_file):
+def test_parse(sta_file: str) -> None:
     transactions = mt940.parse(sta_file)
-    # To update the yaml files after changing the code use the following
-    # environment variable.
-    # NOTE: Only for development purposes
-    if os.environ.get('WRITE_YAML_FILES'):
-        assert not os.environ.get('TRAVIS')
-        write_yaml_data(sta_file, transactions)
+    maybe_write_golden(sta_file, transactions)
     expected = get_yaml_data(sta_file)
+    assert isinstance(expected, models.Transactions)
 
-    assert len(transactions) >= 0
-    repr(transactions)
-    str(transactions)
-
-    # Test string and representation methods
-    for v in transactions.data.values():
-        str(v)
-        repr(v)
-
-    # Test string and representation methods
+    # Every model has to render without raising.
+    _ = repr(transactions)
+    _ = str(transactions)
+    for value in transactions.data.values():
+        _ = str(value)
+        _ = repr(value)
     for transaction in transactions:
-        repr(transaction)
-        str(transaction)
+        _ = repr(transaction)
+        _ = str(transaction)
+        for value in transaction.data.values():
+            _ = str(value)
+            _ = repr(value)
 
-        for v in transaction.data.values():
-            str(v)
-            repr(v)
-
-    # Compare transaction data
+    # Statement-level data, then the transactions themselves.
     compare(expected, transactions)
-    # Compare actual transactions
     compare(expected[:], transactions[:])
 
 
 @pytest.mark.parametrize('sta_file', get_sta_files())
-def test_json_dump(sta_file):
+def test_json_dump(sta_file: str) -> None:
     transactions = mt940.parse(sta_file)
-    json.dumps(transactions, cls=mt940.JSONEncoder)
+    decoded: object = json.loads(
+        json.dumps(transactions, cls=mt940.JSONEncoder)
+    )
+    assert isinstance(decoded, dict)

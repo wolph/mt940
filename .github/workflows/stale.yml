@@ -3,14 +3,28 @@ name: Close stale issues and pull requests
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *" # Run every day at midnight
+    - cron: '0 0 * * *' # Run every day at midnight
+
+# Read-only by default, the stale job needs write access to label and close.
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
 
 jobs:
   stale:
+    name: Mark and close stale items
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write # Labels and closes stale issues.
+      pull-requests: write # Labels and closes stale pull requests.
     steps:
-      - uses: actions/stale@v11
+      - uses: actions/stale@4391f3da665fdf50b6810c1a66712fb9ba21aa93 # v11.0.0
         with:
           days-before-stale: 30
           exempt-issue-labels: in-progress,help-wanted,pinned,security,enhancement
+          exempt-pr-labels: in-progress,pinned,security
           exempt-all-pr-assignees: true

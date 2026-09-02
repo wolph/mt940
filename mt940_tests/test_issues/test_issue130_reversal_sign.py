@@ -3,26 +3,26 @@
 Field 61 defines four debit/credit marks, not two: ``C``, ``D``, ``RC`` (a
 reversal of a credit) and ``RD`` (a reversal of a debit). A reversal of a
 credit takes the money back out of the account, so it belongs on the debit
-side; a reversal of a debit puts it back in.
+side. A reversal of a debit puts it back in.
 
 ``RC`` used to come back positive, which is a silent error: nothing raised,
 nothing warned, and the figure that came out was plausible.
 """
 
 import decimal
-import os
+import pathlib
 
 import mt940
 import pytest
 
-BETTERPLACE = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-    'betterplace',
-    'sepa_mt9401.sta',
+BETTERPLACE = (
+    pathlib.Path(__file__).resolve().parent.parent
+    / 'betterplace'
+    / 'sepa_mt9401.sta'
 )
 
 
-def statement(mark):
+def statement(mark: str) -> str:
     return f""":20:REF
 :25:ACC
 :60F:C200101EUR0,00
@@ -46,7 +46,9 @@ def statement(mark):
         ('d', decimal.Decimal('-5.00')),
     ],
 )
-def test_reversal_marks_get_the_sign_of_their_direction(mark, expected):
+def test_reversal_marks_get_the_sign_of_their_direction(
+    mark: str, expected: decimal.Decimal
+) -> None:
     transactions = mt940.parse(statement(mark))
     assert len(transactions) == 1
     transaction = transactions[0]
@@ -54,7 +56,7 @@ def test_reversal_marks_get_the_sign_of_their_direction(mark, expected):
     assert transaction.data['amount'].amount == expected
 
 
-def test_reversed_credits_in_the_betterplace_statement_are_negative():
+def test_reversed_credits_in_the_betterplace_statement_are_negative() -> None:
     # This file ships with the library and carries two RC entries of 204,88.
     reversals = [
         transaction
@@ -66,7 +68,7 @@ def test_reversed_credits_in_the_betterplace_statement_are_negative():
         assert transaction.data['amount'].amount == decimal.Decimal('-204.88')
 
 
-def test_every_betterplace_statement_matches_its_own_closing_balance():
+def test_every_betterplace_statement_matches_its_own_closing_balance() -> None:
     # The bank states its own opening and closing balance in :60F: and :62F:,
     # so the entries in between have to add up to the difference. This is the
     # arithmetic that the RC sign used to break: the two statements holding a

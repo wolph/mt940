@@ -1,3 +1,5 @@
+"""Package metadata, with the version single-sourced from the distribution."""
+
 from importlib.metadata import (
     PackageNotFoundError,
     version as _version,
@@ -20,5 +22,5 @@ __url__ = 'https://github.com/WoLpH/mt940'
 __version__: str
 try:
     __version__ = _version('mt-940')
-except PackageNotFoundError:  # pragma: no cover
+except PackageNotFoundError:
     __version__ = '0.0.0'

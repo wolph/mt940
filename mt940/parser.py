@@ -1,4 +1,5 @@
-"""
+"""Read MT940 sources and turn them into transaction collections.
+
 Format
 ---------------------
 
@@ -27,55 +28,77 @@ Sources:
 from __future__ import annotations
 
 import os
+import pathlib
 import re
-from collections.abc import Iterable
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import mt940
 
 if TYPE_CHECKING:
+    from collections.abc import Iterable
+
     from ._types import Processors, Source
     from .models import Transactions
 
 
-def _read(src: Any, encoding: str | None = None) -> str:
-    """Read raw mt940 data from a file handle, path or string and decode it."""
+def _decode(data: bytes, encoding: str | None) -> str:
+    """Decode raw statement bytes, trying ``encoding`` first.
 
-    def safe_is_file(filename: Any) -> bool:
+    ``utf-8`` and ``cp852`` are the fallbacks. ``cp852`` maps every byte
+    value, so it never fails and always closes the chain.
+
+    Args:
+        data: The raw bytes as read from the file or handle.
+        encoding: The caller's preferred encoding, or ``None``.
+
+    Returns:
+        The decoded text.
+    """
+    for enc in (encoding, 'utf-8'):
+        if not enc:
+            continue
         try:
-            return os.path.isfile(filename)
-        except ValueError:  # pragma: no cover
-            return False
+            return data.decode(enc)
+        except UnicodeDecodeError:
+            continue
+    return data.decode('cp852')
 
-    if hasattr(src, 'read'):  # pragma: no branch
+
+def _read(src: Source, encoding: str | None = None) -> str:
+    """Read raw mt940 data from a file handle, path or string and decode it.
+
+    Args:
+        src: A path, raw ``str``/``bytes`` data or an open file handle. A
+            ``str`` or ``bytes`` value that does not name an existing file
+            is taken to be the statement data itself.
+        encoding: The encoding to try first for ``bytes`` data.
+
+    Returns:
+        The decoded statement text without a leading byte-order mark.
+
+    Raises:
+        FileNotFoundError: When ``src`` is a path-like object that does not
+            name an existing file.
+    """
+    data: str | bytes
+    if not isinstance(src, (str, bytes, os.PathLike)):
         data = src.read()
-    elif safe_is_file(src):
-        with open(src, 'rb') as fh:
-            data = fh.read()
-    else:  # pragma: no cover
+    elif os.path.isfile(src):  # noqa: PTH113 (bytes paths are accepted too)
+        data = pathlib.Path(os.fsdecode(src)).read_bytes()
+    elif isinstance(src, os.PathLike):
+        raise FileNotFoundError(os.fsdecode(src))
+    else:
         data = src
 
-    if hasattr(data, 'decode'):  # pragma: no branch
-        exception = None
-        encodings = [encoding, 'utf-8', 'cp852', 'iso8859-15', 'latin1']
+    if isinstance(data, bytes):
+        data = _decode(data, encoding)
 
-        for enc in encodings:  # pragma: no cover
-            if not enc:
-                continue
-
-            try:
-                data = data.decode(enc)
-                break
-            except UnicodeDecodeError as e:
-                exception = e
-            except UnicodeEncodeError:
-                break
-        else:  # pragma: no cover
-            assert exception is not None
-            raise exception  # pragma: no cover
-
-    assert isinstance(data, str)
-    return data
+    # Strip a leading byte-order mark (U+FEFF). A BOM survives decoding as
+    # U+FEFF for UTF-8 input (and for UTF-16 only when an explicit
+    # utf-16-le/-be encoding is passed). It is not whitespace, so it would
+    # otherwise displace the first `:20:` off the start-of-line tag anchor and
+    # silently drop that tag's data.
+    return data.removeprefix('\ufeff')
 
 
 def parse(
@@ -105,7 +128,7 @@ def parse(
     transactions = mt940.models.Transactions(
         processors, tags, transaction_boundary=transaction_boundary
     )
-    transactions.parse(data)
+    _ = transactions.parse(data)
 
     return transactions
 
@@ -117,8 +140,7 @@ def parse_statements(
     tags: dict[int | str, mt940.tags.Tag] | None = None,
     transaction_boundary: Iterable[str] | None = None,
 ) -> list[Transactions]:
-    """
-    Parse an mt940 file that contains multiple statement blocks.
+    """Parse an mt940 file that contains multiple statement blocks.
 
     Unlike :func:`parse`, which merges everything into a single
     :class:`~mt940.models.Transactions`, this splits the input on ``:20:``
@@ -155,7 +177,7 @@ def parse_statements(
         transactions = mt940.models.Transactions(
             processors, tags, transaction_boundary=transaction_boundary
         )
-        transactions.parse(block)
+        _ = transactions.parse(block)
         statements.append(transactions)
 
     return statements

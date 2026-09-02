@@ -80,7 +80,7 @@ Transaction grouping
 
 By default a new transaction is started only on the ``:61:`` statement tag.
 Pass ``transaction_boundary`` (an iterable of tag *slugs*) to also start a new
-transaction on those tags — for example to treat every ``:20:`` as a boundary:
+transaction on those tags, for example to treat every ``:20:`` as a boundary:
 
 .. code-block:: python
 

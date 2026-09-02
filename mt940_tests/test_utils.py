@@ -3,7 +3,7 @@ from mt940 import utils
 
 
 @pytest.mark.parametrize(
-    'input_,flags,output',
+    ('input_', 'flags', 'output'),
     [
         (' a \n b ', None, 'ab'),
         (' a \n b ', utils.Strip.LEFT, 'a b '),
@@ -11,7 +11,9 @@ from mt940 import utils
         (' a \n b ', utils.Strip.NONE, ' a  b '),
     ],
 )
-def test_join_lines(input_, flags, output):
+def test_join_lines(
+    input_: str, flags: utils.Strip | None, output: str
+) -> None:
     if flags is None:
         assert utils.join_lines(input_) == output
     else:
