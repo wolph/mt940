@@ -30,16 +30,24 @@ from __future__ import annotations
 import os
 import pathlib
 import re
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 import mt940
+
+from .options import Options
 
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
     from ._types import Processors, Source
     from .models import Transactions
-    from .options import Options
+
+
+@runtime_checkable
+class _Readable(Protocol):
+    """Anything with a ``read()`` method, which is how 5.0.0 spots a handle."""
+
+    def read(self) -> str | bytes: ...
 
 
 def _decode(data: bytes, encoding: str | None) -> str:
@@ -65,41 +73,69 @@ def _decode(data: bytes, encoding: str | None) -> str:
     return data.decode('cp852')
 
 
-def _read(src: Source, encoding: str | None = None) -> str:
+def _load(source: object) -> str | bytes:
+    """Fetch the raw statement data from whatever the caller passed.
+
+    Typed as ``object`` on purpose: the dispatch has to reject whatever
+    arrives at runtime, not only what :data:`~mt940._types.Source` allows.
+    The kinds are recognised the way release 5.0.0 did it: anything with a
+    ``read()`` method is a handle, an ``int`` is a file descriptor, a ``str``
+    or ``bytes`` value that names an existing file is read, and any other
+    ``str`` or ``bytes`` value is the statement data itself.
+
+    Args:
+        source: A file handle, a file descriptor, a path, or raw data.
+
+    Returns:
+        The statement data, still undecoded when it came from bytes.
+
+    Raises:
+        FileNotFoundError: When ``source`` is a path-like object that does
+            not name an existing file.
+        TypeError: When ``source`` is none of the supported kinds.
+    """
+    if isinstance(source, _Readable):
+        return source.read()
+    if isinstance(source, int):
+        # A file descriptor. Reading closes it, as open() did in 5.0.0.
+        with open(source, 'rb') as fh:  # noqa: PTH123, FURB101 (a descriptor)
+            return fh.read()
+    if isinstance(source, (str, bytes, os.PathLike)):
+        if os.path.isfile(source):  # noqa: PTH113 (bytes paths are accepted)
+            return pathlib.Path(os.fsdecode(source)).read_bytes()
+        if isinstance(source, os.PathLike):
+            raise FileNotFoundError(os.fsdecode(source))
+        return source
+    msg = f'unsupported source type {type(source).__name__}'
+    raise TypeError(msg)
+
+
+def _read(
+    src: Source,
+    encoding: str | None = None,
+    *,
+    strip_bom: bool = False,
+) -> str:
     """Read raw mt940 data from a file handle, path or string and decode it.
 
     Args:
-        src: A path, raw ``str``/``bytes`` data or an open file handle. A
-            ``str`` or ``bytes`` value that does not name an existing file
-            is taken to be the statement data itself.
+        src: A file handle, a file descriptor, a path, or raw ``str``/``bytes``
+            data, see :func:`_load`.
         encoding: The encoding to try first for ``bytes`` data.
+        strip_bom: Drop a leading byte-order mark (U+FEFF). It survives
+            decoding as a character that is not whitespace, so it displaces
+            the first ``:20:`` off the start-of-line tag anchor and that
+            tag's data is lost. 5.0.0 kept it, hence the default.
 
     Returns:
-        The decoded statement text without a leading byte-order mark.
-
-    Raises:
-        FileNotFoundError: When ``src`` is a path-like object that does not
-            name an existing file.
+        The decoded statement text.
     """
-    data: str | bytes
-    if not isinstance(src, (str, bytes, os.PathLike)):
-        data = src.read()
-    elif os.path.isfile(src):  # noqa: PTH113 (bytes paths are accepted too)
-        data = pathlib.Path(os.fsdecode(src)).read_bytes()
-    elif isinstance(src, os.PathLike):
-        raise FileNotFoundError(os.fsdecode(src))
-    else:
-        data = src
-
+    data = _load(src)
     if isinstance(data, bytes):
         data = _decode(data, encoding)
-
-    # Strip a leading byte-order mark (U+FEFF). A BOM survives decoding as
-    # U+FEFF for UTF-8 input (and for UTF-16 only when an explicit
-    # utf-16-le/-be encoding is passed). It is not whitespace, so it would
-    # otherwise displace the first `:20:` off the start-of-line tag anchor and
-    # silently drop that tag's data.
-    return data.removeprefix('\ufeff')
+    if strip_bom:
+        data = data.removeprefix('\ufeff')
+    return data
 
 
 def parse(
@@ -129,7 +165,7 @@ def parse(
     Returns:
         The parsed collection of transactions.
     """
-    data = _read(src, encoding)
+    data = _read(src, encoding, strip_bom=(options or Options()).strip_bom)
     transactions = mt940.models.Transactions(
         processors,
         tags,
@@ -179,7 +215,7 @@ def parse_statements(
     Returns:
         One :class:`~mt940.models.Transactions` per statement block.
     """
-    data = _read(src, encoding)
+    data = _read(src, encoding, strip_bom=(options or Options()).strip_bom)
     statements: list[Transactions] = []
     for block in re.split(r'(?m)^(?=:20:)', data):
         if not block.strip().startswith(':20:'):

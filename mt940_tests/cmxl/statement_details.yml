@@ -1,5 +1,17 @@
 &id004 !!python/object:mt940.models.Transactions
 data: {}
+options: !!python/object/new:mt940.options.Options
+  state:
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
 tags:
   13: !!python/object:mt940.tags.DateTimeIndication
     re: !!python/object/apply:re._compile
@@ -97,12 +109,11 @@ transactions:
       currency: null
     applicant_bin: HYVEDEMMXXX
     applicant_creditor_id: DE98ZZZ09999999999
-    applicant_iban: HUkkbbbsssskcccccccccccccccx
-    applicant_name: Peter Pan
+    applicant_name: HUkkbbbsssskcccccccccccccccxPeter Pan
     bank_reference: 025498557/000001
     compensation_amount: null
     currency: null
-    customer_reference: 0000549855700010
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B94JAQ==

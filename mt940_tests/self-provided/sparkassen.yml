@@ -1,5 +1,17 @@
 &id004 !!python/object:mt940.models.Transactions
 data: {}
+options: !!python/object/new:mt940.options.Options
+  state:
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
 tags:
   13: !!python/object:mt940.tags.DateTimeIndication
     re: !!python/object/apply:re._compile
@@ -97,12 +109,11 @@ transactions:
       currency: null
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: null
     compensation_amount: null
     currency: null
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B+ILGg==

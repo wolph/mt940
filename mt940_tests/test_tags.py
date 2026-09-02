@@ -14,85 +14,242 @@ _HEADER = _PREAMBLE + _OPENING
 _FOOTER = ':62F:C231229EUR10,00\n'
 
 
-def test_date_time_indication_positive_offset_is_hhmm() -> None:
-    # The :13(D): offset subfield is HHMM (like ISO 8601 +0130), not a
-    # number of minutes: +0130 means 1 hour 30 minutes.
-    transactions = mt940.parse(':13D:1701191815+0130\n' + _HEADER + _FOOTER)
+_ALL = mt940.Options.all()
+
+
+@pytest.mark.parametrize(
+    ('options', 'expected_offset', 'expected_name'),
+    [
+        # 5.0.0 handed the HHMM digits to FixedOffset as a minute count.
+        (mt940.Options(), datetime.timedelta(minutes=130), '0130'),
+        # The subfield is HHMM (like ISO 8601 +0130): one hour and thirty
+        # minutes east of UTC.
+        (
+            mt940.Options(timezone_offset=True),
+            datetime.timedelta(hours=1, minutes=30),
+            '90',
+        ),
+    ],
+)
+def test_date_time_indication_positive_offset(
+    options: mt940.Options,
+    expected_offset: datetime.timedelta,
+    expected_name: str,
+) -> None:
+    transactions = mt940.parse(
+        ':13D:1701191815+0130\n' + _HEADER + _FOOTER, options=options
+    )
     date = transactions.data['date']
-    assert date.utcoffset() == datetime.timedelta(hours=1, minutes=30)
+    assert date.utcoffset() == expected_offset
+    assert date.tzname() == expected_name
 
 
-def test_date_time_indication_negative_offset() -> None:
-    # 1!x sign can be '-' as well (e.g. US banks): -0500 is UTC-5.
-    transactions = mt940.parse(':13D:1701191815-0500\n' + _HEADER + _FOOTER)
+@pytest.mark.parametrize(
+    ('options', 'expected_offset', 'expected_name'),
+    [
+        # 5.0.0 could not parse a negative offset at all, so the default
+        # applies its minute-count reading of the digits to the sign too.
+        (mt940.Options(), -datetime.timedelta(minutes=500), '-0500'),
+        # 1!x sign can be '-' as well (e.g. US banks): -0500 is UTC-5.
+        (
+            mt940.Options(timezone_offset=True),
+            -datetime.timedelta(hours=5),
+            '-300',
+        ),
+    ],
+)
+def test_date_time_indication_negative_offset(
+    options: mt940.Options,
+    expected_offset: datetime.timedelta,
+    expected_name: str,
+) -> None:
+    transactions = mt940.parse(
+        ':13D:1701191815-0500\n' + _HEADER + _FOOTER, options=options
+    )
     date = transactions.data['date']
-    assert date.utcoffset() == -datetime.timedelta(hours=5)
+    assert date.utcoffset() == expected_offset
+    assert date.tzname() == expected_name
 
 
-def test_transaction_details_long_multiline_not_truncated() -> None:
-    # The old :86: pattern capped the capture at nine 65-char chunks
-    # (~593 chars). Longer details, e.g. German banks packing many ?NN
-    # subfields -- were silently truncated. The cap had already been bumped
-    # once (commit 4575222) for exactly this reason.
-    lines = [f'line {i:02d} ' + 'x' * 57 for i in range(12)]
-    details = '\n'.join(lines)
+_DETAIL_LINES = [f'line {i:02d} ' + 'x' * 57 for i in range(12)]
+
+
+@pytest.mark.parametrize(
+    ('options', 'expected'),
+    [
+        # 5.0.0 captured nine chunks of 65 characters and silently dropped
+        # the rest, e.g. German banks packing many ?NN subfields.
+        (mt940.Options(), '\n'.join(_DETAIL_LINES[:9])),
+        (mt940.Options(unbounded_details=True), '\n'.join(_DETAIL_LINES)),
+    ],
+)
+def test_transaction_details_long_multiline(
+    options: mt940.Options, expected: str
+) -> None:
+    details = '\n'.join(_DETAIL_LINES)
     transactions = mt940.parse(
         _HEADER
         + ':61:2312290101D10,50NMSC\n'
         + ':86:'
         + details
         + '\n'
-        + _FOOTER
+        + _FOOTER,
+        options=options,
     )
-    assert transactions[0].data['transaction_details'] == details
+    assert transactions[0].data['transaction_details'] == expected
 
 
-def test_non_swift_multiline_free_text() -> None:
+@pytest.mark.parametrize(
+    ('options', 'expected_length'),
+    [
+        (mt940.Options(), 585),
+        (mt940.Options(unbounded_details=True), 700),
+    ],
+)
+def test_transaction_details_single_long_line(
+    options: mt940.Options, expected_length: int
+) -> None:
+    tag = mt940.tags.TransactionDetails()
+    transactions = mt940.models.Transactions(options=options)
+    parsed = tag.parse(transactions, 'x' * 700)
+    assert len(parsed['transaction_details'] or '') == expected_length
+
+
+@pytest.mark.parametrize(
+    ('options', 'expected'),
+    [
+        # 5.0.0 turned a line without a sub-tag into a paragraph break once
+        # there was text, dropping the line's content.
+        (mt940.Options(), 'a\n\nb'),
+        (mt940.Options(non_swift_free_text=True), 'a\nfree\nb'),
+    ],
+)
+def test_non_swift_free_text_between_sub_tags(
+    options: mt940.Options, expected: str
+) -> None:
+    tag = mt940.tags.NonSwift()
+    transactions = mt940.models.Transactions(options=options)
+    result = tag(transactions, {'non_swift': '01a\nfree\n02b'})
+    assert result['non_swift_01'] == 'a'
+    assert result['non_swift_02'] == 'b'
+    assert result['non_swift_text'] == expected
+
+
+@pytest.mark.parametrize(
+    ('options', 'expected'),
+    [
+        (mt940.Options(), 'hello\n'),
+        (mt940.Options(non_swift_free_text=True), 'hello\nworld'),
+    ],
+)
+def test_non_swift_multiline_free_text(
+    options: mt940.Options, expected: str
+) -> None:
     # NS content is bank specific ("could be anything"). Multi-line values
     # whose lines do not all start with a two-digit sub-tag used to fail the
-    # NS pattern and abort the whole parse.
-    transactions = mt940.parse(_HEADER + ':NS:hello\nworld\n' + _FOOTER)
+    # NS pattern and abort the whole parse. They parse in both modes now,
+    # the default keeps the 5.0.0 line handling.
+    transactions = mt940.parse(
+        _HEADER + ':NS:hello\nworld\n' + _FOOTER, options=options
+    )
     assert transactions.data['non_swift'] == 'hello\nworld'
-    assert transactions.data['non_swift_text'] == 'hello\nworld'
+    assert transactions.data['non_swift_text'] == expected
 
 
-def test_non_swift_structured_line_followed_by_free_text() -> None:
-    transactions = mt940.parse(_HEADER + ':NS:22foo\nbar\n' + _FOOTER)
+@pytest.mark.parametrize(
+    ('options', 'expected'),
+    [
+        (mt940.Options(), 'foo\n'),
+        (mt940.Options(non_swift_free_text=True), 'foo\nbar'),
+    ],
+)
+def test_non_swift_structured_line_followed_by_free_text(
+    options: mt940.Options, expected: str
+) -> None:
+    transactions = mt940.parse(
+        _HEADER + ':NS:22foo\nbar\n' + _FOOTER, options=options
+    )
     assert transactions.data['non_swift'] == '22foo\nbar'
     assert transactions.data['non_swift_22'] == 'foo'
-    assert transactions.data['non_swift_text'] == 'foo\nbar'
+    assert transactions.data['non_swift_text'] == expected
 
 
-def test_non_swift_blank_lines_collapse() -> None:
+@pytest.mark.parametrize('options', [mt940.Options(), _ALL])
+def test_non_swift_blank_lines_collapse(options: mt940.Options) -> None:
     # Direct tag call: blank lines between content are kept as single
     # paragraph separators in non_swift_text (mt940.parse strips blank
-    # lines before tags ever see them).
+    # lines before tags ever see them). Both modes agree.
     tag = mt940.tags.NonSwift()
     result = tag(
-        mt940.models.Transactions(), {'non_swift': '22foo\n\n\n22bar'}
+        mt940.models.Transactions(options=options),
+        {'non_swift': '22foo\n\n\n22bar'},
     )
     assert result['non_swift_text'] == 'foo\n\nbar'
 
 
-def test_floor_limit_space_indicator_treated_as_absent() -> None:
+_FLOOR_LIMIT_ONLY = (
+    _PREAMBLE
+    + ':34F:EUR 500,00\n'
+    + ':61:0910201020C500,00NTRFNONREF//B\n'
+    + ':86:Example\n'
+)
+
+
+def test_floor_limit_space_indicator_default_keeps_the_space() -> None:
     # Fiducia / Volksbank Ortenau sends ':34F:EUR 999999999999,99' (commit
-    # d36c51b relaxed the regex for it). A blank D/C mark means "applies to
-    # both", like an absent mark -- it must not create a ' _floor_limit' key.
+    # d36c51b relaxed the regex for it). 5.0.0 let the space through into
+    # the key, and since neither d_ nor c_floor_limit exists it found no
+    # statement currency for the transactions either.
+    transactions = mt940.parse(_FLOOR_LIMIT_ONLY)
+    assert str(transactions.data[' _floor_limit']) == '500.00 EUR'
+    assert 'd_floor_limit' not in transactions.data
+    assert transactions.currency is None
+    assert transactions[0].data['amount'].currency is None
+
+
+def test_floor_limit_space_indicator_treated_as_absent() -> None:
+    # A blank D/C mark means "applies to both", like an absent mark, and the
+    # floor limit then also supplies the statement currency.
     transactions = mt940.parse(
-        _PREAMBLE + ':34F:EUR 999999999999,99\n' + _OPENING + _FOOTER
+        _FLOOR_LIMIT_ONLY, options=mt940.Options(floor_limit_blank_mark=True)
     )
     assert ' _floor_limit' not in transactions.data
-    assert str(transactions.data['d_floor_limit']) == '-999999999999.99 EUR'
-    assert str(transactions.data['c_floor_limit']) == '999999999999.99 EUR'
+    assert str(transactions.data['d_floor_limit']) == '-500.00 EUR'
+    assert str(transactions.data['c_floor_limit']) == '500.00 EUR'
+    assert transactions.currency == 'EUR'
+    assert transactions[0].data['amount'].currency == 'EUR'
 
 
-def test_floor_limit_lowercase_indicator_normalized() -> None:
+@pytest.mark.parametrize(
+    ('options', 'expected'),
+    [
+        # 5.0.0 lowercased the key but compared the mark with 'D' only, so
+        # the debit limit came back positive.
+        (mt940.Options(), '10.00 EUR'),
+        (mt940.Options(case_insensitive_marks=True), '-10.00 EUR'),
+    ],
+)
+def test_floor_limit_lowercase_indicator(
+    options: mt940.Options, expected: str
+) -> None:
     # The tag regexes are compiled with re.IGNORECASE, so a lowercase mark
-    # must behave exactly like its uppercase form (debit -> negative).
+    # parses. Whether it signs like its uppercase form is the option.
     transactions = mt940.parse(
-        _PREAMBLE + ':34F:EURd10,00\n' + _OPENING + _FOOTER
+        _PREAMBLE + ':34F:EURd10,00\n' + _OPENING + _FOOTER, options=options
     )
-    assert str(transactions.data['d_floor_limit']) == '-10.00 EUR'
+    assert str(transactions.data['d_floor_limit']) == expected
+
+
+def test_floor_limit_without_a_mark_group_applies_to_both() -> None:
+    # A custom pattern may leave the mark group out entirely. 5.0.0 treated
+    # the resulting None like an absent mark.
+    tag = mt940.tags.FloorLimitIndicator()
+    result = tag(
+        mt940.models.Transactions(),
+        {'currency': 'EUR', 'status': None, 'amount': '5,00'},
+    )
+    assert str(result['d_floor_limit']) == '-5.00 EUR'
+    assert str(result['c_floor_limit']) == '5.00 EUR'
 
 
 class MultilineGroupTag(mt940.tags.Tag):
@@ -116,29 +273,47 @@ def test_unparseable_value_raises_runtime_error() -> None:
         _ = transactions.parse(':20:REF\n:28C:NOTDIGITS\n')
 
 
-def test_statement_rc_reversal_amount_is_negative() -> None:
+@pytest.mark.parametrize(
+    ('options', 'expected'),
+    [
+        # 5.0.0 negated a plain D only, a reversed credit stayed positive.
+        (mt940.Options(), '10.50 EUR'),
+        (mt940.Options(reversal_sign=True), '-10.50 EUR'),
+    ],
+)
+def test_statement_rc_reversal_amount(
+    options: mt940.Options, expected: str
+) -> None:
     transactions = mt940.parse(
-        _HEADER + ':61:2312290101RC10,50NTRFREF//BANK\n' + _FOOTER
+        _HEADER + ':61:2312290101RC10,50NTRFREF//BANK\n' + _FOOTER,
+        options=options,
     )
     data = transactions[0].data
     assert data['status'] == 'RC'
-    assert str(data['amount']) == '-10.50 EUR'
+    assert str(data['amount']) == expected
 
 
-def test_statement_reversal_marks_parse() -> None:
+@pytest.mark.parametrize(
+    ('options', 'expected_rc'),
+    [(mt940.Options(), '10.50 EUR'), (_ALL, '-10.50 EUR')],
+)
+def test_statement_reversal_marks_parse(
+    options: mt940.Options, expected_rc: str
+) -> None:
     # RC/RD marks (2a subfield) parse and are preserved in `status`. RD is
-    # a reversed debit (money back in, positive), RC a reversed credit
-    # (money back out, negative).
+    # a reversed debit (money back in) and stays positive in both modes, RC
+    # a reversed credit (money back out) and negative once opted in.
     transactions = mt940.parse(
         _HEADER
         + ':61:2312290101RD10,50NTRFREF//BANK\n'
         + ':61:2312290101RC10,50NTRFREF//BANK\n'
-        + _FOOTER
+        + _FOOTER,
+        options=options,
     )
     assert transactions[0].data['status'] == 'RD'
     assert str(transactions[0].data['amount']) == '10.50 EUR'
     assert transactions[1].data['status'] == 'RC'
-    assert str(transactions[1].data['amount']) == '-10.50 EUR'
+    assert str(transactions[1].data['amount']) == expected_rc
 
 
 def test_statement_amount_without_decimals() -> None:
@@ -149,16 +324,27 @@ def test_statement_amount_without_decimals() -> None:
     assert str(transactions[0].data['amount']) == '10 EUR'
 
 
-def test_statement_lowercase_debit_mark_is_negative() -> None:
+@pytest.mark.parametrize(
+    ('options', 'expected'),
+    [
+        # 5.0.0 compared the mark with 'D' only, so the debit was silently
+        # stored as positive.
+        (mt940.Options(), '10.50 EUR'),
+        (mt940.Options(case_insensitive_marks=True), '-10.50 EUR'),
+    ],
+)
+def test_statement_lowercase_debit_mark(
+    options: mt940.Options, expected: str
+) -> None:
     # The tag patterns are compiled with re.IGNORECASE, so a lowercase 'd'
-    # debit mark is accepted. Amount must still treat it as a debit and
-    # negate the amount, otherwise a debit is silently stored as positive.
+    # debit mark is accepted and kept as parsed in `status`.
     transactions = mt940.parse(
-        _HEADER + ':61:2312290101d10,50NTRFREF//BANK\n' + _FOOTER
+        _HEADER + ':61:2312290101d10,50NTRFREF//BANK\n' + _FOOTER,
+        options=options,
     )
     data = transactions[0].data
     assert data['status'] == 'd'
-    assert str(data['amount']) == '-10.50 EUR'
+    assert str(data['amount']) == expected
 
 
 def test_statement_second_double_slash_stays_in_bank_reference() -> None:
@@ -187,10 +373,13 @@ def test_balance_on_leap_day() -> None:
     assert balance.date == mt940.models.Date(2024, 2, 29)
 
 
-def test_date_time_indication_without_offset() -> None:
+@pytest.mark.parametrize('options', [mt940.Options(), _ALL])
+def test_date_time_indication_without_offset(options: mt940.Options) -> None:
     # The offset is optional in the pattern. A bare 10-digit :13: must not
-    # crash and yields a naive datetime.
-    transactions = mt940.parse(':13:1701191815\n' + _HEADER + _FOOTER)
+    # crash and yields a naive datetime in both modes.
+    transactions = mt940.parse(
+        ':13:1701191815\n' + _HEADER + _FOOTER, options=options
+    )
     date = transactions.data['date']
     assert date == mt940.models.DateTime(2017, 1, 19, 18, 15)
     assert date.tzinfo is None
@@ -350,11 +539,19 @@ def test_unknown_tag_id_is_skipped() -> None:
     assert 'IGNORED' not in str(transactions.data)
 
 
-def test_tags_of_one_class_are_equal_and_hash_alike() -> None:
-    # CodeQL py/equals-hash-mismatch: Tag hashed on its id without defining
-    # equality. Instances of one tag class are interchangeable.
-    assert mt940.tags.Statement() == mt940.tags.Statement()
-    assert hash(mt940.tags.Statement()) == hash(mt940.tags.Statement())
-    assert mt940.tags.Statement() != mt940.tags.StatementASNB()
-    assert mt940.tags.Statement() != mt940.tags.Statement().id
-    assert len({mt940.tags.Statement(), mt940.tags.Statement()}) == 1
+def test_tags_compare_by_identity() -> None:
+    # 5.0.0 semantics: every instance is its own set member and dictionary
+    # key, while the hash stays id-based so an object hashes like itself.
+    first = mt940.tags.Statement()
+    second = mt940.tags.Statement()
+    assert first == first  # noqa: PLR0124 (identity is the point)
+    assert first != second
+    assert hash(first) == hash(second)
+    assert len({first, second}) == 2
+    assert first != mt940.tags.StatementASNB()
+    assert first != first.id
+
+
+def test_asnb_statement_keeps_its_call_override() -> None:
+    # 5.0.0 defined the pass-through on the class itself, so it stays.
+    assert '__call__' in vars(mt940.tags.StatementASNB)

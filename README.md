@@ -191,6 +191,41 @@ with open('mt940_tests/ASNB/mt940.txt') as fh:
 pprint.pprint(transactions.data, sort_dicts=False)
 ```
 
+### Parser fixes (opt-in)
+
+Several parsing fixes change the output for input that 5.0.0 accepted without
+complaint. Because that would break existing users, every one of them is off
+by default and switched on through `mt940.Options`. The next major release
+turns them all on.
+
+```python
+import mt940
+
+options = mt940.Options(reversal_sign=True, applicant_iban=True)
+transactions = mt940.parse(
+    'mt940_tests/betterplace/sepa_mt9401.sta', options=options
+)
+
+# Or take every fix at once, which is what the next major release does.
+transactions = mt940.parse('statement.sta', options=mt940.Options.all())
+```
+
+| Option | Default (5.0.0) | Switched on |
+|---|---|---|
+| `applicant_iban` | `?31` is prepended to `applicant_name` | `?31` is `applicant_iban` (issue #132, the 4.x behaviour) |
+| `merge_keeps_values` | a structured `:86:` overwrites other tags' values with `None` for sub-fields it lacks | existing values survive, so the `:61:` customer reference keeps its value |
+| `reversal_sign` | the `RC` reversal mark gives a positive amount | `RC` is negative like the debit it is (issue #130) |
+| `case_insensitive_marks` | a lowercase `d` or `rc` mark does not sign the amount | lowercase marks work like uppercase ones |
+| `timezone_offset` | a `:13D:` offset of `+0100` is read as 100 minutes | `+0100` is one hour |
+| `unbounded_details` | `:86:` details are cut after nine chunks of 65 characters | details of any length are kept |
+| `non_swift_free_text` | an `:NS:` line without a two-digit sub-tag loses its content | the content is kept |
+| `floor_limit_blank_mark` | a blank `:34F:` mark yields a key with a leading space and no currency | it yields both floor limits and the currency |
+| `strip_bom` | a leading byte-order mark hides the first `:20:` tag | the mark is dropped |
+| `gvc_leading_text` | free text before the first GVC keyword is lost when it contains a `+` | the text is kept |
+
+Crash fixes need no option: input that made 5.0.0 raise now parses in every
+mode.
+
 ## Supported tags
 
 | Tag | Meaning |

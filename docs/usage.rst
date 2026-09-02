@@ -104,6 +104,22 @@ Some banks (e.g. GLS / Atruvia) put a customer reference longer than the SWIFT
     gls = mt940.tags.StatementGLS()
     transactions = mt940.parse('statement.sta', tags={gls.id: gls})
 
+Parser fixes
+------------
+
+Several parsing fixes change the output for input that 5.0.0 accepted, so
+each of them is off by default and switched on through
+:class:`mt940.options.Options`. The class documents every switch, and
+:meth:`mt940.options.Options.all` enables all of them, which is what the next
+major release will do by default::
+
+    import mt940
+
+    options = mt940.Options(reversal_sign=True, applicant_iban=True)
+    transactions = mt940.parse('statement.sta', options=options)
+
+    transactions = mt940.parse('statement.sta', options=mt940.Options.all())
+
 Statements from the Dutch bank ASN
 ----------------------------------
 

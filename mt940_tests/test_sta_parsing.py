@@ -41,30 +41,61 @@ def get_sta_files() -> list[str]:
     return sorted(str(path) for path in base_path.rglob('*.sta'))
 
 
-def _golden_path(sta_file: str) -> pathlib.Path:
-    return pathlib.Path(sta_file).with_suffix('.yml')
+#: Every fixture is parsed once per mode. The default mode pins the 5.0.0
+#: output, the ``all`` mode pins the output with every opt-in fix enabled.
+MODES: dict[str, mt940.Options] = {
+    'default': mt940.Options(),
+    'all': mt940.Options.all(),
+}
 
 
-def get_yaml_data(sta_file: str) -> object:
-    with _golden_path(sta_file).open(encoding='utf-8') as fh:
+def _golden_path(sta_file: str, mode: str = 'default') -> pathlib.Path:
+    # ``x.yml`` for the default mode, ``x.<mode>.yml`` for the others.
+    suffix = '.yml' if mode == 'default' else f'.{mode}.yml'
+    return pathlib.Path(sta_file).with_suffix(suffix)
+
+
+def get_yaml_data(sta_file: str, mode: str = 'default') -> object:
+    path = _golden_path(sta_file, mode)
+    if not path.exists():
+        # The fixes leave this fixture unchanged, the default golden applies.
+        path = _golden_path(sta_file)
+    with path.open(encoding='utf-8') as fh:
         # The goldens carry the !!python tags written by write_yaml_data, so
         # only the full Loader can read them back.
         data: object = yaml.load(fh, Loader=yaml.Loader)  # noqa: S506
     return data
 
 
-def write_yaml_data(sta_file: str, data: object) -> None:
-    _ = _golden_path(sta_file).write_text(
+def write_yaml_data(
+    sta_file: str, data: object, mode: str = 'default'
+) -> None:
+    _ = _golden_path(sta_file, mode).write_text(
         yaml.dump(data, Dumper=yaml.Dumper), encoding='utf-8'
     )
 
 
+def _as_json(transactions: mt940.models.Transactions) -> str:
+    return json.dumps(transactions, cls=mt940.JSONEncoder, sort_keys=True)
+
+
 def maybe_write_golden(
-    sta_file: str, transactions: mt940.models.Transactions
+    sta_file: str,
+    transactions: mt940.models.Transactions,
+    mode: str = 'default',
 ) -> None:
-    # Development only: regenerate the golden next to the fixture.
-    if os.environ.get('WRITE_YAML_FILES'):
-        write_yaml_data(sta_file, transactions)
+    # Development only: regenerate the golden next to the fixture. A non
+    # default mode only gets its own golden when its output differs from the
+    # default one, so the fixture tree shows exactly which files the fixes
+    # change.
+    if not os.environ.get('WRITE_YAML_FILES'):
+        return
+    if mode != 'default' and _as_json(transactions) == _as_json(
+        mt940.parse(sta_file)
+    ):
+        _golden_path(sta_file, mode).unlink(missing_ok=True)
+        return
+    write_yaml_data(sta_file, transactions, mode)
 
 
 def _path(keys: list[str]) -> str:
@@ -294,11 +325,37 @@ def test_maybe_write_golden_honours_the_environment(
     assert _golden_path(sta_file).exists()
 
 
+def test_maybe_write_golden_keeps_a_mode_only_when_it_differs(
+    tmp_path: pathlib.Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # A lowercase debit mark only changes the output with the fixes on.
+    sta_file = str(tmp_path / 'statement.sta')
+    _ = pathlib.Path(sta_file).write_text(
+        _STATEMENT.replace('C10,00', 'd10,00'), encoding='utf-8'
+    )
+    monkeypatch.setenv('WRITE_YAML_FILES', '1')
+
+    maybe_write_golden(sta_file, mt940.parse(sta_file), 'default')
+    maybe_write_golden(sta_file, mt940.parse(sta_file), 'all')
+    assert not _golden_path(sta_file, 'all').exists()
+    compare(get_yaml_data(sta_file, 'all'), mt940.parse(sta_file))
+
+    fixed = mt940.parse(sta_file, options=MODES['all'])
+    maybe_write_golden(sta_file, fixed, 'all')
+    assert _golden_path(sta_file, 'all').exists()
+    compare(get_yaml_data(sta_file, 'all'), fixed)
+
+    # Back to identical output: the stale mode golden is removed again.
+    maybe_write_golden(sta_file, mt940.parse(sta_file), 'all')
+    assert not _golden_path(sta_file, 'all').exists()
+
+
+@pytest.mark.parametrize('mode', sorted(MODES))
 @pytest.mark.parametrize('sta_file', get_sta_files())
-def test_parse(sta_file: str) -> None:
-    transactions = mt940.parse(sta_file)
-    maybe_write_golden(sta_file, transactions)
-    expected = get_yaml_data(sta_file)
+def test_parse(sta_file: str, mode: str) -> None:
+    transactions = mt940.parse(sta_file, options=MODES[mode])
+    maybe_write_golden(sta_file, transactions, mode)
+    expected = get_yaml_data(sta_file, mode)
     assert isinstance(expected, mt940.models.Transactions)
 
     # Every model has to render without raising.
@@ -319,9 +376,10 @@ def test_parse(sta_file: str) -> None:
     compare(expected[:], transactions[:])
 
 
+@pytest.mark.parametrize('mode', sorted(MODES))
 @pytest.mark.parametrize('sta_file', get_sta_files())
-def test_json_dump(sta_file: str) -> None:
-    transactions = mt940.parse(sta_file)
+def test_json_dump(sta_file: str, mode: str) -> None:
+    transactions = mt940.parse(sta_file, options=MODES[mode])
     decoded: object = json.loads(
         json.dumps(transactions, cls=mt940.JSONEncoder)
     )

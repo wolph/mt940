@@ -13,6 +13,18 @@ data:
   sequence_number: null
   statement_number: '0'
   transaction_reference: STARTUMS
+options: !!python/object/new:mt940.options.Options
+  state:
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
 tags:
   13: !!python/object:mt940.tags.DateTimeIndication
     re: !!python/object/apply:re._compile
@@ -110,12 +122,11 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: ' AB12CDE0000000000000000034 '
-    applicant_iban: null
     applicant_name: PayPal (Europe) S.a.r.l. et
     bank_reference: null
     compensation_amount: null
     currency: EUR
-    customer_reference: ''
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B+EJDg==

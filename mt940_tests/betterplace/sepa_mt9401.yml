@@ -49,6 +49,18 @@ data:
   sequence_number: '00001'
   statement_number: '00001'
   transaction_reference: T089414136000001
+options: !!python/object/new:mt940.options.Options
+  state:
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
 tags:
   13: !!python/object:mt940.tags.DateTimeIndication
     re: !!python/object/apply:re._compile
@@ -146,12 +158,11 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: 0724710345313905
     compensation_amount: null
     currency: EUR
-    customer_reference: TFNr 40005 MSGID
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -195,12 +206,11 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: 0724710351061491
     compensation_amount: null
     currency: EUR
-    customer_reference: TFNr 44003 MSGID
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -244,12 +254,11 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: 0724710345313900
     compensation_amount: null
     currency: EUR
-    customer_reference: TFNr 40005 MSGID
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -289,7 +298,6 @@ transactions:
       - '66295.08'
       currency: EUR
     applicant_bin: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: null
     currency: EUR
@@ -325,12 +333,11 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: R724710351061495
     compensation_amount: null
     currency: EUR
-    customer_reference: TFNr 44003 MSGID
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -367,10 +374,9 @@ transactions:
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal
-      - '-204.88'
+      - '204.88'
       currency: EUR
     applicant_bin: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: null
     currency: EUR
@@ -402,7 +408,6 @@ transactions:
       - '-999946.95'
       currency: EUR
     applicant_bin: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: null
     currency: EUR
@@ -438,12 +443,12 @@ transactions:
       currency: EUR
     applicant_bin: PBNKDEFF100
     applicant_creditor_id: null
-    applicant_iban: DE42100100100043921105
-    applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
+    applicant_name: DE42100100100043921105Richter Renate 70 Zeichen Beginn Fuellzeichen
+      xxxxxxxx
     bank_reference: 0724710290621954
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -487,7 +492,6 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: BD7CFA74485E7E69
     compensation_amount: null
@@ -538,12 +542,11 @@ transactions:
       currency: EUR
     applicant_bin: PBNKDEFF100
     applicant_creditor_id: null
-    applicant_iban: DE42100100100043921105
-    applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichenxxxxxxxx
+    applicant_name: DE42100100100043921105Richter Renate 70 Zeichen Beginn Fuellzeichenxxxxxxxx
     bank_reference: 0724710290658244
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -586,12 +589,12 @@ transactions:
       currency: EUR
     applicant_bin: NIKACH22XXX
     applicant_creditor_id: null
-    applicant_iban: CH8500779014054431109
-    applicant_name: Cornelia Prochownik 70 Zeichen BeginnFuellzeichen xxx
+    applicant_name: CH8500779014054431109Cornelia Prochownik 70 Zeichen BeginnFuellzeichen
+      xxx
     bank_reference: 0724710290635078
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -634,12 +637,12 @@ transactions:
       currency: EUR
     applicant_bin: UBSWCHZH80A
     applicant_creditor_id: null
-    applicant_iban: CH6500279279C31180700
-    applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
+    applicant_name: CH6500279279C31180700Richter Renate 70 Zeichen Beginn Fuellzeichen
+      xxxxxxxx
     bank_reference: 0724710290626371
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -682,7 +685,6 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: DE85920B84F8E98D
     compensation_amount: null
@@ -733,7 +735,6 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: D1C08A4EB4664146
     compensation_amount: null
@@ -784,12 +785,12 @@ transactions:
       currency: EUR
     applicant_bin: PBNKDEFF250
     applicant_creditor_id: null
-    applicant_iban: DE40250100300325207300
-    applicant_name: Daniel Severidt 70 ZeichenBeginn Fuellzeichen xxxxxxx
+    applicant_name: DE40250100300325207300Daniel Severidt 70 ZeichenBeginn Fuellzeichen
+      xxxxxxx
     bank_reference: 0724710290628244
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -832,12 +833,12 @@ transactions:
       currency: EUR
     applicant_bin: PBNKDEFF100
     applicant_creditor_id: null
-    applicant_iban: DE40100100100000214105
-    applicant_name: Cornelia Prochownik 70 Zeichen Beginn Fuellzeichen xxx
+    applicant_name: DE40100100100000214105Cornelia Prochownik 70 Zeichen Beginn Fuellzeichen
+      xxx
     bank_reference: 0724710290631813
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -880,12 +881,12 @@ transactions:
       currency: EUR
     applicant_bin: PBNKDEFF250
     applicant_creditor_id: null
-    applicant_iban: DE39250100300172064300
-    applicant_name: Dirk Leunig 70 Zeichen Beginn Fuellzeichen xxxxxxxxxxx
+    applicant_name: DE39250100300172064300Dirk Leunig 70 Zeichen Beginn Fuellzeichen
+      xxxxxxxxxxx
     bank_reference: 0724710290630146
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -924,7 +925,6 @@ transactions:
       - '204.88'
       currency: EUR
     applicant_bin: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: null
     currency: EUR
@@ -953,10 +953,9 @@ transactions:
     additional_purpose: null
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal
-      - '-204.88'
+      - '204.88'
       currency: EUR
     applicant_bin: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: R724710290656678
     currency: EUR
@@ -992,8 +991,7 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE76508800500194780101
-    applicant_name: Empfaenger Florian Frech UK 01
+    applicant_name: DE76508800500194780101Empfaenger Florian Frech UK 01
     bank_reference: 0724710352954937
     compensation_amount: null
     currency: EUR
@@ -1042,7 +1040,6 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: 8AE3169901918BD3
     compensation_amount: null
@@ -1089,7 +1086,6 @@ transactions:
       - '-500250'
       currency: EUR
     applicant_bin: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: E87048E11B394C1E
     currency: EUR
@@ -1125,12 +1121,11 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE06508800500194780100
-    applicant_name: Florian Frech
+    applicant_name: DE06508800500194780100Florian Frech
     bank_reference: 0724710352954937
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -1173,12 +1168,11 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE95508800500194784900
-    applicant_name: JOSEF        JAEGER
+    applicant_name: DE95508800500194784900JOSEF        JAEGER
     bank_reference: 0724710333377198
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -1222,8 +1216,8 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 1 mit 70 Zeichen Empfaenger 1 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 1 mit 70 Zeichen Empfaenger
+      1 mit 70 Zeiche
     bank_reference: 0724710352996674
     compensation_amount: null
     currency: EUR
@@ -1273,12 +1267,12 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 6mit 70 Zeichen Empfaenger 6 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 6mit 70 Zeichen Empfaenger
+      6 mit 70 Zeiche
     bank_reference: 0724710353006393
     compensation_amount: null
     currency: EUR
-    customer_reference: TFNr 01011 MSGID
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -1322,8 +1316,8 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 2 mit 70 Zeichen Empfaenger 2 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 2 mit 70 Zeichen Empfaenger
+      2 mit 70 Zeiche
     bank_reference: 0724710352998444
     compensation_amount: null
     currency: EUR
@@ -1373,8 +1367,8 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 4 mit 70 Zeichen Empfaenger 4 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 4 mit 70 Zeichen Empfaenger
+      4 mit 70 Zeiche
     bank_reference: 0724710353002818
     compensation_amount: null
     currency: EUR
@@ -1424,8 +1418,8 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 3 mit 70 Zeichen Empfaenger 3 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 3 mit 70 Zeichen Empfaenger
+      3 mit 70 Zeiche
     bank_reference: 0724710353000284
     compensation_amount: null
     currency: EUR
@@ -1475,8 +1469,8 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 5 mit 70 Zeichen Empfaenger 5 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 5 mit 70 Zeichen Empfaenger
+      5 mit 70 Zeiche
     bank_reference: 0724710353004695
     compensation_amount: null
     currency: EUR
@@ -1526,8 +1520,8 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 7 mit 70 Zeichen Empfaenger 7 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 7 mit 70 Zeichen Empfaenger
+      7 mit 70 Zeiche
     bank_reference: 0724710353008994
     compensation_amount: null
     currency: EUR
@@ -1577,12 +1571,11 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: 0724710324649377
     compensation_amount: null
     currency: EUR
-    customer_reference: TFNr 40016 MSGID
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -1626,12 +1619,11 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: 0724710345347489
     compensation_amount: null
     currency: EUR
-    customer_reference: MCCT070927000002
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -1675,12 +1667,11 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: '0724710351065632'
     compensation_amount: null
     currency: EUR
-    customer_reference: MCCT070927000004
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -1724,7 +1715,6 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: '0724710333347237'
     compensation_amount: null
@@ -1774,7 +1764,6 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: '0724710333347241'
     compensation_amount: null
@@ -1824,7 +1813,6 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: 31408CF87AD5901E
     compensation_amount: null
@@ -1871,7 +1859,6 @@ transactions:
       - '-2550.12'
       currency: EUR
     applicant_bin: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: 4F112D73FF96F4FB
     currency: EUR
@@ -1903,7 +1890,6 @@ transactions:
       - '-2550.12'
       currency: EUR
     applicant_bin: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: EC4BA14CEA34BFF3
     currency: EUR
@@ -1935,7 +1921,6 @@ transactions:
       - '-65500.15'
       currency: EUR
     applicant_bin: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: 92D891C454BC30B5
     currency: EUR
@@ -1968,7 +1953,6 @@ transactions:
       - '-402104'
       currency: EUR
     applicant_bin: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: 57B4197CC644DE8F
     currency: EUR
@@ -2005,7 +1989,6 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: 06F8672B28B7A92F
     compensation_amount: null
@@ -2056,12 +2039,11 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: 0724710351059240
     compensation_amount: null
     currency: EUR
-    customer_reference: TFNr 44005 MSGID
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -2105,12 +2087,11 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: R724710351059243
     compensation_amount: null
     currency: EUR
-    customer_reference: TFNr 44005 MSGID
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -2154,8 +2135,8 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 1 mit 70 Zeichen Empfaenger 1 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 1 mit 70 Zeichen Empfaenger
+      1 mit 70 Zeiche
     bank_reference: 0724710360914647
     compensation_amount: null
     currency: EUR
@@ -2204,8 +2185,8 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 2 mit 70 Zeichen Empfaenger 2 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 2 mit 70 Zeichen Empfaenger
+      2 mit 70 Zeiche
     bank_reference: 0724710360912501
     compensation_amount: null
     currency: EUR
@@ -2254,8 +2235,8 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 5 mit 70 Zeichen Empfaenger 5 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 5 mit 70 Zeichen Empfaenger
+      5 mit 70 Zeiche
     bank_reference: 0724710360923556
     compensation_amount: null
     currency: EUR
@@ -2304,8 +2285,8 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 6 mit 70 Zeichen Empfaenger 6 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 6 mit 70 Zeichen Empfaenger
+      6 mit 70 Zeiche
     bank_reference: 0724710360910575
     compensation_amount: null
     currency: EUR
@@ -2354,8 +2335,8 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 4 mit 70 Zeichen Empfaenger 4 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 4 mit 70 Zeichen Empfaenger
+      4 mit 70 Zeiche
     bank_reference: 0724710360918027
     compensation_amount: null
     currency: EUR
@@ -2404,8 +2385,8 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 3 mit 70 Zeichen Empfaenger 3 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 3 mit 70 Zeichen Empfaenger
+      3 mit 70 Zeiche
     bank_reference: 0724710360916341
     compensation_amount: null
     currency: EUR
@@ -2454,8 +2435,8 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 7 mit 70 Zeichen Empfaenger 7 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 7 mit 70 Zeichen Empfaenger
+      7 mit 70 Zeiche
     bank_reference: 0724710360908674
     compensation_amount: null
     currency: EUR
@@ -2501,7 +2482,6 @@ transactions:
       - '-415603.93'
       currency: EUR
     applicant_bin: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: 649D24F7C6EDAC53
     currency: EUR
@@ -2538,7 +2518,6 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: AC59892B266252EC
     compensation_amount: null
@@ -2589,7 +2568,6 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: CDB988231C851A5B
     compensation_amount: null
@@ -2640,12 +2618,11 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: '0724710324666001'
     compensation_amount: null
     currency: EUR
-    customer_reference: MSGID CTSc-01  B
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -2689,12 +2666,11 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: '0724710324666006'
     compensation_amount: null
     currency: EUR
-    customer_reference: MSGID CTSc-01  B
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -2738,8 +2714,7 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE68508800500194784901
-    applicant_name: Empfaenger Josef Jaeger UK01
+    applicant_name: DE68508800500194784901Empfaenger Josef Jaeger UK01
     bank_reference: 0724710333354911
     compensation_amount: null
     currency: EUR
@@ -2789,8 +2764,7 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE04508800500194781300
-    applicant_name: Empfaenger Gustav Gans
+    applicant_name: DE04508800500194781300Empfaenger Gustav Gans
     bank_reference: 0724710333377198
     compensation_amount: null
     currency: EUR
@@ -2840,8 +2814,7 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE96508800500194774600
-    applicant_name: Empfaenger Anton Ackermann
+    applicant_name: DE96508800500194774600Empfaenger Anton Ackermann
     bank_reference: '0724710324651156'
     compensation_amount: null
     currency: EUR
@@ -2886,7 +2859,6 @@ transactions:
       - '-326609.66'
       currency: EUR
     applicant_bin: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: 9A4616CC6128D651
     currency: EUR
@@ -2922,7 +2894,6 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: A26B6D6B5E821EA9
     compensation_amount: null
@@ -2973,7 +2944,6 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: 493189D221858097
     compensation_amount: null
@@ -3020,7 +2990,6 @@ transactions:
       - '-1522104'
       currency: EUR
     applicant_bin: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: 75C62EC25E19D187
     currency: EUR
@@ -3057,12 +3026,11 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE95508800500194784900
-    applicant_name: JOSEF        JAEGER
+    applicant_name: DE95508800500194784900JOSEF        JAEGER
     bank_reference: 0724710333354911
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -3105,8 +3073,8 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 1 mit 70 Zeichen Empfaenger 1 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 1 mit 70 Zeichen Empfaenger
+      1 mit 70 Zeiche
     bank_reference: 0724710352971787
     compensation_amount: null
     currency: EUR
@@ -3155,8 +3123,8 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 3 mit 70 Zeichen Empfaenger 3 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 3 mit 70 Zeichen Empfaenger
+      3 mit 70 Zeiche
     bank_reference: 0724710352975390
     compensation_amount: null
     currency: EUR
@@ -3205,8 +3173,8 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 6 mit 70 Zeichen Empfaenger 6 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 6 mit 70 Zeichen Empfaenger
+      6 mit 70 Zeiche
     bank_reference: 0724710352980804
     compensation_amount: null
     currency: EUR
@@ -3255,8 +3223,8 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 5 mit 70 Zeichen Empfaenger 5 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 5 mit 70 Zeichen Empfaenger
+      5 mit 70 Zeiche
     bank_reference: 0724710352979070
     compensation_amount: null
     currency: EUR
@@ -3305,8 +3273,8 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 2 mit 70 Zeichen Empfaenger 2 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 2 mit 70 Zeichen Empfaenger
+      2 mit 70 Zeiche
     bank_reference: 0724710352973502
     compensation_amount: null
     currency: EUR
@@ -3355,8 +3323,8 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 4 mit 70 Zeichen Empfaenger 4 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 4 mit 70 Zeichen Empfaenger
+      4 mit 70 Zeiche
     bank_reference: 0724710352977271
     compensation_amount: null
     currency: EUR
@@ -3405,8 +3373,7 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE12508800500194786200
-    applicant_name: Empfaenger Ludwig Loewe
+    applicant_name: DE12508800500194786200Empfaenger Ludwig Loewe
     bank_reference: '0724710333360224'
     compensation_amount: null
     currency: EUR
@@ -3456,8 +3423,7 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE84508800500194785001
-    applicant_name: Empfanger Karl Kaufmann UK01
+    applicant_name: DE84508800500194785001Empfanger Karl Kaufmann UK01
     bank_reference: 0724710352952868
     compensation_amount: null
     currency: EUR
@@ -3506,8 +3472,7 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE10508800500194787400
-    applicant_name: Empfaenger Marta Metzger
+    applicant_name: DE10508800500194787400Empfaenger Marta Metzger
     bank_reference: '0724710333343453'
     compensation_amount: null
     currency: EUR
@@ -3557,8 +3522,8 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 7 mit 70 Zeichen Empfaenger 7 mit 70 Zeiche
+    applicant_name: FR1420041010050500013M02606Empfaenger 7 mit 70 Zeichen Empfaenger
+      7 mit 70 Zeiche
     bank_reference: 0724710352982472
     compensation_amount: null
     currency: EUR
@@ -3608,7 +3573,6 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: D4AF9E363A92E76F
     compensation_amount: null
@@ -3660,8 +3624,7 @@ transactions:
       currency: EUR
     applicant_bin: SOGEFRPPXXX
     applicant_creditor_id: null
-    applicant_iban: FR1420041010050500013M02606
-    applicant_name: Empfaenger 1
+    applicant_name: FR1420041010050500013M02606Empfaenger 1
     bank_reference: '0724710333366624'
     compensation_amount: null
     currency: EUR
@@ -3711,12 +3674,11 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE14508800500194785000
-    applicant_name: Karl Kaufmann
+    applicant_name: DE14508800500194785000Karl Kaufmann
     bank_reference: 0724710352952868
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -3759,12 +3721,11 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE14508800500194785000
-    applicant_name: Karl Kaufmann
+    applicant_name: DE14508800500194785000Karl Kaufmann
     bank_reference: 0724710324661086
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -3807,12 +3768,11 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE14508800500194785000
-    applicant_name: KARL        KAUFMANN
+    applicant_name: DE14508800500194785000KARL        KAUFMANN
     bank_reference: '0724710333360224'
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -3855,12 +3815,11 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE03508800500194791600
-    applicant_name: Quentin Quast
+    applicant_name: DE03508800500194791600Quentin Quast
     bank_reference: '0724710324647446'
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -3903,12 +3862,11 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE14508800500194785000
-    applicant_name: KARL        KAUFMANN
+    applicant_name: DE14508800500194785000KARL        KAUFMANN
     bank_reference: '0724710333343453'
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBw==
@@ -3951,12 +3909,11 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE03508800500194791600
-    applicant_name: Quentin Quast
+    applicant_name: DE03508800500194791600Quentin Quast
     bank_reference: '0724710324647450'
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBw==
@@ -3999,12 +3956,11 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE14508800500194785000
-    applicant_name: Karl Kaufmann
+    applicant_name: DE14508800500194785000Karl Kaufmann
     bank_reference: 0724710324661090
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBw==
@@ -4047,7 +4003,6 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: 536D80EFEC56ACF8
     compensation_amount: null
@@ -4098,12 +4053,11 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: '0724710345316116'
     compensation_amount: null
     currency: EUR
-    customer_reference: TFNr 40001 MSGID
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -4147,12 +4101,11 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: '0724710351063401'
     compensation_amount: null
     currency: EUR
-    customer_reference: TFNr 44001 MSGID
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -4196,12 +4149,11 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: '0724710345316110'
     compensation_amount: null
     currency: EUR
-    customer_reference: TFNr 40001 MSGID
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -4245,12 +4197,12 @@ transactions:
       currency: EUR
     applicant_bin: PBNKDEFF100
     applicant_creditor_id: null
-    applicant_iban: DE42100100100043921105
-    applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
+    applicant_name: DE42100100100043921105Richter Renate 70 Zeichen Beginn Fuellzeichen
+      xxxxxxxx
     bank_reference: 0724710290659857
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -4294,12 +4246,12 @@ transactions:
       currency: EUR
     applicant_bin: PBNKDEFF100
     applicant_creditor_id: null
-    applicant_iban: DE42100100100043921105
-    applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
+    applicant_name: DE42100100100043921105Richter Renate 70 Zeichen Beginn Fuellzeichen
+      xxxxxxxx
     bank_reference: 0724710290624796
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -4342,12 +4294,11 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: R724710351063405
     compensation_amount: null
     currency: EUR
-    customer_reference: TFNr 44001 MSGID
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -4387,7 +4338,6 @@ transactions:
       - '-3572569.03'
       currency: EUR
     applicant_bin: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: null
     currency: EUR
@@ -4423,12 +4373,11 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE03508800500194791600
-    applicant_name: QUENTIN        QUAST
+    applicant_name: DE03508800500194791600QUENTIN        QUAST
     bank_reference: 0724710333345079
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -4471,12 +4420,11 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE03508800500194791600
-    applicant_name: Quentin Quast
+    applicant_name: DE03508800500194791600Quentin Quast
     bank_reference: 0724710352956584
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -4519,7 +4467,6 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: F2CA963F5C750549
     compensation_amount: null
@@ -4570,7 +4517,6 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: FFCD94B7601B6E06
     compensation_amount: null
@@ -4621,7 +4567,6 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: DED4A9D0CA11033B
     compensation_amount: null
@@ -4672,12 +4617,12 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE51508800500190038900
-    applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
+    applicant_name: DE51508800500190038900Richter Renate 70 Zeichen Beginn Fuellzeichen
+      xxxxxxxx
     bank_reference: 0724710290648274
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==

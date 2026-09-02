@@ -1,6 +1,18 @@
 !!python/object:mt940.models.Transactions
 data:
   account_identification: 51210600/9223382012EUR
+options: !!python/object/new:mt940.options.Options
+  state:
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
 tags:
   13: !!python/object:mt940.tags.DateTimeIndication
     re: !!python/object/apply:re._compile

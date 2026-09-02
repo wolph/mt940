@@ -81,6 +81,7 @@ import typing
 from typing import TYPE_CHECKING, ClassVar
 
 from . import models
+from .options import Options
 
 if TYPE_CHECKING:
     from typing_extensions import Self
@@ -90,6 +91,29 @@ logger = logging.getLogger(__name__)
 #: An entry date more than this many days away from the value date means the
 #: two fall in different years, so the entry date's year needs correcting.
 _YEAR_BOUNDARY_DAYS = 330
+
+#: What 5.0.0 captured of a ``:86:`` value: up to nine chunks of at most 65
+#: characters, each but the last optionally followed by a line break. Longer
+#: details were silently cut off. The pattern accepts the empty string, so it
+#: always matches.
+_LEGACY_DETAILS_RE = re.compile(r'(?:[\s\S]{0,65}\r?\n?){0,8}[\s\S]{0,65}')
+
+
+def _options_of(transactions: models.Transactions) -> Options:
+    """Return the options of the collection being parsed.
+
+    Tags are shared singletons, so the switches always come from
+    ``transactions``. Callers that pass something without options, as older
+    code did with ``None``, get the 5.0.0 defaults.
+
+    Args:
+        transactions: The collection being parsed.
+
+    Returns:
+        The options to honour.
+    """
+    options: object = getattr(transactions, 'options', None)
+    return options if isinstance(options, Options) else Options()
 
 
 class Tag:
@@ -210,17 +234,14 @@ class Tag:
         return object.__new__(cls)
 
     def __eq__(self, other: object) -> bool:
-        """Return whether ``other`` is a tag of the same class and ``id``.
+        """Return whether ``other`` is this very tag instance.
 
-        Tags carry no instance state beyond what their class defines, so two
-        instances of one class are interchangeable, which is what
-        ``__hash__`` already assumes.
+        Tags compare by identity, as they did in 5.0.0, so two instances of
+        one class stay distinct set members and dictionary keys. The
+        id-based ``__hash__`` is consistent with that: an object is always
+        equal to itself.
         """
-        return (
-            isinstance(other, Tag)
-            and type(other) is type(self)
-            and other.id == self.id
-        )
+        return self is other
 
     def __hash__(self) -> int:
         """Return a hash based on the tag's ``id``.
@@ -252,17 +273,19 @@ class DateTimeIndication(Tag):
     ) -> dict[str, object]:
         """Return the report :class:`~mt940.models.DateTime` as ``date``."""
         data = super().__call__(transactions, value)
-        # The offset subfield is a signed HHMM value (e.g. +0130 is 1 hour
-        # and 30 minutes east of UTC), while `models.DateTime` expects the
-        # offset as a number of minutes. Convert it here and drop the raw
-        # groups so they are not passed on when the offset is absent.
+        # Drop the raw groups so they are not passed on when the offset is
+        # absent, which then yields a naive datetime.
         sign: str | None = data.pop('offset_sign', None)
         offset: str | None = data.pop('offset', None)
-        if offset:
+        if offset and _options_of(transactions).timezone_offset:
+            # The subfield is a signed HHMM value: +0130 is one hour and
+            # thirty minutes east of UTC, and models.DateTime wants minutes.
             minutes: int = int(offset[:2]) * 60 + int(offset[2:])
-            if sign == '-':
-                minutes = -minutes
-            data['offset'] = minutes
+            data['offset'] = -minutes if sign == '-' else minutes
+        elif offset:
+            # 5.0.0 handed the digits to FixedOffset as a minute count, so
+            # +0100 became 100 minutes with '0100' as the zone name.
+            data['offset'] = f'-{offset}' if sign == '-' else offset
         return {'date': models.DateTime(**data)}
 
 
@@ -329,25 +352,32 @@ class FloorLimitIndicator(Tag):
     ) -> dict[str, object]:
         """Return the floor limit as ``d_floor_limit``/``c_floor_limit``."""
         data = typing.cast(
-            'dict[str, str]',
+            'dict[str, str | None]',
             super().__call__(transactions, value),
         )
-        # Normalize the D/C mark: a space (sent by e.g. Fiducia/Volksbank,
-        # d36c51b) means "both", like an absent mark, and a lowercase mark
-        # (the patterns match case-insensitively) must behave like its
-        # uppercase form so the debit amount is negated consistently.
-        status: str = data['status'].strip().upper()
+        options = _options_of(transactions)
+        # A missing mark counts as absent, as it did in 5.0.0.
+        status: str = data.get('status') or ''
+        if options.floor_limit_blank_mark:
+            # A space (sent by e.g. Fiducia/Volksbank, d36c51b) means
+            # "both", like an absent mark. Without the option it survives
+            # into the key, as ' _floor_limit'. The sign of a lowercase mark
+            # is Amount's business, through case_insensitive_marks.
+            status = status.strip()
+        amount: str = data.get('amount') or ''
+        currency = data.get('currency')
         if status:
-            data['status'] = status
             key: str = status.lower() + '_floor_limit'
-            return {key: models.Amount(**data)}
-        data_d = data.copy()
-        data_c = data.copy()
-        data_d.update({'status': 'D'})
-        data_c.update({'status': 'C'})
+            return {
+                key: models.Amount(amount, status, currency, options=options)
+            }
         return {
-            'd_floor_limit': models.Amount(**data_d),
-            'c_floor_limit': models.Amount(**data_c),
+            'd_floor_limit': models.Amount(
+                amount, 'D', currency, options=options
+            ),
+            'c_floor_limit': models.Amount(
+                amount, 'C', currency, options=options
+            ),
         }
 
 
@@ -386,8 +416,7 @@ class NonSwift(Tag):
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, object]:
         """Return ``value`` with per-line ``non_swift_<id>`` fields added."""
-        # Part of the tag protocol, the non-swift data needs no context.
-        del transactions
+        keep_free_text = _options_of(transactions).non_swift_free_text
         text: list[str] = []
         data = value['non_swift']
         for line in data.split('\n'):
@@ -396,13 +425,18 @@ class NonSwift(Tag):
                 ns = frag.groupdict()
                 value['non_swift_' + ns['ns_id']] = ns['ns_data']
                 text.append(ns['ns_data'])
-            elif line.strip():
+            elif keep_free_text and line.strip():
                 # Free-form line without a two-digit sub-tag: keep the
                 # content instead of dropping it.
                 text.append(line.strip())
             elif text and text[-1]:
-                # Blank line: collapse runs into one paragraph separator.
+                # Blank line, or in 5.0.0 any line without a sub-tag after
+                # content: collapse runs into one paragraph separator.
                 text.append('')
+            elif line.strip():
+                # 5.0.0 kept a free-form line only at the start of the text
+                # or after a separator.
+                text.append(line.strip())
         value['non_swift_text'] = '\n'.join(text)
         value['non_swift'] = data
         return value
@@ -428,9 +462,10 @@ class BalanceBase(Tag):
     ) -> dict[str, object]:
         """Return a :class:`~mt940.models.Balance` under the tag's slug."""
         data = super().__call__(transactions, value)
-        data['amount'] = models.Amount(**data)
+        options = _options_of(transactions)
+        data['amount'] = models.Amount(**data, options=options)
         data['date'] = models.Date(**data)
-        return {self.slug: models.Balance(**data)}
+        return {self.slug: models.Balance(**data, options=options)}
 
 
 class OpeningBalance(BalanceBase):
@@ -513,7 +548,9 @@ class Statement(Tag):
         """Return the data with the amount and dates built."""
         data = super().__call__(transactions, value)
         data.setdefault('currency', transactions.currency)
-        data['amount'] = models.Amount(**data)
+        data['amount'] = models.Amount(
+            **data, options=_options_of(transactions)
+        )
         date = data['date'] = models.Date(**data)
 
         entry_day = str(data.get('entry_day') or '')
@@ -584,6 +621,12 @@ class StatementASNB(Statement):
     (//(?P<bank_reference>.{0,16}))?
     (\n?(?P<extra_details>.{0,34}))?
     $"""
+
+    def __call__(
+        self, transactions: models.Transactions, value: dict[str, typing.Any]
+    ) -> dict[str, object]:
+        """Return the statement data, built exactly like :class:`Statement`."""
+        return super().__call__(transactions, value)
 
 
 class StatementGLS(Statement):
@@ -662,13 +705,32 @@ class TransactionDetails(Tag):
         models.Transaction
     )
     # The SWIFT spec caps this field at 6 lines of 65 characters, but many
-    # banks send more. A previous cap of nine 65-char chunks silently
-    # truncated anything longer, so the capture is unbounded: the parser in
+    # banks send more. The capture is unbounded: the parser in
     # `models.Transactions.parse` already limits the value to this tag's own
-    # slice of the statement.
+    # slice of the statement. `parse` below applies the 5.0.0 cap of nine
+    # 65-character chunks unless `Options.unbounded_details` is on.
     pattern: ClassVar[str] = r"""
     (?P<transaction_details>[\s\S]*)
     """
+
+    def parse(
+        self, transactions: models.Transactions, value: str
+    ) -> dict[str, str | None]:
+        """Capture the details, cut like 5.0.0 did unless opted out.
+
+        Args:
+            transactions: The collection being parsed, for its options.
+            value: The raw tag value.
+
+        Returns:
+            The ``transaction_details`` group.
+        """
+        data = super().parse(transactions, value)
+        if not _options_of(transactions).unbounded_details:
+            details = data['transaction_details'] or ''
+            match = _LEGACY_DETAILS_RE.match(details)
+            data['transaction_details'] = match.group(0) if match else ''
+        return data
 
 
 class SumEntries(Tag):
@@ -688,7 +750,11 @@ class SumEntries(Tag):
         """Return a :class:`~mt940.models.SumAmount` under the tag's slug."""
         data = super().__call__(transactions, value)
         data['status'] = self.status
-        return {self.slug: models.SumAmount(**data)}
+        return {
+            self.slug: models.SumAmount(
+                **data, options=_options_of(transactions)
+            )
+        }
 
 
 class SumDebitEntries(SumEntries):

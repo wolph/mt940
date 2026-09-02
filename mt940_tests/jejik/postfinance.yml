@@ -40,6 +40,18 @@ data:
   sequence_number: '2'
   statement_number: '999'
   transaction_reference: '2014040708285928'
+options: !!python/object/new:mt940.options.Options
+  state:
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
 tags:
   13: !!python/object:mt940.tags.DateTimeIndication
     re: !!python/object/apply:re._compile

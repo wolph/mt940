@@ -31,6 +31,18 @@ data:
   sequence_number: '001'
   statement_number: '00115'
   transaction_reference: BILMT940
+options: !!python/object/new:mt940.options.Options
+  state:
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
 tags:
   13: !!python/object:mt940.tags.DateTimeIndication
     re: !!python/object/apply:re._compile
@@ -118,16 +130,14 @@ transaction_boundary: !!python/object/apply:builtins.frozenset
 transactions:
 - !!python/object:mt940.models.Transaction
   data:
-    additional_purpose: NOM ET ADRESSE DO / BENEF 112345678NOM ET ADRESSE DO / BENEF
-      212345678NOM ET ADRESSE DO / BENEF 312345678NOM ET ADRESSE DO / BENEF 412345678NOM
-      ET ADRESSE DO / BENEF 512345678NOM ET ADRESSE DO / BENEF 612345678
+    additional_purpose: NOM ET ADRESSE DO / BENEF 112345678
     amount: !!python/object:mt940.models.Amount
       amount: !!python/object/apply:decimal.Decimal
       - '-5'
       currency: EUR
     applicant_bin: BILLLULL1234
-    applicant_iban: NUMERO DE COMPTE01234567
-    applicant_name: NOM DU DO / BENEFICIAIRE 11NOM DU DO / BENEFICIAIRE 22
+    applicant_name: NUMERO DE COMPTE01234567NOM DU DO / BENEFICIAIRE 11NOM DU DO /
+      BENEFICIAIRE 22
     bank_reference: MUL0408041114005
     currency: EUR
     customer_reference: REFERENCE DO 111
