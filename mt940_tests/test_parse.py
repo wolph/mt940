@@ -1,3 +1,4 @@
+import contextlib
 import os
 import pathlib
 import pickle
@@ -117,10 +118,16 @@ def test_file_descriptor_is_read_and_closed() -> None:
     # 5.0.0 accepted an int through os.path.isfile and open(), which closes
     # the descriptor on the way out.
     fd = os.open(_ING, os.O_RDONLY)
-    transactions = mt940.parse(fd)
+    try:
+        transactions = mt940.parse(fd)
+        with pytest.raises(OSError, match='Bad file descriptor'):
+            _ = os.fstat(fd)
+    finally:
+        # parse() closed the descriptor, this only matters when the
+        # assertion above fails.
+        with contextlib.suppress(OSError):
+            os.close(fd)
     assert len(transactions) == len(mt940.parse(_ING))
-    with pytest.raises(OSError, match='Bad file descriptor'):
-        _ = os.fstat(fd)
 
 
 @pytest.mark.parametrize(
