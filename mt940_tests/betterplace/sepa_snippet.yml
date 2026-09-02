@@ -31,6 +31,18 @@ data:
   sequence_number: '00001'
   statement_number: '00004'
   transaction_reference: T089414096000001
+options: !!python/object/new:mt940.options.Options
+  state:
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
 tags:
   13: !!python/object:mt940.tags.DateTimeIndication
     re: !!python/object/apply:re._compile
@@ -128,12 +140,11 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE14508800500194785000
-    applicant_name: KARL        KAUFMANN
+    applicant_name: DE14508800500194785000KARL        KAUFMANN
     bank_reference: '0724710333343453'
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBw==
@@ -176,12 +187,11 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE03508800500194791600
-    applicant_name: Quentin Quast
+    applicant_name: DE03508800500194791600Quentin Quast
     bank_reference: '0724710324647450'
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBw==
@@ -224,12 +234,11 @@ transactions:
       currency: EUR
     applicant_bin: DRESDEFF508
     applicant_creditor_id: null
-    applicant_iban: DE14508800500194785000
-    applicant_name: Karl Kaufmann
+    applicant_name: DE14508800500194785000Karl Kaufmann
     bank_reference: 0724710324661090
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBw==
@@ -272,7 +281,6 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: 536D80EFEC56ACF8
     compensation_amount: null
@@ -323,12 +331,11 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: '0724710345316116'
     compensation_amount: null
     currency: EUR
-    customer_reference: TFNr 40001 MSGID
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -372,12 +379,11 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: '0724710351063401'
     compensation_amount: null
     currency: EUR
-    customer_reference: TFNr 44001 MSGID
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -421,12 +427,11 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: '0724710345316110'
     compensation_amount: null
     currency: EUR
-    customer_reference: TFNr 40001 MSGID
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -470,12 +475,12 @@ transactions:
       currency: EUR
     applicant_bin: PBNKDEFF100
     applicant_creditor_id: null
-    applicant_iban: DE42100100100043921105
-    applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
+    applicant_name: DE42100100100043921105Richter Renate 70 Zeichen Beginn Fuellzeichen
+      xxxxxxxx
     bank_reference: 0724710290659857
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -519,12 +524,12 @@ transactions:
       currency: EUR
     applicant_bin: PBNKDEFF100
     applicant_creditor_id: null
-    applicant_iban: DE42100100100043921105
-    applicant_name: Richter Renate 70 Zeichen Beginn Fuellzeichen xxxxxxxx
+    applicant_name: DE42100100100043921105Richter Renate 70 Zeichen Beginn Fuellzeichen
+      xxxxxxxx
     bank_reference: 0724710290624796
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -567,12 +572,11 @@ transactions:
       currency: EUR
     applicant_bin: null
     applicant_creditor_id: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: R724710351063405
     compensation_amount: null
     currency: EUR
-    customer_reference: TFNr 44001 MSGID
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B9cJBA==
@@ -612,7 +616,6 @@ transactions:
       - '-3572569.03'
       currency: EUR
     applicant_bin: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: null
     currency: EUR

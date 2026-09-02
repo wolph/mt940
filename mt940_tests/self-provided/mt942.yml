@@ -14,7 +14,7 @@ data:
     B+AKHhEeAAAAAA==
   - !!python/object/apply:mt940.models.FixedOffset
     state:
-      _name: '0'
+      _name: '0000'
       _offset: !!python/object/apply:datetime.timedelta
       - 0
       - 0
@@ -27,6 +27,18 @@ data:
     currency: EUR
     number: '1'
   transaction_reference: CGNGHKLI0290980
+options: !!python/object/new:mt940.options.Options
+  state:
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
 tags:
   13: !!python/object:mt940.tags.DateTimeIndication
     re: !!python/object/apply:re._compile

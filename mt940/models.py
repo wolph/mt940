@@ -25,10 +25,15 @@ import mt940
 
 from . import processors, utils
 
+# Kept at runtime: 5.0.0 exposed it as mt940.models.Processors.
+from ._types import Processors as Processors  # noqa: PLC0414, TC001
+from .options import Options
+
 if TYPE_CHECKING:
     from typing_extensions import Self
 
-    from ._types import Processors
+#: Sentinel for attributes that are absent, as opposed to ``None``.
+_MISSING = object()
 
 
 #: MT940 carries two-digit years. Anything below this limit is taken to be
@@ -72,20 +77,21 @@ class FixedOffset(datetime.tzinfo):
             offset = int(offset)
         self._offset: datetime.timedelta = datetime.timedelta(minutes=offset)
 
-    def utcoffset(
-        self, _dt: datetime.datetime | None, /
-    ) -> datetime.timedelta:
+    def utcoffset(self, dt: datetime.datetime | None) -> datetime.timedelta:
         """Return the fixed offset east of UTC."""
+        del dt
         return self._offset
 
     def dst(  # noqa: PLR6301 (the tzinfo API is instance-based)
-        self, _dt: datetime.datetime | None, /
+        self, dt: datetime.datetime | None
     ) -> datetime.timedelta:
         """Return a zero DST adjustment (fixed offsets have no DST)."""
+        del dt
         return datetime.timedelta(0)
 
-    def tzname(self, _dt: datetime.datetime | None, /) -> str:
+    def tzname(self, dt: datetime.datetime | None) -> str:
         """Return the offset's name."""
+        del dt
         return self._name
 
 
@@ -224,31 +230,51 @@ class Amount(Model):
     >>> Amount('123.45', 'D', 'EUR')
     <-123.45 EUR>
 
-    A reversal of a credit takes the money back out of the account, so it
-    is negative like a debit:
+    Release 5.0.0 negated a plain ``D`` only, so a reversal of a credit
+    (``RC``) and a lowercase ``d`` came back positive. That stays the
+    default. Opt in through :class:`mt940.options.Options` to sign them:
 
     >>> Amount('123.45', 'RC', 'EUR')
+    <123.45 EUR>
+    >>> Amount(
+    ...     '123.45', 'RC', 'EUR', options=mt940.Options(reversal_sign=True)
+    ... )
     <-123.45 EUR>
+    >>> Amount(
+    ...     '1.00',
+    ...     'd',
+    ...     'EUR',
+    ...     options=mt940.Options(case_insensitive_marks=True),
+    ... )
+    <-1.00 EUR>
 
-    And a reversal of a debit puts it back in, so it is positive:
+    A reversal of a debit puts money back in, so it stays positive:
 
-    >>> Amount('123.45', 'RD', 'EUR')
+    >>> Amount('123.45', 'RD', 'EUR', options=mt940.Options.all())
     <123.45 EUR>
     """
 
     def __init__(
         self,
         amount: str,
-        status: str,
+        status: str | None,
         currency: str | None = None,
+        *,
+        options: Options | None = None,
         **kwargs: Any,
     ) -> None:
         """Coerce ``amount`` to a signed :class:`decimal.Decimal`.
 
-        ``status`` is the field 61 debit/credit mark. The amount is negated
-        for the two marks that take money out of the account. Extra keyword
-        arguments are ignored so a parsed tag dictionary can be splatted in
-        directly.
+        Args:
+            amount: The amount, with ``,`` or ``.`` as decimal separator.
+            status: The debit/credit mark of field 61. ``None`` counts as
+                no mark.
+            currency: The three-letter currency code.
+            options: Which marks negate the amount, see
+                :class:`mt940.options.Options`. By default only a plain
+                ``D`` does, like release 5.0.0.
+            **kwargs: Ignored, so a parsed tag dictionary can be splatted
+                in directly.
         """
         del kwargs
         self.amount: decimal.Decimal = decimal.Decimal(
@@ -256,14 +282,16 @@ class Amount(Model):
         )
         self.currency: str | None = currency
 
-        # C = credit, D = debit, RC = reversal of a credit (so money leaves
-        # the account, like a debit), RD = reversal of a debit (so money
-        # comes back in, like a credit).
-        #
-        # Compared case-insensitively because the tag patterns compile with
-        # re.IGNORECASE, so a lowercase mark reaches this constructor as-is.
-
-        if status.upper() in {'D', 'RC'}:
+        # C = credit, D = debit, RC = reversal of a credit (money leaves the
+        # account, like a debit), RD = reversal of a debit (money comes back
+        # in, like a credit). The tag patterns compile with re.IGNORECASE,
+        # so a lowercase mark reaches this constructor as-is.
+        options = options or Options()
+        mark = status or ''
+        if options.case_insensitive_marks:
+            mark = mark.upper()
+        debit_marks = {'D', 'RC'} if options.reversal_sign else {'D'}
+        if mark in debit_marks:
             self.amount = -self.amount
 
     def __eq__(self, other: object) -> bool:
@@ -305,20 +333,17 @@ class SumAmount(Amount):
         self.number: int = number
 
     def __eq__(self, other: object) -> bool:
-        """Return whether ``other`` sums the same amount over as many entries.
+        """Return whether ``other`` is an equal-valued amount.
 
-        Two totals over a different number of entries are different totals,
-        so ``number`` takes part in the comparison.
+        ``number`` is informational and takes no part, as in 5.0.0: a plain
+        :class:`Amount` of the same value compares equal, and so do two
+        totals over a different number of entries.
         """
-        return (
-            isinstance(other, SumAmount)
-            and super().__eq__(other)
-            and self.number == other.number
-        )
+        return super().__eq__(other)
 
     def __hash__(self) -> int:
-        """Return a hash of amount, currency and count, matching ``__eq__``."""
-        return hash((self.amount, self.currency, self.number))
+        """Return the :class:`Amount` hash, matching ``__eq__``."""
+        return super().__hash__()
 
     def __repr__(self) -> str:
         """Return the amount, currency and entry count in angle brackets."""
@@ -353,33 +378,34 @@ class Balance(Model):
         status: str | None = None,
         amount: Amount | str | None = None,
         date: Date | None = None,
+        *,
+        options: Options | None = None,
         **kwargs: Any,
     ) -> None:
         """Store the balance, coercing a string ``amount`` to an ``Amount``.
 
-        The ``:60F:``-style tag patterns allow an empty amount, so an empty
-        string is stored as ``None`` rather than failing the whole parse.
+        An empty amount string is stored as it is, like release 5.0.0 did.
 
         Args:
             status: The debit/credit mark, needed to sign a string amount.
             amount: An :class:`Amount`, or an amount string to coerce.
             date: The balance date.
+            options: Passed on to :class:`Amount` when coercing.
             **kwargs: Extra parsed tag fields, only ``currency`` is used.
 
         Raises:
             ValueError: When ``amount`` is a non-empty string and ``status``
                 is missing.
         """
-        if isinstance(amount, str):
-            if not amount:
-                amount = None
-            elif status is None:
+        if isinstance(amount, str) and amount:
+            if status is None:
                 msg = 'Cannot create Amount without status'
                 raise ValueError(msg)
-            else:
-                amount = Amount(amount, status, kwargs.get('currency'))
+            amount = Amount(
+                amount, status, kwargs.get('currency'), options=options
+            )
         self.status: str | None = status
-        self.amount: Amount | None = amount
+        self.amount: Amount | str | None = amount
         self.date: Date | None = date
 
     def __eq__(self, other: object) -> bool:
@@ -516,12 +542,16 @@ class Transactions(Sequence[Transaction]):
         """
         self.__dict__.update(state)
         self.processors: Processors = self.DEFAULT_PROCESSORS.copy()
+        # Pickles written by 5.0.0 predate the options attribute.
+        _ = self.__dict__.setdefault('options', Options())
 
     def __init__(
         self,
         processors: Processors | None = None,
         tags: dict[int | str, mt940.tags.Tag] | None = None,
         transaction_boundary: Iterable[str] | None = None,
+        *,
+        options: Options | None = None,
     ) -> None:
         """Create an empty collection, optionally customizing parsing.
 
@@ -533,7 +563,10 @@ class Transactions(Sequence[Transaction]):
                 (issue #110). By default only ``:61:`` starts one; a bare
                 string is treated as a single slug. Omit to keep the legacy
                 behaviour.
+            options: Opt-in behaviours, see :class:`mt940.options.Options`.
+                Omit to parse exactly like release 5.0.0.
         """
+        self.options: Options = options or Options()
         self.processors = self.DEFAULT_PROCESSORS.copy()
         self.tags: MutableMapping[int | str, mt940.tags.Tag] = dict(
             self.default_tags()
@@ -580,12 +613,16 @@ class Transactions(Sequence[Transaction]):
             self.data.get('d_floor_limit'),
         )
 
-        # Floor limits are bare amounts, balances wrap one.
-        if isinstance(balance, Amount):
-            return balance.currency
-        if isinstance(balance, Balance) and balance.amount is not None:
-            return balance.amount.currency
-        return None
+        if balance is None:
+            return None
+        # Floor limits are bare amounts, balances wrap one. Duck-typed, as
+        # in 5.0.0: anything with a currency, or with an amount that has one,
+        # counts. Nothing usable gives None instead of an error.
+        currency: object = getattr(balance, 'currency', _MISSING)
+        if currency is _MISSING:
+            amount: object = getattr(balance, 'amount', None)
+            currency = getattr(amount, 'currency', None)
+        return currency if isinstance(currency, str) else None
 
     @classmethod
     def defaultTags(cls) -> Mapping[int | str, mt940.tags.Tag]:  # noqa: N802
@@ -719,17 +756,22 @@ class Transactions(Sequence[Transaction]):
         New keys are set directly. When both the existing and the incoming
         values are strings, the incoming one is appended on a new line, as
         with a multi-line ``:86:``. A structured ``:86:`` emits ``None`` for
-        every sub-field it does not carry, and such a ``None`` never replaces
-        a value another tag already provided: the ``:61:`` customer reference
-        survives a later structured ``:86:`` without a ``KREF``. Any other
-        incoming value replaces the existing one.
+        every sub-field it does not carry. By default such a ``None``
+        replaces whatever another tag provided, as in 5.0.0, so the ``:61:``
+        customer reference is lost to a later ``:86:`` without a ``KREF``.
+        With :attr:`~mt940.options.Options.merge_keeps_values` a ``None``
+        never replaces an existing value. Either way a later string replaces
+        an existing ``None`` instead of crashing on ``None += str``.
         """
         transaction = self.transactions[-1]
+        keep_values = self.options.merge_keeps_values
         for k, v in result.items():
             existing = transaction.data.get(k)
             if hasattr(existing, 'strip') and hasattr(v, 'strip'):
                 transaction.data[k] += f'\n{v.strip()}'
-            elif v is not None or k not in transaction.data:
+            elif v is None and keep_values and k in transaction.data:
+                continue
+            else:
                 transaction.data[k] = v
 
     @overload
@@ -837,19 +879,6 @@ class TransactionsAndTransaction(  # type: ignore[misc]  # pyright: ignore[repor
     ``:NS:`` is the example: its content is filed both as statement data and
     as details of the current transaction. The class exists so that the
     ``issubclass`` checks against :attr:`~mt940.tags.Tag.scope` succeed for
-    both bases. It is never instantiated.
+    both bases. The parser never creates an instance, but building one works
+    and behaves like an empty :class:`Transactions`, as in 5.0.0.
     """
-
-    # No super call: the constructor refuses instantiation, so there is
-    # nothing to initialise.
-    def __init__(  # pyright: ignore[reportMissingSuperCall]
-        self, *args: object, **kwargs: object
-    ) -> None:
-        """Refuse instantiation, the class is only a scope marker.
-
-        Raises:
-            TypeError: Always.
-        """
-        del args, kwargs
-        msg = f'{type(self).__name__} is a scope marker, it cannot be created'
-        raise TypeError(msg)

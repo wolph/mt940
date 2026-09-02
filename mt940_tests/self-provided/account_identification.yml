@@ -2,6 +2,18 @@
 data:
   account_identification: ACXXXXXX000000XXXXXX3
   transaction_reference: 0003478756
+options: !!python/object/new:mt940.options.Options
+  state:
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
 tags:
   13: !!python/object:mt940.tags.DateTimeIndication
     re: !!python/object/apply:re._compile

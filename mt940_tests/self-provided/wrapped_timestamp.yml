@@ -22,6 +22,18 @@ data:
   sequence_number: '001'
   statement_number: '00000'
   transaction_reference: STARTUMSE
+options: !!python/object/new:mt940.options.Options
+  state:
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
 tags:
   13: !!python/object:mt940.tags.DateTimeIndication
     re: !!python/object/apply:re._compile
@@ -120,12 +132,11 @@ transactions:
     applicant_bin: null
     applicant_creditor_id: XX0000000000000000ABCDEFGHIJKLMNOPQRSTUVW/PL 12-09-2014T16:26:37
       Folgenr. 007
-    applicant_iban: null
     applicant_name: null
     bank_reference: null
     compensation_amount: null
     currency: EUR
-    customer_reference: NONREF
+    customer_reference: null
     date: !!python/object/apply:mt940.models.Date
     - !!binary |
       B+ACHQ==

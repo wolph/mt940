@@ -45,6 +45,10 @@ exclude_patterns = ['_build', 'html', 'doctrees']
 
 # -- Autodoc / Napoleon -------------------------------------------------------
 autodoc_typehints = 'description'
+# mt940.Options is a re-export of mt940.options.Options, so the short type
+# name in a signature has two documented targets. Only that ambiguity is
+# silenced: unresolved references keep their ref.class/ref.func warnings.
+suppress_warnings = ['ref.python']
 autodoc_member_order = 'bysource'
 autodoc_default_options = {
     'members': True,

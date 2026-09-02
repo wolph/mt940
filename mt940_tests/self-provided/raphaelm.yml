@@ -73,7 +73,6 @@ data:
 
     90000022
 
-    32
 
     33
 
@@ -81,6 +80,18 @@ data:
   sequence_number: '1'
   statement_number: '2'
   transaction_reference: STARTUMS
+options: !!python/object/new:mt940.options.Options
+  state:
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
 tags:
   13: !!python/object:mt940.tags.DateTimeIndication
     re: !!python/object/apply:re._compile

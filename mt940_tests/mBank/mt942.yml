@@ -14,10 +14,10 @@ data:
     B+EBExIPAAAAAA==
   - !!python/object/apply:mt940.models.FixedOffset
     state:
-      _name: '60'
+      _name: '0100'
       _offset: !!python/object/apply:datetime.timedelta
       - 0
-      - 3600
+      - 6000
       - 0
   sequence_number: '1'
   statement_number: '1'
@@ -32,6 +32,18 @@ data:
     currency: PLN
     number: '0'
   transaction_reference: ST170119CYC/0001
+options: !!python/object/new:mt940.options.Options
+  state:
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
 tags:
   13: !!python/object:mt940.tags.DateTimeIndication
     re: !!python/object/apply:re._compile

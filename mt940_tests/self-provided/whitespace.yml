@@ -22,6 +22,18 @@ data:
   sequence_number: null
   statement_number: '0'
   transaction_reference: STARTUMS
+options: !!python/object/new:mt940.options.Options
+  state:
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
 tags:
   13: !!python/object:mt940.tags.DateTimeIndication
     re: !!python/object/apply:re._compile
@@ -115,8 +127,7 @@ transactions:
       - '-233.15'
       currency: EUR
     applicant_bin: '12030000'
-    applicant_iban: '9003932309'
-    applicant_name: DEUTSCHE KREDITBANK AG
+    applicant_name: 9003932309DEUTSCHE KREDITBANK AG
     bank_reference: null
     currency: EUR
     customer_reference: ''

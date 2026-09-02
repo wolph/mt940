@@ -22,6 +22,18 @@ data:
   sequence_number: '00001'
   statement_number: '00053'
   transaction_reference: "STAR1\xDCTUMS"
+options: !!python/object/new:mt940.options.Options
+  state:
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
 tags:
   13: !!python/object:mt940.tags.DateTimeIndication
     re: !!python/object/apply:re._compile
@@ -115,8 +127,7 @@ transactions:
       - '27.00'
       currency: EUR
     applicant_bin: '50070010'
-    applicant_iban: '0175526300'
-    applicant_name: PAYPAL
+    applicant_name: 0175526300PAYPAL
     bank_reference: 32-P1-TCS49518
     currency: EUR
     customer_reference: 100323-03-100323
@@ -147,8 +158,7 @@ transactions:
       - '13068.30'
       currency: EUR
     applicant_bin: '51230800'
-    applicant_iban: '9990437808'
-    applicant_name: WIRECARD BANK AG
+    applicant_name: 9990437808WIRECARD BANK AG
     bank_reference: null
     currency: EUR
     customer_reference: NONREF
@@ -179,7 +189,6 @@ transactions:
       - '-193282.05'
       currency: EUR
     applicant_bin: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: null
     currency: EUR
@@ -212,7 +221,6 @@ transactions:
       - '1120.00'
       currency: EUR
     applicant_bin: null
-    applicant_iban: null
     applicant_name: null
     bank_reference: null
     currency: EUR

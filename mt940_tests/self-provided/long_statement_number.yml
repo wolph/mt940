@@ -22,6 +22,18 @@ data:
   sequence_number: '18101'
   statement_number: '18101'
   transaction_reference: '12345678'
+options: !!python/object/new:mt940.options.Options
+  state:
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
+  - false
 tags:
   13: !!python/object:mt940.tags.DateTimeIndication
     re: !!python/object/apply:re._compile

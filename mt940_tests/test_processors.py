@@ -215,8 +215,17 @@ def test_json_round_trip_sum_amount_and_datetime() -> None:
         'currency': 'PLN',
         'number': '3',
     }
-    # The :13D: DateTime (with a +0100 FixedOffset) renders as an ISO string,
-    # carrying the timezone offset, not a mapping.
+    # The :13D: DateTime renders as an ISO string carrying the timezone
+    # offset, not a mapping. 5.0.0 read the +0100 subfield as 100 minutes.
+    assert decoded['date'] == '2017-01-19 18:15:00+01:40'
+
+
+def test_json_round_trip_datetime_with_timezone_offset_option() -> None:
+    transactions = mt940.parse(
+        str(_tests_path / 'mBank' / 'mt942.sta'),
+        options=mt940.Options(timezone_offset=True),
+    )
+    decoded = json.loads(json.dumps(transactions, cls=mt940.JSONEncoder))
     assert decoded['date'] == '2017-01-19 18:15:00+01:00'
 
 
@@ -260,25 +269,26 @@ def test_date_fixup_non_leap_february_clamped() -> None:
 
 
 @pytest.mark.parametrize(
-    ('detail', 'expected_purpose'),
+    ('detail', 'legacy_purpose', 'fixed_purpose'),
     [
         # A literal '+' inside the first characters of free text (e.g. a
-        # company name like "AB+...") must not be treated as a GVC KEYWORD+
-        # separator: EREF is a real GVC key later in the text, so gvcodes runs.
-        ('020?20AB+EREF', 'AB+EREF'),
-        # 'A+B' at the very start must survive. SVWZ triggers gvcodes parsing.
-        ('020?20A+B SVWZ TEXT', 'A+B SVWZ TEXT'),
+        # company name like "AB+...") is not a GVC KEYWORD+ separator: EREF
+        # is a real GVC key later in the text, so gvcodes runs.
+        ('020?20AB+EREF', 'EREF', 'AB+EREF'),
+        # 'A+B' at the very start. SVWZ triggers gvcodes parsing.
+        ('020?20A+B SVWZ TEXT', 'B SVWZ TEXT', 'A+B SVWZ TEXT'),
     ],
 )
-def test_gvcode_leading_plus_in_free_text_kept_in_purpose(
-    detail: str, expected_purpose: str
+def test_gvcode_leading_plus_in_free_text(
+    detail: str, legacy_purpose: str, fixed_purpose: str
 ) -> None:
     """A '+' earlier than position 4 cannot terminate a GVC keyword.
 
-    GVC keywords are 3-4 chars followed by '+'. ``_parse_mt940_gvcodes`` sliced
+    GVC keywords are four characters followed by '+'. 5.0.0 sliced
     ``purpose[index - 4:index]`` without a lower bound, so a '+' at index < 4
-    produced a wrapped/empty slice matching the empty-string GVC key and
-    truncated the purpose (dropping the leading free text before the '+').
+    produced a wrapped, empty slice matching the empty-string GVC key and
+    dropped the free text in front of the '+'. That stays the default,
+    ``Options(gvc_leading_text=True)`` keeps the text.
     """
     data = (
         ':20:REF\n'
@@ -289,8 +299,9 @@ def test_gvcode_leading_plus_in_free_text_kept_in_purpose(
         f':86:{detail}\n'
         ':62F:C200101EUR110,00\n'
     )
-    transaction = mt940.parse(data)[0].data
-    assert transaction['purpose'] == expected_purpose
+    assert mt940.parse(data)[0].data['purpose'] == legacy_purpose
+    fixed = mt940.parse(data, options=mt940.Options(gvc_leading_text=True))
+    assert fixed[0].data['purpose'] == fixed_purpose
 
 
 def _two_structured_86_data(first_detail: str, second_detail: str) -> str:
@@ -307,39 +318,67 @@ def _two_structured_86_data(first_detail: str, second_detail: str) -> str:
 
 
 @pytest.mark.parametrize(
-    ('first_detail', 'second_detail'),
+    ('first_detail', 'second_detail', 'legacy_purpose', 'legacy_posting'),
     [
-        ('020?20REALPURPOSE', '020?00POSTINGTEXT'),
-        ('020?00POSTINGTEXT', '020?20REALPURPOSE'),
+        ('020?20REALPURPOSE', '020?00POSTINGTEXT', None, 'POSTINGTEXT'),
+        ('020?00POSTINGTEXT', '020?20REALPURPOSE', 'REALPURPOSE', None),
     ],
 )
-def test_repeated_structured_86_keeps_real_values_in_either_order(
-    first_detail: str, second_detail: str
+def test_repeated_structured_86_merge(
+    first_detail: str,
+    second_detail: str,
+    legacy_purpose: str | None,
+    legacy_posting: str | None,
 ) -> None:
-    """Two structured ``:86:`` tags on one ``:61:`` merge without loss.
+    """Two structured ``:86:`` tags on one ``:61:`` merge without a crash.
 
     A structured ``:86:`` emits every ``DETAIL_KEYS`` value, ``None`` for the
-    sub-fields it does not carry. A second one used to hit ``None += str`` in
-    ``_update_transaction`` and abort the parse, and once that was fixed its
-    ``None`` values still overwrote the first tag's real values. A ``None``
-    never replaces an existing value now, so both tags' values survive.
+    sub-fields it does not carry. 5.0.0 hit ``None += str`` in one order and
+    aborted the parse, which stays fixed, and in the other order let the
+    later ``None`` overwrite the earlier real value, which stays the default.
+    With ``Options(merge_keeps_values=True)`` a ``None`` never replaces an
+    existing value, so both tags' values survive in either order.
     """
-    transaction = mt940.parse(
-        _two_structured_86_data(first_detail, second_detail)
-    )[0].data
-    assert transaction['purpose'] == 'REALPURPOSE'
-    assert transaction['posting_text'] == 'POSTINGTEXT'
+    data = _two_structured_86_data(first_detail, second_detail)
+    legacy = mt940.parse(data)[0].data
+    assert legacy['purpose'] == legacy_purpose
+    assert legacy['posting_text'] == legacy_posting
+
+    kept = mt940.parse(data, options=mt940.Options(merge_keeps_values=True))
+    assert kept[0].data['purpose'] == 'REALPURPOSE'
+    assert kept[0].data['posting_text'] == 'POSTINGTEXT'
 
 
-def test_structured_86_without_kref_keeps_the_61_customer_reference() -> None:
+def test_structured_86_without_kref_and_the_61_customer_reference() -> None:
     # The :61: carries the customer reference. A structured :86: without a
-    # KREF emits customer_reference=None, which used to null the real value
-    # in nine fixtures from four banks.
+    # KREF emits customer_reference=None, which nulls the real value in nine
+    # fixtures from four banks under the 5.0.0 rule.
     data = _two_structured_86_data('020?20PURPOSE', '020?00TEXT').replace(
         'NTRFNONREF', 'NTRFTFNR 40001'
     )
-    transaction = mt940.parse(data)[0].data
-    assert transaction['customer_reference'] == 'TFNR 40001'
+    assert mt940.parse(data)[0].data['customer_reference'] is None
+    kept = mt940.parse(data, options=mt940.Options(merge_keeps_values=True))
+    assert kept[0].data['customer_reference'] == 'TFNR 40001'
+
+
+def test_detail_key_mappings() -> None:
+    # DETAIL_KEYS is the 5.0.0 mapping, the ?31 variant is a separate
+    # constant with the same keys in the same order.
+    assert mt940.processors.DETAIL_KEYS['31'] == 'applicant_name'
+    assert (
+        mt940.processors.DETAIL_KEYS_APPLICANT_IBAN['31'] == 'applicant_iban'
+    )
+    assert list(mt940.processors.DETAIL_KEYS_APPLICANT_IBAN) == list(
+        mt940.processors.DETAIL_KEYS
+    )
+
+
+def test_processor_protocols_are_importable_from_processors() -> None:
+    # 5.0.0 exposed the protocols here, typed user code imports them here.
+    for name in ('PreProcessor', 'PostProcessor'):
+        protocol = getattr(mt940.processors, name)
+        assert protocol.__module__ == 'mt940._types'
+        assert protocol.__name__ == name
 
 
 def test_add_currency_pre_processor_can_keep_an_existing_currency() -> None:

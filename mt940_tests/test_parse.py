@@ -1,8 +1,10 @@
 import os
 import pathlib
 import pickle
+import typing
 
 import mt940
+import mt940._types
 import pytest
 
 _tests_path = pathlib.Path(__file__).parent
@@ -42,20 +44,34 @@ _ACCENTED_STATEMENT = _BOM_STATEMENT.replace(
 )
 
 
-def test_utf8_bom_bytes_does_not_drop_first_tag() -> None:
-    # A UTF-8 BOM (emitted by many Windows tools/banks) must not push the
-    # leading :20: past the start-of-line tag anchor and drop its data.
-    data = b'\xef\xbb\xbf' + _BOM_STATEMENT.encode('utf-8')
+_BOM_BYTES = b'\xef\xbb\xbf' + _BOM_STATEMENT.encode('utf-8')
+
+
+@pytest.mark.parametrize(
+    'data', [_BOM_BYTES, '﻿' + _BOM_STATEMENT], ids=['bytes', 'str']
+)
+def test_bom_drops_the_first_tag_by_default(data: bytes | str) -> None:
+    # 5.0.0 kept a leading BOM. It is not whitespace, so it pushes the
+    # leading :20: past the start-of-line tag anchor and that tag's data is
+    # lost, and parse_statements finds no statement at all.
     transactions = mt940.parse(data)
-    assert transactions.data.get('transaction_reference') == 'REF'
+    assert 'transaction_reference' not in transactions.data
     assert len(transactions) == 1
+    assert mt940.parse_statements(data) == []
 
 
-def test_utf8_bom_str_does_not_drop_first_tag() -> None:
-    # Same file already decoded to str with a stray BOM character.
-    transactions = mt940.parse('﻿' + _BOM_STATEMENT)
+@pytest.mark.parametrize(
+    'data', [_BOM_BYTES, '﻿' + _BOM_STATEMENT], ids=['bytes', 'str']
+)
+def test_strip_bom_option_keeps_the_first_tag(data: bytes | str) -> None:
+    # A UTF-8 BOM (emitted by many Windows tools/banks) is dropped on
+    # request, and the :20: parses.
+    options = mt940.Options(strip_bom=True)
+    transactions = mt940.parse(data, options=options)
     assert transactions.data.get('transaction_reference') == 'REF'
     assert len(transactions) == 1
+    statements = mt940.parse_statements(data, options=options)
+    assert [s.data['transaction_reference'] for s in statements] == ['REF']
 
 
 def test_string_that_is_not_a_path_is_parsed_as_data() -> None:
@@ -74,9 +90,48 @@ def test_bytes_path_parses_like_a_str_path() -> None:
 
 def test_missing_path_like_source_raises() -> None:
     # A str that is not a file is statement data. A path-like object cannot
-    # be, so a missing one is an error rather than an empty parse.
+    # be, so a missing one is an error rather than an empty parse. 5.0.0
+    # raised a bare AssertionError here, this is the one deliberate change
+    # of exception type.
     with pytest.raises(FileNotFoundError, match=r'statement\.sta'):
         _ = mt940.parse(pathlib.Path('/nonexistent/statement.sta'))
+
+
+class _StatementWithRead(str):  # noqa: FURB189 (a str subclass is the point)
+    """A str that also has a read() method, which 5.0.0 read through."""
+
+    __slots__: typing.ClassVar[tuple[str, ...]] = ()
+
+    def read(self) -> str:
+        return self.replace('REF', 'FROM-READ')
+
+
+def test_anything_with_a_read_method_is_read_first() -> None:
+    # 5.0.0 checked for read() before anything else, so even a str
+    # subclass is treated as a handle.
+    transactions = mt940.parse(_StatementWithRead(_BOM_STATEMENT))
+    assert transactions.data['transaction_reference'] == 'FROM-READ'
+
+
+def test_file_descriptor_is_read_and_closed() -> None:
+    # 5.0.0 accepted an int through os.path.isfile and open(), which closes
+    # the descriptor on the way out.
+    fd = os.open(_ING, os.O_RDONLY)
+    transactions = mt940.parse(fd)
+    assert len(transactions) == len(mt940.parse(_ING))
+    with pytest.raises(OSError, match='Bad file descriptor'):
+        _ = os.fstat(fd)
+
+
+@pytest.mark.parametrize(
+    'source',
+    [None, [':20:REF'], bytearray(b':20:REF'), memoryview(b':20:REF')],
+    ids=['none', 'list', 'bytearray', 'memoryview'],
+)
+def test_unsupported_sources_raise_type_error(source: object) -> None:
+    # 5.0.0 raised TypeError out of os.stat for these.
+    with pytest.raises(TypeError, match='unsupported source type'):
+        _ = mt940.parse(typing.cast('mt940._types.Source', source))
 
 
 def test_explicit_encoding_is_tried_first() -> None:
@@ -196,3 +251,43 @@ def test_pickle_roundtrip_preserves_transaction_boundary() -> None:
     assert restored.transaction_boundary == frozenset({
         'transaction_reference_number'
     })
+
+
+_TWO_86_STATEMENT = """:20:REF
+:25:NL
+:28C:1/1
+:60F:C091019EUR1000,00
+:61:0910201020C500,00NTRFCUSTREF//BANKREF
+:86:166?00SEPA?20SVWZ+one
+:86:166?00SEPA?20KREF+K2?21SVWZ+two
+:62F:C091020EUR1500,00
+"""
+
+
+def test_structured_86_none_overwrites_by_default() -> None:
+    # 5.0.0 semantics: the first structured :86: carries no KREF, so its
+    # customer_reference of None replaces the one from :61:. The second
+    # :86: then replaces that None with its KREF. (5.0.0 itself crashed on
+    # the second tag with None += str, that part is a plain fix.)
+    transaction = mt940.parse(_TWO_86_STATEMENT)[0].data
+    assert transaction['customer_reference'] == 'K2'
+    assert transaction['purpose'] == 'one\ntwo'
+
+
+def test_merge_keeps_values_option_preserves_existing_values() -> None:
+    # With the option a None never replaces a value another tag provided,
+    # so the :61: reference survives and the KREF is appended to it.
+    options = mt940.Options(merge_keeps_values=True)
+    transaction = mt940.parse(_TWO_86_STATEMENT, options=options)[0].data
+    assert transaction['customer_reference'] == 'CUSTREF\nK2'
+    assert transaction['purpose'] == 'one\ntwo'
+
+
+def test_merge_keeps_values_option_still_fills_missing_keys() -> None:
+    # A key that no earlier tag provided is set even when its value is
+    # None, in both modes.
+    statement = _TWO_86_STATEMENT.replace('KREF+K2?21', '')
+    for options in (mt940.Options(), mt940.Options(merge_keeps_values=True)):
+        transaction = mt940.parse(statement, options=options)[0].data
+        assert 'applicant_creditor_id' in transaction
+        assert transaction['applicant_creditor_id'] is None
