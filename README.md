@@ -1,6 +1,6 @@
 # MT940
 
-[![CI](https://github.com/WoLpH/mt940/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/WoLpH/mt940/actions/workflows/ci.yml)
+[![CI](https://github.com/WoLpH/mt940/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/WoLpH/mt940/actions/workflows/ci.yml?query=branch%3Amaster)
 [![PyPI](https://img.shields.io/pypi/v/mt-940)](https://pypi.org/project/mt-940/)
 [![Python](https://img.shields.io/pypi/pyversions/mt-940)](https://pypi.org/project/mt-940/)
 [![Downloads](https://img.shields.io/pypi/dm/mt-940)](https://pypi.org/project/mt-940/)
