@@ -30,7 +30,7 @@ from __future__ import annotations
 import os
 import pathlib
 import re
-from typing import TYPE_CHECKING, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Protocol, TypeGuard, runtime_checkable
 
 import mt940
 
@@ -73,6 +73,23 @@ def _decode(data: bytes, encoding: str | None) -> str:
     return data.decode('cp852')
 
 
+def _is_path(
+    obj: object,
+) -> TypeGuard[str | bytes | os.PathLike[str] | os.PathLike[bytes]]:
+    """Recognise a path or raw data, with the PathLike parameter spelled out.
+
+    A plain ``isinstance`` check leaves the ``PathLike`` type parameter
+    unknown to pyright 1.1.411, which strict mode then reports at every use.
+
+    Args:
+        obj: Anything the caller passed as a source.
+
+    Returns:
+        Whether ``obj`` is a ``str``, ``bytes`` or path-like object.
+    """
+    return isinstance(obj, (str, bytes, os.PathLike))
+
+
 def _load(source: object) -> str | bytes:
     """Fetch the raw statement data from whatever the caller passed.
 
@@ -100,7 +117,7 @@ def _load(source: object) -> str | bytes:
         # A file descriptor. Reading closes it, as open() did in 5.0.0.
         with open(source, 'rb') as fh:  # noqa: PTH123, FURB101 (a descriptor)
             return fh.read()
-    if isinstance(source, (str, bytes, os.PathLike)):
+    if _is_path(source):
         if os.path.isfile(source):  # noqa: PTH113 (bytes paths are accepted)
             return pathlib.Path(os.fsdecode(source)).read_bytes()
         if isinstance(source, os.PathLike):

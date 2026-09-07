@@ -102,6 +102,7 @@ jobs:
           - taplo
           - mypy
           - basedpyright
+          - pyright
           - pyrefly
           - ty
           - docs

@@ -50,6 +50,7 @@ dev = [
     'ruff>=0.16',
     'mypy>=1.18',
     'basedpyright>=1.31',
+    'pyright>=1.1.400',
     'pyrefly>=1.1',
     'ty>=0.0.70',
     'codespell>=2.4',
@@ -151,6 +152,9 @@ enable_error_code = [
     'unused-awaitable',
 ]
 
+# Plain pyright (the release gate) reads pyrightconfig.strict.json instead.
+# basedpyright refuses a pyproject with both a pyright and a basedpyright
+# section, and a discoverable pyrightconfig.json would override this one.
 [tool.basedpyright]
 typeCheckingMode = 'all'
 pythonVersion = '3.10'

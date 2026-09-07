@@ -37,6 +37,8 @@ pre-push:
       run: uv run mypy && uv run mypy --python-version 3.12 docs/conf.py
     basedpyright:
       run: uv run basedpyright
+    pyright:
+      run: uv run pyright -p pyrightconfig.strict.json
     pyrefly:
       run: uv run pyrefly check
     ty:
