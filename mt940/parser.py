@@ -138,6 +138,39 @@ def _read(
     return data
 
 
+def _new_transactions(
+    processors: Processors | None,
+    tags: dict[int | str, mt940.tags.Tag] | None,
+    transaction_boundary: Iterable[str] | None,
+    options: Options | None,
+) -> Transactions:
+    """Build the collection, passing ``options`` only when there are any.
+
+    A :class:`~mt940.models.Transactions` subclass written against 5.0.0 has
+    no ``options`` parameter. Leaving the keyword out when it would be
+    ``None`` anyway keeps such a subclass working through this module.
+
+    Args:
+        processors: See :func:`parse`.
+        tags: See :func:`parse`.
+        transaction_boundary: See :func:`parse`.
+        options: See :func:`parse`.
+
+    Returns:
+        A fresh, empty collection.
+    """
+    if options is None:
+        return mt940.models.Transactions(
+            processors, tags, transaction_boundary=transaction_boundary
+        )
+    return mt940.models.Transactions(
+        processors,
+        tags,
+        transaction_boundary=transaction_boundary,
+        options=options,
+    )
+
+
 def parse(
     src: Source,
     encoding: str | None = None,
@@ -166,11 +199,8 @@ def parse(
         The parsed collection of transactions.
     """
     data = _read(src, encoding, strip_bom=(options or Options()).strip_bom)
-    transactions = mt940.models.Transactions(
-        processors,
-        tags,
-        transaction_boundary=transaction_boundary,
-        options=options,
+    transactions = _new_transactions(
+        processors, tags, transaction_boundary, options
     )
     _ = transactions.parse(data)
 
@@ -226,12 +256,7 @@ def parse_statements(
         if not block.strip().startswith(':20:'):
             # Drop any leading header / empty chunk before the first :20:.
             continue
-        transactions = mt940.models.Transactions(
-            processors,
-            tags,
-            transaction_boundary=boundary,
-            options=options,
-        )
+        transactions = _new_transactions(processors, tags, boundary, options)
         boundary = transactions.transaction_boundary
         _ = transactions.parse(block)
         statements.append(transactions)

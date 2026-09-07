@@ -542,7 +542,9 @@ class Transactions(Sequence[Transaction]):
         """
         self.__dict__.update(state)
         self.processors: Processors = self.DEFAULT_PROCESSORS.copy()
-        # Pickles written by 5.0.0 predate the options attribute.
+        # Pickles written by 4.x predate transaction_boundary, and pickles
+        # written by 5.0.0 predate options.
+        _ = self.__dict__.setdefault('transaction_boundary', frozenset())
         _ = self.__dict__.setdefault('options', Options())
 
     def __init__(

@@ -3,6 +3,7 @@ import os
 import pathlib
 import pickle
 import typing
+from collections.abc import Iterable
 
 import mt940
 import mt940._types
@@ -258,6 +259,54 @@ def test_pickle_roundtrip_preserves_transaction_boundary() -> None:
     assert restored.transaction_boundary == frozenset({
         'transaction_reference_number'
     })
+
+
+def test_unpickle_state_from_before_options_and_boundary() -> None:
+    # Pickles written by 4.x carry neither `transaction_boundary` (5.0.0)
+    # nor `options` (5.1.0). Both are backfilled so the restored object can
+    # parse again instead of raising AttributeError.
+    with _ING.open(encoding='utf-8') as fh:
+        transactions = mt940.parse(fh.read())
+    # A real round trip (of our own, trusted pickle) gives an independent
+    # copy of the state. Dropping the two newer attributes from it mimics a
+    # pickle written by 4.x.
+    state = pickle.loads(pickle.dumps(transactions)).__getstate__()
+    del state['options'], state['transaction_boundary']
+    restored = mt940.models.Transactions.__new__(mt940.models.Transactions)
+    restored.__setstate__(state)
+
+    assert restored.options == mt940.Options()
+    assert restored.transaction_boundary == frozenset()
+    assert len(restored.parse(_BOM_STATEMENT)) == len(transactions) + 1
+
+
+class _Legacy500Transactions(mt940.models.Transactions):
+    """A subclass with the 5.0.0 constructor, which predates `options`."""
+
+    def __init__(
+        self,
+        processors: mt940._types.Processors | None = None,
+        tags: dict[int | str, mt940.tags.Tag] | None = None,
+        transaction_boundary: Iterable[str] | None = None,
+    ) -> None:
+        super().__init__(processors, tags, transaction_boundary)
+
+
+def test_parse_builds_a_subclass_with_the_5_0_0_constructor(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Code written against 5.0.0 may install a Transactions subclass whose
+    # constructor does not take `options`. Without options to pass on, the
+    # parser must not pass the keyword at all.
+    monkeypatch.setattr(mt940.models, 'Transactions', _Legacy500Transactions)
+
+    parsed = mt940.parse(_BOM_STATEMENT)
+    assert isinstance(parsed, _Legacy500Transactions)
+    assert len(parsed) == 1
+
+    statements = mt940.parse_statements(_BOM_STATEMENT + _BOM_STATEMENT)
+    assert [len(statement) for statement in statements] == [1, 1]
+    assert all(isinstance(s, _Legacy500Transactions) for s in statements)
 
 
 _TWO_86_STATEMENT = """:20:REF

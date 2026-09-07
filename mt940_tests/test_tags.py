@@ -115,6 +115,46 @@ def test_transaction_details_single_long_line(
     assert len(parsed['transaction_details'] or '') == expected_length
 
 
+class _WideDetails(mt940.tags.TransactionDetails):
+    """The 4.x and 5.0.0 way past the cap: a subclass with its own pattern."""
+
+    pattern: ClassVar[str] = r'(?P<transaction_details>[\s\S]*)'
+
+
+class _PlainSubclass(mt940.tags.TransactionDetails):
+    """A subclass that keeps the base pattern, so it keeps the cap too."""
+
+
+@pytest.mark.parametrize(
+    ('tag', 'expected_length'),
+    [
+        (_WideDetails(), 700),
+        (_PlainSubclass(), 585),
+    ],
+    ids=['own_pattern', 'base_pattern'],
+)
+def test_transaction_details_subclass_pattern_is_honoured(
+    tag: mt940.tags.TransactionDetails, expected_length: int
+) -> None:
+    # 5.1.0 cut a subclass's capture back to 585 characters, which broke the
+    # workaround every 4.x and 5.0.0 user had for long details.
+    transactions = mt940.models.Transactions()
+    parsed = tag.parse(transactions, 'x' * 700)
+    assert len(parsed['transaction_details'] or '') == expected_length
+
+
+def test_transaction_details_subclass_pattern_through_parse() -> None:
+    transactions = mt940.parse(
+        _HEADER
+        + ':61:2312291229C10,00NTRFNONREF//B\n:86:'
+        + 'x' * 700
+        + '\n'
+        + _FOOTER,
+        tags={86: _WideDetails()},
+    )
+    assert len(transactions[0].data['transaction_details']) == 700
+
+
 @pytest.mark.parametrize(
     ('options', 'expected'),
     [
