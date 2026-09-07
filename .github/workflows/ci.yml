@@ -15,8 +15,11 @@ permissions:
 # Keyed on the ref, not the commit. A release pushes the same commit to
 # develop and master at once, and keying on the sha made one run cancel the
 # other, which the branch badge then reports as failing.
+# The prefix is a literal on purpose. Under a workflow_call from publish.yml
+# `github.workflow` expands to the caller's name, and a group equal to the
+# caller's own group stopped the test gate from starting (release 5.1.1).
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 env:
