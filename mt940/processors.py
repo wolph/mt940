@@ -1,6 +1,3 @@
-# pyright: reportUnusedParameter=false
-# Every processor shares one positional signature, so most of them leave at
-# least one of the arguments untouched.
 """Pre- and post-processors that adjust parsed tag data.
 
 This module contains pre- and post-processors for modifying tag
