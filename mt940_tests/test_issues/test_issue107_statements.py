@@ -7,7 +7,10 @@ splits the input on ``:20:`` boundaries so each statement block keeps its own
 balances. The default ``parse()`` behaviour is unchanged.
 """
 
+from collections.abc import Iterable
+
 import mt940
+import pytest
 
 MULTI_BLOCK = """:20:REF1
 :25:ACC1
@@ -88,4 +91,32 @@ def test_kwargs_passed_through_to_each_block() -> None:
     assert (
         transaction.data['customer_reference']
         == 'BIPI-dvT1FzfMqvzF5HaU4oetlH7SGRkonU'
+    )
+
+
+@pytest.mark.parametrize(
+    'boundary',
+    [
+        ('transaction_details',),
+        'transaction_details',
+        iter(('transaction_details',)),
+    ],
+    ids=['tuple', 'string', 'iterator'],
+)
+def test_boundary_iterable_applies_to_every_statement(
+    boundary: Iterable[str],
+) -> None:
+    block = (
+        ':20:REF\n:25:ACC\n:60F:C200101EUR0,00\n'
+        ':61:2001010101C5,00NTRFa//b\n'
+        ':86:116?00detail\n:62F:C200101EUR5,00\n'
+    )
+    statements = mt940.parse_statements(
+        block + block, transaction_boundary=boundary
+    )
+
+    assert [len(statement) for statement in statements] == [2, 2]
+    assert all(
+        statement.transaction_boundary == frozenset({'transaction_details'})
+        for statement in statements
     )
