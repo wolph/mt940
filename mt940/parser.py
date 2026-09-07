@@ -217,12 +217,11 @@ def parse_statements(
     """
     data = _read(src, encoding, strip_bom=(options or Options()).strip_bom)
     statements: list[Transactions] = []
-    # Each statement consumes the boundaries when constructing its collection.
-    # Materialize one-shot iterables once; keep bare strings as a single slug.
-    if transaction_boundary is not None and not isinstance(
-        transaction_boundary, str
-    ):
-        transaction_boundary = tuple(transaction_boundary)
+    # Each collection materialises the boundary into a frozenset. Hand the
+    # first collection's frozenset to the later ones, so a one-shot iterable
+    # (generator, iter(), map()) reaches every statement instead of only the
+    # first, and input without any :20: block never touches it.
+    boundary: Iterable[str] | None = transaction_boundary
     for block in re.split(r'(?m)^(?=:20:)', data):
         if not block.strip().startswith(':20:'):
             # Drop any leading header / empty chunk before the first :20:.
@@ -230,9 +229,10 @@ def parse_statements(
         transactions = mt940.models.Transactions(
             processors,
             tags,
-            transaction_boundary=transaction_boundary,
+            transaction_boundary=boundary,
             options=options,
         )
+        boundary = transactions.transaction_boundary
         _ = transactions.parse(block)
         statements.append(transactions)
 
