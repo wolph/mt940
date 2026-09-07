@@ -1,12 +1,12 @@
 # MT940
 
-[![CI](https://github.com/WoLpH/mt940/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/WoLpH/mt940/actions/workflows/ci.yml)
+[![CI](https://github.com/WoLpH/mt940/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/WoLpH/mt940/actions/workflows/ci.yml?query=branch%3Amaster)
 [![PyPI](https://img.shields.io/pypi/v/mt-940)](https://pypi.org/project/mt-940/)
 [![Python](https://img.shields.io/pypi/pyversions/mt-940)](https://pypi.org/project/mt-940/)
 [![Downloads](https://img.shields.io/pypi/dm/mt-940)](https://pypi.org/project/mt-940/)
 [![Documentation](https://readthedocs.org/projects/mt940/badge/?version=latest)](https://mt940.readthedocs.io/)
-[![Coverage](https://coveralls.io/repos/github/WoLpH/mt940/badge.svg?branch=develop)](https://coveralls.io/github/WoLpH/mt940?branch=develop)
-[![License](https://img.shields.io/pypi/l/mt-940)](https://github.com/WoLpH/mt940/blob/develop/LICENSE)
+[![Coverage](https://coveralls.io/repos/github/WoLpH/mt940/badge.svg?branch=master)](https://coveralls.io/github/WoLpH/mt940?branch=master)
+[![License](https://img.shields.io/pypi/l/mt-940)](https://github.com/WoLpH/mt940/blob/master/LICENSE)
 
 `mt940` parses **MT940 bank statement files** into smart, fully typed Python
 collections you can iterate, aggregate and serialize. It has no runtime
@@ -270,4 +270,4 @@ uv run tox -e py312      # or a single environment
 - **Source**: https://github.com/WoLpH/mt940
 - **Bug reports**: https://github.com/WoLpH/mt940/issues
 - **Package**: https://pypi.org/project/mt-940/
-- **License**: [BSD-3-Clause](https://github.com/WoLpH/mt940/blob/develop/LICENSE)
+- **License**: [BSD-3-Clause](https://github.com/WoLpH/mt940/blob/master/LICENSE)
