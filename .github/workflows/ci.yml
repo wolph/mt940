@@ -75,6 +75,15 @@ jobs:
           merge-multiple: true
       - name: Combine coverage and enforce threshold
         run: tox -e coverage
+      # Feeds the coveralls badge in the README. Branch pushes only: pull
+      # requests from forks get a read-only token, and tag pushes (via
+      # publish.yml) would show up on coveralls as a branch named after the tag.
+      - name: Upload coverage to coveralls
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')
+        uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
+        with:
+          file: .tox/coverage.lcov
+          format: lcov
 
   # One cell per static check. Each is a tox env, so `tox -m check` locally
   # runs the same commands.
