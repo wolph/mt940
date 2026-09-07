@@ -12,8 +12,11 @@ on:
 permissions:
   contents: read
 
+# Keyed on the ref, not the commit. A release pushes the same commit to
+# develop and master at once, and keying on the sha made one run cancel the
+# other, which the branch badge then reports as failing.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 env:
