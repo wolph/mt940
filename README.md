@@ -5,7 +5,7 @@
 [![Python](https://img.shields.io/pypi/pyversions/mt-940)](https://pypi.org/project/mt-940/)
 [![Downloads](https://img.shields.io/pypi/dm/mt-940)](https://pypi.org/project/mt-940/)
 [![Documentation](https://readthedocs.org/projects/mt940/badge/?version=latest)](https://mt940.readthedocs.io/)
-[![Coverage](https://coveralls.io/repos/github/WoLpH/mt940/badge.svg?branch=master)](https://coveralls.io/github/WoLpH/mt940?branch=master)
+[![Coverage](https://coveralls.io/repos/github/wolph/mt940/badge.svg?branch=master)](https://coveralls.io/github/wolph/mt940?branch=master)
 [![License](https://img.shields.io/pypi/l/mt-940)](https://github.com/WoLpH/mt940/blob/master/LICENSE)
 
 `mt940` parses **MT940 bank statement files** into smart, fully typed Python
