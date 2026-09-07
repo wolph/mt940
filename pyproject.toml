@@ -4,7 +4,7 @@ build-backend = 'uv_build'
 
 [project]
 name = 'mt-940'
-version = "5.1.0"
+version = "5.1.1"
 description = 'A library to parse MT940 files and returns smart Python collections for statistics and manipulation.'
 readme = 'README.md'
 license = 'BSD-3-Clause'
@@ -164,6 +164,11 @@ reportExplicitAny = false
 reportImplicitOverride = false
 # mt940/parser.py imports the package root (`import mt940`) by design.
 reportImportCycles = false
+# Every processor shares one positional signature, so most of them leave at
+# least one argument untouched. Ruff's ARG rules cover the rest of the code.
+# A file-level `# pyright:` comment cannot carry this rule, plain pyright
+# rejects the basedpyright-only name as unknown.
+reportUnusedParameter = false
 
 [tool.pyrefly]
 project-includes = ['mt940', 'mt940_tests', 'docs/conf.py']

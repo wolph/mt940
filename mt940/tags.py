@@ -718,6 +718,9 @@ class TransactionDetails(Tag):
     ) -> dict[str, str | None]:
         """Capture the details, cut like 5.0.0 did unless opted out.
 
+        A subclass with its own ``pattern`` keeps whatever it captured. That
+        was the way past the cap in 4.x and 5.0.0, so it has to keep working.
+
         Args:
             transactions: The collection being parsed, for its options.
             value: The raw tag value.
@@ -726,7 +729,11 @@ class TransactionDetails(Tag):
             The ``transaction_details`` group.
         """
         data = super().parse(transactions, value)
-        if not _options_of(transactions).unbounded_details:
+        capped = (
+            not _options_of(transactions).unbounded_details
+            and self.pattern == TransactionDetails.pattern
+        )
+        if capped:
             details = data['transaction_details'] or ''
             match = _LEGACY_DETAILS_RE.match(details)
             data['transaction_details'] = match.group(0) if match else ''
