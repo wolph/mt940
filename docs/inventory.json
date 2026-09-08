@@ -1,0 +1,410 @@
+{
+  "mt940": {
+    "reference": "mt940.html",
+    "guides": [
+      "quickstart.html",
+      "usage.html"
+    ],
+    "tests": [
+      "mt940_tests/test_parse.py"
+    ],
+    "symbols": [
+      "mt940",
+      "mt940.JSONEncoder",
+      "mt940.Options",
+      "mt940.__all__",
+      "mt940.__version__",
+      "mt940.parse",
+      "mt940.parse_statements"
+    ]
+  },
+  "mt940.__about__": {
+    "reference": "mt940.__about__.html",
+    "guides": [
+      "installation.html",
+      "releases.html"
+    ],
+    "tests": [
+      "mt940_tests/test_metadata.py"
+    ],
+    "symbols": [
+      "mt940.__about__",
+      "mt940.__about__.__author__",
+      "mt940.__about__.__copyright__",
+      "mt940.__about__.__description__",
+      "mt940.__about__.__email__",
+      "mt940.__about__.__license__",
+      "mt940.__about__.__package_name__",
+      "mt940.__about__.__title__",
+      "mt940.__about__.__url__",
+      "mt940.__about__.__version__"
+    ]
+  },
+  "mt940._types": {
+    "reference": "mt940._types.html",
+    "guides": [
+      "customising.html",
+      "internals.html"
+    ],
+    "tests": [
+      "mt940_tests/test_models.py"
+    ],
+    "symbols": [
+      "mt940._types",
+      "mt940._types.PostProcessor",
+      "mt940._types.PostProcessor.__call__",
+      "mt940._types.PreProcessor",
+      "mt940._types.PreProcessor.__call__",
+      "mt940._types.Processor",
+      "mt940._types.Processors",
+      "mt940._types.Source",
+      "mt940._types.TagDict"
+    ]
+  },
+  "mt940.json": {
+    "reference": "mt940.json.html",
+    "guides": [
+      "json.html",
+      "data-model.html"
+    ],
+    "tests": [
+      "mt940_tests/test_json.py"
+    ],
+    "symbols": [
+      "mt940.json",
+      "mt940.json.JSONEncoder",
+      "mt940.json.JSONEncoder.default",
+      "mt940.json._MISSING",
+      "mt940.json.models"
+    ]
+  },
+  "mt940.models": {
+    "reference": "mt940.models.html",
+    "guides": [
+      "data-model.html",
+      "statements.html",
+      "internals.html"
+    ],
+    "tests": [
+      "mt940_tests/test_models.py",
+      "mt940_tests/test_parse.py"
+    ],
+    "symbols": [
+      "mt940.models",
+      "mt940.models.Amount",
+      "mt940.models.Amount.__eq__",
+      "mt940.models.Amount.__hash__",
+      "mt940.models.Amount.__init__",
+      "mt940.models.Amount.__repr__",
+      "mt940.models.Amount.__str__",
+      "mt940.models.Amount.amount",
+      "mt940.models.Amount.currency",
+      "mt940.models.Balance",
+      "mt940.models.Balance.__eq__",
+      "mt940.models.Balance.__hash__",
+      "mt940.models.Balance.__init__",
+      "mt940.models.Balance.__repr__",
+      "mt940.models.Balance.__str__",
+      "mt940.models.Balance.amount",
+      "mt940.models.Balance.date",
+      "mt940.models.Balance.status",
+      "mt940.models.Date",
+      "mt940.models.Date.__new__",
+      "mt940.models.DateTime",
+      "mt940.models.DateTime.__new__",
+      "mt940.models.FixedOffset",
+      "mt940.models.FixedOffset.__init__",
+      "mt940.models.FixedOffset._name",
+      "mt940.models.FixedOffset._offset",
+      "mt940.models.FixedOffset.dst",
+      "mt940.models.FixedOffset.tzname",
+      "mt940.models.FixedOffset.utcoffset",
+      "mt940.models.Model",
+      "mt940.models.Model.__repr__",
+      "mt940.models.Options",
+      "mt940.models.Processors",
+      "mt940.models.SumAmount",
+      "mt940.models.SumAmount.__eq__",
+      "mt940.models.SumAmount.__hash__",
+      "mt940.models.SumAmount.__init__",
+      "mt940.models.SumAmount.__repr__",
+      "mt940.models.SumAmount.number",
+      "mt940.models.Transaction",
+      "mt940.models.Transaction.__init__",
+      "mt940.models.Transaction.__repr__",
+      "mt940.models.Transaction.data",
+      "mt940.models.Transaction.transactions",
+      "mt940.models.Transaction.update",
+      "mt940.models.Transactions",
+      "mt940.models.Transactions.DEFAULT_PROCESSORS",
+      "mt940.models.Transactions.__getitem__",
+      "mt940.models.Transactions.__getstate__",
+      "mt940.models.Transactions.__init__",
+      "mt940.models.Transactions.__len__",
+      "mt940.models.Transactions.__repr__",
+      "mt940.models.Transactions.__setstate__",
+      "mt940.models.Transactions._process_match",
+      "mt940.models.Transactions._process_statement_tag",
+      "mt940.models.Transactions._update_transaction",
+      "mt940.models.Transactions.currency",
+      "mt940.models.Transactions.data",
+      "mt940.models.Transactions.defaultTags",
+      "mt940.models.Transactions.default_tags",
+      "mt940.models.Transactions.normalize_tag_id",
+      "mt940.models.Transactions.options",
+      "mt940.models.Transactions.parse",
+      "mt940.models.Transactions.processors",
+      "mt940.models.Transactions.sanitize_tag_id_matches",
+      "mt940.models.Transactions.strip",
+      "mt940.models.Transactions.tags",
+      "mt940.models.Transactions.transaction_boundary",
+      "mt940.models.Transactions.transactions",
+      "mt940.models.TransactionsAndTransaction",
+      "mt940.models._MISSING",
+      "mt940.models._SHORT_YEAR_BASE",
+      "mt940.models._SHORT_YEAR_LIMIT",
+      "mt940.models.processors",
+      "mt940.models.utils"
+    ]
+  },
+  "mt940.options": {
+    "reference": "mt940.options.html",
+    "guides": [
+      "compatibility.html"
+    ],
+    "tests": [
+      "mt940_tests/test_tags.py",
+      "mt940_tests/test_parse.py"
+    ],
+    "symbols": [
+      "mt940.options",
+      "mt940.options.Options",
+      "mt940.options.Options.all",
+      "mt940.options.Options.applicant_iban",
+      "mt940.options.Options.case_insensitive_marks",
+      "mt940.options.Options.floor_limit_blank_mark",
+      "mt940.options.Options.gvc_leading_text",
+      "mt940.options.Options.merge_keeps_values",
+      "mt940.options.Options.names",
+      "mt940.options.Options.non_swift_free_text",
+      "mt940.options.Options.reversal_sign",
+      "mt940.options.Options.strip_bom",
+      "mt940.options.Options.timezone_offset",
+      "mt940.options.Options.unbounded_details"
+    ]
+  },
+  "mt940.parser": {
+    "reference": "mt940.parser.html",
+    "guides": [
+      "inputs.html",
+      "statements.html",
+      "internals.html"
+    ],
+    "tests": [
+      "mt940_tests/test_parse.py"
+    ],
+    "symbols": [
+      "mt940.parser",
+      "mt940.parser.Options",
+      "mt940.parser._Readable",
+      "mt940.parser._Readable.read",
+      "mt940.parser._decode",
+      "mt940.parser._is_path",
+      "mt940.parser._load",
+      "mt940.parser._new_transactions",
+      "mt940.parser._read",
+      "mt940.parser.parse",
+      "mt940.parser.parse_statements"
+    ]
+  },
+  "mt940.processors": {
+    "reference": "mt940.processors.html",
+    "guides": [
+      "customising.html",
+      "bank-formats.html",
+      "internals.html"
+    ],
+    "tests": [
+      "mt940_tests/test_processors.py"
+    ],
+    "symbols": [
+      "mt940.processors",
+      "mt940.processors.DETAIL_KEYS",
+      "mt940.processors.DETAIL_KEYS_APPLICANT_IBAN",
+      "mt940.processors.GVC_KEYS",
+      "mt940.processors.Options",
+      "mt940.processors.PostProcessor",
+      "mt940.processors.PreProcessor",
+      "mt940.processors._GVC_KEY_LENGTH",
+      "mt940.processors._join_result",
+      "mt940.processors._options_of",
+      "mt940.processors._parse_mt940_details",
+      "mt940.processors._parse_mt940_gvcodes",
+      "mt940.processors._parse_segments",
+      "mt940.processors._process_segments",
+      "mt940.processors.add_currency_pre_processor",
+      "mt940.processors.add_currency_pre_processor._add_currency_pre_processor",
+      "mt940.processors.date_cleanup_post_processor",
+      "mt940.processors.date_fixup_pre_processor",
+      "mt940.processors.iph_id_re",
+      "mt940.processors.mBank_set_iph_id",
+      "mt940.processors.mBank_set_tnr",
+      "mt940.processors.mBank_set_transaction_code",
+      "mt940.processors.tnr_re",
+      "mt940.processors.transaction_details_post_processor",
+      "mt940.processors.transaction_details_post_processor_with_space",
+      "mt940.processors.transactions_to_transaction",
+      "mt940.processors.transactions_to_transaction._transactions_to_transaction"
+    ]
+  },
+  "mt940.tags": {
+    "reference": "mt940.tags.html",
+    "guides": [
+      "data-model.html",
+      "customising.html",
+      "bank-formats.html"
+    ],
+    "tests": [
+      "mt940_tests/test_tags.py"
+    ],
+    "symbols": [
+      "mt940.tags",
+      "mt940.tags.AccountIdentification",
+      "mt940.tags.AccountIdentification.id",
+      "mt940.tags.AccountIdentification.pattern",
+      "mt940.tags.AvailableBalance",
+      "mt940.tags.AvailableBalance.id",
+      "mt940.tags.BalanceBase",
+      "mt940.tags.BalanceBase.__call__",
+      "mt940.tags.BalanceBase.pattern",
+      "mt940.tags.ClosingBalance",
+      "mt940.tags.ClosingBalance.id",
+      "mt940.tags.DateTimeIndication",
+      "mt940.tags.DateTimeIndication.__call__",
+      "mt940.tags.DateTimeIndication.id",
+      "mt940.tags.DateTimeIndication.pattern",
+      "mt940.tags.FinalClosingBalance",
+      "mt940.tags.FinalClosingBalance.id",
+      "mt940.tags.FinalOpeningBalance",
+      "mt940.tags.FinalOpeningBalance.id",
+      "mt940.tags.FloorLimitIndicator",
+      "mt940.tags.FloorLimitIndicator.__call__",
+      "mt940.tags.FloorLimitIndicator.id",
+      "mt940.tags.FloorLimitIndicator.pattern",
+      "mt940.tags.ForwardAvailableBalance",
+      "mt940.tags.ForwardAvailableBalance.id",
+      "mt940.tags.IntermediateClosingBalance",
+      "mt940.tags.IntermediateClosingBalance.id",
+      "mt940.tags.IntermediateOpeningBalance",
+      "mt940.tags.IntermediateOpeningBalance.id",
+      "mt940.tags.NonSwift",
+      "mt940.tags.NonSwift.__call__",
+      "mt940.tags.NonSwift.id",
+      "mt940.tags.NonSwift.pattern",
+      "mt940.tags.NonSwift.scope",
+      "mt940.tags.NonSwift.sub_pattern",
+      "mt940.tags.NonSwift.sub_pattern_m",
+      "mt940.tags.OpeningBalance",
+      "mt940.tags.OpeningBalance.id",
+      "mt940.tags.Options",
+      "mt940.tags.RelatedReference",
+      "mt940.tags.RelatedReference.id",
+      "mt940.tags.RelatedReference.pattern",
+      "mt940.tags.Statement",
+      "mt940.tags.Statement.__call__",
+      "mt940.tags.Statement.id",
+      "mt940.tags.Statement.pattern",
+      "mt940.tags.Statement.scope",
+      "mt940.tags.StatementASNB",
+      "mt940.tags.StatementASNB.__call__",
+      "mt940.tags.StatementASNB.pattern",
+      "mt940.tags.StatementGLS",
+      "mt940.tags.StatementGLS.pattern",
+      "mt940.tags.StatementNumber",
+      "mt940.tags.StatementNumber.id",
+      "mt940.tags.StatementNumber.pattern",
+      "mt940.tags.SumCreditEntries",
+      "mt940.tags.SumCreditEntries.id",
+      "mt940.tags.SumCreditEntries.status",
+      "mt940.tags.SumDebitEntries",
+      "mt940.tags.SumDebitEntries.id",
+      "mt940.tags.SumDebitEntries.status",
+      "mt940.tags.SumEntries",
+      "mt940.tags.SumEntries.__call__",
+      "mt940.tags.SumEntries.id",
+      "mt940.tags.SumEntries.pattern",
+      "mt940.tags.SumEntries.status",
+      "mt940.tags.TAG_BY_ID",
+      "mt940.tags.Tag",
+      "mt940.tags.Tag.RE_FLAGS",
+      "mt940.tags.Tag.__call__",
+      "mt940.tags.Tag.__eq__",
+      "mt940.tags.Tag.__hash__",
+      "mt940.tags.Tag.__init__",
+      "mt940.tags.Tag.__new__",
+      "mt940.tags.Tag._debug_partial_match",
+      "mt940.tags.Tag.id",
+      "mt940.tags.Tag.logger",
+      "mt940.tags.Tag.name",
+      "mt940.tags.Tag.parse",
+      "mt940.tags.Tag.pattern",
+      "mt940.tags.Tag.re",
+      "mt940.tags.Tag.scope",
+      "mt940.tags.Tag.slug",
+      "mt940.tags.Tags",
+      "mt940.tags.Tags.ACCOUNT_IDENTIFICATION",
+      "mt940.tags.Tags.AVAILABLE_BALANCE",
+      "mt940.tags.Tags.CLOSING_BALANCE",
+      "mt940.tags.Tags.DATE_TIME_INDICATION",
+      "mt940.tags.Tags.FINAL_CLOSING_BALANCE",
+      "mt940.tags.Tags.FINAL_OPENING_BALANCE",
+      "mt940.tags.Tags.FLOOR_LIMIT_INDICATOR",
+      "mt940.tags.Tags.FORWARD_AVAILABLE_BALANCE",
+      "mt940.tags.Tags.INTERMEDIATE_CLOSING_BALANCE",
+      "mt940.tags.Tags.INTERMEDIATE_OPENING_BALANCE",
+      "mt940.tags.Tags.NON_SWIFT",
+      "mt940.tags.Tags.OPENING_BALANCE",
+      "mt940.tags.Tags.RELATED_REFERENCE",
+      "mt940.tags.Tags.STATEMENT",
+      "mt940.tags.Tags.STATEMENT_NUMBER",
+      "mt940.tags.Tags.SUM_CREDIT_ENTRIES",
+      "mt940.tags.Tags.SUM_DEBIT_ENTRIES",
+      "mt940.tags.Tags.SUM_ENTRIES",
+      "mt940.tags.Tags.TRANSACTION_DETAILS",
+      "mt940.tags.Tags.TRANSACTION_REFERENCE_NUMBER",
+      "mt940.tags.TransactionDetails",
+      "mt940.tags.TransactionDetails.id",
+      "mt940.tags.TransactionDetails.parse",
+      "mt940.tags.TransactionDetails.pattern",
+      "mt940.tags.TransactionDetails.scope",
+      "mt940.tags.TransactionReferenceNumber",
+      "mt940.tags.TransactionReferenceNumber.id",
+      "mt940.tags.TransactionReferenceNumber.pattern",
+      "mt940.tags._LEGACY_DETAILS_RE",
+      "mt940.tags._YEAR_BOUNDARY_DAYS",
+      "mt940.tags._options_of",
+      "mt940.tags.logger",
+      "mt940.tags.models"
+    ]
+  },
+  "mt940.utils": {
+    "reference": "mt940.utils.html",
+    "guides": [
+      "internals.html"
+    ],
+    "tests": [
+      "mt940_tests/test_utils.py"
+    ],
+    "symbols": [
+      "mt940.utils",
+      "mt940.utils.Strip",
+      "mt940.utils.Strip.BOTH",
+      "mt940.utils.Strip.LEFT",
+      "mt940.utils.Strip.NONE",
+      "mt940.utils.Strip.RIGHT",
+      "mt940.utils.T",
+      "mt940.utils.coalesce",
+      "mt940.utils.join_lines"
+    ]
+  }
+}

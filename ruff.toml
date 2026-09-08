@@ -34,6 +34,11 @@ ignore = [
 ]
 
 [lint.per-file-ignores]
+# These modules document exceptions propagated by Python's file, date,
+# decimal and regular-expression APIs. DOC501 only sees explicit raises.
+'mt940/{json,models,parser,processors,tags}.py' = [
+    'docstring-extraneous-exception',
+]
 'mt940_tests/**' = [
     # Tests assert, compare against literal expected values, are documented
     # by their names, poke at private helpers on purpose and may carry bank
@@ -42,6 +47,7 @@ ignore = [
     'magic-value-comparison',
     'D1',
     'private-member-access',
+    'import-private-name',    # documentation checks exercise docs._tools
     'invalid-function-name',
     'invalid-argument-name',
 ]
@@ -61,6 +67,10 @@ ignore = [
 'docs/conf.py' = [
     # Sphinx loads conf.py as a script, not as a package module.
     'implicit-namespace-package',
+    'import-private-name',        # build configuration owns docs._tools
+]
+'docs/_tools/{inventory,links}.py' = [
+    'print', # command-line validation results are intentional output
 ]
 
 [lint.flake8-annotations]
