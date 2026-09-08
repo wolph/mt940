@@ -25,6 +25,7 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid 
 .document pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 .document .pre { white-space: normal; overflow-wrap: anywhere; }
 .document dl.field-list > dt { float: none; }
+.document dl.field-list > dt::after { content: none; }
 .document dl.field-list > dd { margin-left: 1em; }
 .document dl.field-list > dd > :first-child { display: block; width: auto; }
 .document table.docutils { min-width: 0; table-layout: fixed; }

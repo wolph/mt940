@@ -104,6 +104,7 @@ html_copy_source: bool = True
 epub_title: str = 'MT940: parsing bank statements with Python'
 epub_author: str = author
 epub_language: str = 'en'
+epub_tocdepth: int = 2
 epub_show_urls: str = 'no'
 epub_exclude_files: list[str] = ['search.html', '.buildinfo.bak']
 latex_documents: list[tuple[str, str, str, str, str]] = [
