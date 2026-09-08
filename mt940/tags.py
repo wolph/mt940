@@ -533,8 +533,11 @@ class BalanceBase(Tag):
     The pattern accepts a debit or credit mark, ``YYMMDD``, three currency
     characters and a decimal-comma amount. Conversion stores a
     :class:`~mt940.models.Balance` under the concrete tag's slug. Currency text
-    is retained without ISO-code validation. Subclasses select the tag ID and
-    therefore the balance name used by the collection's currency lookup.
+    is retained without ISO-code validation. The class-derived slug determines
+    the output key independently of the tag ID. The collection's currency
+    lookup checks a fixed set of balance keys. A custom subclass with a
+    different slug is not included automatically, even if its ID matches a
+    built-in balance tag.
     """
 
     #: Named capture pattern implementing the fields described by
