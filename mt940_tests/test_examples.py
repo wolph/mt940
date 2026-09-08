@@ -151,7 +151,11 @@ def test_walkthrough_reports_reconciled_decimal_strings() -> None:
 
 def test_readme_primary_python_example() -> None:
     readme: str = (ROOT / 'README.md').read_text()
-    code: str = readme.split('```python\n', 1)[1].split('```', 1)[0]
+    example: str = readme.split('```python\n', 1)[1]
+    code: str
+    following: str
+    code, following = example.split('```', 1)
+    displayed: str = following.split('```text\n', 1)[1].split('```', 1)[0]
     completed: subprocess.CompletedProcess[str] = subprocess.run(  # noqa: S603
         [sys.executable, '-c', code],
         cwd=ROOT,
@@ -160,5 +164,6 @@ def test_readme_primary_python_example() -> None:
         text=True,
     )
     assert not completed.stderr
+    assert completed.stdout == displayed
     expected: str = '2026-01-02 -12.50 EUR\n87.50 EUR @ 2026-01-02\n'
     assert completed.stdout == expected
