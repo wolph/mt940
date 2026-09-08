@@ -95,7 +95,7 @@ html_theme_options: dict[str, object] = {
     'dark_css_variables': {
         'color-brand-primary': '#77cddd',
         'color-brand-content': '#77cddd',
-        'color-highlight-on-target': '#14282e',
+        'color-highlight-on-target': '#102128',
     },
 }
 html_show_sphinx: bool = False
@@ -122,6 +122,10 @@ latex_engine: str = 'xelatex'
 latex_elements: dict[str, str] = {
     'papersize': 'a4paper',
     'pointsize': '10pt',
+    # The first HTML navigation group is narrower than the PDF contents.
+    'tableofcontents': (
+        r'\renewcommand{\contentsname}{Contents}\sphinxtableofcontents'
+    ),
 }
 
 
