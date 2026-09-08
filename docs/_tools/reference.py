@@ -2,10 +2,13 @@
 
 from pathlib import Path
 
+from .symbols import Symbol, collect
+
 
 def generate(package: Path, destination: Path) -> None:
     """Write deterministic API pages, retaining the project's existing URLs."""
     modules: list[str] = []
+    symbols: dict[str, Symbol] = collect(package)
     for path in sorted(package.glob('*.py')):
         module: str = (
             package.name
@@ -34,7 +37,19 @@ def generate(package: Path, destination: Path) -> None:
             content += (
                 '   :members:\n   :private-members:\n   :undoc-members:\n'
             )
-        (destination / f'{module}.rst').write_text(content, encoding='utf-8')
+        special: list[str] = [
+            name
+            for name, symbol in symbols.items()
+            if symbol.kind == 'attribute'
+            and name.rsplit('.', 1)[0] == module
+            and name.rsplit('.', 1)[1].startswith('__')
+        ]
+        if special and path.stem == '__init__':
+            content += '\n' + '\n'.join(
+                f'.. autodata:: {name}\n' for name in special
+            )
+        output: Path = destination / f'{module}.rst'
+        _ = output.write_text(content, encoding='utf-8')
     index: str = (
         'API reference\n=============\n\n'
         'The reference follows the source modules. Read :doc:`data-model`\n'
@@ -42,4 +57,4 @@ def generate(package: Path, destination: Path) -> None:
         '.. toctree::\n   :maxdepth: 1\n\n'
     )
     index += ''.join(f'   {module}\n' for module in modules)
-    (destination / 'modules.rst').write_text(index, encoding='utf-8')
+    _ = (destination / 'modules.rst').write_text(index, encoding='utf-8')

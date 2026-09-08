@@ -1,0 +1,20 @@
+/* Keep guides readable while allowing long API signatures to wrap. */
+.content { max-width: 58rem; }
+.sidebar-brand-text { font-weight: 650; letter-spacing: -.025em; }
+h1 { letter-spacing: -.035em; }
+h2 { letter-spacing: -.02em; }
+.guide-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+[role="main"] .guide-grid .guide-card { border: 1px solid var(--color-background-border); border-radius: .55rem; padding: 1.15rem; background: var(--color-background-secondary); }
+.guide-card p:last-child { margin-bottom: 0; }
+.guide-card .rubric { margin-top: 0; font-size: 1.12rem; }
+[role="main"] .container.pipeline { border-left: 3px solid var(--color-brand-primary); padding: .5rem 1rem; background: var(--color-background-secondary); }
+dl.py dt.sig { overflow-wrap: anywhere; }
+table.docutils { width: 100%; }
+.highlight pre { tab-size: 4; }
+a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid var(--color-brand-primary); outline-offset: 3px; }
+@media (max-width: 48rem) {
+  .guide-grid { grid-template-columns: 1fr; }
+  [role="main"] .guide-grid .guide-card { padding: 1rem; }
+  .content { min-width: 0; }
+  h1 { font-size: 2rem; }
+}

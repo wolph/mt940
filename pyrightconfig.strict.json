@@ -1,6 +1,6 @@
 {
   "typeCheckingMode": "strict",
   "pythonVersion": "3.10",
-  "include": ["mt940", "mt940_tests", "docs/conf.py"],
+  "include": ["mt940", "mt940_tests", "examples", "docs/_tools", "docs/conf.py"],
   "exclude": ["**/__pycache__", ".tox", ".venv", "build", "dist", "docs/_build"]
 }

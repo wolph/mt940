@@ -60,11 +60,15 @@ def check(root: Path) -> list[str]:
         Missing files and fragments, or an empty list for a valid build.
     """
     root = root.resolve()
+    if not root.is_dir():
+        return [f'missing HTML directory: {root}']
     pages: dict[Path, _Page] = {}
     for path in sorted(root.rglob('*.html')):
         page: _Page = _Page()
         page.feed(path.read_text(encoding='utf-8'))
         pages[path] = page
+    if not pages:
+        return [f'no HTML pages found: {root}']
     errors: list[str] = []
     for path, page in pages.items():
         for url in sorted(page.urls):

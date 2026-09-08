@@ -42,17 +42,19 @@ def read_manifest(path: Path) -> dict[str, Record]:
     if not isinstance(raw, dict):
         message: str = 'inventory must be a module mapping'
         raise TypeError(message)
-    for module, record in raw.items():
+    mapping: dict[object, object] = cast('dict[object, object]', raw)
+    for module, record in mapping.items():
         if not isinstance(module, str) or not isinstance(record, dict):
             message = 'inventory modules must map names to records'
             raise TypeError(message)
-        if not isinstance(record.get('reference'), str):
+        fields: dict[object, object] = cast('dict[object, object]', record)
+        if not isinstance(fields.get('reference'), str):
             message = f'{module}: reference must be a string'
             raise TypeError(message)
         for key in ('guides', 'tests', 'symbols'):
-            values: object = record.get(key)
+            values: object = fields.get(key)
             if not isinstance(values, list) or not all(
-                isinstance(item, str) for item in values
+                isinstance(item, str) for item in cast('list[object]', values)
             ):
                 message = f'{module}: {key} must be a list of strings'
                 raise TypeError(message)
@@ -101,9 +103,10 @@ class _Anchors(HTMLParser):
         self.ids: set[str] = set()
 
     def handle_starttag(
-        self, _tag: str, attrs: list[tuple[str, str | None]]
+        self, tag: str, attrs: list[tuple[str, str | None]]
     ) -> None:
         """Record each element ID."""
+        _ = tag
         self.ids.update(value for key, value in attrs if key == 'id' and value)
         self.ids.update(
             value.removeprefix('module-')

@@ -106,6 +106,7 @@ jobs:
           - pyrefly
           - ty
           - docs
+          - docs-formats
           - codespell
           - repo-review
           - zizmor
@@ -122,5 +123,27 @@ jobs:
           python-version: '3.12'
       - name: Install tox
         run: uv pip install '.[tox]'
+      - name: Install the PDF engine
+        if: matrix.env == 'docs-formats'
+        run: |
+          curl --fail --location --output "$RUNNER_TEMP/tectonic.tar.gz" \
+            'https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%400.17.0/tectonic-0.17.0-x86_64-unknown-linux-musl.tar.gz'
+          printf '%s  %s\n' \
+            '8533d07f9ccbd7a65824b9e0459041bca34af1eb33daba48f59215593753a3b7' \
+            "$RUNNER_TEMP/tectonic.tar.gz" | sha256sum --check
+          mkdir -p "$RUNNER_TEMP/tectonic-bin"
+          tar -xzf "$RUNNER_TEMP/tectonic.tar.gz" -C "$RUNNER_TEMP/tectonic-bin" tectonic
+          echo "$RUNNER_TEMP/tectonic-bin" >> "$GITHUB_PATH"
       - name: Run ${{ matrix.env }}
         run: tox -e "$TOX_ENV"
+      - name: Upload documentation preview
+        if: matrix.env == 'docs' || matrix.env == 'docs-formats'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: documentation-${{ matrix.env }}
+          path: |
+            docs/html
+            docs/_build/epub/*.epub
+            docs/_build/latex/*.pdf
+          if-no-files-found: error
+          retention-days: 7

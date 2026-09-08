@@ -11,6 +11,16 @@ def test_model_repr_uses_the_class_name() -> None:
     assert repr(mt940.models.Model()) == '<Model>'
 
 
+def test_datetime_explicit_timezone_takes_precedence_over_offset() -> None:
+    zone: datetime.tzinfo = datetime.timezone.utc
+    value: mt940.models.DateTime = mt940.models.DateTime(
+        year='2026', month='1', day='2', tzinfo=zone, offset='60'
+    )
+    assert value.year == 2026
+    assert value.tzinfo is zone
+    assert value.utcoffset() == datetime.timedelta(0)
+
+
 def test_balance_empty_amount_string_is_stored_as_is() -> None:
     # 5.0.0 stored an empty amount string unchanged, so that stays: it is
     # neither coerced to an Amount nor turned into None.

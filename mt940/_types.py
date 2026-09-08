@@ -80,8 +80,8 @@ class PostProcessor(Protocol):
         ...
 
 
-#: A pre- or post-processor stored in
-#: :attr:`mt940.models.Transactions.processors`.
+#: A pre- or post-processor stored in the ``processors`` mapping on
+#: :class:`mt940.models.Transactions`.
 #: The container mixes both kinds keyed by ``pre_*``/``post_*``, so the element
 #: type stays callable-flexible while pinning the return type.
 Processor = Callable[..., TagDict]

@@ -4,7 +4,7 @@
 target-version = 'py310'
 line-length = 79
 preview = true
-src = ['mt940', 'mt940_tests']
+src = ['mt940', 'mt940_tests', 'examples', 'docs']
 exclude = ['.tox', 'test.py', '*_old.py']
 
 [lint]
@@ -36,7 +36,7 @@ ignore = [
 [lint.per-file-ignores]
 # These modules document exceptions propagated by Python's file, date,
 # decimal and regular-expression APIs. DOC501 only sees explicit raises.
-'mt940/{json,models,parser,processors,tags}.py' = [
+'mt940/{json,models,options,parser,processors,tags}.py' = [
     'docstring-extraneous-exception',
 ]
 'mt940_tests/**' = [
@@ -71,6 +71,10 @@ ignore = [
 ]
 'docs/_tools/{inventory,links}.py' = [
     'print', # command-line validation results are intentional output
+]
+
+'examples/**' = [
+    'print', # runnable guides intentionally display their results
 ]
 
 [lint.flake8-annotations]

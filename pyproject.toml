@@ -31,9 +31,13 @@ dependencies = []
 
 [project.urls]
 Homepage = 'https://github.com/WoLpH/mt940'
+Documentation = 'https://mt940.readthedocs.io/'
+Repository = 'https://github.com/WoLpH/mt940'
+Issues = 'https://github.com/WoLpH/mt940/issues'
+Changelog = 'https://github.com/WoLpH/mt940/releases'
 
 [project.optional-dependencies]
-docs = ['sphinx>=8.0', 'furo>=2024.8']
+docs = ['sphinx>=8.0', 'furo>=2024.8', 'types-docutils']
 tests = [
     'pytest>=8.0',
     'pytest-cov>=5.0',
@@ -46,7 +50,7 @@ tox = ['tox>=4.0', 'tox-uv>=1.0', 'tox-gh-actions>=3.0']
 
 [dependency-groups]
 dev = [
-    'mt-940[docs,tests]',
+    'mt-940[docs,tests,tox]',
     'ruff>=0.16',
     'mypy>=1.18',
     'basedpyright>=1.31',
@@ -70,6 +74,27 @@ exclude-newer = '14 days'
 # package is `mt940`, so the module name has to be set explicitly.
 module-root = ''
 module-name = 'mt940'
+# The source archive contains the materials needed to run and document the
+# project. Wheels still contain only the runtime package and its metadata.
+source-include = [
+    'CONTRIBUTING.rst',
+    'docs/**',
+    'examples/**',
+    'mt940_tests/**',
+    'tox.ini',
+    'ruff.toml',
+    'pyrightconfig.strict.json',
+    'taplo.toml',
+    'lefthook.yml',
+]
+source-exclude = [
+    'docs/html/**',
+    'docs/_build/**',
+    'docs/doctrees/**',
+    'docs/superpowers/**',
+    'docs/modules.rst',
+    'docs/mt940*.rst',
+]
 
 # ── Tests ────────────────────────────────────────────────────
 
@@ -129,7 +154,7 @@ python_version = '3.10'
 # docs/conf.py imports sphinx, which uses `type` statements that mypy cannot
 # parse at a 3.10 target. tox and the hooks check it separately with
 # `mypy --python-version 3.12 docs/conf.py`, the version the docs build on.
-files = ['mt940', 'mt940_tests']
+files = ['mt940', 'mt940_tests', 'examples', 'docs/_tools']
 exclude = ['^dist/', '^build/', '^docs/_build/', '^\.tox/', '^\.?venv/']
 strict = true
 strict_bytes = true
@@ -158,7 +183,7 @@ enable_error_code = [
 [tool.basedpyright]
 typeCheckingMode = 'all'
 pythonVersion = '3.10'
-include = ['mt940', 'mt940_tests', 'docs/conf.py']
+include = ['mt940', 'mt940_tests', 'examples', 'docs/_tools', 'docs/conf.py']
 exclude = ['**/__pycache__', '.tox', '.venv', 'build', 'dist', 'docs/_build']
 # Parsed tag dictionaries are `dict[str, Any]` by design (mt940._types.TagDict).
 reportAny = false
@@ -175,7 +200,17 @@ reportImportCycles = false
 reportUnusedParameter = false
 
 [tool.pyrefly]
-project-includes = ['mt940', 'mt940_tests', 'docs/conf.py']
+# Explicit includes also work inside a repository-locally ignored worktree.
+use-ignore-files = false
+# Use the exclusions below, without adding environment-derived paths.
+disable-project-excludes-heuristics = true
+project-includes = [
+    'mt940',
+    'mt940_tests',
+    'examples',
+    'docs/_tools',
+    'docs/conf.py',
+]
 project-excludes = ['**/__pycache__', '.tox', '.venv', 'build', 'dist']
 python-version = '3.10'
 untyped-def-behavior = 'check-and-infer-return-any'
@@ -184,7 +219,7 @@ untyped-def-behavior = 'check-and-infer-return-any'
 python-version = '3.10'
 
 [tool.ty.src]
-include = ['mt940', 'mt940_tests', 'docs/conf.py']
+include = ['mt940', 'mt940_tests', 'examples', 'docs/_tools', 'docs/conf.py']
 
 [tool.ty.terminal]
 error-on-warning = true
@@ -197,8 +232,8 @@ error-on-warning = true
 # explicitly. The fixture formats carry bank data, not prose.
 skip = '''
     ./.git,./.venv,./.tox,./.mypy_cache,./.ruff_cache,./.pytest_cache,
-    ./.idea,./.superpowers,./.remember,./.zshhistory,./.coverage,
-    ./build,./dist,*/htmlcov,./docs/_build,./docs/html,
+    ./.idea,./.worktrees,./.superpowers,./.remember,./.zshhistory,./.coverage,
+    ./build,./dist,*/htmlcov,./docs/_build,./docs/html,./docs/superpowers,
     *.asc,*.yml,*.sta,*.txt,*.html,*.lock'''
 check-hidden = true
 
@@ -208,8 +243,8 @@ ignore = [
     'PY005',  # tests live in mt940_tests/ (established convention)
     'PY006',  # pre-commit replaced by lefthook
     'PC110',  # no pre-commit (we use lefthook)
-    'PC111',  # no blacken-docs because markdown has no code
+    'PC111',  # executable examples and the README snippet are checked by pytest
     'PC140',  # manual typecheck hooks
-    'PC170',  # no pygrep-hooks because no rST
+    'PC170',  # strict Sphinx and local link checks cover the documentation
     'RTD',    # no RTD repo-review checks
 ]

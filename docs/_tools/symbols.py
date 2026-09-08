@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ast
+import re
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -33,7 +34,7 @@ def collect(package: Path) -> dict[str, Symbol]:
             path.relative_to(package.parent).with_suffix('').parts
         )
         if parts[-1] == '__init__':
-            parts.pop()
+            _ = parts.pop()
         module: str = '.'.join(parts)
         source: str = path.read_text(encoding='utf-8')
         tree: ast.Module = ast.parse(source)
@@ -45,7 +46,12 @@ def collect(package: Path) -> dict[str, Symbol]:
             module if path.stem == '__init__' else module.rsplit('.', 1)[0]
         )
         aliases.update(_relative_imports(tree, module, parent))
-    for name, target in aliases.items():
+    for name, imported in aliases.items():
+        target: str = imported
+        visited: set[str] = {name}
+        while target in aliases and target not in visited:
+            visited.add(target)
+            target = aliases[target]
         if name not in symbols and target in symbols:
             original: Symbol = symbols[target]
             symbols[name] = Symbol(
@@ -104,18 +110,21 @@ def _commented(node: ast.AST, source: str) -> bool:
     return False
 
 
-def _assignment_names(node: ast.Assign | ast.AnnAssign) -> list[str]:
-    """Get simple names and instance attributes.
+def _assignment_names(
+    node: ast.Assign | ast.AnnAssign, *, instance_only: bool = False
+) -> list[str]:
+    """Get names and instance attributes, including unpacked assignments.
 
     Returns:
-        Names declared by the assignment, without complex unpacking targets.
+        Names declared by the assignment, excluding indexed assignments.
     """
     targets: list[ast.expr] = (
-        node.targets if isinstance(node, ast.Assign) else [node.target]
+        list(node.targets) if isinstance(node, ast.Assign) else [node.target]
     )
     names: list[str] = []
-    for target in targets:
-        if isinstance(target, ast.Name):
+    while targets:
+        target: ast.expr = targets.pop()
+        if isinstance(target, ast.Name) and not instance_only:
             names.append(target.id)
         elif (
             isinstance(target, ast.Attribute)
@@ -123,6 +132,10 @@ def _assignment_names(node: ast.Assign | ast.AnnAssign) -> list[str]:
             and target.value.id == 'self'
         ):
             names.append(target.attr)
+        elif isinstance(target, (ast.Tuple, ast.List)):
+            targets.extend(target.elts)
+        elif isinstance(target, ast.Starred):
+            targets.append(target.value)
     return names
 
 
@@ -154,10 +167,12 @@ def _collect_attributes(
             documented: bool = (
                 _commented(node, source)
                 or literal
-                or name in context
+                or bool(re.search(rf'\b{re.escape(name)}\b', context))
                 or bool(previous and previous.documented)
             )
-            symbols[full] = Symbol(full, scope, 'attribute', documented)
+            owner: Symbol = symbols[scope]
+            anchor: str = full if owner.kind == 'module' else scope
+            symbols[full] = Symbol(full, anchor, 'attribute', documented)
 
 
 def _collect_body(
@@ -222,17 +237,12 @@ def _collect_instance_attributes(
     for item in (child for method in methods for child in ast.walk(method)):
         if not isinstance(item, (ast.Assign, ast.AnnAssign)):
             continue
-        targets: list[ast.expr] = (
-            item.targets if isinstance(item, ast.Assign) else [item.target]
-        )
-        if not any(isinstance(target, ast.Attribute) for target in targets):
-            continue
-        for name in _assignment_names(item):
+        for name in _assignment_names(item, instance_only=True):
             full: str = f'{scope}.{name}'
             previous: Symbol | None = symbols.get(full)
             documented: bool = (
                 _commented(item, source)
-                or name in context
+                or bool(re.search(rf'\b{re.escape(name)}\b', context))
                 or bool(previous and previous.documented)
             )
             symbols[full] = Symbol(full, scope, 'attribute', documented)
