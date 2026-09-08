@@ -1,0 +1,17 @@
+{
+  "account": "EXAMPLE-ACCOUNT",
+  "currency": "EUR",
+  "reconciled": true,
+  "transactions": [
+    {
+      "amount": "-12.50",
+      "date": "2026-01-02",
+      "description": "Coffee supplies"
+    },
+    {
+      "amount": "25.00",
+      "date": "2026-01-02",
+      "description": "Supplier refund"
+    }
+  ]
+}

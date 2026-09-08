@@ -1,0 +1,60 @@
+{
+  "account_identification": "EXAMPLE-ACCOUNT",
+  "final_closing_balance": {
+    "amount": {
+      "amount": "112.50",
+      "currency": "EUR"
+    },
+    "date": "2026-01-02",
+    "status": "C"
+  },
+  "final_opening_balance": {
+    "amount": {
+      "amount": "100.00",
+      "currency": "EUR"
+    },
+    "date": "2026-01-01",
+    "status": "C"
+  },
+  "sequence_number": "1",
+  "statement_number": "1",
+  "transaction_reference": "EXAMPLE-001",
+  "transactions": [
+    {
+      "amount": {
+        "amount": "-12.50",
+        "currency": "EUR"
+      },
+      "bank_reference": "BANK-001",
+      "currency": "EUR",
+      "customer_reference": "COFFEE",
+      "date": "2026-01-02",
+      "entry_date": "2026-01-02",
+      "extra_details": "",
+      "funds_code": null,
+      "guessed_entry_date": "2026-01-02",
+      "id": "NTRF",
+      "status": "D",
+      "transaction_details": "Coffee supplies",
+      "transaction_reference": "EXAMPLE-001"
+    },
+    {
+      "amount": {
+        "amount": "25.00",
+        "currency": "EUR"
+      },
+      "bank_reference": "BANK-002",
+      "currency": "EUR",
+      "customer_reference": "REFUND",
+      "date": "2026-01-02",
+      "entry_date": "2026-01-02",
+      "extra_details": "",
+      "funds_code": null,
+      "guessed_entry_date": "2026-01-02",
+      "id": "NTRF",
+      "status": "C",
+      "transaction_details": "Supplier refund",
+      "transaction_reference": "EXAMPLE-001"
+    }
+  ]
+}

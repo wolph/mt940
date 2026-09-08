@@ -1,131 +1,118 @@
-============
 Contributing
 ============
 
-Contributions are welcome, and they are greatly appreciated! Every
-little bit helps, and credit will always be given.
+Changes go to ``develop``. ``master`` tracks stable releases. A useful report
+or patch includes a small reproducible input, the observed output and the
+expected result.
 
-You can contribute in many ways:
+Report a parsing problem
+------------------------
 
-Types of Contributions
-----------------------
+Open an issue at https://github.com/WoLpH/mt940/issues with Python and package
+versions, the operating system, source encoding, selected ``Options`` and any
+custom tags or processors. Explain which field is wrong and why the source
+requires a different result.
 
-Report Bugs
-~~~~~~~~~~~
+Reduce the input to synthetic data before sharing it. Preserve significant
+line breaks, tag order, field lengths and separators, but remove account
+numbers, customer names and bank references. Attach the complete traceback
+when parsing raises. For incorrect output, show the smallest relevant field
+comparison. A bank name alone does not identify an export format.
 
-Report bugs at https://github.com/WoLpH/mt940/issues.
+Set up a checkout
+-----------------
 
-If you are reporting a bug, please include:
+Install Python 3.12 and uv, then clone the development branch:
 
-* Your operating system name and version.
-* Any details about your local setup that might be helpful in troubleshooting.
-* Detailed steps to reproduce the bug.
+.. code-block:: console
 
-Fix Bugs
-~~~~~~~~
+   git clone --branch develop https://github.com/WoLpH/mt940.git
+   cd mt940
+   uv sync --python 3.12
+   uv run lefthook install
+   git switch -c feature/describe-the-change
 
-Look through the GitHub issues for bugs. Anything tagged with "bug"
-is open to whoever wants to implement it.
+For a contribution from a fork, use your fork's clone URL. Keep ``develop`` as
+the pull request target. The runtime minimum is Python 3.10. Python 3.12 is
+used for contributor tools and documentation because the documentation stack
+has a newer interpreter requirement.
 
-Implement Features
-~~~~~~~~~~~~~~~~~~
+Reproduce before changing behaviour
+-----------------------------------
 
-Look through the GitHub issues for features. Anything tagged with "feature"
-is open to whoever wants to implement it.
+Write a focused test that fails for the reported behaviour. For bank format
+changes, add a small ``.sta`` fixture and review its expected output. The fixture
+suite runs default options and ``Options.all()`` separately, so a fix cannot
+silently change compatibility output without a visible expectation change.
 
-Write Documentation
-~~~~~~~~~~~~~~~~~~~
+Keep tag and processor customisation local to the test. Built-in tag instances
+and default callback lists are shared. Use a tag subclass and a replacement
+processor list instead of modifying those shared objects. Do not use a global
+balance-scope change to make one fixture pass.
 
-MT940 could always use more documentation, whether as part of the
-official MT940 docs, in docstrings, or even on the web in blog posts,
-articles, and such.
+Run focused checks while working:
 
-Submit Feedback
-~~~~~~~~~~~~~~~
+.. code-block:: console
 
-The best way to send feedback is to file an issue at https://github.com/WoLpH/mt940/issues.
+   uv run pytest --no-cov mt940_tests/test_parse.py
+   uv run tox -e py312
+   uv run tox -m check
+   uv run tox -e docs
 
-If you are proposing a feature:
+``--no-cov`` is useful for a deliberately narrow test run. The full suite still
+needs its coverage gate. Before submitting, run the complete matrix:
 
-* Explain in detail how it would work.
-* Keep the scope as narrow as possible, to make it easier to implement.
-* Remember that this is a volunteer-driven project, and that contributions
-  are welcome :)
+.. code-block:: console
 
-Get Started!
-------------
+   uv run tox
 
-Ready to contribute? Here's how to set up `mt940` for local development.
+Check that Python 3.10, 3.11, 3.12, 3.13 and 3.14 actually ran. Tox can skip a
+missing interpreter. A locally successful command with skipped interpreters
+does not establish the whole supported matrix.
 
-1. Fork the `mt940` repo on GitHub.
-2. Clone your fork locally::
+Tests, tools and documentation
+------------------------------
 
-    $ git clone --branch develop git@github.com:your_name_here/mt940.git
+The suite includes bank fixtures, issue regressions, model and processor tests,
+doctests, runnable examples and a test of the README's primary Python snippet.
+Combined branch coverage is required to reach 100%. Strict expected failures
+record known limitations and become failures if their behaviour changes.
 
-3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development::
+Five type checkers run: mypy, basedpyright, pyright, pyrefly and ty. Ruff checks
+every enabled rule and verifies formatting. The commit hook handles Python
+formatting. Additional gates check spelling, TOML, repository configuration,
+GitHub Actions security and installed dependencies.
 
-    $ mkvirtualenv mt940
-    $ cd mt940/
-    $ pip install -e .
+For documentation changes, run ``uv run tox -e docs``. It tests examples,
+checks the symbol inventory, executes doctests, builds strict HTML and checks
+rendered symbols and local links. ``uv run tox -e docs-linkcheck`` checks remote
+links and requires network access. ``uv run tox -e docs-formats`` builds EPUB,
+LaTeX and PDF with Tectonic available on ``PATH``. On macOS, install Tectonic
+with ``brew install tectonic``.
 
-4. Create a branch for local development with `git-flow-avh`_::
+The Testing and Documentation guides in the built documentation describe
+fixture layout, coverage, output recording and all documentation checks.
+The published documentation is at https://mt940.readthedocs.io/.
 
-    $ git-flow feature start name-of-your-bugfix-or-feature
+Prepare the pull request
+------------------------
 
-   Or without git-flow:
+Keep the change scoped to the reproduced problem. Describe the trigger and the
+resulting behaviour, include the relevant tests and update the user guide or
+API docstring when an interface changes. Add explicit type annotations to new
+variables and signatures. Use decimal strings or ``Decimal`` for money.
 
-    $ git checkout -b feature/name-of-your-bugfix-or-feature
+Review ``git diff`` before staging named files. Generated API pages come from
+source docstrings and documentation tooling. Do not hand-edit them. When adding
+or removing package symbols, review ``docs/inventory.json`` and map the symbols
+to the appropriate guides as part of the same change.
 
-   Now you can make your changes locally.
+Write documentation with British spelling and ASCII punctuation. README images
+use absolute URLs. Use synthetic examples, include their tested source files
+in Sphinx and regenerate displayed output by executing the examples. Do not
+change a recorded output line by hand to match an explanation.
 
-5. When you're done making changes, check that your changes pass linting,
-   type-checking and the tests, including other Python versions with tox::
-
-    $ uv run tox -m check
-    $ uv run tox -e py312
-    $ uv run tox
-
-   To get the development tools, sync the dev group into your environment
-   and install the git hooks, which run ruff on every commit and every
-   checker on every push::
-
-    $ uv sync
-    $ uv run lefthook install
-
-6. Commit your changes and push your branch to GitHub with `git-flow-avh`_::
-
-    $ git add .
-    $ git commit -m "Your detailed description of your changes."
-    $ git-flow feature publish
-
-   Or without git-flow:
-
-    $ git add .
-    $ git commit -m "Your detailed description of your changes."
-    $ git push -u origin feature/name-of-your-bugfix-or-feature
-
-7. Submit a pull request through the GitHub website.
-
-Pull Request Guidelines
------------------------
-
-Before you submit a pull request, check that it meets these guidelines:
-
-1. The pull request should include tests.
-2. If the pull request adds functionality, the docs should be updated. Put
-   your new functionality into a function with a docstring, and add the
-   feature to the list in README.md.
-3. The pull request should work for Python 3.10+. Check the GitHub Actions CI
-   at https://github.com/WoLpH/mt940/actions and make sure that the tests pass
-   for all supported Python versions. To test locally you can use `tox` which
-   will run on all installed Python versions.
-
-Tips
-----
-
-To run a subset of tests::
-
-	$ py.test mt940_tests/some_test.py
-
-.. _git-flow-avh: https://github.com/petervanderdoes/gitflow
-
+Before submission, confirm the full CI result and inspect all required matrix
+jobs. Report any check you could not run, including missing interpreters or
+external tools. Release work has additional verification described in the
+release guide. A contributor patch does not publish a release.

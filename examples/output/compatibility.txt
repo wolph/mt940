@@ -1,0 +1,4 @@
+Default: 12.50 EUR
+reversal_sign=True: -12.50 EUR
+Options.all(): -12.50 EUR
+Available switches: 10

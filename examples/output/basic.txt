@@ -1,0 +1,6 @@
+Opening: 100.00 EUR @ 2026-01-01
+2026-01-02 -12.50 EUR
+2026-01-02 25.00 EUR
+Movement: 12.50
+Closing: 112.50 EUR @ 2026-01-02
+Reconciled: True
