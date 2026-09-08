@@ -86,10 +86,17 @@ class Options:
     def all(cls) -> Options:
         """Construct an instance with every declared field set to ``True``.
 
+        Every name returned by :meth:`names` is passed to the constructor as
+        a keyword with value ``True``. Subclass fields are supported when the
+        subclass constructor accepts all those keywords.
+
         Returns:
             An instance of the called class. For ``Options`` this enables all
-            ten switches. Dataclass fields added by a subclass are included as
-            well.
+            ten switches.
+
+        Raises:
+            TypeError: The constructor rejects a field keyword, for example
+                when a subclass adds a dataclass field with ``init=False``.
         """
         return cls(**dict.fromkeys(cls.names(), True))
 

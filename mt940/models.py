@@ -246,7 +246,9 @@ class Amount(Model):
     Do not change them while the object is a dictionary key or set member.
 
     Attributes:
-        amount: Signed :class:`decimal.Decimal`, preserving input precision.
+        amount: Signed :class:`decimal.Decimal`. Parsing retains the input
+            digits, but negation uses the active decimal context and can round
+            the result.
         currency: Supplied currency string or ``None``. No conversion is
             applied.
 
