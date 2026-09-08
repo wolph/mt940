@@ -39,4 +39,4 @@ transaction list as a universal parse-failure signal.
 Supported bank variants and tag output tables are in :doc:`bank-formats`.
 When an expected field is missing or changed, use :doc:`troubleshooting` to
 trace the source, tag and processor involved. The generated :doc:`modules`
-reference documents exact arguments and exceptions.
+documents exact arguments and exceptions.
