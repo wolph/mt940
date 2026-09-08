@@ -192,7 +192,7 @@ def mBank_set_iph_id(
         *args: Ignored compatibility arguments.
 
     Returns:
-        The same mapping. The first `` ID IPH: `` field matching
+        The same mapping. The first ``' ID IPH: '`` field matching
         :data:`mt940.processors.iph_id_re` sets ``iph_id`` to its captured
         digits as a string. Leading masking ``X`` characters are discarded. No
         match leaves any existing value unchanged. An empty captured digit
@@ -365,7 +365,8 @@ def _process_segments(
         mappings take precedence. ``33`` continues ``32``, remaining ``2x``
         subfields continue ``20``, and ``61`` through ``65`` continue ``60``.
         Unknown subfields are ignored. Continuation purpose fragments lose a
-        dangling `` BIC`` or `` IBAN`` suffix. Input mappings are not mutated.
+        dangling ``' BIC'`` or ``' IBAN'`` suffix. Input mappings are not
+        mutated.
 
     Raises:
         KeyError: A continuation needs a missing base key in ``detail_keys``.
@@ -559,7 +560,7 @@ def transaction_details_post_processor(
         The same result mapping. Structured fields overwrite existing values.
         Purpose text containing any GVC keyword is additionally decoded into
         every :data:`mt940.processors.GVC_KEYS` output, even if some outputs
-        are ``None``. A trailing bare `` BIC`` is removed from the resulting
+        are ``None``. A trailing bare ``' BIC'`` is removed from the resulting
         purpose.
 
     Raises:
