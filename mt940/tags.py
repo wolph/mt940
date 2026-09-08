@@ -1,75 +1,19 @@
-"""Tag parsers for the fields of an MT940 statement.
+"""Capture MT940 fields and convert them into model values.
 
-The MT940 format is a standard for bank account statements. It is used by
-many banks in Europe and is based on the SWIFT MT940 format.
+Each :class:`Tag` compiles a regex with named groups. :meth:`Tag.parse` returns
+those groups, pre-processors may change them, and calling the tag converts them
+to a result mapping. The collection then runs post-processors and stores the
+result according to the tag's scope.
 
-The MT940 tags are:
+:data:`TAG_BY_ID` is the built-in registry. Numeric IDs also handle suffixed
+markers when no exact override exists, for example ``13`` handles ``:13D:``.
+The explicitly registered balance and summary suffixes have their own classes.
+:class:`StatementASNB` and :class:`StatementGLS` are opt-in variants.
 
-+---------+-----------------------------------------------------------------+
-| Tag     | Description                                                     |
-+=========+=================================================================+
-| `:13:`  | Date/Time indication at which the report was created            |
-+---------+-----------------------------------------------------------------+
-| `:20:`  | Transaction Reference Number                                    |
-+---------+-----------------------------------------------------------------+
-| `:21:`  | Related Reference Number                                        |
-+---------+-----------------------------------------------------------------+
-| `:25:`  | Account Identification                                          |
-+---------+-----------------------------------------------------------------+
-| `:28:`  | Statement Number                                                |
-+---------+-----------------------------------------------------------------+
-| `:34:`  | The floor limit for debit and credit                            |
-+---------+-----------------------------------------------------------------+
-| `:60F:` | Opening Balance                                                 |
-+---------+-----------------------------------------------------------------+
-| `:60M:` | Intermediate Balance                                            |
-+---------+-----------------------------------------------------------------+
-| `:60E:` | Closing Balance                                                 |
-+---------+-----------------------------------------------------------------+
-| `:61:`  | Statement Line                                                  |
-+---------+-----------------------------------------------------------------+
-| `:62:`  | Closing Balance                                                 |
-+---------+-----------------------------------------------------------------+
-| `:62M:` | Intermediate Closing Balance                                    |
-+---------+-----------------------------------------------------------------+
-| `:62F:` | Final Closing Balance                                           |
-+---------+-----------------------------------------------------------------+
-| `:64:`  | Available Balance                                               |
-+---------+-----------------------------------------------------------------+
-| `:65:`  | Forward Available Balance                                       |
-+---------+-----------------------------------------------------------------+
-| `:86:`  | Transaction Information                                         |
-+---------+-----------------------------------------------------------------+
-| `:90:`  | Total number and amount of debit entries                        |
-+---------+-----------------------------------------------------------------+
-| `:NS:`  | Bank specific Non-swift extensions containing extra information |
-+---------+-----------------------------------------------------------------+
-
-Format
----------------------
-
-Sources:
-
-.. _Swift for corporates: http://www.sepaforcorporates.com/\
-    swift-for-corporates/account-statement-mt940-file-format-overview/
-.. _Rabobank MT940: https://www.rabobank.nl/images/\
-    formaatbeschrijving_swift_bt940s_1_0_nl_rib_29539296.pdf
-
- - `Swift for corporates`_
- - `Rabobank MT940`_
-
-The pattern for the tags use the following syntax:
-
-::
-
-    [] = optional
-    ! = fixed length
-    a = Text
-    x = Alphanumeric, seems more like text actually. Can include special
-        characters (slashes) and whitespace as well as letters and numbers
-    d = Numeric separated by decimal (usually comma)
-    c = Code list value
-    n = Numeric
+Patterns describe the accepted input of this implementation. They include
+bank-specific extensions and are not a complete validator for the SWIFT
+standard. Most compile case-insensitively. Amount signing still depends on
+:class:`mt940.options.Options` because captures retain their original case.
 """
 
 from __future__ import annotations
@@ -86,6 +30,7 @@ from .options import Options
 if TYPE_CHECKING:
     from typing_extensions import Self
 
+#: Parent logger for tag diagnostics, including raw values on parse failure.
 logger = logging.getLogger(__name__)
 
 #: An entry date more than this many days away from the value date means the
@@ -117,7 +62,33 @@ def _options_of(transactions: models.Transactions) -> Options:
 
 
 class Tag:
-    """Base Tag class for parsing and handling MT940 tag contents."""
+    """Base protocol for capturing a field and producing stored model values.
+
+    Subclasses supply a regex ``pattern`` and normally an ``id``. Override
+    :meth:`__call__` for model conversion or :meth:`parse` for capture
+    behaviour. Shared built-in instances must read per-parse options from the
+    collection, not retain mutable state from a particular parse.
+
+    Attributes:
+        id: Registry key, either a numeric base ID or an exact suffixed string.
+        RE_FLAGS: Regex flags, case-insensitive, verbose and Unicode by
+            default.
+        scope: Storage marker class. ``Transactions`` stores statement fields,
+            ``Transaction`` updates the current transaction, and the dual
+            marker uses the current transaction if one exists, otherwise the
+            statement.
+        pattern: Subclass regex whose named groups form the capture mapping.
+        name: Class name assigned to the class during instance allocation.
+        slug: Lowercase underscore-separated words matched from the class name.
+            Words must have an uppercase first letter followed by lowercase
+            letters. Acronym-only suffixes such as ``GLS`` are omitted.
+        logger: Child logger named for the tag class. Parse diagnostics may
+            include raw bank statement values.
+        re: Pattern compiled once during instance initialisation.
+
+    Tags compare by identity. Two instances with equal IDs share a hash value
+    but remain different dictionary keys and set members.
+    """
 
     id: ClassVar[str | int] = 0
     RE_FLAGS: ClassVar[re.RegexFlag] = re.IGNORECASE | re.VERBOSE | re.UNICODE
@@ -130,23 +101,37 @@ class Tag:
     logger: ClassVar[logging.Logger]
 
     def __init__(self) -> None:
-        """Compile the tag's ``pattern`` with :attr:`RE_FLAGS`."""
+        """Compile the subclass's pattern once with its regex flags.
+
+        Raises:
+            AttributeError: The subclass supplies no ``pattern``.
+            re.error: The supplied regular expression is invalid.
+        """
         self.re: re.Pattern[str] = re.compile(self.pattern, self.RE_FLAGS)
 
     def parse(
         self, transactions: models.Transactions, value: str
     ) -> dict[str, str | None]:
-        """Parses the given value using the Tag's pattern.
+        """Match the beginning of a field value and return its named groups.
 
         Args:
-            transactions: The transactions model instance.
-            value: The string value to parse.
+            transactions: Active collection. The base implementation does not
+                use it, but overrides can inspect its metadata and options.
+            value: Raw tag value, excluding its marker. The collection strips
+                whitespace around this value before passing it here.
 
         Returns:
-            A dictionary of matched group values.
+            A new dictionary of group names to strings or ``None`` for
+            unmatched optional groups. Trailing text is allowed unless the
+            pattern ends with an anchor. Regex matching does not validate dates
+            or decimal amounts.
 
         Raises:
-            RuntimeError: If the value does not match the tag's pattern.
+            RuntimeError: The value does not match. Its arguments contain a
+                readable message, this tag instance and the original value.
+
+        Successful matches log captures at debug level. Failures log the raw
+        value and pattern before attempting partial-match diagnostics.
         """
         # Part of the tag protocol, the base parser needs no context.
         del transactions
@@ -172,14 +157,23 @@ class Tag:
         raise RuntimeError(msg, self, value)
 
     def _debug_partial_match(self, value: str) -> None:
-        """Helper function to debug partial matches against the pattern."""
+        """Log which individual pattern lines consume parts of a failed value.
+
+        Args:
+            value: Raw value whose complete pattern match failed.
+
+        A successful fragment advances the remaining text. A mismatch leaves it
+        unchanged. Regex lines that cannot compile independently are logged and
+        skipped, so diagnostics do not replace the intended parsing exception.
+        The method emits log records and does not return parsed data.
+        """
         part_value = value
         for pattern in self.pattern.split('\n'):
             try:
                 match = re.match(pattern, part_value, self.RE_FLAGS)
             except re.error:
                 # Single lines of a pattern with multi-line groups are not
-                # valid patterns on their own; skip them instead of masking
+                # valid patterns on their own. Skip them instead of masking
                 # the RuntimeError raised by `parse`.
                 self.logger.info('cannot compile fragment %r', pattern)
                 continue
@@ -199,30 +193,33 @@ class Tag:
     def __call__(
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, typing.Any]:
-        """Processes the tag value and returns parsed content.
-
-        The base implementation returns ``value`` unchanged; subclasses
-        override it to build model objects (amounts, balances, dates, ...).
+        """Return the pre-processed group mapping without copying it.
 
         Args:
-            transactions: The transactions model instance.
-            value: The parsed group dictionary to process.
+            transactions: Active collection, unused by the base implementation.
+            value: Final pre-processor mapping, normally regex groups.
 
         Returns:
-            The processed mapping.
+            The identical ``value`` object. Subclasses may mutate it and return
+            a different mapping containing models. Consequently a
+            post-processor's ``tag_dict`` can already contain converted values.
         """
         # Part of the tag protocol, the base implementation needs no context.
         del transactions
         return value
 
     def __new__(cls, *args: typing.Any, **kwargs: typing.Any) -> Self:
-        """Create a Tag instance, deriving its ``name``, ``slug`` and logger.
+        """Allocate a tag and assign its derived metadata on the class.
 
-        The ``slug`` is the snake_case form of the class name and is used to
-        look up matching pre/post processors.
+        Args:
+            *args: Ignored during allocation, left for a subclass initialiser.
+            **kwargs: Ignored during allocation, left for a subclass
+                initialiser.
 
         Returns:
-            The new, not yet initialised, tag instance.
+            An uninitialised instance of the called class. ``name``, ``slug``
+            and ``logger`` are assigned on that class, so all its instances
+            share those metadata attributes. The slug selects processor slots.
         """
         # Tags take no constructor arguments, the signature only mirrors the
         # ``__init__`` of subclasses.
@@ -236,10 +233,10 @@ class Tag:
     def __eq__(self, other: object) -> bool:
         """Return whether ``other`` is this very tag instance.
 
-        Tags compare by identity, as they did in 5.0.0, so two instances of
-        one class stay distinct set members and dictionary keys. The
-        id-based ``__hash__`` is consistent with that: an object is always
-        equal to itself.
+        Tags compare by identity, as they did in 5.0.0, so two instances of one
+        class stay distinct set members and dictionary keys. The id-based
+        ``__hash__`` is consistent with that: an object is always equal to
+        itself.
         """
         return self is other
 
@@ -253,12 +250,22 @@ class Tag:
 
 
 class DateTimeIndication(Tag):
-    """Date/Time indication at which the report was created.
+    """Report creation date and optional offset from ``:13:`` or ``:13D:``.
 
-    Pattern: 6!n4!n1! x4!n
+    Captures ``YYMMDDhhmm`` followed by an optional signed four-digit offset.
+    Conversion returns a :class:`~mt940.models.DateTime` under ``date`` in
+    statement metadata. No offset yields a naive datetime.
+
+    Legacy conversion treats offset digits as a minute count. With
+    ``Options.timezone_offset=True`` they are interpreted as hours and minutes,
+    so ``+0130`` means 90 minutes instead of 130. The parser does not
+    independently validate the offset's hour and minute subfields.
     """
 
+    #: Registry ID for :class:`DateTimeIndication`.
     id: ClassVar[str | int] = 13
+    #: Named capture pattern implementing the fields described by
+    #: :class:`DateTimeIndication`.
     pattern: ClassVar[str] = r"""^
     (?P<year>\d{2})
     (?P<month>\d{2})
@@ -271,7 +278,23 @@ class DateTimeIndication(Tag):
     def __call__(
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, object]:
-        """Return the report :class:`~mt940.models.DateTime` as ``date``."""
+        """Convert date groups to a report timestamp and consume offset groups.
+
+        Args:
+            transactions: Collection providing the timezone interpretation
+                option.
+            value: Mutable year, month, day, hour, minute and optional offset
+                groups.
+
+        Returns:
+            A new ``{'date': DateTime(...)}`` mapping. ``offset_sign`` and the
+            raw ``offset`` are removed from ``value``. A present offset is
+            replaced there by the representation consumed by ``DateTime``.
+
+        Raises:
+            ValueError: A date component is invalid or outside its supported
+                range.
+        """
         data = super().__call__(transactions, value)
         # Drop the raw groups so they are not passed on when the offset is
         # absent, which then yields a naive datetime.
@@ -290,42 +313,61 @@ class DateTimeIndication(Tag):
 
 
 class TransactionReferenceNumber(Tag):
-    """Transaction reference number.
+    """Statement reference from ``:20:``, stored as ``transaction_reference``.
 
-    Pattern: 16x
+    Captures at most 16 characters without requiring an end-of-value match. The
+    default statement post-processor copies the latest reference into each
+    converted ``:61:`` result. The field itself does not normally start a new
+    transaction. Use ``transaction_boundary`` to select that behaviour.
     """
 
+    #: Registry ID for :class:`TransactionReferenceNumber`.
     id: ClassVar[str | int] = 20
+    #: Named capture pattern implementing the fields described by
+    #: :class:`TransactionReferenceNumber`.
     pattern: ClassVar[str] = r'(?P<transaction_reference>.{0,16})'
 
 
 class RelatedReference(Tag):
-    """Related reference.
+    """Related statement reference from ``:21:`` as ``related_reference``.
 
-    Pattern: 16x
+    Captures up to 16 characters and stores the result in statement metadata.
+    No relation to another parsed statement is resolved automatically.
     """
 
+    #: Registry ID for :class:`RelatedReference`.
     id: ClassVar[str | int] = 21
+    #: Named capture pattern implementing the fields described by
+    #: :class:`RelatedReference`.
     pattern: ClassVar[str] = r'(?P<related_reference>.{0,16})'
 
 
 class AccountIdentification(Tag):
-    """Account identification.
+    """Account identifier from ``:25:`` as ``account_identification``.
 
-    Pattern: 35x
+    Captures up to 35 characters without validating IBAN structure or checksum.
+    The value belongs to statement metadata and later account tags replace it.
     """
 
+    #: Registry ID for :class:`AccountIdentification`.
     id: ClassVar[str | int] = 25
+    #: Named capture pattern implementing the fields described by
+    #: :class:`AccountIdentification`.
     pattern: ClassVar[str] = r'(?P<account_identification>.{0,35})'
 
 
 class StatementNumber(Tag):
-    """Statement number / sequence number.
+    """Statement and optional sequence numbers from ``:28:`` or ``:28C:``.
 
-    Pattern: 5n[/5n]
+    Returns string fields ``statement_number`` and ``sequence_number``. Each
+    accepts one to five digits and the optional sequence may have a separating
+    slash. Leading zeroes are preserved. An absent sequence is ``None``.
     """
 
+    #: Registry ID for :class:`StatementNumber`.
     id: ClassVar[str | int] = 28
+    #: Named capture pattern implementing the fields described by
+    #: :class:`StatementNumber`.
     pattern: ClassVar[str] = r"""
     (?P<statement_number>\d{1,5})  # 5n
     (?:/?(?P<sequence_number>\d{1,5}))?  # [/5n]
@@ -333,14 +375,20 @@ class StatementNumber(Tag):
 
 
 class FloorLimitIndicator(Tag):
-    """Floor limit indicator.
+    """Debit or credit reporting threshold from ``:34:`` or ``:34F:``.
 
-    Indicates the minimum value reported for debit and credit amounts.
-
-    Pattern: :34F:GHSC0,00
+    Captures a three-letter currency, an optional debit or credit mark, and an
+    amount. Conversion produces ``d_floor_limit`` or ``c_floor_limit`` amounts.
+    An absent mark produces both. By default a space mark produces the legacy
+    ``' _floor_limit'`` key. ``Options.floor_limit_blank_mark`` treats the
+    space as an absent mark, making both normal keys available for currency
+    lookup.
     """
 
+    #: Registry ID for :class:`FloorLimitIndicator`.
     id: ClassVar[str | int] = 34
+    #: Named capture pattern implementing the fields described by
+    #: :class:`FloorLimitIndicator`.
     pattern: ClassVar[str] = r"""^
     (?P<currency>[A-Z]{3})  # 3!a Currency
     (?P<status>[DC ]?)  # 2a Debit/Credit Mark
@@ -350,7 +398,21 @@ class FloorLimitIndicator(Tag):
     def __call__(
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, object]:
-        """Return the floor limit as ``d_floor_limit``/``c_floor_limit``."""
+        """Build one signed floor limit or both debit and credit limits.
+
+        Args:
+            transactions: Collection providing blank-mark and amount-sign
+                options.
+            value: Captured ``currency``, ``status`` and ``amount`` fields.
+
+        Returns:
+            A new mapping of floor-limit keys to :class:`~mt940.models.Amount`.
+            The source mapping is read without mutation. Key names use
+            lowercase status even when lowercase signing is disabled.
+
+        Raises:
+            decimal.InvalidOperation: The captured amount is empty or invalid.
+        """
         data = typing.cast(
             'dict[str, str | None]',
             super().__call__(transactions, value),
@@ -382,32 +444,40 @@ class FloorLimitIndicator(Tag):
 
 
 class NonSwift(Tag):
-    """Non-swift extension for MT940 containing extra information.
+    """Bank-specific ``:NS:`` text with optional two-digit line subfields.
 
-    The actual definition is not consistent between banks so the current
-    implementation is a tad limited. Feel free to extend the implementation
-    and create a pull request with a better version :).
+    Lines beginning with two digits and non-empty content populate
+    ``non_swift_<id>``. Later occurrences of the same ID replace earlier ones.
+    ``non_swift`` retains the complete raw value, while ``non_swift_text``
+    joins its content with subfield prefixes removed.
 
-    It seems this could be anything so we'll have to be flexible about it.
-
-    Pattern: `2!n35x | *x`
+    Legacy handling can replace a free-text line after content with a paragraph
+    separator. ``Options.non_swift_free_text`` preserves non-blank free text.
+    The dual scope stores fields on the current transaction if one exists,
+    otherwise on the statement.
     """
 
+    #: Storage scope interpreted by :meth:`mt940.models.Transactions.parse`.
     scope: ClassVar[type[models.Transactions | models.Transaction]] = (
         models.TransactionsAndTransaction
     )
+    #: Registry ID for :class:`NonSwift`.
     id: ClassVar[str | int] = 'NS'
 
     # NS content is bank specific and free-form, so accept anything
     # (including multi-line values whose lines do not all start with a
-    # two-digit sub-tag); `__call__` extracts the `2!n35x` structure per
+    # two-digit sub-tag). `__call__` extracts the `2!n35x` structure per
     # line where present.
+    #: Named capture pattern implementing the fields described by
+    #: :class:`NonSwift`.
     pattern: ClassVar[str] = r"""
     (?P<non_swift>[\s\S]*)
     $"""
+    #: Two-digit non-SWIFT line ID followed by unrestricted same-line content.
     sub_pattern: ClassVar[str] = r"""
     (?P<ns_id>\d{2})(?P<ns_data>.{0,})
     """
+    #: Compiled line pattern used to extract non-SWIFT subfields.
     sub_pattern_m: ClassVar[re.Pattern[str]] = re.compile(
         sub_pattern, re.IGNORECASE | re.VERBOSE | re.UNICODE
     )
@@ -415,7 +485,22 @@ class NonSwift(Tag):
     def __call__(
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, object]:
-        """Return ``value`` with per-line ``non_swift_<id>`` fields added."""
+        """Add per-line subfields and a readable text version to the capture.
+
+        Args:
+            transactions: Collection providing the free-text preservation
+                option.
+            value: Mutable mapping containing the raw ``non_swift`` string.
+
+        Returns:
+            The same mapping with ``non_swift_<id>`` entries and
+            ``non_swift_text``. The original ``non_swift`` string is retained.
+            Consecutive blank separators are collapsed according to the legacy
+            paragraph rules.
+
+        Raises:
+            KeyError: The capture has no ``non_swift`` field.
+        """
         keep_free_text = _options_of(transactions).non_swift_free_text
         text: list[str] = []
         data = value['non_swift']
@@ -443,11 +528,17 @@ class NonSwift(Tag):
 
 
 class BalanceBase(Tag):
-    """Balance base.
+    """Capture and convert opening, closing and available balances.
 
-    Pattern: 1!a6!n3!a15d
+    The pattern accepts a debit or credit mark, ``YYMMDD``, three currency
+    characters and a decimal-comma amount. Conversion stores a
+    :class:`~mt940.models.Balance` under the concrete tag's slug. Currency text
+    is retained without ISO-code validation. Subclasses select the tag ID and
+    therefore the balance name used by the collection's currency lookup.
     """
 
+    #: Named capture pattern implementing the fields described by
+    #: :class:`BalanceBase`.
     pattern: ClassVar[str] = r"""^
     (?P<status>[DC])  # 1!a Debit/Credit
     (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
@@ -460,7 +551,24 @@ class BalanceBase(Tag):
     def __call__(
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, object]:
-        """Return a :class:`~mt940.models.Balance` under the tag's slug."""
+        """Build an amount, date and balance from captured fields.
+
+        Args:
+            transactions: Collection providing amount-sign options.
+            value: Mutable capture mapping with status, date, currency and
+                amount.
+
+        Returns:
+            A new mapping from this tag's slug to a
+            :class:`~mt940.models.Balance`. The source ``amount`` is replaced
+            with an ``Amount`` and a ``date`` model is added. Raw date groups
+            remain in the source mapping.
+
+        Raises:
+            ValueError: The calendar date is invalid.
+            decimal.InvalidOperation: The amount cannot be converted to a
+                decimal.
+        """
         data = super().__call__(transactions, value)
         options = _options_of(transactions)
         data['amount'] = models.Amount(**data, options=options)
@@ -471,57 +579,54 @@ class BalanceBase(Tag):
 class OpeningBalance(BalanceBase):
     """Opening balance (``:60:``)."""
 
+    #: Registry ID for :class:`OpeningBalance`.
     id: ClassVar[str | int] = 60
 
 
 class FinalOpeningBalance(BalanceBase):
     """Final opening balance (``:60F:``)."""
 
+    #: Registry ID for :class:`FinalOpeningBalance`.
     id: ClassVar[str | int] = '60F'
 
 
 class IntermediateOpeningBalance(BalanceBase):
     """Intermediate opening balance (``:60M:``)."""
 
+    #: Registry ID for :class:`IntermediateOpeningBalance`.
     id: ClassVar[str | int] = '60M'
 
 
 class Statement(Tag):
-    """Statement line, a single transaction on the account (``:61:``).
+    """Transaction line from ``:61:`` with amount, references and dates.
 
-    Each transaction is identified by a unique transaction reference number
-    (Tag 20) and is described in the Statement Line (Tag 61).
+    Captured fields are ``year``, ``month`` and ``day`` for the value date,
+    optional ``entry_month`` and ``entry_day``, ``status``, optional
+    ``funds_code``, ``amount``, optional transaction-type ``id``,
+    ``customer_reference``, optional ``bank_reference`` and ``extra_details``.
+    Entry parts accept digits or spaces. The customer reference is capped at 16
+    characters and the bank reference, excluding its ``//`` delimiter, at 23.
+    Extra details have no length cap.
 
-    Pattern: 6!n[4!n]2a[1!a]15d1!a3!c23x[//16x]
+    Conversion adds ``date`` and replaces ``amount`` with an amount model. A
+    numeric entry month and day produce ``entry_date`` and its compatibility
+    alias ``guessed_entry_date``. Default post-processors remove raw date parts
+    and copy the latest statement reference. Optional groups remain ``None``
+    unless a processor removes or replaces them.
 
-    The fields are:
-
-     - `value_date`: transaction date (YYMMDD)
-     - `entry_date`: Optional 4-digit month value and 2-digit day value of
-       the entry date (MMDD) or 4 whitespace characters (some banks insert
-       spaces here)
-     - `funds_code`: Optional 1-character code indicating the funds type (
-       the third character of the currency code if needed)
-     - `amount`: 15-digit value of the transaction amount, including commas
-       for decimal separation
-     - `transaction_type`: Optional 4-character transaction type
-       identification code starting with a letter followed by alphanumeric
-       characters and spaces
-     - `customer_reference`: Optional 16-character customer reference,
-       excluding any bank reference
-     - `bank_reference`: Optional 23-character bank reference starting with
-       "//"
-     - `supplementary_details`: Optional 34-character supplementary details
-       about the transaction.
-
-    The Tag 61 can occur multiple times within an MT940 file, with each
-    occurrence representing a different transaction.
+    The collection reuses a trailing transaction with a false or missing
+    ``id``. Otherwise this tag starts a transaction. A missing transaction-type
+    ID can therefore cause successive statement lines to share a transaction.
     """
 
+    #: Registry ID for :class:`Statement`.
     id: ClassVar[str | int] = 61
+    #: Storage scope interpreted by :meth:`mt940.models.Transactions.parse`.
     scope: ClassVar[type[models.Transactions | models.Transaction]] = (
         models.Transaction
     )
+    #: Named capture pattern implementing the fields described by
+    #: :class:`Statement`.
     pattern: ClassVar[str] = r"""^
     (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
     (?P<month>\d{2})
@@ -545,7 +650,27 @@ class Statement(Tag):
     def __call__(
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, object]:
-        """Return the data with the amount and dates built."""
+        """Convert the amount and dates, inferring an entry year if possible.
+
+        Args:
+            transactions: Collection supplying a currency fallback and sign
+                options.
+            value: Mutable statement capture mapping after pre-processing.
+
+        Returns:
+            The same mapping with model values. Missing ``currency`` uses the
+            collection currency, but an existing ``None`` is retained. Entry
+            dates initially use the value-date year. A difference of at least
+            330 days adjusts the entry year by one toward the value date. Both
+            entry-date keys refer to the same resolved model.
+
+        Raises:
+            ValueError: The value date or initial same-year entry date is
+                invalid.
+            decimal.InvalidOperation: The amount text is invalid.
+
+        The initial entry date is validated before its year can be corrected.
+        """
         data = super().__call__(transactions, value)
         data.setdefault('currency', transactions.currency)
         data['amount'] = models.Amount(
@@ -575,7 +700,7 @@ class Statement(Tag):
 
             # Correct the entry date's year when the entry date crosses a
             # year boundary relative to the value date (issue #121). Both
-            # `entry_date` and `guessed_entry_date` expose the resolved value;
+            # `entry_date` and `guessed_entry_date` expose the resolved value.
             # `guessed_entry_date` is kept as a backwards-compatible alias.
             if year:
                 entry_date = models.Date(
@@ -590,22 +715,21 @@ class Statement(Tag):
 
 
 class StatementASNB(Statement):
-    """StatementASNB.
+    """Opt-in statement pattern allowing ASN Bank's longer customer reference.
 
-    From: https://www.sepaforcorporates.com/swift-for-corporates
+    The customer reference accepts up to 34 characters, allowing account
+    numbers that exceed the default 16-character field. Its greedy capture can
+    include ``//`` within those 34 characters. Bank reference and extra details
+    are capped at 16 and 34 characters respectively. Conversion is inherited
+    from :class:`Statement`.
 
-    Pattern: 6!n[4!n]2a[1!a]15d1!a3!c34x[//16x]
-    [34x]
-
-    But ASN bank puts the IBAN in the customer reference, which is according
-    to Wikipedia at most 34 characters.
-
-    So this is the new pattern:
-
-    Pattern: 6!n[4!n]2a[1!a]15d1!a3!c34x[//16x]
-    [34x]
+    Register an instance under numeric ID ``61`` to replace the default parser.
+    Its derived slug remains ``statement``, so default statement processors
+    run.
     """
 
+    #: Named capture pattern implementing the fields described by
+    #: :class:`StatementASNB`.
     pattern: ClassVar[str] = r"""^
     (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
     (?P<month>\d{2})
@@ -625,27 +749,37 @@ class StatementASNB(Statement):
     def __call__(
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, object]:
-        """Return the statement data, built exactly like :class:`Statement`."""
+        """Apply the standard statement conversion to ASN-specific captures.
+
+        Args:
+            transactions: Collection supplying currency and parser options.
+            value: Mutable mapping returned by this variant's pattern.
+
+        Returns:
+            The mapping converted by :meth:`Statement.__call__`. Amount and
+            date conversion errors propagate unchanged.
+        """
         return super().__call__(transactions, value)
 
 
 class StatementGLS(Statement):
-    """Statement variant for GLS / Atruvia banks (issue #111).
+    """Opt-in statement pattern for long GLS and Atruvia customer references.
 
-    These banks send a customer reference longer than the SWIFT 16x cap,
-    followed by the ``//`` bank-reference delimiter (e.g.
-    ``...DR20,NTRFBIPI-dvT1FzfMqvzF5HaU4oetlH7SGRkonU//2022070616391534000``).
+    The customer reference continues until ``//`` or a newline with no length
+    cap. Bank references retain the default 23-character cap, and extra details
+    remain unbounded. The inherited conversion and ``statement`` processor slug
+    are unchanged.
 
-    This is an opt-in tag because relaxing the default customer-reference
-    length would change how banks that legitimately pack data after a 16x
-    reference (e.g. Rabobank) are parsed. Enable it explicitly::
-
-        import mt940
-
-        gls = mt940.tags.StatementGLS()
-        mt940.parse(data, tags={gls.id: gls})
+    Example:
+        >>> import mt940
+        >>> source = ':61:240101C1,00NTRFA-LONG-CUSTOMER-REFERENCE//BANK'
+        >>> parsed = mt940.parse(source, tags={61: StatementGLS()})
+        >>> parsed[0].data['customer_reference']
+        'A-LONG-CUSTOMER-REFERENCE'
     """
 
+    #: Named capture pattern implementing the fields described by
+    #: :class:`StatementGLS`.
     pattern: ClassVar[str] = r"""^
     (?P<year>\d{2})  # 6!n Value Date (YYMMDD)
     (?P<month>\d{2})
@@ -667,40 +801,54 @@ class StatementGLS(Statement):
 class ClosingBalance(BalanceBase):
     """Closing balance (``:62:``)."""
 
+    #: Registry ID for :class:`ClosingBalance`.
     id: ClassVar[str | int] = 62
 
 
 class IntermediateClosingBalance(ClosingBalance):
     """Intermediate closing balance (``:62M:``)."""
 
+    #: Registry ID for :class:`IntermediateClosingBalance`.
     id: ClassVar[str | int] = '62M'
 
 
 class FinalClosingBalance(ClosingBalance):
     """Final closing balance (``:62F:``)."""
 
+    #: Registry ID for :class:`FinalClosingBalance`.
     id: ClassVar[str | int] = '62F'
 
 
 class AvailableBalance(BalanceBase):
     """Available balance (``:64:``)."""
 
+    #: Registry ID for :class:`AvailableBalance`.
     id: ClassVar[str | int] = 64
 
 
 class ForwardAvailableBalance(BalanceBase):
     """Forward available balance (``:65:``)."""
 
+    #: Registry ID for :class:`ForwardAvailableBalance`.
     id: ClassVar[str | int] = 65
 
 
 class TransactionDetails(Tag):
-    """Transaction details.
+    """Transaction information from ``:86:`` as ``transaction_details``.
 
-    Pattern: 6x65x
+    The capture pattern accepts all characters, including newlines. The default
+    parser then reproduces the historical nine-chunk, 65-character limit unless
+    ``Options.unbounded_details`` is enabled. A subclass using a different
+    pattern keeps its own capture unchanged.
+
+    The default post-processor decodes recognised structured subfields and GVC
+    purpose keywords. Unstructured text remains in ``transaction_details``.
+    This tag updates the current transaction and is dropped if none exists.
     """
 
+    #: Registry ID for :class:`TransactionDetails`.
     id: ClassVar[str | int] = 86
+    #: Storage scope interpreted by :meth:`mt940.models.Transactions.parse`.
     scope: ClassVar[type[models.Transactions | models.Transaction]] = (
         models.Transaction
     )
@@ -709,6 +857,8 @@ class TransactionDetails(Tag):
     # `models.Transactions.parse` already limits the value to this tag's own
     # slice of the statement. `parse` below applies the 5.0.0 cap of nine
     # 65-character chunks unless `Options.unbounded_details` is on.
+    #: Named capture pattern implementing the fields described by
+    #: :class:`TransactionDetails`.
     pattern: ClassVar[str] = r"""
     (?P<transaction_details>[\s\S]*)
     """
@@ -716,17 +866,21 @@ class TransactionDetails(Tag):
     def parse(
         self, transactions: models.Transactions, value: str
     ) -> dict[str, str | None]:
-        """Capture the details, cut like 5.0.0 did unless opted out.
-
-        A subclass with its own ``pattern`` keeps whatever it captured. That
-        was the way past the cap in 4.x and 5.0.0, so it has to keep working.
+        """Capture detail text and apply the optional legacy capture limit.
 
         Args:
-            transactions: The collection being parsed, for its options.
-            value: The raw tag value.
+            transactions: Collection providing ``unbounded_details``.
+            value: Raw tag value without its marker.
 
         Returns:
-            The ``transaction_details`` group.
+            A new group dictionary whose ``transaction_details`` value is
+            limited by :data:`_LEGACY_DETAILS_RE` when the option is disabled
+            and the instance pattern equals the built-in pattern. Additional
+            subclass groups are preserved.
+
+        Raises:
+            RuntimeError: A custom pattern does not match the value.
+            KeyError: A capped pattern result lacks ``transaction_details``.
         """
         data = super().parse(transactions, value)
         capped = (
@@ -741,20 +895,52 @@ class TransactionDetails(Tag):
 
 
 class SumEntries(Tag):
-    """Number and Sum of debit Entries."""
+    """Base parser for entry counts and total amounts in ``:90:`` fields.
 
+    Captures ``number`` as digit text, ``currency`` as three characters and
+    ``amount`` as decimal-comma text. :class:`SumDebitEntries` and
+    :class:`SumCreditEntries` provide the required sign and suffixed tag IDs.
+    The count is retained as a string even though ``SumAmount`` annotates its
+    constructor argument as an integer.
+
+    The bare base class remains registered for compatibility, but it has no
+    ``status`` value. Converting a bare ``:90:`` therefore raises
+    ``AttributeError``. Use a suffixed debit or credit summary, or a custom
+    subclass that supplies a status.
+    """
+
+    #: Registry ID for :class:`SumEntries`.
     id: ClassVar[str | int] = 90
+    #: Named capture pattern implementing the fields described by
+    #: :class:`SumEntries`.
     pattern: ClassVar[str] = r"""^
     (?P<number>\d*)
     (?P<currency>.{3})  # 3!a Currency
     (?P<amount>[\d,]{1,15})  # 15d Amount
     """
+    #: Debit or credit mark supplied to the summary amount constructor.
     status: ClassVar[str]
 
     def __call__(
         self, transactions: models.Transactions, value: dict[str, typing.Any]
     ) -> dict[str, object]:
-        """Return a :class:`~mt940.models.SumAmount` under the tag's slug."""
+        """Build a total amount and attach the captured entry count unchanged.
+
+        Args:
+            transactions: Collection providing amount-sign options.
+            value: Mutable capture mapping containing number, currency and
+                amount.
+
+        Returns:
+            A new mapping from the tag's slug to
+            :class:`~mt940.models.SumAmount`. The source mapping gains this
+            class's ``status`` field.
+
+        Raises:
+            AttributeError: The concrete class does not define ``status``.
+            decimal.InvalidOperation: The amount cannot be converted to a
+                decimal.
+        """
         data = super().__call__(transactions, value)
         data['status'] = self.status
         return {
@@ -767,40 +953,70 @@ class SumEntries(Tag):
 class SumDebitEntries(SumEntries):
     """Number and sum of debit entries (``:90D:``)."""
 
+    #: Debit or credit mark supplied to the summary amount constructor.
     status: ClassVar[str] = 'D'
+    #: Registry ID for :class:`SumDebitEntries`.
     id: ClassVar[str | int] = '90D'
 
 
 class SumCreditEntries(SumEntries):
     """Number and sum of credit entries (``:90C:``)."""
 
+    #: Debit or credit mark supplied to the summary amount constructor.
     status: ClassVar[str] = 'C'
+    #: Registry ID for :class:`SumCreditEntries`.
     id: ClassVar[str | int] = '90C'
 
 
 @enum.unique
 class Tags(enum.Enum):
-    """Registry of the built-in tag parsers, one instance per member."""
+    """Enumeration of shared built-in parser instances.
 
+    Each member's ``value`` is a :class:`Tag` instance. :data:`TAG_BY_ID`
+    indexes these same instances by their IDs. Optional bank variants are
+    intentionally absent and can be supplied through the collection's ``tags``
+    argument. Members do not contain per-statement mutable state.
+    """
+
+    #: Shared :class:`DateTimeIndication` parser instance.
     DATE_TIME_INDICATION = DateTimeIndication()
+    #: Shared :class:`TransactionReferenceNumber` parser instance.
     TRANSACTION_REFERENCE_NUMBER = TransactionReferenceNumber()
+    #: Shared :class:`RelatedReference` parser instance.
     RELATED_REFERENCE = RelatedReference()
+    #: Shared :class:`AccountIdentification` parser instance.
     ACCOUNT_IDENTIFICATION = AccountIdentification()
+    #: Shared :class:`StatementNumber` parser instance.
     STATEMENT_NUMBER = StatementNumber()
+    #: Shared :class:`OpeningBalance` parser instance.
     OPENING_BALANCE = OpeningBalance()
+    #: Shared :class:`IntermediateOpeningBalance` parser instance.
     INTERMEDIATE_OPENING_BALANCE = IntermediateOpeningBalance()
+    #: Shared :class:`FinalOpeningBalance` parser instance.
     FINAL_OPENING_BALANCE = FinalOpeningBalance()
+    #: Shared :class:`Statement` parser instance.
     STATEMENT = Statement()
+    #: Shared :class:`ClosingBalance` parser instance.
     CLOSING_BALANCE = ClosingBalance()
+    #: Shared :class:`IntermediateClosingBalance` parser instance.
     INTERMEDIATE_CLOSING_BALANCE = IntermediateClosingBalance()
+    #: Shared :class:`FinalClosingBalance` parser instance.
     FINAL_CLOSING_BALANCE = FinalClosingBalance()
+    #: Shared :class:`AvailableBalance` parser instance.
     AVAILABLE_BALANCE = AvailableBalance()
+    #: Shared :class:`ForwardAvailableBalance` parser instance.
     FORWARD_AVAILABLE_BALANCE = ForwardAvailableBalance()
+    #: Shared :class:`TransactionDetails` parser instance.
     TRANSACTION_DETAILS = TransactionDetails()
+    #: Shared :class:`FloorLimitIndicator` parser instance.
     FLOOR_LIMIT_INDICATOR = FloorLimitIndicator()
+    #: Shared :class:`NonSwift` parser instance.
     NON_SWIFT = NonSwift()
+    #: Shared :class:`SumEntries` parser instance.
     SUM_ENTRIES = SumEntries()
+    #: Shared :class:`SumDebitEntries` parser instance.
     SUM_DEBIT_ENTRIES = SumDebitEntries()
+    #: Shared :class:`SumCreditEntries` parser instance.
     SUM_CREDIT_ENTRIES = SumCreditEntries()
 
 

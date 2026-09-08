@@ -1,15 +1,21 @@
-"""JSON serialization for MT940 models.
+"""Serialise MT940 models with the standard :mod:`json` encoder interface.
 
-This module exposes :class:`JSONEncoder`, a :class:`json.JSONEncoder` subclass
-that knows how to serialize the model types returned by the parser (balances,
-amounts, dates and the transaction collections).
+Dates, amounts and transaction collections contain values that the standard
+encoder cannot serialise directly. Pass :class:`JSONEncoder` as ``cls`` to
+``json.dumps`` or ``json.dump``. The output preserves decimal precision as
+strings and contains no type markers for reconstructing model instances.
 
 Example:
     >>> import json
     >>> import mt940
-    >>> transactions = mt940.models.Transactions()
-    >>> json.dumps(transactions, cls=mt940.JSONEncoder)
+    >>> json.dumps(mt940.models.Transactions(), cls=mt940.JSONEncoder)
     '{"transactions": []}'
+    >>> json.dumps(
+    ...     mt940.models.Amount('12,30', 'D', 'EUR'),
+    ...     cls=mt940.JSONEncoder,
+    ...     sort_keys=True,
+    ... )
+    '{"amount": "-12.30", "currency": "EUR"}'
 """
 
 from __future__ import annotations
@@ -26,24 +32,36 @@ _MISSING = object()
 
 
 class JSONEncoder(json.JSONEncoder):
-    """Serialize MT940 model objects to JSON-compatible primitives.
+    """Convert parser models to dictionaries and lossless decimal strings.
 
-    Dates, datetimes, timedeltas, timezones and decimals are rendered as
-    strings; :class:`~mt940.models.Transactions`,
-    :class:`~mt940.models.Transaction`, :class:`~mt940.models.Balance` and
-    :class:`~mt940.models.Amount` are rendered as their ``data``/``__dict__``
-    mappings. Pass it as the ``cls`` argument to :func:`json.dumps`.
+    ``Transactions`` becomes a shallow copy of its metadata with a
+    ``transactions`` key containing its transaction list. This key replaces any
+    metadata value of the same name. An object exposing ``data`` serialises as
+    that attribute, including ``None``. ``Amount`` and ``Balance`` otherwise
+    serialise as their instance dictionaries.
+
+    Dates, datetimes, timedeltas, timezones and decimals use ``str``.
+    Constructor arguments and JSON formatting controls are inherited from
+    :class:`json.JSONEncoder`. Encoding does not mutate parser models.
     """
 
     def default(self, o: object) -> object:
-        """Return a JSON-serializable representation of ``o``.
+        """Return a representation that the JSON encoder can visit recursively.
 
         Args:
-            o: The object to serialize.
+            o: An object unsupported by the encoder's native primitive
+                handling.
 
         Returns:
-            The serialized form of the object. Unsupported types fall through
-            to :meth:`json.JSONEncoder.default`, which raises ``TypeError``.
+            A string, a model's ``data`` attribute, an amount or balance
+            instance dictionary, or copied statement metadata with its
+            transaction list.
+
+        Raises:
+            TypeError: The object has no supported representation.
+
+        A custom ``data`` attribute is returned as-is. Standard encoder checks
+        still apply to its contents, including circular-reference detection.
         """
         # The following types should simply be cast to strings
         str_types = (

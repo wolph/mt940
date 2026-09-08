@@ -4,7 +4,7 @@ The high-level entry point is :func:`parse`, which accepts a filename, a file
 handle, or raw ``str``/``bytes`` and returns a
 :class:`~mt940.models.Transactions` collection you can iterate over. Use
 :func:`parse_statements` for files that concatenate several statements, and
-:class:`JSONEncoder` to serialize the result to JSON.
+:class:`JSONEncoder` to serialise the result to JSON.
 
 Example:
     >>> import mt940
@@ -30,6 +30,7 @@ from .json import JSONEncoder
 from .options import Options
 from .parser import parse, parse_statements
 
+#: Supported names exported by ``from mt940 import *``.
 __all__ = [
     'JSONEncoder',
     'Options',

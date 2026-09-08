@@ -1,11 +1,10 @@
-"""Opt-in parser behaviours.
+"""Immutable switches for parser behaviour changes.
 
-Every attribute of :class:`Options` defaults to what release 5.0.0 does, so
-upgrading never changes parsed output on its own. Each attribute switches on
-one fix that changes the output for input 5.0.0 parsed without complaint.
-Pass an instance to :func:`mt940.parse`, :func:`mt940.parse_statements` or
-:class:`mt940.models.Transactions`, or use :meth:`Options.all` to opt in to
-every fix at once. The next major release enables all of them by default.
+All ten :class:`Options` fields default to ``False``. The switches preserve
+legacy output for affected fields unless explicitly enabled. Pass an instance
+to :func:`mt940.parse`, :func:`mt940.parse_statements` or
+:class:`mt940.models.Transactions`. :meth:`Options.all` enables every currently
+defined switch.
 
 Example:
     >>> import mt940
@@ -23,10 +22,16 @@ import dataclasses
 
 @dataclasses.dataclass(frozen=True, slots=True)
 class Options:
-    """Switches for behaviour that differs from release 5.0.0.
+    """Frozen, slotted configuration for ten opt-in parser behaviours.
 
-    Every switch is off by default, so parsing without options gives the
-    5.0.0 output. The next major release switches all of them on.
+    Each constructor keyword is a boolean field described below. Omitted fields
+    remain ``False``. Instances can be shared between collections because
+    fields cannot be reassigned. Use :func:`dataclasses.replace` to make an
+    instance with selected fields changed.
+
+    No field changes tag registration or processor ordering. Options are read
+    from the collection while its tags and processors run. ``strip_bom`` is
+    applied by the high-level source readers, not by ``Transactions.parse``.
     """
 
     #: File the ``?31`` sub-field of a structured ``:86:`` under
@@ -71,25 +76,30 @@ class Options:
     #: recognised. 5.0.0 kept it and lost that tag.
     strip_bom: bool = False
 
-    #: Keep free text in front of the first GVC keyword of a ``?20`` purpose
-    #: when it contains a ``+`` in its first four characters. 5.0.0 dropped
-    #: that text.
+    #: Do not interpret a ``+`` in the first four purpose characters as a
+    #: GVC keyword terminator. This preserves free text that the legacy
+    #: empty-key match can drop. Text before a genuine keyword is still
+    #: dropped.
     gvc_leading_text: bool = False
 
     @classmethod
     def all(cls) -> Options:
-        """Return an instance with every fix switched on.
+        """Construct an instance with every declared field set to ``True``.
 
         Returns:
-            The options the next major release will use by default.
+            An instance of the called class. For ``Options`` this enables all
+            ten switches. Dataclass fields added by a subclass are included as
+            well.
         """
         return cls(**dict.fromkeys(cls.names(), True))
 
     @classmethod
     def names(cls) -> tuple[str, ...]:
-        """Return the attribute names, in declaration order.
+        """Return dataclass field names in declaration order.
 
         Returns:
-            The option names.
+            A tuple of names, including inherited fields when called on a
+            dataclass subclass. The tuple can be used to enumerate supported
+            switches without maintaining a second list.
         """
         return tuple(field.name for field in dataclasses.fields(cls))

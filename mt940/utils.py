@@ -10,27 +10,38 @@ from __future__ import annotations
 import enum
 import typing
 
+#: Value type preserved by :func:`coalesce` when choosing a non-None input.
 T = typing.TypeVar('T')
 
 
 def coalesce(*args: T | None) -> T | None:
-    """Return the first non-None argument.
+    """Return the first argument that is not ``None``.
+
+    Args:
+        *args: Values to inspect in their supplied order. False values such as
+            zero, an empty string and ``False`` are eligible results.
+
+    Returns:
+        The first non-``None`` value, or ``None`` for no arguments or all
+        ``None`` arguments. The selected value is returned without copying.
 
     Examples:
         >>> coalesce()
-        >>> coalesce(0, 1)
+        >>> coalesce(None, 0, 1)
         0
-        >>> coalesce(None, 0)
-        0
-
-    Returns:
-        The first non-None argument or None if all are None.
+        >>> coalesce('', 'fallback')
+        ''
     """
     return next((arg for arg in args if arg is not None), None)
 
 
 class Strip(enum.IntFlag):
-    """Enumeration of options for stripping whitespace in strings."""
+    """Bit flags controlling whitespace removal from each joined line.
+
+    Combine :attr:`LEFT` and :attr:`RIGHT` with ``|``, or use :attr:`BOTH`.
+    :func:`join_lines` always removes line boundaries, including with
+    :attr:`NONE`. These flags only control whitespace within each line.
+    """
 
     NONE = 0
     """Do not strip any whitespace."""
@@ -46,24 +57,27 @@ class Strip(enum.IntFlag):
 
 
 def join_lines(string: str, strip: Strip = Strip.BOTH) -> str:
-    r"""Join strings together and strip whitespace in between if needed.
+    r"""Remove line boundaries and optionally strip each line's whitespace.
 
     Args:
-        string: The string with lines to join.
-        strip: Strip options from the Strip enum.
-
-    >>> join_lines('  line1\nline2  \n line3 ')
-    'line1line2line3'
-    >>> join_lines('  line1\nline2  \n line3 ', strip=Strip.LEFT)
-    'line1line2  line3 '
-    >>> join_lines('  line1\nline2  \n line3 ', strip=Strip.RIGHT)
-    '  line1line2 line3'
-    >>> join_lines('  line1\nline2  \n line3 ', strip=Strip.NONE)
-    '  line1line2  line3 '
-
+        string: Text split with :meth:`str.splitlines`. Its recognised Unicode
+            line separators are removed along with ordinary newlines.
+        strip: :class:`Strip` flags applied to each line before concatenation.
+            The default strips both ends of every line.
 
     Returns:
-        The joined string.
+        Lines concatenated without an inserted separator. Empty input returns
+        an empty string. Spaces inside a line remain unchanged.
+
+    Examples:
+        >>> join_lines('  line1\nline2  \n line3 ')
+        'line1line2line3'
+        >>> join_lines('  line1\nline2  \n line3 ', strip=Strip.LEFT)
+        'line1line2  line3 '
+        >>> join_lines('  line1\nline2  \n line3 ', strip=Strip.RIGHT)
+        '  line1line2 line3'
+        >>> join_lines('  line1\nline2  \n line3 ', strip=Strip.NONE)
+        '  line1line2  line3 '
     """
     strip_left = bool(strip & Strip.LEFT)
     strip_right = bool(strip & Strip.RIGHT)

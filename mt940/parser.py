@@ -1,28 +1,11 @@
-"""Read MT940 sources and turn them into transaction collections.
+"""Read paths, handles and raw MT940 text into transaction collections.
 
-Format
----------------------
-
-Sources:
-
-.. _Swift for corporates: http://www.sepaforcorporates.com/\
-    swift-for-corporates/account-statement-mt940-file-format-overview/
-.. _Rabobank MT940: https://www.rabobank.nl/images/\
-    formaatbeschrijving_swift_bt940s_1_0_nl_rib_29539296.pdf
-
- - `Swift for corporates`_
- - `Rabobank MT940`_
-
-::
-
-    [] = optional
-    ! = fixed length
-    a = Text
-    x = Alphanumeric, seems more like text actually. Can include special
-        characters (slashes) and whitespace as well as letters and numbers
-    d = Numeric separated by decimal (usually comma)
-    c = Code list value
-    n = Numeric
+Use :func:`parse` when one collection should hold all transactions. Use
+:func:`parse_statements` to preserve separate statement metadata in a file
+containing several ``:20:`` blocks. Parsing and source reading are synchronous.
+Caller-owned handles are read from their current position and stay open.
+Passing a numeric file descriptor transfers ownership for that read and closes
+it afterwards.
 """
 
 from __future__ import annotations
@@ -45,23 +28,36 @@ if TYPE_CHECKING:
 
 @runtime_checkable
 class _Readable(Protocol):
-    """Anything with a ``read()`` method, which is how 5.0.0 spots a handle."""
+    """Structural protocol used to recognise an object with a ``read`` method.
 
-    def read(self) -> str | bytes: ...
+    The method takes no arguments and returns text or bytes. Recognition checks
+    attribute presence, as in release 5.0.0. It does not validate the method's
+    signature or returned value before :func:`_load` calls it.
+    """
+
+    def read(self) -> str | bytes:
+        """Read remaining source content as text or bytes without arguments."""
+        ...
 
 
 def _decode(data: bytes, encoding: str | None) -> str:
-    """Decode raw statement bytes, trying ``encoding`` first.
+    """Decode bytes with the preferred encoding and the legacy fallbacks.
 
-    ``utf-8`` and ``cp852`` are the fallbacks. ``cp852`` maps every byte
-    value, so it never fails and always closes the chain.
+    A decoding failure tries UTF-8 next, followed by CP852. CP852 maps every
+    byte, so malformed input can become readable but incorrect text instead of
+    raising ``UnicodeDecodeError``. A successful earlier encoding stops the
+    search.
 
     Args:
-        data: The raw bytes as read from the file or handle.
-        encoding: The caller's preferred encoding, or ``None``.
+        data: Raw statement bytes.
+        encoding: First encoding to try. ``None`` or an empty string starts
+            with UTF-8. An unknown encoding name does not trigger a fallback.
 
     Returns:
-        The decoded text.
+        Decoded statement text.
+
+    Raises:
+        LookupError: The requested encoding name is unknown.
     """
     for enc in (encoding, 'utf-8'):
         if not enc:
@@ -76,40 +72,44 @@ def _decode(data: bytes, encoding: str | None) -> str:
 def _is_path(
     obj: object,
 ) -> TypeGuard[str | bytes | os.PathLike[str] | os.PathLike[bytes]]:
-    """Recognise a path or raw data, with the PathLike parameter spelled out.
+    """Recognise the types that can represent paths or inline text.
 
-    A plain ``isinstance`` check leaves the ``PathLike`` type parameter
-    unknown to pyright 1.1.411, which strict mode then reports at every use.
+    This is a type guard, not a filesystem check. Plain text and bytes pass
+    even when they contain statement data. :func:`_load` decides whether a file
+    exists.
 
     Args:
-        obj: Anything the caller passed as a source.
+        obj: A candidate source.
 
     Returns:
-        Whether ``obj`` is a ``str``, ``bytes`` or path-like object.
+        Whether ``obj`` is text, bytes or an ``os.PathLike`` object.
     """
     return isinstance(obj, (str, bytes, os.PathLike))
 
 
 def _load(source: object) -> str | bytes:
-    """Fetch the raw statement data from whatever the caller passed.
+    """Read a supported source without decoding it.
 
-    Typed as ``object`` on purpose: the dispatch has to reject whatever
-    arrives at runtime, not only what :data:`~mt940._types.Source` allows.
-    The kinds are recognised the way release 5.0.0 did it: anything with a
-    ``read()`` method is a handle, an ``int`` is a file descriptor, a ``str``
-    or ``bytes`` value that names an existing file is read, and any other
-    ``str`` or ``bytes`` value is the statement data itself.
+    Dispatch checks for a ``read`` method first, then a numeric file
+    descriptor, then a string, bytes or path-like object. Text and bytes naming
+    an existing regular file are paths. Other text and bytes are inline
+    statement data. A path-like object always denotes a file and never becomes
+    inline data.
 
     Args:
-        source: A file handle, a file descriptor, a path, or raw data.
+        source: A handle, descriptor, path or raw statement data. Handles are
+            read once from their current position and left open. Descriptors
+            are wrapped in a binary file object and closed after the read.
 
     Returns:
-        The statement data, still undecoded when it came from bytes.
+        Text from a text handle or inline string, otherwise undecoded bytes.
 
     Raises:
-        FileNotFoundError: When ``source`` is a path-like object that does
-            not name an existing file.
-        TypeError: When ``source`` is none of the supported kinds.
+        FileNotFoundError: A path-like object does not name a regular file.
+        OSError: Opening or reading a file or descriptor fails.
+        TypeError: The source has none of the supported forms.
+
+    Errors from a caller-provided ``read`` method propagate unchanged.
     """
     if isinstance(source, _Readable):
         return source.read()
@@ -133,19 +133,24 @@ def _read(
     *,
     strip_bom: bool = False,
 ) -> str:
-    """Read raw mt940 data from a file handle, path or string and decode it.
+    """Load statement data, decode bytes and optionally remove one BOM.
 
     Args:
-        src: A file handle, a file descriptor, a path, or raw ``str``/``bytes``
-            data, see :func:`_load`.
-        encoding: The encoding to try first for ``bytes`` data.
-        strip_bom: Drop a leading byte-order mark (U+FEFF). It survives
-            decoding as a character that is not whitespace, so it displaces
-            the first ``:20:`` off the start-of-line tag anchor and that
-            tag's data is lost. 5.0.0 kept it, hence the default.
+        src: A source accepted by :func:`_load`.
+        encoding: First encoding to try for bytes. Ignored for text input.
+        strip_bom: Remove one leading U+FEFF after decoding. The default
+            preserves the character, which prevents a following ``:20:`` from
+            matching the start-of-line tag pattern.
 
     Returns:
-        The decoded statement text.
+        Statement text. Newlines and whitespace are left for the collection to
+        normalise.
+
+    Raises:
+        FileNotFoundError: A path-like source does not name a regular file.
+        OSError: The source cannot be opened or read.
+        TypeError: The source type is unsupported.
+        LookupError: A requested encoding name is unknown.
     """
     data = _load(src)
     if isinstance(data, bytes):
@@ -163,9 +168,9 @@ def _new_transactions(
 ) -> Transactions:
     """Build the collection, passing ``options`` only when there are any.
 
-    A :class:`~mt940.models.Transactions` subclass written against 5.0.0 has
-    no ``options`` parameter. Leaving the keyword out when it would be
-    ``None`` anyway keeps such a subclass working through this module.
+    A :class:`~mt940.models.Transactions` subclass written against 5.0.0 has no
+    ``options`` parameter. Leaving the keyword out when it would be ``None``
+    anyway keeps such a subclass working through this module.
 
     Args:
         processors: See :func:`parse`.
@@ -197,23 +202,45 @@ def parse(
     *,
     options: Options | None = None,
 ) -> Transactions:
-    """Parse MT940 data into a single :class:`~mt940.models.Transactions`.
+    """Parse a source into one collection with statement metadata.
+
+    All recognised tags contribute to the same collection. Later statement tags
+    replace earlier values under the same key. Use :func:`parse_statements`
+    when separate opening balances, references or account numbers must survive.
 
     Args:
-        src: A file handle, a filename to read, or the raw data as
-            ``str``/``bytes``.
-        encoding: Optional encoding override for byte input.
-        processors: Optional extra pre/post processors.
-        tags: Optional extra or overriding tag parsers.
-        transaction_boundary: Optional iterable of tag *slugs* that each start
-            a new transaction (issue #110). By default only ``:61:`` starts a
-            transaction; pass e.g. ``{'transaction_reference_number'}`` to also
-            start one on every ``:20:``. Omit it to keep the legacy behaviour.
-        options: Opt-in behaviours, see :class:`mt940.options.Options`. Omit
-            to parse exactly like release 5.0.0.
+        src: Raw text or bytes, an existing filename, a path-like object, an
+            open text or binary handle, or a numeric file descriptor. Handles
+            remain open. Numeric descriptors are closed after reading.
+        encoding: First encoding to try for bytes, followed by UTF-8 and CP852.
+            Ignored for text. Strings naming existing files are read as paths.
+        processors: Processor lists keyed by ``pre_<slug>`` or ``post_<slug>``.
+            Each supplied list replaces that slot's default list completely.
+            Include default processors explicitly when extending a slot.
+        tags: Tag instances keyed by numeric or suffixed tag ID. Entries
+            override the corresponding built-in parser or add a new one.
+        transaction_boundary: Tag slugs that open transaction blocks in
+            addition to statement tags. A bare string means one slug. Empty or
+            omitted preserves the default grouping rules.
+        options: Immutable opt-in behaviour switches. All ten switches default
+            to ``False``. See :class:`mt940.options.Options`.
 
     Returns:
-        The parsed collection of transactions.
+        A populated :class:`~mt940.models.Transactions`. Empty or unrecognised
+        input produces an empty collection.
+
+    Raises:
+        FileNotFoundError: A path-like source does not name a regular file.
+        OSError: Opening or reading the source fails.
+        TypeError: The source type is unsupported.
+        LookupError: A requested encoding name is unknown.
+        RuntimeError: A recognised tag's value does not match its pattern.
+        ValueError: A parsed date or other model value is invalid.
+        decimal.InvalidOperation: An amount cannot be converted to a decimal.
+
+    Exceptions raised by custom tags, processors and file handles propagate.
+    See :meth:`mt940.models.Transactions.parse` for grouping and mutation
+    rules.
     """
     data = _read(src, encoding, strip_bom=(options or Options()).strip_bom)
     transactions = _new_transactions(
@@ -233,34 +260,45 @@ def parse_statements(
     *,
     options: Options | None = None,
 ) -> list[Transactions]:
-    """Parse an mt940 file that contains multiple statement blocks.
+    """Parse each ``:20:`` statement block into a separate collection.
 
-    Unlike :func:`parse`, which merges everything into a single
-    :class:`~mt940.models.Transactions`, this splits the input on ``:20:``
-    statement boundaries and parses each block into its own
-    :class:`~mt940.models.Transactions`. Use it for files that concatenate
-    several statements (e.g. balance-only blocks), where a single
-    ``Transactions`` would only keep the last block's statement-level data such
-    as the opening/closing/available balances (issue #107).
+    Only ``:20:`` at the beginning of a physical line splits the input. Content
+    before the first usable block is discarded. Whitespace is checked again on
+    each block, so a source containing one indented initial ``:20:`` can be
+    passed to the collection even though indentation is not a split point.
+    Input with no usable ``:20:`` block returns an empty list.
 
-    Each ``:20:`` is treated as the start of a new statement, matching the
-    standard where ``:20:`` is the once-per-statement transaction reference.
-    This is therefore mutually exclusive with
-    ``transaction_boundary={'transaction_reference_number'}`` (issue #110),
-    which instead treats ``:20:`` as an *intra*-statement transaction boundary;
-    the two target different, non-standard bank formats -- don't combine them.
+    Each collection has its own metadata, transaction list and tag mapping.
+    Processor lists and tag instances remain shared with the supplied mappings,
+    as in :func:`parse`. A one-shot boundary iterable is materialised by the
+    first collection and reused by later collections.
 
     Args:
-        src: A file handle, a filename to read, or the raw data as
-            ``str``/``bytes``.
-        encoding: Optional encoding override for byte input.
-        processors: Optional extra pre/post processors (applied per block).
-        tags: Optional extra or overriding tag parsers (applied per block).
-        transaction_boundary: See :func:`parse` (and the note above).
-        options: See :func:`parse`.
+        src: Source accepted by :func:`parse`, read once before splitting.
+        encoding: Byte decoding preference, as in :func:`parse`.
+        processors: Replacement processor lists applied to every block.
+        tags: Extra or overriding tag instances applied to every block.
+        transaction_boundary: Additional transaction-start slugs. Selecting
+            ``transaction_reference_number`` also creates a placeholder at each
+            block's opening reference. Prefer :func:`parse` if ``:20:``
+            separates transactions within one statement.
+        options: Behaviour switches shared by every collection.
 
     Returns:
-        One :class:`~mt940.models.Transactions` per statement block.
+        Collections in source order, including blocks containing balances but
+        no transactions. Empty input returns an empty list.
+
+    Raises:
+        FileNotFoundError: A path-like source does not name a regular file.
+        OSError: Opening or reading the source fails.
+        TypeError: The source type is unsupported.
+        LookupError: A requested encoding name is unknown.
+        RuntimeError: A recognised tag fails to parse in any block.
+        ValueError: A parsed model value is invalid.
+        decimal.InvalidOperation: A parsed amount is not a valid decimal.
+
+    Other source, tag and processor exceptions propagate as in :func:`parse`.
+    No partial list is returned when a later block fails.
     """
     data = _read(src, encoding, strip_bom=(options or Options()).strip_bom)
     statements: list[Transactions] = []

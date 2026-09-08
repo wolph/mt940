@@ -1,9 +1,30 @@
-"""Pre- and post-processors that adjust parsed tag data.
+"""Transform captured tag dictionaries before and after model construction.
 
-This module contains pre- and post-processors for modifying tag
-dictionaries in MT940 processing. It provides functions for currency
-addition, date fix-up, transaction code extraction, transaction details
-parsing, and segment joining for transaction details.
+Pre-processors receive ``transactions``, ``tag`` and ``tag_dict`` and return
+the mapping supplied to the next step. Post-processors additionally receive
+``result`` and return its replacement. Both kinds may mutate their input. They
+run in configured list order and their exceptions propagate unchanged. The
+current tag's result has not yet been stored on the collection.
+
+Register functions under ``pre_<tag.slug>`` or ``post_<tag.slug>`` in
+``Transactions.processors`` or the high-level parsing functions. A supplied
+list replaces the entire default slot. For example, to add currency while
+keeping the default date repair:
+
+Example:
+    >>> import mt940
+    >>> defaults = mt940.models.Transactions.DEFAULT_PROCESSORS
+    >>> configured = {
+    ...     'pre_statement': [
+    ...         *defaults['pre_statement'],
+    ...         add_currency_pre_processor('EUR'),
+    ...     ],
+    ... }
+    >>> result = mt940.parse(
+    ...     ':61:240101C1,25NTRFNONREF', processors=configured
+    ... )
+    >>> result[0].data['amount']
+    <1.25 EUR>
 """
 
 from __future__ import annotations
@@ -26,14 +47,17 @@ def add_currency_pre_processor(
     currency: str,
     overwrite: bool = True,
 ) -> PreProcessor:
-    """Return a pre-processor that adds currency information to tag data.
+    """Create a processor that assigns a currency to captured tag fields.
 
     Args:
-        currency: The currency to set in the tag dictionary.
-        overwrite: Whether to overwrite existing currency information.
+        currency: Value to store under ``currency``, without validating it.
+        overwrite: Replace an existing value when true. When false, even an
+            existing ``None`` is retained because key presence is tested.
 
     Returns:
-        A pre-processor function that adds currency information.
+        A :class:`PreProcessor` closure that mutates and returns the same
+        mapping. Register it before amount construction, for example in
+        ``pre_statement`` for files without a balance carrying the currency.
     """
 
     def _add_currency_pre_processor(
@@ -42,6 +66,17 @@ def add_currency_pre_processor(
         tag_dict: dict[str, Any],
         *args: Any,
     ) -> dict[str, Any]:
+        """Set the captured currency according to the factory's overwrite rule.
+
+        Args:
+            transactions: Unused collection context required by the protocol.
+            tag: Unused tag context required by the protocol.
+            tag_dict: Mutable capture mapping receiving the currency.
+            *args: Ignored compatibility arguments.
+
+        Returns:
+            The same ``tag_dict`` object, possibly with ``currency`` replaced.
+        """
         if 'currency' not in tag_dict or overwrite:
             tag_dict['currency'] = currency
         return tag_dict
@@ -55,22 +90,27 @@ def date_fixup_pre_processor(
     tag_dict: dict[str, Any],
     *args: Any,
 ) -> dict[str, Any]:
-    """Adjust the date in the tag dictionary if necessary.
+    """Clamp an excessive February day before constructing a date.
 
-    If the day in February exceeds the maximum day in that month,
-    adjust it to the last day of February.
+    Only the exact month string ``02`` is adjusted. The leap-year calculation
+    uses the captured integer year directly, before the model adds 2000 to
+    short years. Other months and invalid low day numbers remain untouched.
+    This processor is registered in the default ``pre_statement`` slot.
 
     Args:
-        transactions: The transactions object.
-        tag: The tag being processed.
-        tag_dict: The tag dictionary.
-        *args: Ignored, present so every processor shares one signature.
+        transactions: Unused collection context.
+        tag: Unused tag context.
+        tag_dict: Capture mapping containing ``month``, ``year`` and ``day``.
+        *args: Ignored compatibility arguments.
 
     Returns:
-        The adjusted tag dictionary.
+        The same mapping. An excessive February ``day`` becomes the last valid
+        day as a string. Entry-date fields are not adjusted.
+
+    Raises:
+        KeyError: A required date field is absent.
+        ValueError: A February year or day is not valid integer text.
     """
-    # If the month is February, ensure that the day does not exceed the
-    # maximum valid day.
     if tag_dict['month'] == '02':
         year = int(tag_dict['year'], 10)
         _, max_month_day = calendar.monthrange(year, 2)
@@ -85,21 +125,19 @@ def date_cleanup_post_processor(
     tag_dict: dict[str, Any],
     result: dict[str, Any],
 ) -> dict[str, Any]:
-    """Remove date components from the result dictionary.
-
-    Removes the 'day', 'month', 'year', 'entry_day', and 'entry_month' keys
-    from the result dictionary.
+    """Remove raw date components after the statement has built date objects.
 
     Args:
-        transactions: The transactions object.
-        tag: The tag being processed.
-        tag_dict: The tag dictionary.
-        result: The result dictionary.
+        transactions: Unused collection context.
+        tag: Unused tag context.
+        tag_dict: Unused capture mapping, which may also be ``result``.
+        result: Mutable result from the tag or preceding post-processor.
 
     Returns:
-        The adjusted result dictionary.
+        The same result without ``day``, ``month``, ``year``, ``entry_day`` or
+        ``entry_month``. Missing keys are harmless. Converted ``date``,
+        ``entry_date`` and ``guessed_entry_date`` values are retained.
     """
-    # Remove all date-related keys from the result dictionary.
     for k in ('day', 'month', 'year', 'entry_day', 'entry_month'):
         result.pop(k, None)
     return result
@@ -111,24 +149,23 @@ def mBank_set_transaction_code(
     tag_dict: dict[str, Any],
     *args: Any,
 ) -> dict[str, Any]:
-    """Set ``transaction_code`` from an mBank Collect tag value.
-
-    mBank Collect uses transaction code 911 to distinguish incoming mass
-    payment transactions, so exposing the code helps further processing.
+    """Extract the leading numeric transaction code from mBank details.
 
     Args:
-        transactions: The transactions object.
-        tag: The tag being processed.
-        tag_dict: The tag dictionary.
-        *args: Ignored, present so every processor shares one signature.
+        transactions: Unused collection context.
+        tag: Tag whose slug selects the raw detail value in ``tag_dict``.
+        tag_dict: Mutable capture mapping containing that raw string.
+        *args: Ignored compatibility arguments.
 
     Returns:
-        The tag dictionary with ``transaction_code`` added.
+        The same mapping with integer ``transaction_code`` added. The code is
+        the text before the first space within the first semicolon-delimited
+        field. The original detail string is retained.
+
+    Raises:
+        KeyError: The tag slug is absent from ``tag_dict``.
+        ValueError: The extracted code cannot be converted to an integer.
     """
-    # Extract the transaction code from the tag value.
-    # Split the value at ';' and then by the first space to isolate the
-    # numeric transaction code, which is converted to an integer before
-    # being assigned.
     tag_value = tag_dict[tag.slug]
     tag_dict['transaction_code'] = int(
         tag_value.split(';')[0].split(' ', 1)[0]
@@ -136,7 +173,7 @@ def mBank_set_transaction_code(
     return tag_dict
 
 
-# Regular expression to extract IPH ID from mBank tag values.
+#: mBank IPH marker with optional masking X characters and up to 14 digits.
 iph_id_re = re.compile(r' ID IPH: X*(?P<iph_id>\d{0,14});')
 
 
@@ -146,19 +183,23 @@ def mBank_set_iph_id(
     tag_dict: dict[str, Any],
     *args: Any,
 ) -> dict[str, Any]:
-    """Set ``iph_id`` from an mBank Collect tag value.
-
-    mBank Collect uses the IPH ID to distinguish between virtual accounts,
-    so exposing it helps further processing.
+    """Extract an mBank IPH virtual-account identifier when present.
 
     Args:
-        transactions: The transactions object.
-        tag: The tag being processed.
-        tag_dict: The tag dictionary.
-        *args: Ignored, present so every processor shares one signature.
+        transactions: Unused collection context.
+        tag: Tag whose slug selects the raw detail string.
+        tag_dict: Mutable capture mapping containing that string.
+        *args: Ignored compatibility arguments.
 
     Returns:
-        The tag dictionary, with ``iph_id`` added when the value carries one.
+        The same mapping. The first `` ID IPH: `` field matching
+        :data:`mt940.processors.iph_id_re` sets ``iph_id`` to its captured
+        digits as a string. Leading masking ``X`` characters are discarded. No
+        match leaves any existing value unchanged. An empty captured digit
+        string is allowed.
+
+    Raises:
+        KeyError: The tag slug is absent from ``tag_dict``.
     """
     matches = iph_id_re.search(tag_dict[tag.slug])
     if matches:
@@ -166,8 +207,7 @@ def mBank_set_iph_id(
     return tag_dict
 
 
-# Regular expression to extract the Transaction Number (TNR) from tag
-# values, accounting for potential newline characters.
+#: mBank TNR marker followed by one space or newline and a digit-dot-digit ID.
 tnr_re = re.compile(r'TNR:[ \n](?P<tnr>\d+\.\d+)', flags=re.MULTILINE)
 
 
@@ -177,21 +217,22 @@ def mBank_set_tnr(
     tag_dict: dict[str, Any],
     *args: Any,
 ) -> dict[str, Any]:
-    """Set ``tnr`` from an mBank Collect tag value.
-
-    mBank Collect states the TNR in the transaction details as a unique id,
-    which identifies the same transaction across statement files, such as a
-    partial MT942 and the full MT940. mBank support confirmed the uniqueness,
-    the mBank MT940 specification does not mention it.
+    """Extract the transaction number carried in an mBank ``TNR:`` field.
 
     Args:
-        transactions: The transactions object.
-        tag: The tag being processed.
-        tag_dict: The tag dictionary.
-        *args: Ignored, present so every processor shares one signature.
+        transactions: Unused collection context.
+        tag: Tag whose slug selects the raw detail string.
+        tag_dict: Mutable capture mapping containing that string.
+        *args: Ignored compatibility arguments.
 
     Returns:
-        The tag dictionary, with ``tnr`` added when the value carries one.
+        The same mapping with ``tnr`` set to the first matching number as text,
+        including its decimal point. No match preserves any existing value. The
+        processor extracts the identifier without checking its uniqueness
+        within or across statements.
+
+    Raises:
+        KeyError: The tag slug is absent from ``tag_dict``.
     """
     matches = tnr_re.search(tag_dict[tag.slug])
     if matches:
@@ -199,7 +240,6 @@ def mBank_set_tnr(
     return tag_dict
 
 
-# https://www.db-bankline.deutsche-bank.com/download/MT940_Deutschland_Structure2002.pdf
 #: The structured ``:86:`` sub-fields and the keys they land under, as in
 #: release 5.0.0: ``?31`` is prepended to the name.
 DETAIL_KEYS = {
@@ -221,7 +261,10 @@ DETAIL_KEYS = {
 #: (issue #132). ``?32`` and ``?33`` together hold the name.
 DETAIL_KEYS_APPLICANT_IBAN = {**DETAIL_KEYS, '31': 'applicant_iban'}
 
-# https://www.hettwer-beratung.de/sepa-spezialwissen/sepa-technische-anforderungen/sepa-gesch%C3%A4ftsvorfallcodes-gvc-mt-940/
+#: Case-sensitive four-character GVC keywords mapped to result field names.
+#: The empty key stores purpose text without a recognised keyword. Historical
+#: field spellings, including applicant_bin and debitor_identifier, are
+#: retained.
 GVC_KEYS = {
     '': 'purpose',
     'IBAN': 'gvc_applicant_iban',
@@ -265,17 +308,22 @@ def _options_of(transactions: models.Transactions) -> Options:
 
 
 def _parse_segments(detail_str: str) -> collections.OrderedDict[str, str]:
-    """Parse segments from a detail string.
-
-    This function splits the provided detail string into segments using
-    the '?' delimiter. Each segment is associated with a two-character
-    segment type that follows the '?' marker.
+    """Split structured details at ``?`` followed by two identifier characters.
 
     Args:
-        detail_str: A string containing the transaction detail segments.
+        detail_str: Flattened structured detail text. Identifiers are read as
+            two characters without validating that they are digits.
 
     Returns:
-        An OrderedDict mapping segment identifiers to their extracted content.
+        An ordered mapping from subfield ID to text. Text before the first
+        complete delimiter is stored under ``''``. Repeated IDs replace their
+        earlier content but retain their first insertion position. A trailing
+        incomplete delimiter stops scanning. With no complete delimiter, no
+        segments are returned.
+
+    Example:
+        >>> list(_parse_segments('123?00Transfer?20First?20Last').items())
+        [('', '123'), ('00', 'Transfer'), ('20', 'Last')]
     """
     tmp: collections.OrderedDict[str, str] = collections.OrderedDict()
     segment = ''
@@ -283,26 +331,19 @@ def _parse_segments(detail_str: str) -> collections.OrderedDict[str, str]:
 
     for index, char in enumerate(detail_str):
         if char != '?':
-            # Accumulate characters into the current segment until a '?'
-            # delimiter is encountered.
             segment += char
             continue
 
-        # If there aren't enough characters left to form a segment type,
-        # exit the loop.
         if index + 2 >= len(detail_str):
             break
 
-        # Finalize the current segment. If a segment type exists, skip the
+        # Finalise the current segment. If a segment type exists, skip the
         # first two header characters.
         tmp[segment_type] = segment if not segment_type else segment[2:]
-        # Extract the new segment type from the following two characters.
         segment_type = detail_str[index + 1] + detail_str[index + 2]
-        # Reset the segment accumulator for the next segment.
         segment = ''
 
     if segment_type:
-        # Finalize the last captured segment.
         tmp[segment_type] = segment if not segment_type else segment[2:]
 
     return tmp
@@ -312,15 +353,22 @@ def _process_segments(
     tmp: collections.OrderedDict[str, str],
     detail_keys: dict[str, str] = DETAIL_KEYS,
 ) -> dict[str, list[str]]:
-    """Process segments into result dictionary.
+    """Group structured subfield contents under their output field names.
 
     Args:
-        tmp: An OrderedDict of segment types to their content.
-        detail_keys: The sub-field to key mapping, :data:`DETAIL_KEYS` or
-            :data:`DETAIL_KEYS_APPLICANT_IBAN`.
+        tmp: Ordered segment mapping from :func:`_parse_segments`.
+        detail_keys: Direct subfield-to-output mapping. It must contain ``20``,
+            ``32`` and ``60`` if their continuation cases are encountered.
 
     Returns:
-        A dictionary mapping keys to lists of segment contents.
+        A new mapping from field names to ordered lists of fragments. Direct
+        mappings take precedence. ``33`` continues ``32``, remaining ``2x``
+        subfields continue ``20``, and ``61`` through ``65`` continue ``60``.
+        Unknown subfields are ignored. Continuation purpose fragments lose a
+        dangling `` BIC`` or `` IBAN`` suffix. Input mappings are not mutated.
+
+    Raises:
+        KeyError: A continuation needs a missing base key in ``detail_keys``.
     """
     result: collections.defaultdict[str, list[str]] = collections.defaultdict(
         list
@@ -333,7 +381,7 @@ def _process_segments(
             result[key32].append(value)
         elif key.startswith('2'):
             # Some banks append a bare ' BIC'/' IBAN' label with no value at
-            # the end of a detail segment (issue #109); strip the dangling
+            # the end of a detail segment (issue #109). Strip the dangling
             # label so it does not pollute the purpose. Segment keys are
             # always two characters (see _parse_segments), so the historical
             # '29'/'28D' key checks could never match the IBAN case -- the
@@ -356,15 +404,18 @@ def _join_result(
     space: bool,
     detail_keys: dict[str, str] = DETAIL_KEYS,
 ) -> dict[str, str | None]:
-    """Join result lists into strings.
+    """Join fragment lists and include every configured output field.
 
     Args:
-        result: The result dictionary with lists of strings.
-        space: Whether to include spaces between segments.
-        detail_keys: The mapping whose keys the result must all carry.
+        result: Output field names mapped to ordered text fragments.
+        space: Insert one space between fragments when true. Otherwise join
+            directly. Existing fragment whitespace is retained.
+        detail_keys: Subfield mapping whose unique values define output keys.
 
     Returns:
-        A dictionary with joined strings.
+        A new dictionary containing all configured output fields. Missing or
+        empty joined content becomes ``None``. Fields present only in
+        ``result`` and absent from ``detail_keys.values()`` are discarded.
     """
     joined_result: dict[str, str | None] = {}
     for key in detail_keys.values():
@@ -382,16 +433,28 @@ def _parse_mt940_details(
     *,
     detail_keys: dict[str, str] = DETAIL_KEYS,
 ) -> dict[str, str | None]:
-    """Parse MT940 transaction details.
+    """Decode structured detail subfields into named strings or ``None``.
 
     Args:
-        detail_str: The detail string to parse.
-        space: Whether to include spaces between segments.
-        detail_keys: The sub-field to key mapping, :data:`DETAIL_KEYS` or
+        detail_str: Structured detail text with line boundaries already
+            removed.
+        space: Insert a space between fragments belonging to the same field.
+        detail_keys: Subfield mapping, normally :data:`DETAIL_KEYS` or
             :data:`DETAIL_KEYS_APPLICANT_IBAN`.
 
     Returns:
-        A dictionary of parsed transaction details.
+        New mapping with all configured output names. Missing or empty fields
+        are ``None``. Repeated subfield IDs keep their last content before
+        related subfields are joined. GVC purpose keywords are not decoded
+        here.
+
+    Example:
+        >>> _parse_mt940_details('123?00Transfer?20Invoice?21123')['purpose']
+        'Invoice123'
+        >>> _parse_mt940_details('123?00Transfer?20Invoice?21123', space=True)[
+        ...     'purpose'
+        ... ]
+        'Invoice 123'
     """
     tmp = _parse_segments(detail_str)
     result = _process_segments(tmp, detail_keys)
@@ -403,16 +466,29 @@ def _parse_mt940_gvcodes(
     *,
     keep_leading_text: bool = False,
 ) -> dict[str, str | None]:
-    """Parse MT940 GVC codes from the purpose string.
+    """Split purpose text at recognised four-character GVC keywords plus ``+``.
+
+    Matching is case-sensitive. The ``BIC`` keyword includes a trailing space.
+    Unknown keywords stay in text. A repeated keyword replaces its earlier
+    value. Text preceding the first recognised keyword is discarded, and later
+    segments mapped to the same output name overwrite earlier ones.
 
     Args:
-        purpose: The purpose string to parse.
-        keep_leading_text: Refuse to treat a ``+`` within the first four
-            characters as the end of a GVC keyword, so free text in front of
-            the first keyword survives. Off, 5.0.0 dropped that text.
+        purpose: Flattened purpose text to inspect.
+        keep_leading_text: Ignore a plus sign in the first four characters as a
+            possible keyword terminator. The default preserves the legacy
+            empty-key interpretation, which can drop preceding free text. This
+            flag does not retain text preceding a genuine GVC keyword.
 
     Returns:
-        A dictionary of parsed GVC codes.
+        New mapping containing every output name in
+        :data:`mt940.processors.GVC_KEYS`, with missing values set to ``None``.
+        Without a recognised keyword the remaining text becomes ``purpose``.
+
+    Example:
+        >>> parsed = _parse_mt940_gvcodes('EREF+ABC SVWZ+Invoice 123')
+        >>> parsed['end_to_end_reference'], parsed['purpose']
+        ('ABC ', 'Invoice 123')
     """
     result: dict[str, str | None] = dict.fromkeys(GVC_KEYS.values())
 
@@ -434,14 +510,10 @@ def _parse_mt940_gvcodes(
             and purpose[index - _GVC_KEY_LENGTH : index] in GVC_KEYS
         ):
             if segment_type:
-                # If already processing a segment, finalize it by removing
-                # the trailing GVC key and reset the text accumulator.
                 tmp[segment_type] = text[:-_GVC_KEY_LENGTH]
                 text = ''
             else:
                 text = ''
-            # Set the new segment type from the four characters preceding
-            # the '+'.
             segment_type = purpose[index - _GVC_KEY_LENGTH : index]
         else:
             text += char
@@ -464,17 +536,35 @@ def transaction_details_post_processor(
     result: dict[str, Any],
     space: bool = False,
 ) -> dict[str, Any]:
-    """Parse the structured ``:86:`` details, including the 60-65 keys.
+    """Decode structured ``:86:`` fields and optional GVC purpose keywords.
+
+    Line boundaries are removed for detection and structured decoding. Only
+    text starting with three digits, ``?`` and two digits is treated as
+    structured. Unstructured input leaves ``result`` unchanged, including its
+    original ``transaction_details`` text. Structured input removes that raw
+    field after adding all mapped outputs, including ``None`` for missing
+    fields.
 
     Args:
-        transactions: The transactions object.
-        tag: The tag being processed.
-        tag_dict: The tag dictionary.
-        result: The result dictionary.
-        space: Whether to include spaces between segments.
+        transactions: Collection supplying ``applicant_iban`` and
+            ``gvc_leading_text`` options. Missing options use disabled
+            defaults.
+        tag: Unused tag context.
+        tag_dict: Capture mapping containing raw ``transaction_details`` text.
+        result: Mutable result mapping receiving decoded fields. It must
+            contain ``transaction_details`` when input is structured.
+        space: Insert a space between structured fragments of the same field.
 
     Returns:
-        The updated result dictionary.
+        The same result mapping. Structured fields overwrite existing values.
+        Purpose text containing any GVC keyword is additionally decoded into
+        every :data:`mt940.processors.GVC_KEYS` output, even if some outputs
+        are ``None``. A trailing bare `` BIC`` is removed from the resulting
+        purpose.
+
+    Raises:
+        KeyError: Required ``transaction_details`` is absent from an input
+            mapping or the structured result.
     """
     options = _options_of(transactions)
     detail_keys = (
@@ -483,7 +573,6 @@ def transaction_details_post_processor(
     details = tag_dict['transaction_details']
     details = ''.join(detail.strip('\n\r') for detail in details.splitlines())
 
-    # check for e.g. 103?00...
     if re.match(r'^\d{3}\?\d{2}', details):
         result.update(
             _parse_mt940_details(details, space=space, detail_keys=detail_keys)
@@ -499,7 +588,6 @@ def transaction_details_post_processor(
                 )
             )
 
-        # Clean up the purpose field
         if result.get('purpose'):
             # Remove trailing "BIC" without an actual BIC value
             result['purpose'] = result['purpose'].removesuffix(' BIC')
@@ -509,6 +597,9 @@ def transaction_details_post_processor(
     return result
 
 
+#: Partial of :func:`transaction_details_post_processor` with ``space=True``.
+#: Register it in place of the default details post-processor to separate
+#: fragments with spaces. Its remaining arguments and mutations are identical.
 transaction_details_post_processor_with_space = functools.partial(
     transaction_details_post_processor, space=True
 )
@@ -521,13 +612,26 @@ segments.
 def transactions_to_transaction(
     *keys: str,
 ) -> PostProcessor:
-    """Copy the global transactions details to the transaction.
+    """Create a processor that copies selected statement metadata.
 
     Args:
-        *keys: The keys to copy to the transaction.
+        *keys: Metadata keys to copy in the supplied order. Missing keys are
+            ignored. Present values, including ``None``, overwrite the result.
 
     Returns:
-        A post-processor function that copies specified keys.
+        A :class:`PostProcessor` closure that mutates and returns its result.
+        Values are shared by reference. The default statement slot uses this to
+        copy ``transaction_reference`` from the latest ``:20:``.
+
+    Example:
+        >>> import mt940
+        >>> statement = mt940.models.Transactions()
+        >>> statement.data['account_identification'] = 'ACCOUNT'
+        >>> copy_account = transactions_to_transaction(
+        ...     'account_identification'
+        ... )
+        >>> copy_account(statement, mt940.tags.Statement(), {}, {})
+        {'account_identification': 'ACCOUNT'}
     """
 
     def _transactions_to_transaction(
@@ -536,19 +640,20 @@ def transactions_to_transaction(
         tag_dict: dict[str, Any],
         result: dict[str, Any],
     ) -> dict[str, Any]:
-        """Copy the global transactions details to the transaction.
+        """Copy the factory's selected statement fields into the result.
 
         Args:
-            transactions: The transactions object.
-            tag: The tag being processed.
-            tag_dict: The tag dictionary.
-            result: The result dictionary.
+            transactions: Collection providing statement-level ``data``.
+            tag: Unused tag context.
+            tag_dict: Unused captured group mapping.
+            result: Mutable mapping receiving shallow copies of selected
+                fields.
 
         Returns:
-            The updated result dictionary.
+            The same mapping. Existing result values are replaced for keys
+            present on the collection. Missing statement keys leave the result
+            unchanged.
         """
-        # Copy each specified key from the global transactions data to the
-        # transaction-specific dictionary.
         for key in keys:
             if key in transactions.data:
                 result[key] = transactions.data[key]
