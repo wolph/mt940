@@ -12,7 +12,7 @@ Prepare the tagged source
 Start from a clean, reviewed development commit. Update the version metadata
 and changelog or release notes for the new version together. Run the complete
 test, type, lint, documentation, security and build checks. Confirm every Python
-3.10 through 3.14 environment ran, and inspect the documentation exports.
+3.10 through 3.15 environment ran, and inspect the documentation exports.
 
 Before tagging, build and validate the distributions locally:
 

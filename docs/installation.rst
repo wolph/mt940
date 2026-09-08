@@ -1,8 +1,8 @@
 Installation
 ============
 
-Install the ``mt-940`` distribution, then import ``mt940``. The runtime requires
-Python 3.10 or newer and uses only the standard library.
+Install the ``mt-940`` distribution, then import ``mt940``. The library supports
+Python 3.10 through 3.15 and uses only the standard library.
 
 In a project with an active virtual environment, install from PyPI:
 

@@ -7,8 +7,8 @@
 [![Coverage](https://coveralls.io/repos/github/wolph/mt940/badge.svg?branch=master)](https://coveralls.io/github/wolph/mt940?branch=master)
 
 Parse MT940 bank statements into Python transactions, decimal amounts, dates
-and balances. The `mt-940` distribution imports as `mt940`, requires Python
-3.10 or newer and has no runtime dependencies. Type information ships in the
+and balances. The `mt-940` distribution imports as `mt940`, supports Python
+3.10 through 3.15 and has no runtime dependencies. Type information ships in the
 package through `py.typed`.
 
 ## Parse your first statement
@@ -91,7 +91,7 @@ documents each effect. Compare outputs for your bank before changing options.
 ## Develop and contribute
 
 Clone `develop`. `master` tracks stable releases. Development and documentation
-tools use Python 3.12, while the library supports Python 3.10 through 3.14:
+tools use Python 3.12, while the library supports Python 3.10 through 3.15:
 
 ```console
 git clone --branch develop https://github.com/WoLpH/mt940.git

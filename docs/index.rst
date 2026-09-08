@@ -3,7 +3,7 @@ MT940 for Python
 
 Read bank statement text into transactions, decimal amounts, dates and balances.
 ``mt940`` has no runtime dependencies and includes type information for Python
-3.10 and newer.
+3.10 through 3.15.
 
 .. container:: guide-grid
 

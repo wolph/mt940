@@ -66,8 +66,8 @@ needs its coverage gate. Before submitting, run the complete matrix:
 
    uv run tox
 
-Check that Python 3.10, 3.11, 3.12, 3.13 and 3.14 actually ran. Tox can skip a
-missing interpreter. A locally successful command with skipped interpreters
+Check that Python 3.10 through 3.15 actually ran. Tox can skip a missing
+interpreter. A locally successful command with skipped interpreters
 does not establish the whole supported matrix.
 
 Tests, tools and documentation

@@ -14,9 +14,12 @@ before treating the change as ready. From a Python 3.12 development checkout:
 
 The first pytest command intentionally disables coverage for a narrow test
 selection. The matrix measures package and test code with branch coverage,
-combines results and requires 100%. Python 3.10 through 3.14 are separate tox
+combines results and requires 100%. Python 3.10 through 3.15 are separate tox
 environments. Check the output for skipped interpreters because the local tox
 configuration permits skips.
+
+The Python 3.15 CI job uses the newest available interpreter, including release
+candidates until the final release is available.
 
 Fixture organisation
 --------------------
