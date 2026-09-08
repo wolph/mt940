@@ -8,6 +8,7 @@ pages are generated on every build. Their source templates live in
 from __future__ import annotations
 
 import doctest
+import os
 import pathlib
 import shutil
 import sys
@@ -83,9 +84,15 @@ html_theme: str = 'furo'
 html_title: str = f'{project} {release}'
 html_static_path: list[str] = ['_static']
 html_css_files: list[str] = ['custom.css']
+# Pull request identifiers are numbers. Their source links need a commit.
+SOURCE_REF: str = (
+    os.environ.get('READTHEDOCS_GIT_COMMIT_HASH', 'develop')
+    if os.environ.get('READTHEDOCS_VERSION_TYPE') == 'external'
+    else os.environ.get('READTHEDOCS_GIT_IDENTIFIER', 'develop')
+)
 html_theme_options: dict[str, object] = {
     'source_repository': 'https://github.com/WoLpH/mt940/',
-    'source_branch': 'develop',
+    'source_branch': SOURCE_REF,
     'source_directory': 'docs/',
     'light_css_variables': {
         'color-brand-primary': '#195f73',
@@ -202,8 +209,12 @@ def _reference_source_links(
     else:
         return
     repository: str = 'https://github.com/WoLpH/mt940'
-    context['theme_source_edit_link'] = f'{repository}/edit/develop/{source}'
-    context['theme_source_view_link'] = f'{repository}/blob/develop/{source}'
+    context['theme_source_edit_link'] = (
+        f'{repository}/edit/{SOURCE_REF}/{source}'
+    )
+    context['theme_source_view_link'] = (
+        f'{repository}/blob/{SOURCE_REF}/{source}'
+    )
 
 
 def setup(app: Sphinx) -> None:

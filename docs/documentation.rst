@@ -106,6 +106,10 @@ compiles the PDF with Tectonic. Read the environment's output paths for the
 resulting artefacts. Read the Docs uses Python 3.12 with warning failures and
 builds PDF and EPUB too.
 
+Source buttons on Read the Docs point to the branch or tag being built.
+Pull request previews use the checked-out commit. Local builds use
+``develop`` unless you set ``READTHEDOCS_GIT_IDENTIFIER`` to another Git ref.
+
 Remote sites can fail independently of a documentation change. Run the
 separate network-dependent check when reviewing external links:
 
