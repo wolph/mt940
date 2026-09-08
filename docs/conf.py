@@ -7,7 +7,9 @@ pages are generated on every build. Their source templates live in
 
 from __future__ import annotations
 
+import doctest
 import pathlib
+import shutil
 import sys
 from typing import TYPE_CHECKING, cast
 
@@ -42,6 +44,11 @@ extensions: list[str] = [
 # can leave source-index links to compiled modules such as _abc and builtins.
 viewcode_follow_imported_members: bool = False
 smartquotes: bool = False
+doctest_default_flags: int = (
+    doctest.NORMALIZE_WHITESPACE
+    | doctest.IGNORE_EXCEPTION_DETAIL
+    | doctest.ELLIPSIS
+)
 exclude_patterns: list[str] = [
     '_build',
     'html',
@@ -83,10 +90,12 @@ html_theme_options: dict[str, object] = {
     'light_css_variables': {
         'color-brand-primary': '#195f73',
         'color-brand-content': '#195f73',
+        'color-highlight-on-target': '#e5f1f4',
     },
     'dark_css_variables': {
         'color-brand-primary': '#77cddd',
         'color-brand-content': '#77cddd',
+        'color-highlight-on-target': '#14282e',
     },
 }
 html_show_sphinx: bool = False
@@ -95,8 +104,8 @@ html_copy_source: bool = True
 epub_title: str = 'MT940: parsing bank statements with Python'
 epub_author: str = author
 epub_language: str = 'en'
-epub_show_urls: str = 'footnote'
-epub_exclude_files: list[str] = ['search.html']
+epub_show_urls: str = 'no'
+epub_exclude_files: list[str] = ['search.html', '.buildinfo.bak']
 latex_documents: list[tuple[str, str, str, str, str]] = [
     (
         'index',
@@ -106,7 +115,9 @@ latex_documents: list[tuple[str, str, str, str, str]] = [
         'manual',
     ),
 ]
-latex_show_urls: str = 'footnote'
+# Links remain clickable. Printing every type-reference URL creates hundreds
+# of repeated footnotes and can overflow a PDF page.
+latex_show_urls: str = 'no'
 latex_engine: str = 'xelatex'
 latex_elements: dict[str, str] = {
     'papersize': 'a4paper',
@@ -114,9 +125,14 @@ latex_elements: dict[str, str] = {
 }
 
 
-def _generate_reference(_app: Sphinx) -> None:
+def _generate_reference(app: Sphinx) -> None:
     """Regenerate the API pages from maintained templates and docstrings."""
     reference.generate(PROJECT_ROOT / 'mt940', DOCS_ROOT)
+    # Viewcode checks module timestamps only. New reference members and changed
+    # navigation also need fresh source HTML when the module is unchanged.
+    source_pages: pathlib.Path = pathlib.Path(app.outdir) / '_modules'
+    if app.builder.format == 'html' and source_pages.is_dir():
+        shutil.rmtree(source_pages)
 
 
 def _resolve_alias(
@@ -163,7 +179,30 @@ def _resolve_alias(
     )
 
 
+def _reference_source_links(
+    _app: Sphinx,
+    pagename: str,
+    _templatename: str,
+    context: dict[str, object],
+    _doctree: nodes.document | None,
+) -> None:
+    """Point generated-page toolbar links at their maintained source files."""
+    source: str
+    if pagename == 'modules':
+        source = 'docs/_tools/reference.py'
+    elif pagename == 'mt940':
+        source = 'mt940/__init__.py'
+    elif pagename.startswith('mt940.'):
+        source = pagename.replace('.', '/') + '.py'
+    else:
+        return
+    repository: str = 'https://github.com/WoLpH/mt940'
+    context['theme_source_edit_link'] = f'{repository}/edit/develop/{source}'
+    context['theme_source_view_link'] = f'{repository}/blob/develop/{source}'
+
+
 def setup(app: Sphinx) -> None:
     """Generate references before Sphinx discovers source documents."""
     _ = app.connect('builder-inited', _generate_reference)
     _ = app.connect('missing-reference', _resolve_alias, priority=400)
+    _ = app.connect('html-page-context', _reference_source_links)

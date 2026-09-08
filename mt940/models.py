@@ -561,6 +561,7 @@ class Transactions(Sequence[Transaction]):
     while retaining saved tags, metadata, transactions and options.
     """
 
+    #: Ordered callback slots copied into each collection's processors mapping.
     DEFAULT_PROCESSORS: ClassVar[Processors] = {
         'pre_account_identification': [],
         'post_account_identification': [],

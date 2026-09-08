@@ -9,6 +9,7 @@ h2 { letter-spacing: -.02em; }
 .guide-card .rubric { margin-top: 0; font-size: 1.12rem; }
 [role="main"] .container.pipeline { border-left: 3px solid var(--color-brand-primary); padding: .5rem 1rem; background: var(--color-background-secondary); }
 dl.py dt.sig { overflow-wrap: anywhere; }
+dt.sig:target { box-shadow: inset 3px 0 var(--color-brand-primary); }
 table.docutils { width: 100%; }
 .highlight pre { tab-size: 4; }
 a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid var(--color-brand-primary); outline-offset: 3px; }
@@ -17,4 +18,5 @@ a:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid 
   [role="main"] .guide-grid .guide-card { padding: 1rem; }
   .content { min-width: 0; }
   h1 { font-size: 2rem; }
+  table.docutils { min-width: 40rem; }
 }

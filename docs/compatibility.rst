@@ -29,7 +29,7 @@ All ten switches
 
 .. list-table:: Defaults and enabled effects
    :header-rows: 1
-   :widths: 24 36 40
+   :widths: 32 33 35
 
    * - Option
      - ``False`` behaviour

@@ -18,7 +18,12 @@ def generate(package: Path, destination: Path) -> None:
         modules.append(module)
         title: str = 'Package API' if path.stem == '__init__' else module
         content: str = (
-            f'{title}\n{"=" * len(title)}\n\n.. automodule:: {module}\n'
+            f'{title}\n{"=" * len(title)}\n\n'
+            '.. testsetup::\n\n'
+            '   import importlib as _importlib\n'
+            '   globals().update(vars('
+            f'_importlib.import_module("{module}")))\n'
+            f'\n.. automodule:: {module}\n'
         )
         if path.stem == '__init__':
             content += '   :no-members:\n\n'
@@ -34,9 +39,7 @@ def generate(package: Path, destination: Path) -> None:
                 '``json`` and ``__version__``.\n'
             )
         else:
-            content += (
-                '   :members:\n   :private-members:\n   :undoc-members:\n'
-            )
+            content += '   :members:\n   :private-members:\n'
         special: list[str] = [
             name
             for name, symbol in symbols.items()
@@ -52,7 +55,7 @@ def generate(package: Path, destination: Path) -> None:
         _ = output.write_text(content, encoding='utf-8')
     index: str = (
         'API reference\n=============\n\n'
-        'The reference follows the source modules. Read :doc:`data-model`\n'
+        'The reference follows the source modules. See :doc:`data-model`\n'
         'for returned fields or :doc:`customising` for extension examples.\n\n'
         '.. toctree::\n   :maxdepth: 1\n\n'
     )
