@@ -126,7 +126,7 @@ Static, security and build gates
    * - ``docs-linkcheck``
      - Opt-in remote-link validation. Requires network access.
    * - ``coverage``
-     - Combined branch coverage from the five runtime environments.
+     - Combined branch coverage from all supported runtime environments.
 
 ``uv run tox -m check`` selects the static and audit environments. It does not
 replace tests or the documentation checks. Release workflow builds additionally
