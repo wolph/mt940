@@ -76,6 +76,12 @@ application decides which fields and reconciliation checks it requires.
    documentation
    releases
 
+.. toctree::
+   :caption: Project
+   :maxdepth: 1
+
+   sponsor
+
 Find a symbol through :ref:`genindex`, browse :ref:`modindex`, or use
 :ref:`search`. Source and issue reports live on
 `GitHub <https://github.com/WoLpH/mt940>`_.

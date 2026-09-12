@@ -108,6 +108,15 @@ See [CONTRIBUTING.rst](https://github.com/WoLpH/mt940/blob/develop/CONTRIBUTING.
 for focused commands and fixture requirements. The runnable `examples/`
 package uses fictional data and includes recorded outputs checked by pytest.
 
+## Support
+
+mt940 is maintained by [Rick van Hattem](https://github.com/wolph) in his own time. Most of that time goes on bank statement dialects, because every bank reads the spec slightly differently.
+
+If it saved you an afternoon, a tip covers an hour of issue triage:
+[Ko-fi](https://ko-fi.com/wolph_gh) or [GitHub Sponsors](https://github.com/sponsors/wolph).
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/wolph_gh)
+
 [Documentation](https://mt940.readthedocs.io/) |
 [Source](https://github.com/WoLpH/mt940) |
 [Issues](https://github.com/WoLpH/mt940/issues) |

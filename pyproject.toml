@@ -36,6 +36,7 @@ Documentation = 'https://mt940.readthedocs.io/'
 Repository = 'https://github.com/WoLpH/mt940'
 Issues = 'https://github.com/WoLpH/mt940/issues'
 Changelog = 'https://github.com/WoLpH/mt940/releases'
+Funding = 'https://github.com/sponsors/wolph'
 
 [project.optional-dependencies]
 docs = ['sphinx>=8.0', 'furo>=2024.8', 'types-docutils']
