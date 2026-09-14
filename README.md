@@ -1,9 +1,9 @@
 # MT940
 
 [![CI](https://github.com/WoLpH/mt940/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/WoLpH/mt940/actions/workflows/ci.yml?query=branch%3Amaster)
-[![PyPI](https://img.shields.io/pypi/v/mt-940)](https://pypi.org/project/mt-940/)
-[![Python](https://img.shields.io/pypi/pyversions/mt-940)](https://pypi.org/project/mt-940/)
-[![Documentation](https://readthedocs.org/projects/mt940/badge/?version=latest)](https://mt940.readthedocs.io/)
+[![PyPI](https://img.shields.io/pypi/v/mt-940?style=plastic)](https://pypi.org/project/mt-940/)
+[![Python](https://img.shields.io/pypi/pyversions/mt-940?style=plastic)](https://pypi.org/project/mt-940/)
+[![Documentation](https://img.shields.io/readthedocs/mt940/latest?style=plastic)](https://mt940.readthedocs.io/)
 [![Coverage](https://coveralls.io/repos/github/wolph/mt940/badge.svg?branch=master)](https://coveralls.io/github/wolph/mt940?branch=master)
 
 Parse MT940 bank statements into Python transactions, decimal amounts, dates
