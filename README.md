@@ -3,8 +3,10 @@
 [![CI](https://github.com/WoLpH/mt940/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/WoLpH/mt940/actions/workflows/ci.yml?query=branch%3Amaster)
 [![PyPI](https://img.shields.io/pypi/v/mt-940?style=plastic)](https://pypi.org/project/mt-940/)
 [![Python](https://img.shields.io/pypi/pyversions/mt-940?style=plastic)](https://pypi.org/project/mt-940/)
+[![Monthly downloads](https://static.pepy.tech/badge/mt-940/month)](https://pepy.tech/projects/mt-940)
 [![Documentation](https://img.shields.io/readthedocs/mt940/latest?style=plastic)](https://mt940.readthedocs.io/)
 [![Coverage](https://coveralls.io/repos/github/wolph/mt940/badge.svg?branch=master)](https://coveralls.io/github/wolph/mt940?branch=master)
+[![License](https://img.shields.io/pypi/l/mt-940?style=plastic)](https://github.com/WoLpH/mt940/blob/master/LICENSE)
 
 Parse MT940 bank statements into Python transactions, decimal amounts, dates
 and balances. The `mt-940` distribution imports as `mt940`, supports Python
