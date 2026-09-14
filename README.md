@@ -1,12 +1,12 @@
 # MT940
 
-[![CI](https://github.com/WoLpH/mt940/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/WoLpH/mt940/actions/workflows/ci.yml?query=branch%3Amaster)
-[![PyPI](https://img.shields.io/pypi/v/mt-940?style=plastic)](https://pypi.org/project/mt-940/)
-[![Python](https://img.shields.io/pypi/pyversions/mt-940?style=plastic)](https://pypi.org/project/mt-940/)
-[![Monthly downloads](https://static.pepy.tech/badge/mt-940/month)](https://pepy.tech/projects/mt-940)
-[![Documentation](https://img.shields.io/readthedocs/mt940/latest?style=plastic)](https://mt940.readthedocs.io/)
-[![Coverage](https://coveralls.io/repos/github/wolph/mt940/badge.svg?branch=master)](https://coveralls.io/github/wolph/mt940?branch=master)
-[![License](https://img.shields.io/pypi/l/mt-940?style=plastic)](https://github.com/WoLpH/mt940/blob/master/LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/wolph/mt940/ci.yml?branch=master&label=CI&style=flat-square&labelColor=555)](https://github.com/WoLpH/mt940/actions/workflows/ci.yml?query=branch%3Amaster)
+[![PyPI](https://img.shields.io/pypi/v/mt-940?style=flat-square&labelColor=555&color=007ec6)](https://pypi.org/project/mt-940/)
+[![Python](https://img.shields.io/pypi/pyversions/mt-940?style=flat-square&labelColor=555&color=007ec6)](https://pypi.org/project/mt-940/)
+[![Monthly downloads](https://img.shields.io/badge/dynamic/xml?url=https%3A%2F%2Fapi.pepy.tech%2Fbadge%2Fmt-940%2Fmonth&query=%28%2F%2F%2A%5Blocal-name%28%29%3D%22text%22%5D%29%5Blast%28%29%5D&label=downloads%2Fmonth&style=flat-square&labelColor=555&color=007ec6)](https://pepy.tech/projects/mt-940)
+[![Documentation](https://img.shields.io/readthedocs/mt940/latest?style=flat-square&labelColor=555)](https://mt940.readthedocs.io/)
+[![Coverage](https://img.shields.io/coverallsCoverage/github/wolph/mt940?branch=master&style=flat-square&labelColor=555)](https://coveralls.io/github/wolph/mt940?branch=master)
+[![License](https://img.shields.io/pypi/l/mt-940?style=flat-square&labelColor=555&color=007ec6)](https://github.com/WoLpH/mt940/blob/master/LICENSE)
 
 `mt940` parses **MT940 bank statement files** into smart, fully typed Python
 collections you can iterate, aggregate and serialize. It has no runtime
