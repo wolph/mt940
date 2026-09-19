@@ -134,7 +134,13 @@ jobs:
           mkdir -p "$RUNNER_TEMP/tectonic-bin"
           tar -xzf "$RUNNER_TEMP/tectonic.tar.gz" -C "$RUNNER_TEMP/tectonic-bin" tectonic
           echo "$RUNNER_TEMP/tectonic-bin" >> "$GITHUB_PATH"
+      - name: Apply Ruff fixes to pull requests
+        if: github.event_name == 'pull_request' && matrix.env == 'lint'
+        run: tox -e ruff-fix
       - name: Run ${{ matrix.env }}
+        env:
+          RUFF_OUTPUT_FORMAT: >-
+            ${{ github.event_name == 'pull_request' && 'github' || 'full' }}
         run: tox -e "$TOX_ENV"
       - name: Upload documentation preview
         if: matrix.env == 'docs' || matrix.env == 'docs-formats'
