@@ -70,6 +70,12 @@ dev = [
 
 [tool.uv]
 exclude-newer = '14 days'
+# certifi and filelock get a shorter soak of one week: their October 2026
+# advisories (PYSEC-2026-4320 for certifi, CVE-2026-112906 and five siblings for
+# filelock) were fixed inside the fourteen-day quarantine, and the audit job
+# resolves fresh on every run, so the release workflow stayed red on tools that
+# never reach the wheel. Drop the entries once the fixes are two weeks old.
+exclude-newer-package = { certifi = '7 days', filelock = '7 days' }
 
 [tool.uv.build-backend]
 # The distribution name (mt-940) normalizes to `mt_940`, but the import
