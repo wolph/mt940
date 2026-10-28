@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import decimal
 import typing
 
@@ -12,13 +12,13 @@ def test_model_repr_uses_the_class_name() -> None:
 
 
 def test_datetime_explicit_timezone_takes_precedence_over_offset() -> None:
-    zone: datetime.tzinfo = datetime.timezone.utc
+    zone: dt.tzinfo = dt.timezone.utc
     value: mt940.models.DateTime = mt940.models.DateTime(
         year='2026', month='1', day='2', tzinfo=zone, offset='60'
     )
     assert value.year == 2026
     assert value.tzinfo is zone
-    assert value.utcoffset() == datetime.timedelta(0)
+    assert value.utcoffset() == dt.timedelta(0)
 
 
 def test_balance_empty_amount_string_is_stored_as_is() -> None:
@@ -183,8 +183,8 @@ def test_sum_amount_equality_ignores_the_entry_count() -> None:
 def test_fixed_offset_methods_accept_the_dt_keyword() -> None:
     # The tzinfo methods took `dt` as a keyword in 5.0.0.
     offset = mt940.models.FixedOffset(60, 'CET')
-    assert offset.utcoffset(dt=None) == datetime.timedelta(minutes=60)
-    assert offset.dst(dt=None) == datetime.timedelta(0)
+    assert offset.utcoffset(dt=None) == dt.timedelta(minutes=60)
+    assert offset.dst(dt=None) == dt.timedelta(0)
     assert offset.tzname(dt=None) == 'CET'
 
 

@@ -6,7 +6,7 @@ change to the parser output.
 
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import decimal
 import json
 import os
@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from typing_extensions import TypeIs
 
 _TESTS_PATH = pathlib.Path(__file__).parent
-_SCALAR_TYPES = (datetime.date, decimal.Decimal, int, str)
+_SCALAR_TYPES = (dt.date, decimal.Decimal, int, str)
 _DATA_TYPES = (mt940.models.Transactions, mt940.models.Transaction)
 
 _STATEMENT = """:20:REF

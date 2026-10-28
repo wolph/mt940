@@ -34,6 +34,9 @@ ignore = [
 ]
 
 [lint.per-file-ignores]
+# The tzinfo methods on FixedOffset take `dt` by keyword, pinned by a test, so
+# models.py keeps the full `datetime` name instead of the `dt` alias.
+'mt940/models.py' = ['unconventional-import-alias']
 # These modules document exceptions propagated by Python's file, date,
 # decimal and regular-expression APIs. DOC501 only sees explicit raises.
 'mt940/{json,models,options,parser,processors,tags}.py' = [

@@ -20,7 +20,7 @@ Example:
 
 from __future__ import annotations
 
-import datetime
+import datetime as dt
 import decimal
 import json
 from typing import Any
@@ -65,10 +65,10 @@ class JSONEncoder(json.JSONEncoder):
         """
         # The following types should simply be cast to strings
         str_types = (
-            datetime.date,
-            datetime.datetime,
-            datetime.timedelta,
-            datetime.tzinfo,
+            dt.date,
+            dt.datetime,
+            dt.timedelta,
+            dt.tzinfo,
             decimal.Decimal,
         )
 

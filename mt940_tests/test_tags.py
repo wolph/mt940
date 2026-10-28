@@ -1,4 +1,4 @@
-import datetime
+import datetime as dt
 import pathlib
 from typing import ClassVar
 
@@ -21,19 +21,19 @@ _ALL = mt940.Options.all()
     ('options', 'expected_offset', 'expected_name'),
     [
         # 5.0.0 handed the HHMM digits to FixedOffset as a minute count.
-        (mt940.Options(), datetime.timedelta(minutes=130), '0130'),
+        (mt940.Options(), dt.timedelta(minutes=130), '0130'),
         # The subfield is HHMM (like ISO 8601 +0130): one hour and thirty
         # minutes east of UTC.
         (
             mt940.Options(timezone_offset=True),
-            datetime.timedelta(hours=1, minutes=30),
+            dt.timedelta(hours=1, minutes=30),
             '90',
         ),
     ],
 )
 def test_date_time_indication_positive_offset(
     options: mt940.Options,
-    expected_offset: datetime.timedelta,
+    expected_offset: dt.timedelta,
     expected_name: str,
 ) -> None:
     transactions = mt940.parse(
@@ -49,18 +49,18 @@ def test_date_time_indication_positive_offset(
     [
         # 5.0.0 could not parse a negative offset at all, so the default
         # applies its minute-count reading of the digits to the sign too.
-        (mt940.Options(), -datetime.timedelta(minutes=500), '-0500'),
+        (mt940.Options(), -dt.timedelta(minutes=500), '-0500'),
         # 1!x sign can be '-' as well (e.g. US banks): -0500 is UTC-5.
         (
             mt940.Options(timezone_offset=True),
-            -datetime.timedelta(hours=5),
+            -dt.timedelta(hours=5),
             '-300',
         ),
     ],
 )
 def test_date_time_indication_negative_offset(
     options: mt940.Options,
-    expected_offset: datetime.timedelta,
+    expected_offset: dt.timedelta,
     expected_name: str,
 ) -> None:
     transactions = mt940.parse(
