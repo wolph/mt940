@@ -1031,7 +1031,7 @@ class Transactions(Sequence[Transaction]):
         return valid_matches
 
 
-class TransactionsAndTransaction(  # type: ignore[misc]  # pyright: ignore[reportUnsafeMultipleInheritance, reportIncompatibleVariableOverride]
+class TransactionsAndTransaction(  # type: ignore[misc]  # pyright: ignore[reportUnsafeMultipleInheritance, reportIncompatibleVariableOverride]  # ty: ignore[invalid-attribute-override]
     Transactions, Transaction
 ):
     """Scope marker accepted as both statement and transaction scope.
