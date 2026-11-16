@@ -75,7 +75,10 @@ exclude-newer = '14 days'
 # filelock) were fixed inside the fourteen-day quarantine, and the audit job
 # resolves fresh on every run, so the release workflow stayed red on tools that
 # never reach the wheel. Drop the entries once the fixes are two weeks old.
-exclude-newer-package = { certifi = '7 days', filelock = '7 days' }
+# soupsieve 4.1.1 (2026-11-14) fixes CVE-2026-126190 in the docs dependency
+# chain (furo, beautifulsoup4). It is only days old, so it gets a fixed
+# cutoff just after its upload. Drop it after 2026-11-28.
+exclude-newer-package = { certifi = '7 days', filelock = '7 days', soupsieve = '2026-11-15T00:00:00Z' }
 
 [tool.uv.build-backend]
 # The distribution name (mt-940) normalizes to `mt_940`, but the import
